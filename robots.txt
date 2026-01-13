@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /confidentialite/
+Disallow: /mentions-legales/
+Disallow: /merci/
+
+Sitemap: https://audire.be/sitemap.xml

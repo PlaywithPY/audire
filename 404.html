@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fr-BE">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Page introuvable — Audire</title>
+  <meta name="description" content="Cette page n’existe pas (ou plus). Retrouvez les pages principales d’Audire : test auditif gratuit, contact, solutions, remboursements." />
+
+  <meta name="robots" content="noindex,follow" />
+  <meta name="theme-color" content="#0f172a" />
+
+  <!-- Root-relative paths (since this file is at root) -->
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <style>
+    .big404{
+      font-size: clamp(48px, 6vw, 90px);
+      letter-spacing: -1px;
+      margin: 0;
+      line-height: 1;
+    }
+    .cardLinks a{
+      display:block;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      color: var(--muted);
+    }
+    .cardLinks a:last-child{ border-bottom:0; }
+    .cardLinks a:hover{ color: var(--text); }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="container inner">
+      <div class="badge">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Erreur 404</span>
+      </div>
+      <div class="toplinks">
+        <a href="index.html">Accueil</a>
+        <a href="contact/index.html">Contact</a>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="container nav" role="navigation" aria-label="Navigation principale">
+      <a class="brand" href="index.html" aria-label="Aller à l'accueil Audire">
+        <span class="logo" aria-hidden="true"></span>
+        <span>Audire</span>
+      </a>
+
+      <div class="actions">
+        <a class="btn" data-tel href="tel:+3242336125">📞 04 233 61 25</a>
+        <a class="btn primary" href="test-auditif-gratuit/index.html">✅ Test gratuit</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container hero">
+      <div class="heroGrid">
+        <div>
+          <p class="big404">404</p>
+          <h1 style="margin-top:10px;">Page introuvable</h1>
+          <p class="lead">
+            Cette page n’existe pas (ou a été déplacée). Pas grave : voici les accès les plus utiles.
+          </p>
+
+          <div class="heroCtas">
+            <a class="btn primary" href="test-auditif-gratuit/index.html">✅ Test auditif gratuit</a>
+            <a class="btn" href="contact/index.html">📍 Contact</a>
+            <a class="btn" href="sitemap/index.html">Plan du site</a>
+          </div>
+
+          <p class="helper">
+            Si vous souhaitez une réponse directe : appelez-nous au <a data-tel href="tel:+3242336125">04 233 61 25</a>.
+          </p>
+        </div>
+
+        <aside class="card" aria-label="Pages principales">
+          <div class="pad">
+            <h3>Pages principales</h3>
+            <div class="panel cardLinks" style="margin-top:12px;">
+              <a href="index.html">Accueil</a>
+              <a href="test-auditif-gratuit/index.html">Test auditif gratuit</a>
+              <a href="notre-accompagnement/index.html">Notre accompagnement</a>
+              <a href="solutions-auditives/index.html">Solutions (Oticon & Bernafon)</a>
+              <a href="remboursements/index.html">Remboursements</a>
+              <a href="faq/index.html">FAQ</a>
+              <a href="partenaires-pharmaciens/index.html">Partenariat pharmaciens</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <div class="fine">
+          <span>© <span id="year"></span> Audire — Tous droits réservés</span>
+          <span><a href="mentions-legales/index.html" style="color:inherit;">Mentions légales</a> · <a href="confidentialite/index.html" style="color:inherit;">Confidentialité</a></span>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>
