@@ -18,6 +18,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Update tel links if present
   $all("[data-tel]").forEach(a => a.setAttribute("href", `tel:${AUDIRE.phoneHref}`));
   $all("[data-mail]").forEach(a => a.setAttribute("href", `mailto:${AUDIRE.email}`));
+  $all("[data-tel-text]").forEach(el => { el.textContent = AUDIRE.phoneDisplay; });
+  $all("[data-mail-text]").forEach(el => { el.textContent = AUDIRE.email; });
+
+  // Update JSON-LD placeholders
+  $all('script[type="application/ld+json"][data-mail-json]').forEach(script => {
+    script.textContent = script.textContent.replace(/__AUDIRE_EMAIL__/g, AUDIRE.email);
+  });
 
   // Mobile menu
   const menuBtn = $("#menuBtn");

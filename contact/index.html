@@ -19,13 +19,13 @@
   <link rel="stylesheet" href="../css/styles.css" />
 
   <!-- LocalBusiness schema (SEO) -->
-  <script type="application/ld+json">
+  <script type="application/ld+json" data-mail-json>
   {
     "@context":"https://schema.org",
     "@type":"LocalBusiness",
     "name":"Audire - Centre auditif",
     "telephone":"+32 4 233 61 25",
-    "email":"contact@audire.be",
+    "email":"__AUDIRE_EMAIL__",
     "address":{
       "@type":"PostalAddress",
       "streetAddress":"30, rue Grand-Vinâve",
@@ -72,7 +72,7 @@
       </nav>
 
       <div class="actions">
-        <a class="btn" data-tel href="tel:+3242336125">📞 04 233 61 25</a>
+        <a class="btn" data-tel href="tel:+3242336125">📞 <span data-tel-text>04 233 61 25</span></a>
         <button class="btn primary" type="button" data-open-modal>📅 Prendre rendez-vous</button>
         <button class="btn menuBtn" type="button" id="menuBtn" aria-expanded="false" aria-controls="mobileNav">☰</button>
       </div>
@@ -135,7 +135,7 @@
 
             <div class="panel" style="margin-top:14px;">
               <div class="tag">Téléphone</div>
-              <p><strong>04 233 61 25</strong><br><span style="color:var(--muted)">Réponse pendant les heures d’ouverture.</span></p>
+              <p><strong><span data-tel-text>04 233 61 25</span></strong><br><span style="color:var(--muted)">Réponse pendant les heures d’ouverture.</span></p>
               <div style="margin-top:10px;">
                 <a class="btn" data-tel href="tel:+3242336125">Appeler</a>
               </div>
@@ -143,7 +143,7 @@
 
             <div class="panel" style="margin-top:12px;">
               <div class="tag">Email</div>
-              <p><strong>contact@audire.be</strong><br><span style="color:var(--muted)">Réponse sous 1 jour ouvrable (souvent plus vite).</span></p>
+              <p><strong><span data-mail-text>contact@audire.be</span></strong><br><span style="color:var(--muted)">Réponse sous 1 jour ouvrable (souvent plus vite).</span></p>
               <div style="margin-top:10px;">
                 <a class="btn" data-mail href="mailto:contact@audire.be">Écrire</a>
               </div>
@@ -305,7 +305,7 @@
             Appelez-nous ou demandez un rendez-vous. On vous répond simplement, avec clarté.
           </p>
           <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-            <a class="btn" data-tel href="tel:+3242336125">📞 04 233 61 25</a>
+            <a class="btn" data-tel href="tel:+3242336125">📞 <span data-tel-text>04 233 61 25</span></a>
             <button class="btn primary" type="button" data-open-modal>📅 Demander un RDV</button>
             <a class="btn" href="../test-auditif-gratuit/index.html">Test auditif gratuit</a>
           </div>
@@ -338,8 +338,8 @@
 
           <div>
             <h4>Contact</h4>
-            <a data-tel href="tel:+3242336125">📞 04 233 61 25</a>
-            <a data-mail href="mailto:contact@audire.be">✉️ contact@audire.be</a>
+            <a data-tel href="tel:+3242336125">📞 <span data-tel-text>04 233 61 25</span></a>
+            <a data-mail href="mailto:contact@audire.be">✉️ <span data-mail-text>contact@audire.be</span></a>
             <a href="../partenaires-pharmaciens/index.html">Professionnels (pharmacies)</a>
           </div>
         </div>
