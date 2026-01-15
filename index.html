@@ -24,7 +24,9 @@
     "@context":"https://schema.org",
     "@type":"LocalBusiness",
     "name":"Audire - Centre auditif",
-    "telephone":"+32 tel4 233 61 25",
+    "description":"Centre auditif à Jemeppe-sur-Meuse. Test auditif gratuit, explications claires, solutions Oticon & Bernafon, réglages et suivi personnalisé. Province de Liège.",
+    "telephone":"+3242336125",
+    "priceRange":"1200€-3500€",
     "address":{
       "@type":"PostalAddress",
       "streetAddress":"30, rue Grand-Vinâve",
@@ -33,7 +35,21 @@
       "addressCountry":"BE"
     },
     "areaServed":"Province de Liège",
-    "url":"https://audire.be/"
+    "url":"https://audire.be/",
+    "openingHoursSpecification":[
+      {
+        "@type":"OpeningHoursSpecification",
+        "dayOfWeek":"Monday",
+        "opens":"13:00",
+        "closes":"18:00"
+      },
+      {
+        "@type":"OpeningHoursSpecification",
+        "dayOfWeek":["Tuesday","Wednesday","Thursday","Friday","Saturday"],
+        "opens":"09:30",
+        "closes":"18:00"
+      }
+    ]
   }
   </script>
 </head>
@@ -89,6 +105,11 @@
             <div class="panel" style="margin-top:12px;">
               <div class="tag">Téléphone</div>
               <p><a data-tel href="tel:+3242336125" style="color:inherit; text-decoration:none;"><strong><span data-tel-text>04 233 61 25</span></strong></a><br><span style="color:var(--muted)">Appelez, on vous répond</span></p>
+            </div>
+
+            <div class="panel" style="margin-top:12px;">
+              <div class="tag">Horaires</div>
+              <p><strong>Lundi : 13h00–18h00</strong><br><strong>Mar–Sam : 9h30–18h00</strong><br><span style="color:var(--muted)">Sur rendez-vous uniquement</span></p>
             </div>
 
             <div class="panel" style="margin-top:12px;">
@@ -155,6 +176,40 @@
       </div>
     </section>
 
+    <!-- Pricing Transparency -->
+    <section>
+      <div class="container">
+        <h2 class="sectionTitle">Combien ça coûte (vraiment) ?</h2>
+        <p class="sectionLead">
+          On vous dit tout dès le départ. Pas de surprise, pas de vente forcée.
+        </p>
+
+        <div class="grid2">
+          <div class="panel">
+            <div class="tag">Prix indicatifs</div>
+            <p style="margin:0 0 8px;"><strong>Appareil auditif</strong></p>
+            <p style="margin:0; color:var(--muted); font-size:14px; line-height:1.55;">
+              Entre <strong style="color:var(--text);">1 200 € et 3 500 €</strong> par oreille, selon le modèle et les fonctionnalités.
+              Nous travaillons avec Oticon et Bernafon pour vous proposer la meilleure solution adaptée à votre budget et vos besoins.
+            </p>
+          </div>
+
+          <div class="panel">
+            <div class="tag">Remboursement</div>
+            <p style="margin:0 0 8px;"><strong>Mutuelle & INAMI</strong></p>
+            <p style="margin:0; color:var(--muted); font-size:14px; line-height:1.55;">
+              Remboursement de <strong style="color:var(--text);">840 € par oreille</strong> (mutuelle + INAMI).
+              Nous vous accompagnons dans toutes les démarches administratives.
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;">
+          <a class="btn" href="remboursements/index.html">📋 Voir les détails des remboursements</a>
+        </div>
+      </div>
+    </section>
+
     <!-- Pro CTA -->
     <section>
       <div class="container">
@@ -168,6 +223,50 @@
         </div>
       </div>
     </section>
+
+    <!-- FAQ Section -->
+    <section>
+      <div class="container">
+        <h2 class="sectionTitle">Questions fréquentes</h2>
+        <p class="sectionLead">
+          Vous avez des questions ? On vous répond simplement.
+        </p>
+
+        <details>
+          <summary>Le test auditif est-il vraiment gratuit ?</summary>
+          <p>
+            Oui, le test auditif est entièrement gratuit et sans engagement. Il dure environ 30 minutes et vous permet de comprendre précisément votre situation auditive. Vous repartez avec des explications claires, que vous décidiez de donner suite ou non.
+          </p>
+        </details>
+
+        <details>
+          <summary>Comment se passe le remboursement ?</summary>
+          <p>
+            L'INAMI et votre mutuelle remboursent 840 € par oreille appareillée. Nous nous occupons de toutes les démarches administratives pour vous. Vous recevez une facture détaillée et nous vous accompagnons jusqu'au remboursement complet.
+          </p>
+        </details>
+
+        <details>
+          <summary>Combien de temps dure l'adaptation à un appareil auditif ?</summary>
+          <p>
+            L'adaptation varie selon chaque personne, généralement entre 2 et 6 semaines. C'est pourquoi le suivi est essentiel : nous prévoyons plusieurs rendez-vous de réglage pour ajuster l'appareil à votre confort et vos habitudes. Vous n'êtes jamais seul dans cette période.
+          </p>
+        </details>
+
+        <details>
+          <summary>Dois-je porter mes appareils en permanence ?</summary>
+          <p>
+            Pour une adaptation optimale, nous recommandons de porter vos appareils le plus souvent possible durant la journée. Mais vous restez libre de les retirer quand vous le souhaitez. Lors des rendez-vous de suivi, nous adaptons les réglages selon votre ressenti et votre utilisation réelle.
+          </p>
+        </details>
+
+        <div style="margin-top:18px;">
+          <a class="btn" href="faq/index.html">📚 Voir toutes les questions</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
 
   <!-- Footer chargé dynamiquement -->
   <div id="app-footer"></div>
