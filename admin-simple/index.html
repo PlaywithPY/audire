@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="fr-BE">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Admin Simple — Audire</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="admin-header">
+      <h1>🎛️ Admin Audire</h1>
+      <p class="subtitle">Interface simple pour gérer les contenus du site</p>
+    </header>
+
+    <!-- Auth Section -->
+    <div id="authSection" class="section">
+      <div class="card">
+        <h2>🔐 Connexion GitHub</h2>
+        <p class="help-text">
+          Pour sauvegarder les modifications, vous avez besoin d'un <strong>Personal Access Token</strong> GitHub.
+        </p>
+
+        <div class="form-group">
+          <label for="githubToken">Token GitHub</label>
+          <input
+            type="password"
+            id="githubToken"
+            placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+            autocomplete="off"
+          />
+          <small class="help-text">
+            <a href="https://github.com/settings/tokens/new?scopes=repo&description=Audire%20Admin" target="_blank">
+              → Créer un token
+            </a> (permissions: <code>repo</code>)
+          </small>
+        </div>
+
+        <button id="loginBtn" class="btn btn-primary">Se connecter</button>
+
+        <div id="loginError" class="error hidden"></div>
+      </div>
+    </div>
+
+    <!-- Editor Section (hidden by default) -->
+    <div id="editorSection" class="section hidden">
+      <!-- User info -->
+      <div class="user-info">
+        <span id="userDisplay"></span>
+        <button id="logoutBtn" class="btn-link">Se déconnecter</button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" data-tab="contact">📞 Contact</button>
+        <button class="tab" data-tab="homepage">🏠 Accueil</button>
+        <button class="tab" data-tab="navigation">🧭 Navigation</button>
+      </div>
+
+      <!-- Tab Content: Contact -->
+      <div class="tab-content active" data-content="contact">
+        <div class="card">
+          <h2>📞 Informations de contact</h2>
+
+          <div class="form-group">
+            <label for="phoneDisplay">Téléphone (affichage)</label>
+            <input type="text" id="phoneDisplay" placeholder="04 233 61 25" />
+          </div>
+
+          <div class="form-group">
+            <label for="phoneHref">Téléphone (lien)</label>
+            <input type="text" id="phoneHref" placeholder="+3242336125" />
+            <small>Format: +32XXXXXXXXX (sans espaces)</small>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="contact@audire.be" />
+          </div>
+
+          <div class="form-group">
+            <label for="street">Adresse - Rue</label>
+            <input type="text" id="street" placeholder="30, rue Grand-Vinâve" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="zip">Code postal</label>
+              <input type="text" id="zip" placeholder="4101" />
+            </div>
+            <div class="form-group">
+              <label for="city">Ville</label>
+              <input type="text" id="city" placeholder="Jemeppe-sur-Meuse" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="province">Province</label>
+            <input type="text" id="province" placeholder="Province de Liège" />
+          </div>
+
+          <button id="saveContact" class="btn btn-primary">💾 Sauvegarder les infos de contact</button>
+        </div>
+      </div>
+
+      <!-- Tab Content: Homepage -->
+      <div class="tab-content" data-content="homepage">
+        <div class="card">
+          <h2>🏠 Page d'accueil</h2>
+
+          <div class="form-group">
+            <label for="title">Titre principal (H1)</label>
+            <input type="text" id="title" placeholder="Mieux entendre, simplement..." />
+          </div>
+
+          <div class="form-group">
+            <label for="subtitle">Sous-titre (description)</label>
+            <textarea id="subtitle" rows="4" placeholder="Chez Audire, on commence par..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="kicker">Badge (kicker)</label>
+            <input type="text" id="kicker" placeholder="Centre auditif — Province de Liège" />
+          </div>
+
+          <div class="form-group">
+            <label>Puces (une par ligne)</label>
+            <textarea id="chips" rows="4" placeholder="Test auditif gratuit&#10;Explications claires&#10;Réglages & suivi&#10;Oticon & Bernafon"></textarea>
+            <small>Entrez une puce par ligne</small>
+          </div>
+
+          <div class="form-group">
+            <label for="whatWeDoTitle">Section "Ce qu'on fait" - Titre</label>
+            <input type="text" id="whatWeDoTitle" placeholder="Ce qu'on fait (et surtout comment)" />
+          </div>
+
+          <div class="form-group">
+            <label for="whatWeDoDesc">Section "Ce qu'on fait" - Description</label>
+            <textarea id="whatWeDoDesc" rows="3" placeholder="La qualité ne se joue pas uniquement..."></textarea>
+          </div>
+
+          <button id="saveHomepage" class="btn btn-primary">💾 Sauvegarder la page d'accueil</button>
+        </div>
+      </div>
+
+      <!-- Tab Content: Navigation -->
+      <div class="tab-content" data-content="navigation">
+        <div class="card">
+          <h2>🧭 Navigation</h2>
+          <p class="help-text">Gérez les liens du menu principal et de la topbar</p>
+
+          <h3>Menu principal</h3>
+          <div id="mainLinksEditor"></div>
+          <button id="addMainLink" class="btn btn-secondary">+ Ajouter un lien</button>
+
+          <h3 style="margin-top: 2rem;">Liens topbar</h3>
+          <div id="topLinksEditor"></div>
+          <button id="addTopLink" class="btn btn-secondary">+ Ajouter un lien</button>
+
+          <button id="saveNavigation" class="btn btn-primary" style="margin-top: 2rem;">💾 Sauvegarder la navigation</button>
+        </div>
+      </div>
+
+      <!-- Status messages -->
+      <div id="statusMessage" class="status hidden"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

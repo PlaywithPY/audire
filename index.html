@@ -49,17 +49,17 @@
         <div>
           <div class="kicker">
             <span class="dot" aria-hidden="true"></span>
-            <span>Centre auditif — Province de Liège</span>
+            <span data-content="kicker">Centre auditif — Province de Liège</span>
           </div>
 
-          <h1>Mieux entendre, simplement. Avec un vrai suivi.</h1>
-          <p class="lead">
+          <h1 data-content="title">Mieux entendre, simplement. Avec un vrai suivi.</h1>
+          <p class="lead" data-content="subtitle">
             Chez Audire, on commence par comprendre votre quotidien et vos difficultés (bruit, TV, téléphone…),
             puis on vous propose une suite <strong>claire</strong> et <strong>sans pression</strong>.
             Test auditif gratuit, réglages et suivi dans la durée.
           </p>
 
-          <div class="chips" aria-label="Points clés">
+          <div class="chips" data-content="chips" aria-label="Points clés">
             <span class="chip">Test auditif gratuit</span>
             <span class="chip">Explications claires</span>
             <span class="chip">Réglages & suivi</span>
@@ -108,9 +108,9 @@
     <!-- Sections -->
     <section>
       <div class="container">
-        <h2 class="sectionTitle">Ce qu’on fait (et surtout comment)</h2>
-        <p class="sectionLead">
-          La qualité ne se joue pas uniquement sur l’appareil : elle se joue sur l’accompagnement, les réglages, et le suivi.
+        <h2 class="sectionTitle" data-content="whatWeDo-title">Ce qu'on fait (et surtout comment)</h2>
+        <p class="sectionLead" data-content="whatWeDo-description">
+          La qualité ne se joue pas uniquement sur l'appareil : elle se joue sur l'accompagnement, les réglages, et le suivi.
         </p>
 
         <div class="grid3">
@@ -175,6 +175,7 @@
   <!-- Modal & Sticky CTA chargés dynamiquement -->
   <div id="app-modal"></div>
 
+  <script src="js/content-loader.js"></script>
   <script src="js/components.js"></script>
   <script src="js/main.js" defer></script>
 </body>
