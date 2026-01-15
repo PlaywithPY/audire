@@ -83,54 +83,8 @@
 </head>
 
 <body>
-  <!-- Topbar -->
-  <div class="topbar">
-    <div class="container inner">
-      <div class="badge">
-        <span class="dot" aria-hidden="true"></span>
-        <span>FAQ • Réponses simples • Sans pression</span>
-      </div>
-      <div class="toplinks">
-        <a href="../index.html">Accueil</a>
-        <a href="../test-auditif-gratuit/index.html">Test auditif</a>
-        <a href="../contact/index.html">Contact</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Header -->
-  <header>
-    <div class="container nav" role="navigation" aria-label="Navigation principale">
-      <a class="brand" href="../index.html" aria-label="Aller à l'accueil Audire">
-        <span class="logo" aria-hidden="true"></span>
-        <span>Audire</span>
-      </a>
-
-      <nav class="navlinks" aria-label="Liens principaux">
-        <a href="../test-auditif-gratuit/index.html">Test auditif gratuit</a>
-        <a href="../notre-accompagnement/index.html">Notre accompagnement</a>
-        <a href="../solutions-auditives/index.html">Solutions</a>
-        <a href="../remboursements/index.html">Remboursements</a>
-        <a href="../faq/index.html" aria-current="page">FAQ</a>
-      </nav>
-
-      <div class="actions">
-        <a class="btn" data-tel href="tel:+3242336125">📞 <span data-tel-text>04 233 61 25</span></a>
-        <button class="btn primary" type="button" data-open-modal>📅 Prendre rendez-vous</button>
-        <button class="btn menuBtn" type="button" id="menuBtn" aria-expanded="false" aria-controls="mobileNav">☰</button>
-      </div>
-    </div>
-
-    <div class="container mobileNav" id="mobileNav" aria-label="Menu mobile">
-      <a href="../test-auditif-gratuit/index.html">Test auditif gratuit</a>
-      <a href="../notre-accompagnement/index.html">Notre accompagnement</a>
-      <a href="../solutions-auditives/index.html">Solutions</a>
-      <a href="../remboursements/index.html">Remboursements</a>
-      <a href="../faq/index.html" aria-current="page">FAQ</a>
-      <a href="../contact/index.html">Contact</a>
-      <a href="../partenaires-pharmaciens/index.html">Professionnels</a>
-    </div>
-  </header>
+  <!-- Header chargé dynamiquement -->
+  <div id="app-header"></div>
 
   <main>
     <!-- Hero -->
@@ -418,117 +372,15 @@
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer>
-      <div class="container">
-        <div class="footerGrid">
-          <div>
-            <div class="brand" style="margin-bottom:10px;">
-              <span class="logo" aria-hidden="true"></span>
-              <span>Audire</span>
-            </div>
-            <p style="margin:0; line-height:1.55; color: var(--muted);">
-              FAQ Audire — réponses simples sur l’audition, les aides auditives, le suivi et les remboursements.
-            </p>
-          </div>
+      <!-- Footer chargé dynamiquement -->
+  <div id="app-footer"></div>
 
-          <div>
-            <h4>Patients</h4>
-            <a href="../test-auditif-gratuit/index.html">Test auditif gratuit</a>
-            <a href="../notre-accompagnement/index.html">Notre accompagnement</a>
-            <a href="../solutions-auditives/index.html">Solutions auditives</a>
-            <a href="../remboursements/index.html">Remboursements</a>
-            <a href="../faq/index.html">FAQ</a>
-          </div>
-
-          <div>
-            <h4>Contact</h4>
-            <a data-tel href="tel:+3242336125">📞 <span data-tel-text>04 233 61 25</span></a>
-            <a data-mail href="mailto:contact@audire.be">✉️ <span data-mail-text>contact@audire.be</span></a>
-            <a href="../partenaires-pharmaciens/index.html">Professionnels (pharmacies)</a>
-          </div>
-        </div>
-
-        <div class="fine">
-          <span>© <span id="year"></span> Audire — Tous droits réservés</span>
-          <span><a href="../mentions-legales/index.html" style="color:inherit;">Mentions légales</a> · <a href="../confidentialite/index.html" style="color:inherit;">Confidentialité</a></span>
-        </div>
-      </div>
-    </footer>
-
-    <!-- Sticky mobile CTA -->
-    <div class="stickyCta" role="region" aria-label="Actions rapides">
-      <div class="row">
-        <a class="btn" data-tel href="tel:+3242336125">📞 Appeler</a>
-        <button class="btn primary" type="button" data-open-modal>📅 RDV</button>
-      </div>
-    </div>
-
-    <!-- Modal RDV (commun) -->
-    <div class="modalOverlay" id="modalOverlay" aria-hidden="true">
-      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <div class="modalHeader">
-          <strong id="modalTitle">Demander un rendez-vous (test auditif gratuit)</strong>
-          <button class="closeBtn" type="button" id="closeModalBtn" aria-label="Fermer">✕</button>
-        </div>
-        <div class="modalBody">
-          <form id="rdvForm">
-            <div class="formGrid">
-              <div class="field">
-                <label for="prenom">Prénom</label>
-                <input id="prenom" name="prenom" autocomplete="given-name" required />
-              </div>
-              <div class="field">
-                <label for="nom">Nom</label>
-                <input id="nom" name="nom" autocomplete="family-name" required />
-              </div>
-              <div class="field">
-                <label for="tel">Téléphone</label>
-                <input id="tel" name="tel" inputmode="tel" autocomplete="tel" placeholder="+32 …" required />
-              </div>
-              <div class="field">
-                <label for="email">Email (optionnel)</label>
-                <input id="email" name="email" type="email" autocomplete="email" placeholder="vous@exemple.be" />
-              </div>
-              <div class="field">
-                <label for="motif">Motif</label>
-                <select id="motif" name="motif">
-                  <option>Test auditif (gratuit)</option>
-                  <option>Renseignements</option>
-                  <option>Solutions (Oticon/Bernafon)</option>
-                  <option>Remboursements</option>
-                  <option>Réglage / suivi</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="creneau">Créneau souhaité</label>
-                <select id="creneau" name="creneau">
-                  <option>Matin</option>
-                  <option>Après-midi</option>
-                  <option>Indifférent</option>
-                </select>
-              </div>
-              <div class="field" style="grid-column: 1 / -1;">
-                <label for="message">Message (optionnel)</label>
-                <textarea id="message" name="message" placeholder="Ex. difficultés, question, demande…"></textarea>
-              </div>
-            </div>
-
-            <div class="modalActions">
-              <button class="btn" type="button" id="cancelBtn">Annuler</button>
-              <button class="btn primary" type="submit">Envoyer la demande</button>
-            </div>
-
-            <p class="helper" id="formNote">
-              Démo : ce formulaire n’envoie rien. Branchez-le sur votre email/CRM (ou un endpoint).
-            </p>
-          </form>
-        </div>
-      </div>
-    </div>
+      <!-- Modal & Sticky CTA chargés dynamiquement -->
+  <div id="app-modal"></div>
 
   </main>
 
+  <script src="../js/components.js"></script>
   <script src="../js/main.js" defer></script>
 </body>
 </html>
