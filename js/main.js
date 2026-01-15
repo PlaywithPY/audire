@@ -1,8 +1,8 @@
-// ====== CONFIG (à personnaliser) ======
+// ====== CONFIG ======
+// Note: Le téléphone, email et autres infos de contact sont maintenant gérés
+// via /content/contact.json et chargés par content-loader.js
+// Cette config n'est plus utilisée pour les contenus
 const AUDIRE = {
-  phoneDisplay: "04 233 61 25",
-  phoneHref: "+3242336125",
-  email: "contact@audire.be",
   baseUrl: "https://audire.be" // <-- remplace quand le domaine est prêt
 };
 
@@ -15,16 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const y = $("#year");
   if (y) y.textContent = new Date().getFullYear();
 
-  // Update tel links if present
-  $all("[data-tel]").forEach(a => a.setAttribute("href", `tel:${AUDIRE.phoneHref}`));
-  $all("[data-mail]").forEach(a => a.setAttribute("href", `mailto:${AUDIRE.email}`));
-  $all("[data-tel-text]").forEach(el => { el.textContent = AUDIRE.phoneDisplay; });
-  $all("[data-mail-text]").forEach(el => { el.textContent = AUDIRE.email; });
-
-  // Update JSON-LD placeholders
-  $all('script[type="application/ld+json"][data-mail-json]').forEach(script => {
-    script.textContent = script.textContent.replace(/__AUDIRE_EMAIL__/g, AUDIRE.email);
-  });
+  // Note: Tel/Email/Contact info updates are now handled by content-loader.js
+  // which loads data from /content/contact.json
 
   // Mobile menu
   const menuBtn = $("#menuBtn");

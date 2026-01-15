@@ -130,12 +130,22 @@
 
     // Dispatch un événement pour signaler que les contenus sont chargés
     document.dispatchEvent(new CustomEvent('contentLoaded'));
+    console.log('✅ All content loaded and applied');
   }
 
-  // Charge les contenus dès que le DOM est prêt
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadAllContent);
-  } else {
+  // IMPORTANT: Attendre que les composants soient chargés AVANT d'appliquer les contenus
+  // Sinon, les éléments du header/footer n'existent pas encore !
+  document.addEventListener('componentsLoaded', () => {
+    console.log('🔄 Components loaded, now loading content...');
     loadAllContent();
-  }
+  });
+
+  // Fallback si l'événement componentsLoaded a déjà été dispatché
+  // (cas où content-loader.js se charge après components.js)
+  setTimeout(() => {
+    if (!document.querySelector('[data-tel]')) {
+      console.warn('⚠️ Retrying content load (components may have loaded before listener)');
+      loadAllContent();
+    }
+  }, 500);
 })();
