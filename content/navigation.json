@@ -1,0 +1,38 @@
+{
+  "mainLinks": [
+    {
+      "text": "Test auditif gratuit",
+      "url": "/test-auditif-gratuit/"
+    },
+    {
+      "text": "Notre accompagnement",
+      "url": "/notre-accompagnement/"
+    },
+    {
+      "text": "Solutions",
+      "url": "/solutions-auditives/"
+    },
+    {
+      "text": "Remboursements",
+      "url": "/remboursements/"
+    },
+    {
+      "text": "FAQ",
+      "url": "/faq/"
+    }
+  ],
+  "topLinks": [
+    {
+      "text": "Test auditif",
+      "url": "/test-auditif-gratuit/"
+    },
+    {
+      "text": "Contact",
+      "url": "/contact/"
+    },
+    {
+      "text": "Professionnels",
+      "url": "/partenaires-pharmaciens/"
+    }
+  ]
+}
