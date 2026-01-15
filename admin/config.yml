@@ -1,0 +1,139 @@
+# Configuration Decap CMS pour Audire
+# MODE TEST (pour développement local - les changements ne sont PAS sauvegardés)
+# Pour production : changez "test-repo" en "github" et décommentez les lignes ci-dessous
+backend:
+  name: test-repo  # Changez en "github" pour production
+  # repo: PlaywithPY/audire
+  # branch: main
+  # base_url: https://api.netlify.com
+  # auth_endpoint: auth
+
+# Décommentez pour utiliser le backend local (sauvegarde réelle en dev)
+# local_backend: true
+
+# Options de publication
+publish_mode: editorial_workflow # Brouillons avant publication
+media_folder: "images/uploads" # Dossier pour les images uploadées
+public_folder: "/images/uploads"
+
+# Langue de l'interface
+locale: fr
+
+# Collections éditables
+collections:
+  # === CONTENUS GLOBAUX ===
+  - name: "settings"
+    label: "⚙️ Paramètres du site"
+    files:
+      - name: "contact"
+        label: "📞 Informations de contact"
+        file: "content/contact.json"
+        fields:
+          - {label: "Téléphone (affichage)", name: "phoneDisplay", widget: "string", default: "04 233 61 25"}
+          - {label: "Téléphone (lien)", name: "phoneHref", widget: "string", default: "+3242336125"}
+          - {label: "Email", name: "email", widget: "string", default: "contact@audire.be"}
+          - {label: "Adresse - Rue", name: "street", widget: "string", default: "30, rue Grand-Vinâve"}
+          - {label: "Adresse - Code postal", name: "zip", widget: "string", default: "4101"}
+          - {label: "Adresse - Ville", name: "city", widget: "string", default: "Jemeppe-sur-Meuse"}
+          - {label: "Province", name: "province", widget: "string", default: "Province de Liège"}
+
+      - name: "navigation"
+        label: "🧭 Menu de navigation"
+        file: "content/navigation.json"
+        fields:
+          - label: "Liens principaux"
+            name: "mainLinks"
+            widget: "list"
+            fields:
+              - {label: "Texte", name: "text", widget: "string"}
+              - {label: "URL", name: "url", widget: "string"}
+          - label: "Liens topbar"
+            name: "topLinks"
+            widget: "list"
+            fields:
+              - {label: "Texte", name: "text", widget: "string"}
+              - {label: "URL", name: "url", widget: "string"}
+
+  # === PAGES ===
+  - name: "pages"
+    label: "📄 Pages"
+    files:
+      - name: "homepage"
+        label: "🏠 Page d'accueil"
+        file: "content/pages/homepage.json"
+        fields:
+          - {label: "Titre principal (H1)", name: "title", widget: "string"}
+          - {label: "Sous-titre", name: "subtitle", widget: "text"}
+          - {label: "Badge (kicker)", name: "kicker", widget: "string"}
+          - label: "Puces (chips)"
+            name: "chips"
+            widget: "list"
+            field: {label: "Texte", name: "text", widget: "string"}
+          - label: "Section 'Ce qu'on fait'"
+            name: "whatWeDo"
+            widget: "object"
+            fields:
+              - {label: "Titre", name: "title", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+
+      - name: "contact"
+        label: "📍 Page Contact"
+        file: "content/pages/contact.json"
+        fields:
+          - {label: "Titre principal (H1)", name: "title", widget: "string"}
+          - {label: "Description", name: "description", widget: "text"}
+          - {label: "Badge (kicker)", name: "kicker", widget: "string"}
+
+      - name: "faq"
+        label: "❓ Page FAQ"
+        file: "content/pages/faq.json"
+        fields:
+          - {label: "Titre principal (H1)", name: "title", widget: "string"}
+          - {label: "Description", name: "description", widget: "text"}
+          - label: "Questions"
+            name: "questions"
+            widget: "list"
+            fields:
+              - {label: "Question", name: "question", widget: "string"}
+              - {label: "Réponse", name: "answer", widget: "text"}
+
+      - name: "partenaires"
+        label: "🤝 Page Partenaires Pharmaciens"
+        file: "content/pages/partenaires.json"
+        fields:
+          - {label: "Titre principal (H1)", name: "title", widget: "string"}
+          - {label: "Description", name: "description", widget: "text"}
+          - {label: "Badge (kicker)", name: "kicker", widget: "string"}
+          - label: "Avantages"
+            name: "benefits"
+            widget: "list"
+            fields:
+              - {label: "Titre", name: "title", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+
+  # === SOLUTIONS ===
+  - name: "solutions"
+    label: "🎧 Solutions auditives"
+    folder: "content/solutions"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Titre", name: "title", widget: "string"}
+      - {label: "Marque", name: "brand", widget: "select", options: ["Oticon", "Bernafon", "Autre"]}
+      - {label: "Description courte", name: "excerpt", widget: "text"}
+      - {label: "Description complète", name: "body", widget: "markdown"}
+      - {label: "Prix indicatif", name: "price", widget: "string", required: false}
+      - {label: "Image", name: "image", widget: "image", required: false}
+      - {label: "Ordre d'affichage", name: "order", widget: "number", default: 0}
+
+  # === FAQ ===
+  - name: "faq_items"
+    label: "❓ Questions FAQ"
+    folder: "content/faq"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Question", name: "question", widget: "string"}
+      - {label: "Réponse", name: "answer", widget: "markdown"}
+      - {label: "Catégorie", name: "category", widget: "select", options: ["Test auditif", "Remboursements", "Appareils", "Suivi", "Général"]}
+      - {label: "Ordre d'affichage", name: "order", widget: "number", default: 0}

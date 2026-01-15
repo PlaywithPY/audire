@@ -24,53 +24,8 @@
 </head>
 
 <body>
-  <!-- Topbar -->
-  <div class="topbar">
-    <div class="container inner">
-      <div class="badge">
-        <span class="dot" aria-hidden="true"></span>
-        <span>Plan du site • Accès rapide</span>
-      </div>
-      <div class="toplinks">
-        <a href="../index.html">Accueil</a>
-        <a href="../contact/index.html">Contact</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Header -->
-  <header>
-    <div class="container nav" role="navigation" aria-label="Navigation principale">
-      <a class="brand" href="../index.html" aria-label="Aller à l'accueil Audire">
-        <span class="logo" aria-hidden="true"></span>
-        <span>Audire</span>
-      </a>
-
-      <nav class="navlinks" aria-label="Liens principaux">
-        <a href="../test-auditif-gratuit/index.html">Test auditif gratuit</a>
-        <a href="../notre-accompagnement/index.html">Notre accompagnement</a>
-        <a href="../solutions-auditives/index.html">Solutions</a>
-        <a href="../remboursements/index.html">Remboursements</a>
-        <a href="../faq/index.html">FAQ</a>
-      </nav>
-
-      <div class="actions">
-        <a class="btn" data-tel href="tel:+3242336125">📞 <span data-tel-text>04 233 61 25</span></a>
-        <a class="btn primary" href="../contact/index.html">📍 Contact</a>
-        <button class="btn menuBtn" type="button" id="menuBtn" aria-expanded="false" aria-controls="mobileNav">☰</button>
-      </div>
-    </div>
-
-    <div class="container mobileNav" id="mobileNav" aria-label="Menu mobile">
-      <a href="../test-auditif-gratuit/index.html">Test auditif gratuit</a>
-      <a href="../notre-accompagnement/index.html">Notre accompagnement</a>
-      <a href="../solutions-auditives/index.html">Solutions</a>
-      <a href="../remboursements/index.html">Remboursements</a>
-      <a href="../faq/index.html">FAQ</a>
-      <a href="../contact/index.html">Contact</a>
-      <a href="../partenaires-pharmaciens/index.html">Professionnels (pharmacies)</a>
-    </div>
-  </header>
+  <!-- Header chargé dynamiquement -->
+  <div id="app-header"></div>
 
   <main>
     <div class="container hero">
@@ -127,18 +82,12 @@
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer>
-      <div class="container">
-        <div class="fine">
-          <span>© <span id="year"></span> Audire — Tous droits réservés</span>
-          <span><a href="../mentions-legales/index.html" style="color:inherit;">Mentions légales</a> · <a href="../confidentialite/index.html" style="color:inherit;">Confidentialité</a></span>
-        </div>
-      </div>
-    </footer>
+      <!-- Footer chargé dynamiquement -->
+  <div id="app-footer"></div>
   </main>
 
-  <script src="../js/config.js" defer></script>
+  <script src="../js/components.js"></script>
+  <script src="../js/content-loader.js"></script>
   <script src="../js/main.js" defer></script>
 </body>
 </html>

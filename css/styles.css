@@ -76,11 +76,16 @@ header{
   letter-spacing: 0.2px;
 }
 .logo{
-  width: 34px; height: 34px; border-radius: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  object-fit: cover; /* Pour les balises img */
+  display: block;
+  /* Fallback si l'image ne charge pas (gradient) */
   background:
-    radial-gradient(14px 14px at 30% 30%, rgba(255,255,255,0.8), transparent 60%),
-    linear-gradient(135deg, #5fb07a, #2f7a5c);
-  box-shadow: 0 10px 20px rgba(39,84,63,0.28);
+    radial-gradient(14px 14px at 30% 30%, rgba(255,255,255,0.55), transparent 60%),
+    linear-gradient(135deg, rgba(59,130,246,0.9), rgba(34,197,94,0.9));
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
 }
 .navlinks{
   display:flex; gap: 18px; align-items:center;
@@ -88,7 +93,7 @@ header{
   font-size: 14px;
 }
 .navlinks a{ padding: 8px 10px; border-radius: 10px; }
-.navlinks a:hover{ background: var(--btnHover); color: var(--text); }
+.navlinks a:hover{ background: rgba(255,255,255,0.06); color: var(--text); }
 
 .actions{ display:flex; gap: 10px; align-items:center; }
 .btn{
