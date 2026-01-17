@@ -32,32 +32,8 @@
 </head>
 
 <body>
-  <div class="topbar">
-    <div class="container inner">
-      <div class="badge">
-        <span class="dot" aria-hidden="true"></span>
-        <span>Erreur 404</span>
-      </div>
-      <div class="toplinks">
-        <a href="index.html">Accueil</a>
-        <a href="contact/index.html">Contact</a>
-      </div>
-    </div>
-  </div>
-
-  <header>
-    <div class="container nav" role="navigation" aria-label="Navigation principale">
-      <a class="brand" href="index.html" aria-label="Aller à l'accueil Audire">
-        <span class="logo" aria-hidden="true"></span>
-        <span>Audire</span>
-      </a>
-
-      <div class="actions">
-        <a class="btn" data-tel href="tel:+3242336125">📞 <span data-tel-text>04 233 61 25</span></a>
-        <a class="btn primary" href="test-auditif-gratuit/index.html">✅ Test gratuit</a>
-      </div>
-    </div>
-  </header>
+  <!-- Header chargé dynamiquement -->
+  <div id="app-header"></div>
 
   <main>
     <div class="container hero">
@@ -70,9 +46,9 @@
           </p>
 
           <div class="heroCtas">
-            <a class="btn primary" href="test-auditif-gratuit/index.html">✅ Test auditif gratuit</a>
-            <a class="btn" href="contact/index.html">📍 Contact</a>
-            <a class="btn" href="sitemap/index.html">Plan du site</a>
+            <a class="btn primary" href="/test-auditif-gratuit/">✅ Test auditif gratuit</a>
+            <a class="btn" href="/contact/">📍 Contact</a>
+            <a class="btn" href="/sitemap/">Plan du site</a>
           </div>
 
           <p class="helper">
@@ -84,29 +60,28 @@
           <div class="pad">
             <h3>Pages principales</h3>
             <div class="panel cardLinks" style="margin-top:12px;">
-              <a href="index.html">Accueil</a>
-              <a href="test-auditif-gratuit/index.html">Test auditif gratuit</a>
-              <a href="notre-accompagnement/index.html">Notre accompagnement</a>
-              <a href="solutions-auditives/index.html">Solutions (Oticon & Bernafon)</a>
-              <a href="remboursements/index.html">Remboursements</a>
-              <a href="faq/index.html">FAQ</a>
-              <a href="partenaires-pharmaciens/index.html">Partenariat pharmaciens</a>
+              <a href="/">Accueil</a>
+              <a href="/test-auditif-gratuit/">Test auditif gratuit</a>
+              <a href="/notre-accompagnement/">Notre accompagnement</a>
+              <a href="/solutions-auditives/">Solutions (Oticon & Bernafon)</a>
+              <a href="/remboursements/">Remboursements</a>
+              <a href="/faq/">FAQ</a>
+              <a href="/partenaires-pharmaciens/">Partenariat pharmaciens</a>
             </div>
           </div>
         </aside>
       </div>
     </div>
-
-    <footer>
-      <div class="container">
-        <div class="fine">
-          <span>© <span id="year"></span> Audire — Tous droits réservés</span>
-          <span><a href="mentions-legales/index.html" style="color:inherit;">Mentions légales</a> · <a href="confidentialite/index.html" style="color:inherit;">Confidentialité</a></span>
-        </div>
-      </div>
-    </footer>
   </main>
 
+  <!-- Footer chargé dynamiquement -->
+  <div id="app-footer"></div>
+
+  <!-- Modal chargé dynamiquement -->
+  <div id="app-modal"></div>
+
+  <script src="js/components.js"></script>
+  <script src="js/content-loader.js"></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>
