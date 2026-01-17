@@ -31,7 +31,7 @@ collections:
         fields:
           - {label: "Téléphone (affichage)", name: "phoneDisplay", widget: "string", default: "04 233 61 25"}
           - {label: "Téléphone (lien)", name: "phoneHref", widget: "string", default: "+3242336125"}
-          - {label: "Email", name: "email", widget: "string", default: "contact@audire.be"}
+          - {label: "Email", name: "email", widget: "string", default: "centre.audire@gmail.com"}
           - {label: "Adresse - Rue", name: "street", widget: "string", default: "30, rue Grand-Vinâve"}
           - {label: "Adresse - Code postal", name: "zip", widget: "string", default: "4101"}
           - {label: "Adresse - Ville", name: "city", widget: "string", default: "Jemeppe-sur-Meuse"}
