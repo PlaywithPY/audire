@@ -1,281 +1,447 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr-BE">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- SEO -->
   <title>Audire — Centre auditif en province de Liège | Test auditif gratuit</title>
-  <meta name="description" content="Audire : centre auditif à Jemeppe-sur-Meuse. Test auditif gratuit, explications claires, solutions Oticon & Bernafon, réglages et suivi. Province de Liège." />
+  <meta name="description" content="Audire : centre auditif indépendant à Jemeppe-sur-Meuse. Test auditif gratuit, accompagnement humain, solutions Oticon & Bernafon, réglages et suivi personnalisé. Province de Liège.">
+  <meta name="keywords" content="audioprothésiste, centre auditif, appareil auditif, test auditif gratuit, province de Liège, Jemeppe-sur-Meuse, Oticon, Bernafon">
 
-  <link rel="canonical" href="https://audire.be/" />
-  <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0f172a" />
+  <!-- Canonical -->
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://audire.be/">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Audire — Centre auditif | Test auditif gratuit" />
-  <meta property="og:description" content="Test auditif gratuit, accompagnement humain, solutions Oticon & Bernafon. Province de Liège." />
-  <meta property="og:type" content="website" />
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#2d7a5f">
 
-  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://audire.be/">
+  <meta property="og:title" content="Audire — Centre auditif en province de Liège">
+  <meta property="og:description" content="Test auditif gratuit, accompagnement humain, solutions Oticon & Bernafon. Province de Liège.">
 
-  <!-- LocalBusiness schema (SEO) -->
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/styles.css">
+
+  <!-- Schema.org JSON-LD -->
   <script type="application/ld+json">
   {
-    "@context":"https://schema.org",
-    "@type":"LocalBusiness",
-    "name":"Audire - Centre auditif",
-    "description":"Centre auditif à Jemeppe-sur-Meuse. Test auditif gratuit, explications claires, solutions Oticon & Bernafon, réglages et suivi personnalisé. Province de Liège.",
-    "telephone":"+3242336125",
-    "priceRange":"1200€-3500€",
-    "address":{
-      "@type":"PostalAddress",
-      "streetAddress":"30, rue Grand-Vinâve",
-      "postalCode":"4101",
-      "addressLocality":"Jemeppe-sur-Meuse",
-      "addressCountry":"BE"
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Audire - Centre auditif",
+    "description": "Centre auditif indépendant à Jemeppe-sur-Meuse. Test auditif gratuit, accompagnement humain, solutions Oticon & Bernafon, réglages et suivi personnalisé.",
+    "url": "https://audire.be",
+    "telephone": "+3242336125",
+    "email": "centre.audire@gmail.com",
+    "priceRange": "1200€-3500€",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "30, rue Grand-Vinâve",
+      "postalCode": "4101",
+      "addressLocality": "Jemeppe-sur-Meuse",
+      "addressRegion": "Province de Liège",
+      "addressCountry": "BE"
     },
-    "areaServed":"Province de Liège",
-    "url":"https://audire.be/",
-    "openingHoursSpecification":[
+    "areaServed": "Province de Liège",
+    "openingHoursSpecification": [
       {
-        "@type":"OpeningHoursSpecification",
-        "dayOfWeek":"Monday",
-        "opens":"13:00",
-        "closes":"18:00"
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": "Monday",
+        "opens": "13:00",
+        "closes": "18:00"
       },
       {
-        "@type":"OpeningHoursSpecification",
-        "dayOfWeek":["Tuesday","Wednesday","Thursday","Friday","Saturday"],
-        "opens":"09:30",
-        "closes":"18:00"
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "09:30",
+        "closes": "18:00"
       }
     ]
   }
   </script>
 </head>
-
 <body>
-  <!-- Header chargé dynamiquement -->
+
+  <!-- Header -->
   <div id="app-header"></div>
 
+  <!-- Main Content -->
   <main>
-    <!-- Hero -->
-    <div class="container hero">
-      <div class="heroGrid">
-        <div>
-          <div class="kicker">
-            <span class="dot" aria-hidden="true"></span>
-            <span data-content="kicker">Centre auditif — Province de Liège</span>
-          </div>
 
-          <h1 data-content="title">Mieux entendre, simplement. Avec un vrai suivi.</h1>
-          <p class="lead" data-content="subtitle">
-            Chez Audire, on commence par comprendre votre quotidien et vos difficultés (bruit, TV, téléphone…),
-            puis on vous propose une suite <strong>claire</strong> et <strong>sans pression</strong>.
-            Test auditif gratuit, réglages et suivi dans la durée.
-          </p>
-
-          <div class="chips" data-content="chips" aria-label="Points clés">
-            <span class="chip">Test auditif gratuit</span>
-            <span class="chip">Explications claires</span>
-            <span class="chip">Réglages & suivi</span>
-            <span class="chip">Oticon & Bernafon</span>
-          </div>
-
-          <div class="heroCtas">
-            <a class="btn primary" href="test-auditif-gratuit/index.html">✅ Faire un test auditif gratuit</a>
-            <button class="btn" type="button" data-open-modal>📅 Demander un rendez-vous</button>
-            <a class="btn" href="contact/index.html">📍 Contact</a>
-          </div>
-
-          <p class="helper">
-            Vous hésitez ? Venez juste “faire le point”. Parfois la meilleure réponse est “pas maintenant” — et on vous le dira.
-          </p>
-        </div>
-
-        <aside class="card" aria-label="Infos rapides">
-          <div class="pad">
-            <h3>Infos rapides</h3>
-
-            <div class="panel" style="margin-top:12px;">
-              <div class="tag">Adresse</div>
-              <p><strong>Jemeppe-sur-Meuse</strong><br><span style="color:var(--muted)">30, rue Grand-Vinâve — 4101</span></p>
-            </div>
-
-            <div class="panel" style="margin-top:12px;">
-              <div class="tag">Téléphone</div>
-              <p><a data-tel href="tel:+3242336125" style="color:inherit; text-decoration:none;"><strong><span data-tel-text>04 233 61 25</span></strong></a><br><span style="color:var(--muted)">Appelez, on vous répond</span></p>
-            </div>
-
-            <div class="panel" style="margin-top:12px;">
-              <div class="tag">Horaires</div>
-              <p><strong>Lundi : 13h00–18h00</strong><br><strong>Mar–Sam : 9h30–18h00</strong><br><span style="color:var(--muted)">Sur rendez-vous uniquement</span></p>
-            </div>
-
-            <div class="panel" style="margin-top:12px;">
-              <div class="tag">Professionnels</div>
-              <p><strong>Pharmacies</strong><br><span style="color:var(--muted)">Audire se déplace si local adapté</span></p>
-            </div>
-
-            <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-              <a class="btn primary" href="test-auditif-gratuit/index.html">Test gratuit</a>
-              <a class="btn" href="partenaires-pharmaciens/index.html">Partenariat</a>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </div>
-
-    <!-- Sections -->
-    <section>
+    <!-- Hero Section -->
+    <section class="hero">
       <div class="container">
-        <h2 class="sectionTitle" data-content="whatWeDo-title">Ce qu'on fait (et surtout comment)</h2>
-        <p class="sectionLead" data-content="whatWeDo-description">
-          La qualité ne se joue pas uniquement sur l'appareil : elle se joue sur l'accompagnement, les réglages, et le suivi.
-        </p>
+        <div class="hero-grid">
+          <!-- Hero Content -->
+          <div class="hero-content">
+            <div class="kicker">
+              <span class="dot"></span>
+              <span>Centre auditif indépendant • Province de Liège</span>
+            </div>
 
-        <div class="grid3">
-          <div class="panel">
-            <div class="tag">1) Comprendre</div>
-            <p><strong>Test auditif & explications</strong><br><span style="color:var(--muted)">Vous repartez avec une conclusion claire.</span></p>
-            <a class="btn" href="test-auditif-gratuit/index.html">Voir le test</a>
-          </div>
+            <h1>Mieux entendre, simplement.</h1>
 
-          <div class="panel">
-            <div class="tag">2) Choisir</div>
-            <p><strong>Solutions adaptées</strong><br><span style="color:var(--muted)">Oticon & Bernafon, selon besoins et budget.</span></p>
-            <a class="btn" href="solutions-auditives/index.html">Voir les solutions</a>
-          </div>
+            <p class="lead">
+              Chez Audire, on commence par <strong>comprendre votre quotidien</strong> et vos difficultés. Puis on vous propose une suite claire et sans pression. Test auditif gratuit, explications pédagogiques, réglages et suivi dans la durée.
+            </p>
 
-          <div class="panel">
-            <div class="tag">3) Ajuster</div>
-            <p><strong>Réglages & suivi</strong><br><span style="color:var(--muted)">C’est là que se fait la vraie différence.</span></p>
-            <a class="btn" href="notre-accompagnement/index.html">Notre accompagnement</a>
-          </div>
-        </div>
-      </div>
-    </section>
+            <div class="chips">
+              <span class="chip">Test gratuit et sans engagement</span>
+              <span class="chip">Explications claires, sans jargon</span>
+              <span class="chip">Oticon & Bernafon</span>
+              <span class="chip">Suivi personnalisé</span>
+            </div>
 
-    <!-- Reassurance -->
-    <section>
-      <div class="container">
-        <div class="panel" style="padding:22px; border-radius: 26px;">
-          <div class="tag">Sans pression</div>
-          <h2 class="sectionTitle" style="margin-top:0;">Vous restez libre à chaque étape.</h2>
-          <p class="sectionLead" style="margin-bottom:0;">
-            Le test auditif gratuit sert à comprendre. Si une suite est utile, on vous l’explique simplement.
-            Si ce n’est pas le moment, on vous le dit aussi.
-          </p>
+            <div class="hero-ctas">
+              <button class="btn btn-primary btn-lg" data-open-modal>
+                <span>📅</span>
+                <span>Prendre rendez-vous</span>
+              </button>
+              <a class="btn btn-secondary btn-lg" href="/test-auditif-gratuit/">
+                <span>✓</span>
+                <span>Test auditif gratuit</span>
+              </a>
+              <a class="btn btn-outline btn-lg" href="/contact/">
+                <span>📍</span>
+                <span>Nous trouver</span>
+              </a>
+            </div>
 
-          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-            <a class="btn primary" href="test-auditif-gratuit/index.html">✅ Test auditif gratuit</a>
-            <a class="btn" href="remboursements/index.html">Remboursements</a>
-            <a class="btn" href="faq/index.html">FAQ</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Pricing Transparency -->
-    <section>
-      <div class="container">
-        <h2 class="sectionTitle">Combien ça coûte (vraiment) ?</h2>
-        <p class="sectionLead">
-          On vous dit tout dès le départ. Pas de surprise, pas de vente forcée.
-        </p>
-
-        <div class="grid2">
-          <div class="panel">
-            <div class="tag">Prix indicatifs</div>
-            <p style="margin:0 0 8px;"><strong>Appareil auditif</strong></p>
-            <p style="margin:0; color:var(--muted); font-size:14px; line-height:1.55;">
-              Entre <strong style="color:var(--text);">1 200 € et 3 500 €</strong> par oreille, selon le modèle et les fonctionnalités.
-              Nous travaillons avec Oticon et Bernafon pour vous proposer la meilleure solution adaptée à votre budget et vos besoins.
+            <p class="text-muted" style="margin-top: 24px; font-size: 15px; line-height: 1.6;">
+              <strong>Vous hésitez ?</strong> Venez juste faire le point. Parfois la meilleure réponse est "pas maintenant" — et on vous le dira.
             </p>
           </div>
 
-          <div class="panel">
-            <div class="tag">Remboursement</div>
-            <p style="margin:0 0 8px;"><strong>Mutuelle & INAMI</strong></p>
-            <p style="margin:0; color:var(--muted); font-size:14px; line-height:1.55;">
-              Remboursement de <strong style="color:var(--text);">840 € par oreille</strong> (mutuelle + INAMI).
-              Nous vous accompagnons dans toutes les démarches administratives.
+          <!-- Hero Cards -->
+          <div class="hero-cards">
+            <!-- Info rapide -->
+            <div class="info-card animate-on-scroll">
+              <div class="info-item">
+                <span class="info-label">📍 Adresse</span>
+                <div class="info-value">30, rue Grand-Vinâve</div>
+                <div class="info-detail">4101 Jemeppe-sur-Meuse</div>
+              </div>
+              <div class="info-item">
+                <span class="info-label">⏰ Horaires</span>
+                <div class="info-value">Sur rendez-vous</div>
+                <div class="info-detail">Lun 13h-18h • Mar-Sam 9h30-18h</div>
+              </div>
+              <div class="info-item">
+                <span class="info-label">📞 Contact</span>
+                <div class="info-value">
+                  <a href="tel:+3242336125" style="color: var(--primary); text-decoration: underline;">04 233 61 25</a>
+                </div>
+                <div class="info-detail">
+                  <a href="mailto:centre.audire@gmail.com" style="color: var(--text-muted);">centre.audire@gmail.com</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Pourquoi Audire -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <span class="section-tag">Notre approche</span>
+          <h2 class="section-title">Pourquoi choisir Audire ?</h2>
+          <p class="section-subtitle">
+            Parce que bien entendre, ce n'est pas qu'une question d'appareil. C'est une question d'accompagnement, d'écoute et de suivi dans la durée.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <!-- Feature 1 -->
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">👂</div>
+            <h3 class="feature-title">Test auditif gratuit</h3>
+            <p class="feature-description">
+              Un test complet et sans engagement pour comprendre votre audition. Nous prenons le temps d'expliquer les résultats clairement.
+            </p>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">💬</div>
+            <h3 class="feature-title">Accompagnement humain</h3>
+            <p class="feature-description">
+              Pas de jargon technique, pas de pression commerciale. Juste des explications claires et un accompagnement à votre rythme.
+            </p>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">🔧</div>
+            <h3 class="feature-title">Suivi personnalisé</h3>
+            <p class="feature-description">
+              Réglages progressifs, adaptations, suivi régulier. Nous restons à vos côtés pour que vous entendiez au mieux de vos capacités.
+            </p>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">🏆</div>
+            <h3 class="feature-title">Solutions de qualité</h3>
+            <p class="feature-description">
+              Nous travaillons avec Oticon et Bernafon, deux marques reconnues pour leur qualité et leur innovation technologique.
+            </p>
+          </div>
+
+          <!-- Feature 5 -->
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">🎯</div>
+            <h3 class="feature-title">Centre indépendant</h3>
+            <p class="feature-description">
+              Pas d'objectifs de vente, pas de réseau à satisfaire. Notre seul objectif : vous aider à mieux entendre.
+            </p>
+          </div>
+
+          <!-- Feature 6 -->
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">💰</div>
+            <h3 class="feature-title">Transparence des prix</h3>
+            <p class="feature-description">
+              Prix clairs, remboursements expliqués (INAMI + mutuelle). Pas de surprise, pas de frais cachés.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Notre accompagnement en 4 étapes -->
+    <section class="section" style="background: var(--bg-alt);">
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <span class="section-tag">Le processus</span>
+          <h2 class="section-title">Comment ça se passe ?</h2>
+          <p class="section-subtitle">
+            Un parcours simple et progressif, sans engagement. Vous gardez toujours le contrôle.
+          </p>
+        </div>
+
+        <div class="steps">
+          <!-- Étape 1 -->
+          <div class="step animate-on-scroll">
+            <div class="step-number"></div>
+            <div class="step-content">
+              <h3>Test auditif gratuit</h3>
+              <p>
+                Un test complet (audiométrie) pour mesurer votre audition. Nous analysons vos difficultés au quotidien (TV, téléphone, conversations, bruit…). Gratuit, sans engagement, et vous repartez avec les résultats.
+              </p>
+            </div>
+          </div>
+
+          <!-- Étape 2 -->
+          <div class="step animate-on-scroll">
+            <div class="step-number"></div>
+            <div class="step-content">
+              <h3>Explications et conseils</h3>
+              <p>
+                On vous explique clairement ce qu'on a trouvé. Si un appareil n'est pas nécessaire, on vous le dit. Si ça peut aider, on vous propose un essai gratuit adapté à votre situation.
+              </p>
+            </div>
+          </div>
+
+          <!-- Étape 3 -->
+          <div class="step animate-on-scroll">
+            <div class="step-number"></div>
+            <div class="step-content">
+              <h3>Essai et réglages</h3>
+              <p>
+                Vous testez l'appareil chez vous, dans votre quotidien. On ajuste ensemble les réglages jusqu'à trouver le bon équilibre entre confort et efficacité. Vous prenez votre décision en toute connaissance de cause.
+              </p>
+            </div>
+          </div>
+
+          <!-- Étape 4 -->
+          <div class="step animate-on-scroll">
+            <div class="step-number"></div>
+            <div class="step-content">
+              <h3>Suivi dans la durée</h3>
+              <p>
+                Le vrai travail commence après l'achat : réglages fins, adaptations, nettoyage, conseils d'utilisation. Nous sommes là pour vous accompagner sur le long terme, pas juste pour une vente.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center" style="margin-top: 48px;">
+          <a href="/notre-accompagnement/" class="btn btn-primary btn-lg">
+            <span>→</span>
+            <span>En savoir plus sur notre accompagnement</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Solutions auditives -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <span class="section-tag">Solutions</span>
+          <h2 class="section-title">Nos solutions auditives</h2>
+          <p class="section-subtitle">
+            Nous travaillons avec Oticon et Bernafon pour vous proposer des solutions adaptées à vos besoins et votre budget.
+          </p>
+        </div>
+
+        <div class="grid-2">
+          <!-- Oticon -->
+          <div class="card animate-on-scroll">
+            <div class="card-icon">🎧</div>
+            <h3>Oticon</h3>
+            <p>
+              Leader mondial de l'audition, Oticon propose des solutions innovantes reconnues pour leur qualité sonore exceptionnelle et leur technologie de pointe. Idéal pour les environnements bruyants et les conversations de groupe.
+            </p>
+            <p class="text-muted" style="font-size: 14px; margin-top: 16px;">
+              ✓ Technologie BrainHearing™<br>
+              ✓ Connectivité Bluetooth<br>
+              ✓ Recharge lithium-ion<br>
+              ✓ Design discret
+            </p>
+          </div>
+
+          <!-- Bernafon -->
+          <div class="card animate-on-scroll">
+            <div class="card-icon">🎵</div>
+            <h3>Bernafon</h3>
+            <p>
+              Marque suisse réputée pour son excellent rapport qualité-prix, Bernafon offre des appareils performants et fiables. Parfait pour un usage quotidien confortable avec une qualité sonore naturelle.
+            </p>
+            <p class="text-muted" style="font-size: 14px; margin-top: 16px;">
+              ✓ Son naturel et équilibré<br>
+              ✓ Facilité d'utilisation<br>
+              ✓ Rapport qualité-prix excellent<br>
+              ✓ Fiabilité suisse
             </p>
           </div>
         </div>
 
-        <div style="margin-top:14px;">
-          <a class="btn" href="remboursements/index.html">📋 Voir les détails des remboursements</a>
+        <div class="text-center" style="margin-top: 48px;">
+          <p class="text-muted mb-3">
+            <strong>Important :</strong> La discrétion n'est pas toujours synonyme de performance. Nous vous aidons à choisir l'appareil qui vous correspond vraiment, pas celui qui se voit le moins.
+          </p>
+          <a href="/solutions-auditives/" class="btn btn-secondary btn-lg">
+            <span>→</span>
+            <span>Découvrir nos solutions en détail</span>
+          </a>
         </div>
       </div>
     </section>
 
-    <!-- Pro CTA -->
-    <section>
+    <!-- Section: Remboursements -->
+    <section class="section" style="background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white;">
       <div class="container">
-        <h2 class="sectionTitle">Vous êtes pharmacien ?</h2>
-        <p class="sectionLead">
-          Si vous disposez d’un local confidentiel, Audire peut organiser des journées de dépistage auditif dans votre officine.
-        </p>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <a class="btn primary" href="partenaires-pharmaciens/index.html">🤝 Voir le partenariat</a>
-          <a class="btn" href="contact/index.html">Contact</a>
+        <div class="cta-content">
+          <span class="section-tag" style="background: rgba(255,255,255,0.2); color: white;">Remboursements</span>
+          <h2 class="cta-title">Combien ça coûte vraiment ?</h2>
+          <p class="cta-description">
+            Les appareils auditifs coûtent entre <strong>1 200 € et 3 500 €</strong> par oreille. Mais grâce à l'INAMI et aux mutuelles, vous pouvez récupérer jusqu'à <strong>840 € par oreille</strong> selon votre situation.
+          </p>
+          <p style="margin-bottom: 32px; opacity: 0.95;">
+            Nous vous expliquons tout en détail lors de votre visite : conditions, démarches, délais. Transparence totale, zéro surprise.
+          </p>
+          <a href="/remboursements/" class="btn btn-lg" style="background: white; color: var(--primary);">
+            <span>💰</span>
+            <span>Tout savoir sur les remboursements</span>
+          </a>
         </div>
       </div>
     </section>
 
-    <!-- FAQ Section -->
-    <section>
+    <!-- Section: FAQ preview -->
+    <section class="section">
       <div class="container">
-        <h2 class="sectionTitle">Questions fréquentes</h2>
-        <p class="sectionLead">
-          Vous avez des questions ? On vous répond simplement.
+        <div class="section-header animate-on-scroll">
+          <span class="section-tag">Questions fréquentes</span>
+          <h2 class="section-title">Vos questions, nos réponses</h2>
+          <p class="section-subtitle">
+            Voici les questions qu'on nous pose le plus souvent.
+          </p>
+        </div>
+
+        <div style="max-width: 900px; margin: 0 auto;">
+          <details class="animate-on-scroll">
+            <summary>Le test auditif est-il vraiment gratuit et sans engagement ?</summary>
+            <p>
+              Oui, absolument. Le test auditif dure environ 30 minutes, vous repartez avec les résultats, et vous ne devez rien acheter. Notre objectif est de vous donner une information claire sur votre audition, c'est tout.
+            </p>
+          </details>
+
+          <details class="animate-on-scroll">
+            <summary>Combien coûte un appareil auditif ?</summary>
+            <p>
+              Entre 1 200 € et 3 500 € par oreille selon le modèle et les fonctionnalités. L'INAMI et les mutuelles remboursent jusqu'à 840 € par oreille selon votre situation. Nous vous expliquons tout en détail lors de votre visite.
+            </p>
+          </details>
+
+          <details class="animate-on-scroll">
+            <summary>Combien de temps dure l'adaptation à un appareil auditif ?</summary>
+            <p>
+              Cela varie selon les personnes, mais comptez généralement 2 à 3 mois pour une adaptation complète. Nous vous accompagnons avec des réglages réguliers jusqu'à ce que vous soyez parfaitement à l'aise.
+            </p>
+          </details>
+
+          <details class="animate-on-scroll">
+            <summary>Proposez-vous un essai gratuit ?</summary>
+            <p>
+              Oui, si le test auditif montre qu'un appareil peut vous aider, nous vous proposons un essai gratuit chez vous, dans votre quotidien. Vous pouvez ainsi tester l'appareil en conditions réelles avant de prendre une décision.
+            </p>
+          </details>
+
+          <details class="animate-on-scroll">
+            <summary>Où êtes-vous situés ?</summary>
+            <p>
+              Nous sommes situés au 30, rue Grand-Vinâve à Jemeppe-sur-Meuse (4101), en province de Liège. Facile d'accès en voiture avec parking à proximité.
+            </p>
+          </details>
+        </div>
+
+        <div class="text-center" style="margin-top: 48px;">
+          <a href="/faq/" class="btn btn-secondary btn-lg">
+            <span>→</span>
+            <span>Voir toutes les questions fréquentes</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: CTA Final -->
+    <section class="cta-section">
+      <div class="cta-content">
+        <h2 class="cta-title">Prêt à mieux entendre ?</h2>
+        <p class="cta-description">
+          Prenez rendez-vous pour un test auditif gratuit et sans engagement. Ou appelez-nous directement, on se fera un plaisir de répondre à vos questions.
         </p>
-
-        <details>
-          <summary>Le test auditif est-il vraiment gratuit ?</summary>
-          <p>
-            Oui, le test auditif est entièrement gratuit et sans engagement. Il dure environ 30 minutes et vous permet de comprendre précisément votre situation auditive. Vous repartez avec des explications claires, que vous décidiez de donner suite ou non.
-          </p>
-        </details>
-
-        <details>
-          <summary>Comment se passe le remboursement ?</summary>
-          <p>
-            L'INAMI et votre mutuelle remboursent 840 € par oreille appareillée. Nous nous occupons de toutes les démarches administratives pour vous. Vous recevez une facture détaillée et nous vous accompagnons jusqu'au remboursement complet.
-          </p>
-        </details>
-
-        <details>
-          <summary>Combien de temps dure l'adaptation à un appareil auditif ?</summary>
-          <p>
-            L'adaptation varie selon chaque personne, généralement entre 2 et 6 semaines. C'est pourquoi le suivi est essentiel : nous prévoyons plusieurs rendez-vous de réglage pour ajuster l'appareil à votre confort et vos habitudes. Vous n'êtes jamais seul dans cette période.
-          </p>
-        </details>
-
-        <details>
-          <summary>Dois-je porter mes appareils en permanence ?</summary>
-          <p>
-            Pour une adaptation optimale, nous recommandons de porter vos appareils le plus souvent possible durant la journée. Mais vous restez libre de les retirer quand vous le souhaitez. Lors des rendez-vous de suivi, nous adaptons les réglages selon votre ressenti et votre utilisation réelle.
-          </p>
-        </details>
-
-        <div style="margin-top:18px;">
-          <a class="btn" href="faq/index.html">📚 Voir toutes les questions</a>
+        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-lg" data-open-modal style="background: white; color: var(--primary);">
+            <span>📅</span>
+            <span>Prendre rendez-vous</span>
+          </button>
+          <a class="btn btn-lg btn-outline" href="tel:+3242336125" style="border-color: white; color: white;">
+            <span>📞</span>
+            <span>04 233 61 25</span>
+          </a>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- Footer chargé dynamiquement -->
+  <!-- Footer -->
   <div id="app-footer"></div>
 
-  <!-- Modal & Sticky CTA chargés dynamiquement -->
+  <!-- Modal -->
   <div id="app-modal"></div>
 
-  <script src="js/components.js"></script>
-  <script src="js/content-loader.js"></script>
-  <script src="js/main.js" defer></script>
+  <!-- Scripts -->
+  <script src="/js/config.js"></script>
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
 </body>
 </html>

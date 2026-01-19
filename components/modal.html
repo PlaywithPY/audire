@@ -1,68 +1,80 @@
 <!-- Sticky mobile CTA -->
-<div class="stickyCta" role="region" aria-label="Actions rapides">
-  <div class="row">
-    <a class="btn" data-tel href="tel:+3242336125">📞 Appeler</a>
-    <button class="btn primary" type="button" data-open-modal>📅 RDV</button>
+<div class="sticky-cta" role="region" aria-label="Actions rapides">
+  <div class="container">
+    <div class="btn-grid">
+      <a class="btn btn-secondary" href="tel:+3242336125">
+        <span>📞</span>
+        <span>Appeler</span>
+      </a>
+      <button class="btn btn-primary" type="button" data-open-modal>
+        <span>📅</span>
+        <span>Rendez-vous</span>
+      </button>
+    </div>
   </div>
 </div>
 
 <!-- Modal RDV (commun) -->
-<div class="modalOverlay" id="modalOverlay" aria-hidden="true">
+<div class="modal-overlay" id="modalOverlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modalHeader">
-      <strong id="modalTitle">Demander un rendez-vous (test auditif gratuit)</strong>
-      <button class="closeBtn" type="button" id="closeModalBtn" aria-label="Fermer">✕</button>
+    <div class="modal-header">
+      <h2 class="modal-title" id="modalTitle">Demander un rendez-vous</h2>
+      <button class="modal-close" type="button" id="closeModalBtn" aria-label="Fermer">✕</button>
     </div>
-    <div class="modalBody">
+    <div class="modal-body">
+      <p style="margin-bottom: 24px; color: var(--text-light);">
+        Le test auditif est <strong>gratuit et sans engagement</strong>. Nous vous rappellerons pour confirmer le rendez-vous.
+      </p>
+
       <form id="rdvForm">
-        <div class="formGrid">
-          <div class="field">
-            <label for="prenom">Prénom</label>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="prenom">Prénom *</label>
             <input id="prenom" name="prenom" autocomplete="given-name" required />
           </div>
-          <div class="field">
-            <label for="nom">Nom</label>
+          <div class="form-group">
+            <label for="nom">Nom *</label>
             <input id="nom" name="nom" autocomplete="family-name" required />
           </div>
-          <div class="field">
-            <label for="tel">Téléphone</label>
-            <input id="tel" name="tel" inputmode="tel" autocomplete="tel" placeholder="+32 …" required />
+          <div class="form-group">
+            <label for="tel">Téléphone *</label>
+            <input id="tel" name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="04 XX XX XX XX" required />
           </div>
-          <div class="field">
-            <label for="email">Email (optionnel)</label>
+          <div class="form-group">
+            <label for="email">Email</label>
             <input id="email" name="email" type="email" autocomplete="email" placeholder="vous@exemple.be" />
           </div>
-          <div class="field">
-            <label for="motif">Motif</label>
+          <div class="form-group">
+            <label for="motif">Motif de la consultation</label>
             <select id="motif" name="motif">
-              <option>Test auditif (gratuit)</option>
-              <option>Renseignements</option>
-              <option>Solutions (Oticon/Bernafon)</option>
-              <option>Remboursements</option>
-              <option>Réglage / suivi</option>
+              <option>Test auditif gratuit</option>
+              <option>Informations générales</option>
+              <option>Solutions auditives (Oticon/Bernafon)</option>
+              <option>Questions sur les remboursements</option>
+              <option>Réglage ou suivi d'appareil</option>
             </select>
           </div>
-          <div class="field">
-            <label for="creneau">Créneau souhaité</label>
+          <div class="form-group">
+            <label for="creneau">Créneau préféré</label>
             <select id="creneau" name="creneau">
-              <option>Matin</option>
-              <option>Après-midi</option>
+              <option>Matin (9h30-12h)</option>
+              <option>Après-midi (13h-18h)</option>
               <option>Indifférent</option>
             </select>
           </div>
-          <div class="field" style="grid-column: 1 / -1;">
+          <div class="form-group full-width">
             <label for="message">Message (optionnel)</label>
-            <textarea id="message" name="message" placeholder="Ex. bruit, TV, téléphone, discrétion, recharge…"></textarea>
+            <textarea id="message" name="message" placeholder="Précisez vos disponibilités, vos questions ou toute information utile..."></textarea>
           </div>
         </div>
 
-        <div class="modalActions">
-          <button class="btn" type="button" id="cancelBtn">Annuler</button>
-          <button class="btn primary" type="submit">Envoyer la demande</button>
+        <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
+          <button class="btn btn-secondary" type="button" id="cancelBtn">Annuler</button>
+          <button class="btn btn-primary" type="submit">Envoyer la demande</button>
         </div>
 
-        <p class="helper" id="formNote">
-          Démo : ce formulaire n'envoie rien. Branchez-le sur votre email/CRM (ou un endpoint).
+        <p style="margin-top: 16px; font-size: 13px; color: var(--text-muted); line-height: 1.6;" id="formNote">
+          <strong>Note:</strong> Ce formulaire est actuellement en mode démo. Pour le rendre fonctionnel, connectez-le à votre système email/CRM.
         </p>
       </form>
     </div>

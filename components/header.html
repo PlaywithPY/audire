@@ -1,48 +1,68 @@
 <!-- Topbar -->
 <div class="topbar">
-  <div class="container inner">
-    <div class="badge">
-      <span class="dot" aria-hidden="true"></span>
-      <span>Test auditif gratuit • Solutions Oticon & Bernafon • Province de Liège</span>
+  <div class="container">
+    <div class="topbar-info">
+      <div class="topbar-item">
+        <span class="dot"></span>
+        <span>Centre auditif indépendant</span>
+      </div>
+      <div class="topbar-item">
+        <span>📍</span>
+        <span>Jemeppe-sur-Meuse • Province de Liège</span>
+      </div>
     </div>
-    <div class="toplinks">
-      <a href="/test-auditif-gratuit/">Test auditif</a>
-      <a href="/contact/">Contact</a>
-      <a href="/partenaires-pharmaciens/">Professionnels</a>
+    <div class="topbar-info">
+      <div class="topbar-item">
+        <span>⏰</span>
+        <span>Lun 13h-18h • Mar-Sam 9h30-18h</span>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Header -->
 <header>
-  <div class="container nav" role="navigation" aria-label="Navigation principale">
-    <a class="brand" href="/" aria-label="Aller à l'accueil Audire">
-      <img src="/images/logo.png" alt="Logo Audire" class="logo" />
-      <span>Audire</span>
-    </a>
+  <div class="container">
+    <nav class="nav" role="navigation" aria-label="Navigation principale">
+      <a class="brand" href="/" aria-label="Aller à l'accueil Audire">
+        <div class="logo">A</div>
+        <span>Audire</span>
+      </a>
 
-    <nav class="navlinks" aria-label="Liens principaux">
-      <a href="/test-auditif-gratuit/">Test auditif gratuit</a>
-      <a href="/notre-accompagnement/">Notre accompagnement</a>
-      <a href="/solutions-auditives/">Solutions</a>
-      <a href="/remboursements/">Remboursements</a>
-      <a href="/faq/">FAQ</a>
+      <div class="navlinks" aria-label="Liens principaux">
+        <a href="/test-auditif-gratuit/">Test auditif gratuit</a>
+        <a href="/notre-accompagnement/">Notre accompagnement</a>
+        <a href="/solutions-auditives/">Solutions auditives</a>
+        <a href="/remboursements/">Remboursements</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/contact/">Contact</a>
+      </div>
+
+      <div class="nav-cta">
+        <a class="btn btn-secondary btn-sm" href="tel:+3242336125">
+          <span>📞</span>
+          <span>04 233 61 25</span>
+        </a>
+        <button class="btn btn-primary btn-sm" type="button" data-open-modal>
+          <span>📅</span>
+          <span>Rendez-vous</span>
+        </button>
+        <button class="menu-toggle" type="button" id="menuBtn" aria-expanded="false" aria-controls="mobileNav" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
     </nav>
 
-    <div class="actions">
-      <a class="btn" data-tel href="tel:+3242336125">📞 <span data-tel-text>04 233 61 25</span></a>
-      <button class="btn primary" type="button" data-open-modal>📅 Prendre rendez-vous</button>
-      <button class="btn menuBtn" type="button" id="menuBtn" aria-expanded="false" aria-controls="mobileNav">☰</button>
+    <div class="mobile-nav" id="mobileNav" aria-label="Menu mobile">
+      <a href="/test-auditif-gratuit/">Test auditif gratuit</a>
+      <a href="/notre-accompagnement/">Notre accompagnement</a>
+      <a href="/solutions-auditives/">Solutions auditives</a>
+      <a href="/remboursements/">Remboursements</a>
+      <a href="/faq/">FAQ</a>
+      <a href="/contact/">Contact</a>
+      <a href="/partenaires-pharmaciens/">Partenariats pharmaciens</a>
     </div>
-  </div>
-
-  <div class="container mobileNav" id="mobileNav" aria-label="Menu mobile">
-    <a href="/test-auditif-gratuit/">Test auditif gratuit</a>
-    <a href="/notre-accompagnement/">Notre accompagnement</a>
-    <a href="/solutions-auditives/">Solutions</a>
-    <a href="/remboursements/">Remboursements</a>
-    <a href="/faq/">FAQ</a>
-    <a href="/contact/">Contact</a>
-    <a href="/partenaires-pharmaciens/">Professionnels (pharmacies)</a>
   </div>
 </header>
