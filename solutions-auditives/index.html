@@ -1,467 +1,317 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr-BE">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Solutions auditives — Audire | Oticon & Bernafon</title>
-  <meta name="description" content="Solutions auditives chez Audire : aides auditives (Oticon & Bernafon), connectivité, confort dans le bruit, discrétion, rechargeables, et accompagnement dans la durée. Province de Liège." />
+  <!-- SEO -->
+  <title>Solutions auditives Oticon & Bernafon | Audire</title>
+  <meta name="description" content="Découvrez nos solutions auditives de qualité : Oticon et Bernafon. Appareils modernes, discrets et performants. Prix de 1200€ à 3500€ par oreille.">
+  <meta name="keywords" content="appareil auditif Oticon, appareil auditif Bernafon, audioprothèse, aide auditive, Jemeppe-sur-Meuse">
 
-  <link rel="canonical" href="https://audire.be/solutions-auditives/" />
-  <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0f172a" />
+  <!-- Canonical -->
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://audire.be/solutions-auditives/">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Solutions auditives — Audire | Oticon & Bernafon" />
-  <meta property="og:description" content="Aides auditives, connectivité, confort dans le bruit, rechargeables : comprendre et choisir sans pression." />
-  <meta property="og:type" content="website" />
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#2d7a5f">
 
-  <link rel="stylesheet" href="../css/styles.css" />
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://audire.be/solutions-auditives/">
+  <meta property="og:title" content="Solutions auditives Oticon & Bernafon | Audire">
+  <meta property="og:description" content="Découvrez nos solutions auditives de qualité : Oticon et Bernafon. Appareils modernes, discrets et performants.">
 
-  <!-- Service schema (SEO) -->
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"Service",
-    "name":"Solutions auditives (aides auditives, réglages, suivi)",
-    "provider":{
-      "@type":"LocalBusiness",
-      "name":"Audire - Centre auditif",
-      "telephone":"+32 4 233 61 25",
-      "address":{
-        "@type":"PostalAddress",
-        "streetAddress":"30, rue Grand-Vinâve",
-        "postalCode":"4101",
-        "addressLocality":"Jemeppe-sur-Meuse",
-        "addressCountry":"BE"
-      }
-    },
-    "areaServed":"Province de Liège",
-    "description":"Solutions auditives personnalisées : aides auditives Oticon & Bernafon, connectivité, rechargeables, suivi."
-  }
-  </script>
-
-  <!-- FAQ schema (SEO) -->
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"FAQPage",
-    "mainEntity":[
-      {
-        "@type":"Question",
-        "name":"Quelle est la meilleure aide auditive ?",
-        "acceptedAnswer":{"@type":"Answer","text":"Il n’existe pas une “meilleure” aide auditive pour tout le monde. Le bon choix dépend de votre audition, de votre quotidien (bruit, téléphone, réunions), de votre confort et de votre budget. Chez Audire, on part de vos besoins réels et on ajuste dans le temps."}
-      },
-      {
-        "@type":"Question",
-        "name":"Rechargeable ou piles ?",
-        "acceptedAnswer":{"@type":"Answer","text":"Les deux existent. Le rechargeable est pratique au quotidien, tandis que les piles peuvent convenir à certains usages. Le choix dépend de vos habitudes, de votre dextérité et de la configuration recommandée."}
-      },
-      {
-        "@type":"Question",
-        "name":"Est-ce que ça se voit ?",
-        "acceptedAnswer":{"@type":"Answer","text":"Il existe des solutions très discrètes. La meilleure option dépend de votre audition et de l’anatomie de votre oreille. Chez Audire, on vous explique les compromis entre discrétion, confort et performance."}
-      },
-      {
-        "@type":"Question",
-        "name":"Avec quelles marques travaillez-vous ?",
-        "acceptedAnswer":{"@type":"Answer","text":"Audire travaille principalement avec Oticon et Bernafon afin de proposer des solutions fiables et adaptées. Le choix se fait selon vos besoins et votre budget."}
-      }
-    ]
-  }
-  </script>
-
-  <style>
-    /* Small page-specific helpers (kept minimal) */
-    .pillRow{ display:flex; flex-wrap:wrap; gap:10px; margin: 10px 0 0; }
-    .pill{
-      display:inline-flex; align-items:center; gap:10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.05);
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.35;
-    }
-    .pill strong{ color: var(--text); font-weight: 800; }
-    .compare{
-      width:100%;
-      border-collapse: collapse;
-      overflow:hidden;
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.05);
-    }
-    .compare th, .compare td{
-      text-align:left;
-      padding: 12px 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.10);
-      vertical-align: top;
-    }
-    .compare th{ color: var(--text); font-size: 13px; letter-spacing: .2px; background: rgba(255,255,255,0.04); }
-    .compare td{ color: var(--muted); font-size: 14px; line-height: 1.5; }
-    .compare tr:last-child td{ border-bottom:0; }
-    .brandCard{
-      border-radius: 22px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.06);
-      padding: 18px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
-    }
-    .brandHead{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-      margin-bottom: 10px;
-    }
-    .brandMark{
-      width: 44px; height: 44px; border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.10);
-      display:flex; align-items:center; justify-content:center;
-      font-weight: 900;
-      letter-spacing: .4px;
-    }
-    .mini{
-      font-size: 12.5px; color: var(--muted2); line-height: 1.55;
-    }
-  </style>
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
-
 <body>
-  <!-- Header chargé dynamiquement -->
+
+  <!-- Header -->
   <div id="app-header"></div>
 
+  <!-- Main Content -->
   <main>
-    <!-- Hero -->
-    <div class="container hero">
-      <div class="heroGrid">
-        <div>
-          <div class="kicker">
-            <span class="dot" aria-hidden="true"></span>
-            <span>Comprendre • Choisir • Ajuster</span>
-          </div>
 
-          <h1>Solutions auditives : choisir sans pression, vivre mieux au quotidien.</h1>
-          <p class="lead">
-            Une aide auditive n’est pas un “produit” standard : c’est un <strong>ensemble</strong> (choix + réglages + suivi).
-            Chez Audire, on vous aide à comprendre les options, puis on ajuste progressivement pour le confort et la compréhension.
-            Nous travaillons principalement avec <strong>Oticon</strong> et <strong>Bernafon</strong>.
-          </p>
-
-          <div class="chips" aria-label="Points clés">
-            <span class="chip">Confort dans le bruit</span>
-            <span class="chip">Connectivité (téléphone/TV)</span>
-            <span class="chip">Rechargeables ou piles</span>
-            <span class="chip">Suivi & réglages</span>
-          </div>
-
-          <div class="heroCtas">
-            <a class="btn primary" href="../test-auditif-gratuit/index.html">✅ Commencer par le test gratuit</a>
-            <button class="btn" type="button" data-open-modal>📅 En parler en RDV</button>
-            <a class="btn" href="#types">Voir les types</a>
-          </div>
-
-          <p class="helper">
-            Le bon choix dépend de votre audition et de votre quotidien. La “bonne” solution est celle qui vous aide dans vos vraies situations (bruit, conversations, téléphone…).
-          </p>
-        </div>
-
-        <!-- Side card -->
-        <aside class="card" aria-label="Guide rapide">
-          <div class="pad">
-            <h3>Guide rapide</h3>
-            <p>3 questions pour orienter la solution.</p>
-
-            <div class="panel" style="margin-top:14px;">
-              <div class="tag">1) Votre quotidien</div>
-              <p><strong>Où ça coince ?</strong><br><span style="color:var(--muted)">bruit, TV, téléphone, réunions…</span></p>
-            </div>
-
-            <div class="panel" style="margin-top:12px;">
-              <div class="tag">2) Vos priorités</div>
-              <p><strong>Discrétion, recharge, connectivité</strong><br><span style="color:var(--muted)">on choisit les compromis.</span></p>
-            </div>
-
-            <div class="panel" style="margin-top:12px;">
-              <div class="tag">3) Le suivi</div>
-              <p><strong>Réglages dans le temps</strong><br><span style="color:var(--muted)">la vraie différence se fait là.</span></p>
-            </div>
-
-            <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-              <button class="btn primary" type="button" data-open-modal>📅 RDV</button>
-              <a class="btn" href="../remboursements/index.html">Remboursements</a>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </div>
-
-    <!-- Types -->
-    <section id="types">
+    <!-- Hero Section -->
+    <section class="hero">
       <div class="container">
-        <h2 class="sectionTitle">Les principaux types d’aides auditives</h2>
-        <p class="sectionLead">
-          Le choix dépend de votre audition, de votre anatomie et de votre confort. Voici une vue simple (on détaillera au rendez-vous).
-        </p>
-
-        <div class="grid3">
-          <div class="panel">
-            <div class="tag">Contour d’oreille (BTE)</div>
-            <p><strong>Robuste & polyvalent</strong><br><span style="color:var(--muted)">Souvent très bon dans le bruit et pour certaines pertes plus importantes.</span></p>
-            <div class="pillRow">
-              <span class="pill"><strong>+ </strong> confort & puissance</span>
-              <span class="pill"><strong>+ </strong> manipulation facile</span>
+        <div class="hero-grid">
+          <div class="hero-content">
+            <div class="kicker">
+              <span class="dot"></span>
+              <span>Oticon • Bernafon</span>
             </div>
-          </div>
 
-          <div class="panel">
-            <div class="tag">Micro-contour (RIC)</div>
-            <p><strong>Discret, très courant</strong><br><span style="color:var(--muted)">Bon équilibre : discrétion + performances + connectivité.</span></p>
-            <div class="pillRow">
-              <span class="pill"><strong>+ </strong> discret</span>
-              <span class="pill"><strong>+ </strong> souvent rechargeable</span>
-            </div>
-          </div>
+            <h1>Nos solutions auditives</h1>
 
-          <div class="panel">
-            <div class="tag">Intra-auriculaire (ITE)</div>
-            <p><strong>Dans l’oreille</strong><br><span style="color:var(--muted)">Selon votre oreille et votre audition, peut être une option.</span></p>
-            <div class="pillRow">
-              <span class="pill"><strong>+ </strong> discret</span>
-              <span class="pill"><strong>± </strong> dépend de l’anatomie</span>
-            </div>
-          </div>
-        </div>
-
-        <p class="mini" style="margin-top:10px;">
-          Note : la discrétion est importante, mais le confort et la compréhension comptent tout autant. On vous explique les compromis, clairement.
-        </p>
-      </div>
-    </section>
-
-    <!-- Features -->
-    <section>
-      <div class="container">
-        <h2 class="sectionTitle">Fonctions utiles (dans la vraie vie)</h2>
-        <p class="sectionLead">
-          Au-delà des “gadgets”, voici les fonctions qui changent vraiment le quotidien — surtout quand elles sont bien réglées.
-        </p>
-
-        <div class="grid3">
-          <div class="panel">
-            <div class="tag">Bruit</div>
-            <p><strong>Conversations plus faciles</strong><br><span style="color:var(--muted)">Réduction du bruit + focalisation sur la parole (selon contexte).</span></p>
-          </div>
-          <div class="panel">
-            <div class="tag">Connectivité</div>
-            <p><strong>Téléphone / TV / appels</strong><br><span style="color:var(--muted)">Selon compatibilités, streaming et accessoires possibles.</span></p>
-          </div>
-          <div class="panel">
-            <div class="tag">Recharge</div>
-            <p><strong>Rechargeable ou piles</strong><br><span style="color:var(--muted)">Choix selon habitudes, dextérité, et usage quotidien.</span></p>
-          </div>
-        </div>
-
-        <div class="grid2" style="margin-top:16px;">
-          <div class="panel">
-            <h3>Le point clé : les réglages</h3>
-            <p>
-              Deux personnes avec le “même” appareil peuvent avoir une expérience complètement différente.
-              La différence se joue dans l’ajustement et le suivi (confort, fatigue, bruit, compréhension).
+            <p class="lead">
+              Nous travaillons avec <strong>Oticon</strong> et <strong>Bernafon</strong>, deux marques reconnues mondialement pour leur qualité, leur innovation et leur fiabilité. Des solutions adaptées à vos besoins et votre budget.
             </p>
-            <div style="margin-top:10px;">
-              <a class="btn" href="../notre-accompagnement/index.html">Voir notre accompagnement</a>
+
+            <div class="chips">
+              <span class="chip">Technologies de pointe</span>
+              <span class="chip">Design discret</span>
+              <span class="chip">Connectivité Bluetooth</span>
+              <span class="chip">Recharge lithium-ion</span>
+            </div>
+
+            <div class="hero-ctas">
+              <button class="btn btn-primary btn-lg" data-open-modal>
+                <span>📅</span>
+                <span>Prendre rendez-vous</span>
+              </button>
+              <a class="btn btn-secondary btn-lg" href="/test-auditif-gratuit/">
+                <span>✓</span>
+                <span>Test auditif gratuit</span>
+              </a>
             </div>
           </div>
-          <div class="panel">
-            <h3>Budget & remboursement</h3>
-            <p>
-              On aborde le budget clairement, et on vous explique ce qui est possible selon votre situation (INAMI/mutuelle).
-            </p>
-            <div style="margin-top:10px;">
-              <a class="btn" href="../remboursements/index.html">Voir remboursements</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Brands -->
-    <section id="marques">
-      <div class="container">
-        <h2 class="sectionTitle">Nos marques principales : Oticon & Bernafon</h2>
-        <p class="sectionLead">
-          Nous travaillons principalement avec ces deux marques pour proposer des solutions fiables, cohérentes et adaptées (selon vos besoins et votre budget).
-        </p>
-
-        <div class="grid2">
-          <div class="brandCard">
-            <div class="brandHead">
-              <div>
-                <div class="tag">Marque principale</div>
-                <h3 style="margin:0 0 6px;">Oticon</h3>
-                <p style="margin:0; color:var(--muted); line-height:1.55;">
-                  Une gamme moderne, souvent choisie pour le confort, la compréhension et la connectivité (selon modèles).
-                </p>
+          <div class="hero-cards">
+            <div class="info-card animate-on-scroll">
+              <div class="info-item">
+                <span class="info-label">💰 Prix</span>
+                <div class="info-value">1 200 € - 3 500 €</div>
+                <div class="info-detail">Par oreille</div>
               </div>
-              <div class="brandMark" aria-hidden="true">O</div>
+              <div class="info-item">
+                <span class="info-label">💵 Remboursement</span>
+                <div class="info-value">Jusqu'à 840 €</div>
+                <div class="info-detail">INAMI + mutuelle par oreille</div>
+              </div>
+              <div class="info-item">
+                <span class="info-label">🔧 Garantie</span>
+                <div class="info-value">2-4 ans</div>
+                <div class="info-detail">Selon le modèle</div>
+              </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            <ul class="list">
-              <li>Approche centrée sur la compréhension de la parole</li>
-              <li>Options de connectivité (selon compatibilités)</li>
-              <li>Choix de formats (selon besoin)</li>
+    <!-- Section: Nos marques -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <span class="section-tag">Nos partenaires</span>
+          <h2 class="section-title">Oticon et Bernafon</h2>
+          <p class="section-subtitle">
+            Deux marques de référence mondiale pour des solutions auditives de qualité.
+          </p>
+        </div>
+
+        <div class="grid-2">
+          <!-- Oticon -->
+          <div class="card animate-on-scroll">
+            <div class="card-icon">🎧</div>
+            <h3>Oticon</h3>
+            <p>
+              <strong>Leader mondial de l'audition</strong>, Oticon propose des solutions innovantes reconnues pour leur qualité sonore exceptionnelle et leur technologie de pointe. Fondée au Danemark en 1904, la marque est pionnière dans l'innovation auditive.
+            </p>
+            
+            <h4 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px; color: var(--primary);">Technologies Oticon</h4>
+            <ul style="margin: 0; padding-left: 20px; color: var(--text-light); line-height: 1.8;">
+              <li><strong>BrainHearing™</strong> : Soutient le cerveau dans son travail d'écoute naturelle</li>
+              <li><strong>MoreSound Intelligence™</strong> : Distinction claire entre parole et bruit</li>
+              <li><strong>Connectivité Bluetooth</strong> : Connexion directe à iPhone, Android, TV</li>
+              <li><strong>Recharge lithium-ion</strong> : 24h d'autonomie, plus besoin de piles</li>
+              <li><strong>Design discret</strong> : Mini contours d'oreille invisibles</li>
             </ul>
 
-            <p class="mini">
-              Au rendez-vous, on vous explique clairement ce qui est utile pour vous (et ce qui ne l’est pas).
+            <h4 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px; color: var(--primary);">Idéal pour :</h4>
+            <p class="text-muted">
+              Environnements bruyants, conversations de groupe, personnes actives, utilisation intensive (TV, téléphone, musique).
             </p>
           </div>
 
-          <div class="brandCard">
-            <div class="brandHead">
-              <div>
-                <div class="tag">Marque principale</div>
-                <h3 style="margin:0 0 6px;">Bernafon</h3>
-                <p style="margin:0; color:var(--muted); line-height:1.55;">
-                  Solutions fiables et accessibles, avec des options adaptées à différents profils et budgets (selon modèles).
-                </p>
-              </div>
-              <div class="brandMark" aria-hidden="true">B</div>
-            </div>
-
-            <ul class="list">
-              <li>Gamme polyvalente</li>
-              <li>Formats et options selon l’usage</li>
-              <li>Bon équilibre entre performance et budget</li>
+          <!-- Bernafon -->
+          <div class="card animate-on-scroll">
+            <div class="card-icon">🎵</div>
+            <h3>Bernafon</h3>
+            <p>
+              <strong>Marque suisse réputée</strong> pour son excellent rapport qualité-prix, Bernafon offre des appareils performants et fiables avec une qualité sonore naturelle. Fondée en 1946, elle allie tradition suisse et innovation technologique.
+            </p>
+            
+            <h4 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px; color: var(--primary);">Technologies Bernafon</h4>
+            <ul style="margin: 0; padding-left: 20px; color: var(--text-light); line-height: 1.8;">
+              <li><strong>Son naturel et équilibré</strong> : Restitution fidèle des sons</li>
+              <li><strong>DECS™</strong> : Suppression d'écho et réduction du bruit</li>
+              <li><strong>Connectivité sans fil</strong> : Compatible avec smartphones et TV</li>
+              <li><strong>Facilité d'utilisation</strong> : Réglages simples et intuitifs</li>
+              <li><strong>Fiabilité suisse</strong> : Robustesse et durabilité reconnues</li>
             </ul>
 
-            <p class="mini">
-              L’objectif n’est pas la marque : c’est votre confort au quotidien.
+            <h4 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px; color: var(--primary);">Idéal pour :</h4>
+            <p class="text-muted">
+              Usage quotidien confortable, personnes recherchant un bon rapport qualité-prix, première appareillage, utilisation classique.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Comparison (non-technical, safe) -->
-    <section>
+    <!-- Section: Types d'appareils -->
+    <section class="section" style="background: var(--bg-alt);">
       <div class="container">
-        <h2 class="sectionTitle">Comment choisir ? (comparatif simple)</h2>
-        <p class="sectionLead">
-          Plutôt qu’un catalogue, voici une grille de décision claire. On affine ensuite en fonction de vos résultats et de votre quotidien.
+        <div class="section-header animate-on-scroll">
+          <span class="section-tag">Types d'appareils</span>
+          <h2 class="section-title">Quel type d'appareil choisir ?</h2>
+          <p class="section-subtitle">
+            Il existe plusieurs formats d'appareils auditifs. Le choix dépend de votre perte auditive, de votre morphologie et de vos préférences.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">🔊</div>
+            <h3 class="feature-title">Contour d'oreille (BTE)</h3>
+            <p class="feature-description">
+              L'appareil se place derrière l'oreille. C'est le format le plus polyvalent : puissant, confortable, facile à manipuler. Idéal pour toutes les pertes auditives.
+            </p>
+          </div>
+
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">🎯</div>
+            <h3 class="feature-title">Mini contour (RIC/RITE)</h3>
+            <p class="feature-description">
+              Plus discret que le contour classique, avec un écouteur dans le conduit auditif. Très populaire : petit, léger, performant. Notre recommandation pour la plupart des cas.
+            </p>
+          </div>
+
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">🤏</div>
+            <h3 class="feature-title">Intra-auriculaire (ITE/ITC/CIC)</h3>
+            <p class="feature-description">
+              Moulé sur mesure, entièrement dans l'oreille. Très discret mais limité en puissance. Convient aux pertes légères à moyennes. Manipulation plus délicate.
+            </p>
+          </div>
+        </div>
+
+        <div class="text-center" style="margin-top: 48px;">
+          <p class="text-muted mb-3">
+            <strong>Important :</strong> La discrétion n'est pas toujours synonyme de performance. Nous vous aidons à choisir l'appareil qui vous correspond vraiment, pas celui qui se voit le moins.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Fonctionnalités modernes -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <span class="section-tag">Innovation</span>
+          <h2 class="section-title">Fonctionnalités modernes</h2>
+          <p class="section-subtitle">
+            Les appareils auditifs modernes sont bien plus que de simples amplificateurs. Voici les technologies disponibles.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">📱</div>
+            <h3 class="feature-title">Connectivité Bluetooth</h3>
+            <p class="feature-description">
+              Connexion directe avec smartphone, TV, tablette. Écoutez musique, appels et vidéos directement dans vos appareils auditifs.
+            </p>
+          </div>
+
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">🔋</div>
+            <h3 class="feature-title">Recharge lithium-ion</h3>
+            <p class="feature-description">
+              Fini les piles à changer. Une charge nocturne = 24h d'autonomie. Simple, écologique, économique.
+            </p>
+          </div>
+
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">🤖</div>
+            <h3 class="feature-title">Intelligence artificielle</h3>
+            <p class="feature-description">
+              Adaptation automatique aux environnements. L'appareil reconnaît les situations (restaurant, rue, maison) et ajuste les réglages.
+            </p>
+          </div>
+
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">🎙️</div>
+            <h3 class="feature-title">Microphones directionnels</h3>
+            <p class="feature-description">
+              Focus sur la voix devant vous, réduction du bruit ambiant. Essentiel pour comprendre dans le bruit.
+            </p>
+          </div>
+
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">🛡️</div>
+            <h3 class="feature-title">Réduction de bruit</h3>
+            <p class="feature-description">
+              Suppression intelligente du bruit de fond (vent, ventilation, circulation) pour un confort optimal.
+            </p>
+          </div>
+
+          <div class="feature-box animate-on-scroll">
+            <div class="feature-icon">💧</div>
+            <h3 class="feature-title">Résistance eau et poussière</h3>
+            <p class="feature-description">
+              Certification IP68 : résistance à la transpiration, à l'humidité et à la poussière. Fiabilité au quotidien.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Prix et remboursements -->
+    <section class="section" style="background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white;">
+      <div class="container">
+        <div class="cta-content">
+          <span class="section-tag" style="background: rgba(255,255,255,0.2); color: white;">Prix</span>
+          <h2 class="cta-title">Combien ça coûte ?</h2>
+          <p class="cta-description">
+            Les appareils auditifs coûtent entre <strong>1 200 € et 3 500 €</strong> par oreille, selon le modèle et les fonctionnalités. Grâce à l'INAMI et aux mutuelles, vous pouvez récupérer jusqu'à <strong>840 € par oreille</strong>.
+          </p>
+          <p style="margin-bottom: 32px; opacity: 0.95;">
+            Le prix comprend : l'appareil, les réglages, le suivi à vie, l'entretien, les consommables (embouts, filtres...).
+          </p>
+          <a href="/remboursements/" class="btn btn-lg" style="background: white; color: var(--primary);">
+            <span>💰</span>
+            <span>Tout savoir sur les remboursements</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: CTA Final -->
+    <section class="cta-section">
+      <div class="cta-content">
+        <h2 class="cta-title">Quelle solution pour vous ?</h2>
+        <p class="cta-description">
+          Prenez rendez-vous pour un test auditif gratuit. Nous analyserons votre situation et vous conseillerons la solution la plus adaptée.
         </p>
-
-        <div class="panel">
-          <table class="compare" aria-label="Comparatif simple des critères de choix">
-            <thead>
-              <tr>
-                <th>Votre priorité</th>
-                <th>Ce qu’on regarde ensemble</th>
-                <th>Exemples de solutions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>Conversations dans le bruit</strong></td>
-                <td>Réglages, adaptation progressive, stratégies en contexte réel</td>
-                <td>Choix du format + réglages orientés “parole”, suivi rapproché</td>
-              </tr>
-              <tr>
-                <td><strong>Discrétion</strong></td>
-                <td>Anatomie, confort, compromis performance/discrétion</td>
-                <td>Micro-contours (RIC) ou intra (selon cas)</td>
-              </tr>
-              <tr>
-                <td><strong>Simplicité</strong></td>
-                <td>Manipulation, dextérité, habitudes</td>
-                <td>Rechargeable, formats faciles à mettre/enlever</td>
-              </tr>
-              <tr>
-                <td><strong>Téléphone / TV</strong></td>
-                <td>Compatibilités, accessoires possibles, usage</td>
-                <td>Connectivité (selon modèles) + accessoires</td>
-              </tr>
-              <tr>
-                <td><strong>Budget</strong></td>
-                <td>Remboursements possibles, priorités d’usage</td>
-                <td>Gamme adaptée + optimisation des réglages</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <p class="mini" style="margin-top:10px;">
-            Important : une solution “haut de gamme” mal réglée peut décevoir, et une solution bien réglée peut surprendre. Chez Audire, on met l’accent sur l’ajustement.
-          </p>
-        </div>
-
-        <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
-          <a class="btn primary" href="../test-auditif-gratuit/index.html">✅ Test auditif gratuit</a>
-          <button class="btn" type="button" data-open-modal>📅 En parler</button>
-          <a class="btn" href="../remboursements/index.html">Remboursements</a>
+        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-lg" data-open-modal style="background: white; color: var(--primary);">
+            <span>📅</span>
+            <span>Prendre rendez-vous</span>
+          </button>
+          <a class="btn btn-lg btn-outline" href="tel:+3242336125" style="border-color: white; color: white;">
+            <span>📞</span>
+            <span>04 233 61 25</span>
+          </a>
         </div>
       </div>
     </section>
-
-    <!-- FAQ -->
-    <section id="faq">
-      <div class="container">
-        <h2 class="sectionTitle">FAQ — Solutions auditives</h2>
-        <p class="sectionLead">Réponses rapides (et on détaille selon votre cas au rendez-vous).</p>
-
-        <div class="grid2">
-          <div style="display:grid; gap:10px;">
-            <details open>
-              <summary>Quelle est la meilleure aide auditive ?</summary>
-              <p>Il n’existe pas une “meilleure” aide auditive pour tout le monde. Le bon choix dépend de votre audition, de votre quotidien, de votre confort et de votre budget. Chez Audire, on part de vos besoins réels et on ajuste dans le temps.</p>
-            </details>
-            <details>
-              <summary>Rechargeable ou piles ?</summary>
-              <p>Les deux existent. Le rechargeable est pratique au quotidien, tandis que les piles peuvent convenir à certains usages. Le choix dépend de vos habitudes et de votre dextérité.</p>
-            </details>
-          </div>
-          <div style="display:grid; gap:10px;">
-            <details>
-              <summary>Est-ce que ça se voit ?</summary>
-              <p>Il existe des solutions très discrètes. La meilleure option dépend de votre audition et de l’anatomie de votre oreille. On vous explique les compromis entre discrétion, confort et performance.</p>
-            </details>
-            <details>
-              <summary>Avec quelles marques travaillez-vous ?</summary>
-              <p>Audire travaille principalement avec <strong>Oticon</strong> et <strong>Bernafon</strong> afin de proposer des solutions fiables et adaptées selon vos besoins et votre budget.</p>
-            </details>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Bottom CTA -->
-    <section>
-      <div class="container">
-        <div class="panel" style="padding:22px; border-radius: 26px;">
-          <div class="tag">Commencer simplement</div>
-          <h2 class="sectionTitle" style="margin-top:0;">Vous voulez savoir ce qui vous conviendrait vraiment ?</h2>
-          <p class="sectionLead" style="margin-bottom:0;">
-            Le plus efficace : commencer par le <strong>test auditif gratuit</strong>, puis choisir une solution adaptée (Oticon/Bernafon) et l’ajuster dans le temps.
-          </p>
-          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-            <a class="btn primary" href="../test-auditif-gratuit/index.html">✅ Test auditif gratuit</a>
-            <button class="btn" type="button" data-open-modal>📅 Demander un RDV</button>
-            <a class="btn" href="../contact/index.html">📍 Contact</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-      <!-- Footer chargé dynamiquement -->
-  <div id="app-footer"></div>
-
-      <!-- Modal & Sticky CTA chargés dynamiquement -->
-  <div id="app-modal"></div>
 
   </main>
 
-  <script src="../js/components.js"></script>
-  <script src="../js/content-loader.js"></script>
-  <script src="../js/main.js" defer></script>
+  <!-- Footer -->
+  <div id="app-footer"></div>
+
+  <!-- Modal -->
+  <div id="app-modal"></div>
+
+  <!-- Scripts -->
+  <script src="/js/config.js"></script>
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
 </body>
 </html>

@@ -1,8 +1,14 @@
+# robots.txt pour Audire - Centre auditif
+# https://audire.be
+
 User-agent: *
 Allow: /
 
-Disallow: /confidentialité/
-Disallow: /mentions-legales/
-Disallow: /merci/
+# Pages à ne pas indexer
+Disallow: /admin-simple/
+Disallow: /components/
+Disallow: /js/
+Disallow: /css/
 
+# Sitemap
 Sitemap: https://audire.be/sitemap.xml

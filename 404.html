@@ -1,87 +1,80 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr-BE">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Page introuvable — Audire</title>
-  <meta name="description" content="Cette page n’existe pas (ou plus). Retrouvez les pages principales d’Audire : test auditif gratuit, contact, solutions, remboursements." />
+  <!-- SEO -->
+  <title>Page non trouvée (404) | Audire</title>
+  <meta name="description" content="La page que vous recherchez n'existe pas ou a été déplacée.">
+  <meta name="robots" content="noindex, follow">
 
-  <meta name="robots" content="noindex,follow" />
-  <meta name="theme-color" content="#0f172a" />
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#2d7a5f">
 
-  <!-- Root-relative paths (since this file is at root) -->
-  <link rel="stylesheet" href="css/styles.css" />
-
-  <style>
-    .big404{
-      font-size: clamp(48px, 6vw, 90px);
-      letter-spacing: -1px;
-      margin: 0;
-      line-height: 1;
-    }
-    .cardLinks a{
-      display:block;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.10);
-      color: var(--muted);
-    }
-    .cardLinks a:last-child{ border-bottom:0; }
-    .cardLinks a:hover{ color: var(--text); }
-  </style>
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
-
 <body>
-  <!-- Header chargé dynamiquement -->
+
+  <!-- Header -->
   <div id="app-header"></div>
 
+  <!-- Main Content -->
   <main>
-    <div class="container hero">
-      <div class="heroGrid">
-        <div>
-          <p class="big404">404</p>
-          <h1 style="margin-top:10px;">Page introuvable</h1>
-          <p class="lead">
-            Cette page n’existe pas (ou a été déplacée). Pas grave : voici les accès les plus utiles.
+
+    <section class="section" style="min-height: 60vh; display: flex; align-items: center;">
+      <div class="container">
+        <div style="max-width: 700px; margin: 0 auto; text-align: center;">
+          
+          <div style="font-size: 120px; margin-bottom: 24px;">🔍</div>
+          
+          <h1 style="margin-bottom: 24px;">Page non trouvée</h1>
+
+          <p class="lead" style="margin-bottom: 32px;">
+            Désolé, la page que vous recherchez n'existe pas ou a été déplacée.
           </p>
 
-          <div class="heroCtas">
-            <a class="btn primary" href="/test-auditif-gratuit/">✅ Test auditif gratuit</a>
-            <a class="btn" href="/contact/">📍 Contact</a>
-            <a class="btn" href="/sitemap/">Plan du site</a>
+          <div class="card animate-on-scroll" style="text-align: left; margin-bottom: 32px;">
+            <h3>Pages utiles :</h3>
+            <ul style="margin-top: 16px; padding-left: 20px; line-height: 2;">
+              <li><a href="/">Accueil</a></li>
+              <li><a href="/test-auditif-gratuit/">Test auditif gratuit</a></li>
+              <li><a href="/notre-accompagnement/">Notre accompagnement</a></li>
+              <li><a href="/solutions-auditives/">Solutions auditives</a></li>
+              <li><a href="/remboursements/">Remboursements</a></li>
+              <li><a href="/faq/">FAQ</a></li>
+              <li><a href="/contact/">Contact</a></li>
+            </ul>
           </div>
 
-          <p class="helper">
-            Si vous souhaitez une réponse directe : appelez-nous au <a data-tel href="tel:+3242336125"><span data-tel-text>04 233 61 25</span></a>.
-          </p>
+          <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+            <a href="/" class="btn btn-primary btn-lg">
+              <span>←</span>
+              <span>Retour à l'accueil</span>
+            </a>
+            <a href="/contact/" class="btn btn-secondary btn-lg">
+              <span>✉️</span>
+              <span>Contactez-nous</span>
+            </a>
+          </div>
+
         </div>
-
-        <aside class="card" aria-label="Pages principales">
-          <div class="pad">
-            <h3>Pages principales</h3>
-            <div class="panel cardLinks" style="margin-top:12px;">
-              <a href="/">Accueil</a>
-              <a href="/test-auditif-gratuit/">Test auditif gratuit</a>
-              <a href="/notre-accompagnement/">Notre accompagnement</a>
-              <a href="/solutions-auditives/">Solutions (Oticon & Bernafon)</a>
-              <a href="/remboursements/">Remboursements</a>
-              <a href="/faq/">FAQ</a>
-              <a href="/partenaires-pharmaciens/">Partenariat pharmaciens</a>
-            </div>
-          </div>
-        </aside>
       </div>
-    </div>
+    </section>
+
   </main>
 
-  <!-- Footer chargé dynamiquement -->
+  <!-- Footer -->
   <div id="app-footer"></div>
 
-  <!-- Modal chargé dynamiquement -->
+  <!-- Modal -->
   <div id="app-modal"></div>
 
-  <script src="js/components.js"></script>
-  <script src="js/content-loader.js"></script>
-  <script src="js/main.js" defer></script>
+  <!-- Scripts -->
+  <script src="/js/config.js"></script>
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
 </body>
 </html>
