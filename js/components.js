@@ -7,18 +7,18 @@
 (function() {
   'use strict';
 
-  // Détermine le chemin relatif vers /components/ selon la profondeur de la page
+  // Détermine le chemin relatif vers /audire/components/ selon la profondeur de la page
   function getComponentsPath() {
     const path = window.location.pathname;
     const depth = path.split('/').filter(p => p).length;
 
     // Page racine (/) ou index.html à la racine
     if (depth === 0 || path === '/' || path === '/index.html') {
-      return '/components/';
+      return '/audire/components/';
     }
 
     // Pages dans un sous-dossier
-    return '/components/';
+    return '/audire/components/';
   }
 
   // Charge un composant HTML

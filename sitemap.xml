@@ -3,70 +3,70 @@
   
   <!-- Page d'accueil -->
   <url>
-    <loc>https://audire.be/</loc>
+    <loc>https://playwithpy.github.io/audire/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <!-- Pages principales -->
   <url>
-    <loc>https://audire.be/test-auditif-gratuit/</loc>
+    <loc>https://playwithpy.github.io/audire/test-auditif-gratuit/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://audire.be/notre-accompagnement/</loc>
+    <loc>https://playwithpy.github.io/audire/notre-accompagnement/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://audire.be/solutions-auditives/</loc>
+    <loc>https://playwithpy.github.io/audire/solutions-auditives/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://audire.be/remboursements/</loc>
+    <loc>https://playwithpy.github.io/audire/remboursements/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://audire.be/faq/</loc>
+    <loc>https://playwithpy.github.io/audire/faq/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://audire.be/contact/</loc>
+    <loc>https://playwithpy.github.io/audire/contact/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Pages professionnelles -->
   <url>
-    <loc>https://audire.be/partenaires-pharmaciens/</loc>
+    <loc>https://playwithpy.github.io/audire/partenaires-pharmaciens/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <!-- Pages légales -->
   <url>
-    <loc>https://audire.be/mentions-legales/</loc>
+    <loc>https://playwithpy.github.io/audire/mentions-legales/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
-    <loc>https://audire.be/confidentialite/</loc>
+    <loc>https://playwithpy.github.io/audire/confidentialite/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
-    <loc>https://audire.be/sitemap/</loc>
+    <loc>https://playwithpy.github.io/audire/sitemap/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
