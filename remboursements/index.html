@@ -1,294 +1,377 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr-BE">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Remboursements — Audire | INAMI & mutuelles (Belgique)</title>
-  <meta name="description" content="Comprendre les remboursements auditifs en Belgique (INAMI & mutuelles) : à quoi vous pouvez avoir droit, comment ça se passe, et comment Audire vous accompagne pour y voir clair." />
+  <!-- SEO -->
+  <title>Remboursements INAMI et mutuelle pour appareils auditifs | Audire</title>
+  <meta name="description" content="Remboursement INAMI + mutuelle jusqu'à 840€ par oreille. Explications claires sur les conditions, démarches et montants. Transparence totale.">
+  <meta name="keywords" content="remboursement appareil auditif, INAMI, mutuelle, aide auditive Belgique, remboursement audioprothèse">
 
-  <link rel="canonical" href="https://audire.be/remboursements/" />
-  <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0f172a" />
+  <!-- Canonical -->
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://audire.be/remboursements/">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Remboursements — Audire | INAMI & mutuelles" />
-  <meta property="og:description" content="Explications simples : INAMI & mutuelles, étapes, documents, et accompagnement Audire." />
-  <meta property="og:type" content="website" />
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#2d7a5f">
 
-  <link rel="stylesheet" href="../css/styles.css" />
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://audire.be/remboursements/">
+  <meta property="og:title" content="Remboursements INAMI et mutuelle pour appareils auditifs | Audire">
+  <meta property="og:description" content="Remboursement INAMI + mutuelle jusqu'à 840€ par oreille. Explications claires sur les conditions, démarches et montants.">
 
-  <!-- FAQ schema (SEO) -->
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"FAQPage",
-    "mainEntity":[
-      {
-        "@type":"Question",
-        "name":"Puis-je être remboursé pour des aides auditives ?",
-        "acceptedAnswer":{"@type":"Answer","text":"En Belgique, un remboursement peut exister via l’INAMI (selon conditions) et/ou via certaines mutuelles. Les règles varient selon la situation et le dossier. Audire vous explique ce qui est applicable à votre cas."}
-      },
-      {
-        "@type":"Question",
-        "name":"Dois-je avancer tous les frais ?",
-        "acceptedAnswer":{"@type":"Answer","text":"Cela dépend du type de remboursement et des modalités. Lors du rendez-vous, Audire vous explique clairement ce qui est possible et les démarches à prévoir."}
-      },
-      {
-        "@type":"Question",
-        "name":"Quels documents faut-il prévoir ?",
-        "acceptedAnswer":{"@type":"Answer","text":"Selon le cas : documents médicaux, résultats de tests, et éventuellement documents liés à la mutuelle. Audire vous guide étape par étape et vous dit exactement ce qui est nécessaire."}
-      },
-      {
-        "@type":"Question",
-        "name":"Audire s’occupe-t-il des démarches ?",
-        "acceptedAnswer":{"@type":"Answer","text":"Audire vous accompagne et vous aide à comprendre et préparer votre dossier. Certaines démarches restent à réaliser avec votre médecin et/ou votre mutuelle, selon le cadre applicable."}
-      }
-    ]
-  }
-  </script>
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
-
 <body>
-  <!-- Header chargé dynamiquement -->
+
+  <!-- Header -->
   <div id="app-header"></div>
 
+  <!-- Main Content -->
   <main>
-    <!-- Hero -->
-    <div class="container hero">
-      <div class="heroGrid">
-        <div>
-          <div class="kicker">
-            <span class="dot" aria-hidden="true"></span>
-            <span>Comprendre avant de décider</span>
-          </div>
 
-          <h1>Remboursements : INAMI & mutuelles</h1>
-          <p class="lead">
-            Le coût est une crainte fréquente — et c’est normal. Chez Audire, on vous aide à y voir clair :
-            <strong>ce qui est possible</strong>, <strong>quelles démarches</strong>, et <strong>ce que cela implique</strong>,
-            sans promesses floues ni jargon.
-          </p>
-
-          <div class="chips" aria-label="Points clés">
-            <span class="chip">Explications simples</span>
-            <span class="chip">Accompagnement dossier</span>
-            <span class="chip">Transparence</span>
-            <span class="chip">Belgique</span>
-          </div>
-
-          <div class="heroCtas">
-            <button class="btn primary" type="button" data-open-modal>✅ En parler en rendez-vous</button>
-            <a class="btn" href="../test-auditif-gratuit/index.html">Test auditif gratuit</a>
-            <a class="btn" href="#faq">FAQ</a>
-          </div>
-
-          <p class="helper">
-            Important : les conditions varient selon votre situation. Le meilleur moyen d’avoir une réponse fiable est d’en discuter sur base de votre dossier.
-          </p>
-        </div>
-
-        <!-- Side card -->
-        <aside class="card" aria-label="Ce que nous faisons pour vous">
-          <div class="pad">
-            <h3>Ce que nous faisons pour vous</h3>
-            <p>Vous aider à comprendre, sans zone grise.</p>
-
-            <div class="panel" style="margin-top:14px;">
-              <div class="tag">Clarté</div>
-              <p><strong>On explique les options</strong><br><span style="color:var(--muted)">INAMI, mutuelles, et ce que cela change concrètement.</span></p>
-            </div>
-
-            <div class="panel" style="margin-top:12px;">
-              <div class="tag">Démarches</div>
-              <p><strong>On vous guide</strong><br><span style="color:var(--muted)">Documents, étapes, et bonnes pratiques.</span></p>
-            </div>
-
-            <div class="panel" style="margin-top:12px;">
-              <div class="tag">Choix</div>
-              <p><strong>Vous décidez</strong><br><span style="color:var(--muted)">Sans pression, à votre rythme.</span></p>
-            </div>
-
-            <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-              <button class="btn primary" type="button" data-open-modal>📅 RDV</button>
-              <a class="btn" href="../contact/index.html">📍 Contact</a>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </div>
-
-    <!-- Explain simply -->
-    <section>
+    <!-- Hero Section -->
+    <section class="hero">
       <div class="container">
-        <h2 class="sectionTitle">Comment aborder les remboursements (simplement)</h2>
-        <p class="sectionLead">
-          Plutôt que de vous noyer dans des règles, on part de l’essentiel : votre situation, vos besoins, et les options possibles.
-        </p>
+        <div class="hero-grid">
+          <div class="hero-content">
+            <div class="kicker">
+              <span class="dot"></span>
+              <span>INAMI + Mutuelle</span>
+            </div>
 
-        <div class="grid3">
-          <div class="panel">
-            <div class="tag">1) Situation</div>
-            <p><strong>Votre dossier</strong><br><span style="color:var(--muted)">Âge, historique, résultats, contexte…</span></p>
-          </div>
-          <div class="panel">
-            <div class="tag">2) Éligibilité</div>
-            <p><strong>Ce qui peut s’appliquer</strong><br><span style="color:var(--muted)">INAMI et/ou mutuelle selon conditions.</span></p>
-          </div>
-          <div class="panel">
-            <div class="tag">3) Démarches</div>
-            <p><strong>Étapes et documents</strong><br><span style="color:var(--muted)">On vous dit exactement quoi faire, quand, et pourquoi.</span></p>
-          </div>
-        </div>
+            <h1>Remboursements</h1>
 
-        <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn primary" type="button" data-open-modal>✅ Faire le point avec Audire</button>
-          <a class="btn" href="../notre-accompagnement/index.html">Notre accompagnement</a>
+            <p class="lead">
+              Les appareils auditifs coûtent entre 1 200 € et 3 500 € par oreille. Mais grâce à l'INAMI et aux mutuelles, <strong>vous pouvez récupérer jusqu'à 840 € par oreille</strong> selon votre situation. On vous explique tout.
+            </p>
+
+            <div class="chips">
+              <span class="chip">Remboursement INAMI</span>
+              <span class="chip">Intervention mutuelle</span>
+              <span class="chip">Transparence totale</span>
+              <span class="chip">On vous aide</span>
+            </div>
+
+            <div class="hero-ctas">
+              <button class="btn btn-primary btn-lg" data-open-modal>
+                <span>📅</span>
+                <span>Prendre rendez-vous</span>
+              </button>
+              <a class="btn btn-secondary btn-lg" href="tel:+3242336125">
+                <span>📞</span>
+                <span>04 233 61 25</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-cards">
+            <div class="info-card animate-on-scroll">
+              <div class="info-item">
+                <span class="info-label">💶 INAMI</span>
+                <div class="info-value">Jusqu'à 660 €</div>
+                <div class="info-detail">Par oreille, selon l'âge</div>
+              </div>
+              <div class="info-item">
+                <span class="info-label">➕ Mutuelle</span>
+                <div class="info-value">+50 € à 180 €</div>
+                <div class="info-detail">Selon votre mutuelle</div>
+              </div>
+              <div class="info-item">
+                <span class="info-label">💰 Total</span>
+                <div class="info-value">Jusqu'à 840 €</div>
+                <div class="info-detail">Remboursement total possible</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Steps -->
-    <section>
+    <!-- Section: Remboursement INAMI -->
+    <section class="section">
       <div class="container">
-        <h2 class="sectionTitle">Les étapes typiques (vue d’ensemble)</h2>
-        <p class="sectionLead">
-          Selon le cadre applicable, certaines étapes peuvent varier. Voici le déroulé “général” le plus fréquent.
-        </p>
+        <div class="section-header animate-on-scroll">
+          <span class="section-tag">INAMI</span>
+          <h2 class="section-title">Remboursement de l'INAMI</h2>
+          <p class="section-subtitle">
+            L'Institut National d'Assurance Maladie-Invalidité (INAMI) rembourse une partie du coût des appareils auditifs selon votre âge et votre perte auditive.
+          </p>
+        </div>
+
+        <div class="grid-2">
+          <div class="card animate-on-scroll">
+            <h3>Moins de 18 ans</h3>
+            <p style="font-size: 32px; font-weight: 800; color: var(--primary); margin: 16px 0;">660 €</p>
+            <p>
+              <strong>Par oreille, tous les 5 ans</strong><br>
+              Remboursement maximum pour les enfants et adolescents.
+            </p>
+            <ul style="margin-top: 16px; padding-left: 20px; color: var(--text-light); line-height: 1.8;">
+              <li>Renouvellement tous les 5 ans</li>
+              <li>Intervention sur 2 oreilles possible</li>
+              <li>Couverture complète des réparations</li>
+            </ul>
+          </div>
+
+          <div class="card animate-on-scroll">
+            <h3>Plus de 18 ans</h3>
+            <p style="font-size: 32px; font-weight: 800; color: var(--primary); margin: 16px 0;">400 € à 660 €</p>
+            <p>
+              <strong>Par oreille, selon le degré de perte auditive</strong><br>
+              Remboursement dégressif selon la sévérité de la perte.
+            </p>
+            <ul style="margin-top: 16px; padding-left: 20px; color: var(--text-light); line-height: 1.8;">
+              <li>Perte légère : ~400 €</li>
+              <li>Perte moyenne : ~500 €</li>
+              <li>Perte sévère/profonde : ~660 €</li>
+              <li>Renouvellement tous les 5 ans</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="text-center" style="margin-top: 48px;">
+          <p class="text-muted">
+            <strong>Conditions :</strong> Prescription médicale (ORL), test auditif validé, respect du délai de renouvellement.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Intervention mutuelle -->
+    <section class="section" style="background: var(--bg-alt);">
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <span class="section-tag">Mutuelle</span>
+          <h2 class="section-title">Intervention de la mutuelle</h2>
+          <p class="section-subtitle">
+            En plus du remboursement INAMI, votre mutuelle intervient avec un montant supplémentaire. Ce montant varie selon votre mutuelle et votre formule.
+          </p>
+        </div>
+
+        <div style="max-width: 900px; margin: 0 auto;">
+          <div class="card animate-on-scroll">
+            <h3>Montants indicatifs par mutuelle</h3>
+            <p style="margin-bottom: 20px; color: var(--text-light);">
+              Voici les interventions moyennes des principales mutuelles belges (montants par oreille) :
+            </p>
+            <ul style="margin: 0; padding-left: 20px; color: var(--text-light); line-height: 2;">
+              <li><strong>Mutualité Chrétienne (MC)</strong> : 50 € à 120 € selon la formule</li>
+              <li><strong>Mutualité Socialiste (Solidaris)</strong> : 60 € à 100 €</li>
+              <li><strong>Mutualité Neutre (Partenamut)</strong> : 50 € à 150 €</li>
+              <li><strong>Mutualité Libérale (LM)</strong> : 40 € à 100 €</li>
+              <li><strong>Mutualité Libre (ML)</strong> : 75 € à 180 €</li>
+            </ul>
+            <p style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">
+              Ces montants sont indicatifs et dépendent de votre formule d'assurance complémentaire. Nous vous aidons à vérifier auprès de votre mutuelle.
+            </p>
+          </div>
+
+          <div class="card animate-on-scroll">
+            <h3>Comment connaître votre intervention ?</h3>
+            <p>
+              Le montant exact dépend de votre mutuelle et de votre formule d'assurance complémentaire. Lors de votre rendez-vous, nous vous aidons à :
+            </p>
+            <ul style="margin-top: 16px; padding-left: 20px; color: var(--text-light); line-height: 1.8;">
+              <li>Identifier votre mutuelle et votre formule</li>
+              <li>Contacter votre mutuelle pour connaître le montant exact</li>
+              <li>Calculer le coût final après tous les remboursements</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Exemple de calcul -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <span class="section-tag">Exemple</span>
+          <h2 class="section-title">Exemple de calcul</h2>
+          <p class="section-subtitle">
+            Voici un exemple concret pour comprendre le coût final après remboursements.
+          </p>
+        </div>
+
+        <div style="max-width: 700px; margin: 0 auto;">
+          <div class="card animate-on-scroll" style="background: linear-gradient(135deg, var(--bg-alt), var(--panel));">
+            <h3 style="text-align: center; margin-bottom: 24px;">Exemple : Appareil Oticon à 2 400 € (2 oreilles)</h3>
+            
+            <div style="padding: 20px; background: var(--panel); border-radius: var(--radius-md); margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <span><strong>Prix de l'appareil (2 oreilles)</strong></span>
+                <span style="color: var(--primary); font-weight: 700;">2 400 €</span>
+              </div>
+              <div style="border-top: 1px solid var(--border); padding-top: 12px; margin-top: 12px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--text-light);">
+                  <span>- Remboursement INAMI (500€ × 2)</span>
+                  <span>-1 000 €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--text-light);">
+                  <span>- Intervention mutuelle (100€ × 2)</span>
+                  <span>-200 €</span>
+                </div>
+              </div>
+              <div style="border-top: 2px solid var(--primary); padding-top: 16px; margin-top: 16px;">
+                <div style="display: flex; justify-content: space-between; font-size: 24px;">
+                  <span><strong>Coût final à votre charge</strong></span>
+                  <span style="color: var(--primary); font-weight: 800;">1 200 €</span>
+                </div>
+              </div>
+            </div>
+
+            <p style="text-align: center; color: var(--text-muted); font-size: 14px; margin-top: 20px;">
+              Soit <strong>600 € par oreille</strong> après tous les remboursements.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Démarches -->
+    <section class="section" style="background: var(--bg-alt);">
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <span class="section-tag">Démarches</span>
+          <h2 class="section-title">Comment ça marche ?</h2>
+          <p class="section-subtitle">
+            Les démarches sont simples. Nous vous accompagnons à chaque étape.
+          </p>
+        </div>
 
         <div class="steps">
-          <div class="step">
-            <div class="num">1</div>
-            <div>
-              <h4>Test auditif & bilan</h4>
-              <p>On évalue, on explique les résultats, et on clarifie vos besoins.</p>
+          <div class="step animate-on-scroll">
+            <div class="step-number"></div>
+            <div class="step-content">
+              <h3>Consultation ORL</h3>
+              <p>
+                Avant de commander des appareils, vous devez consulter un médecin ORL qui établira une prescription. Cette prescription est obligatoire pour bénéficier des remboursements INAMI. Nous pouvons vous recommander des ORL de la région si besoin.
+              </p>
             </div>
           </div>
 
-          <div class="step">
-            <div class="num">2</div>
-            <div>
-              <h4>Discussion “budget & options”</h4>
-              <p>On aborde les possibilités de remboursement (INAMI/mutuelle) et ce que cela change.</p>
+          <div class="step animate-on-scroll">
+            <div class="step-number"></div>
+            <div class="step-content">
+              <h3>Test et essai chez Audire</h3>
+              <p>
+                Nous réalisons le test auditif complet et vous proposons un essai gratuit des appareils adaptés. Pendant cette période, nous vérifions que la solution vous convient et effectuons les réglages nécessaires.
+              </p>
             </div>
           </div>
 
-          <div class="step">
-            <div class="num">3</div>
-            <div>
-              <h4>Documents & démarches</h4>
-              <p>On vous indique précisément les documents utiles et les démarches à prévoir (médecin/mutuelle selon cas).</p>
+          <div class="step animate-on-scroll">
+            <div class="step-number"></div>
+            <div class="step-content">
+              <h3>Commande et paiement</h3>
+              <p>
+                Une fois votre décision prise, nous commandons vos appareils. Vous payez le montant total, puis nous vous fournissons tous les documents nécessaires pour les remboursements (facture, attestation...).
+              </p>
             </div>
           </div>
 
-          <div class="step">
-            <div class="num">4</div>
-            <div>
-              <h4>Choix et suivi</h4>
-              <p>Essai, réglages, suivi : l’important est d’être bien accompagné sur la durée.</p>
+          <div class="step animate-on-scroll">
+            <div class="step-number"></div>
+            <div class="step-content">
+              <h3>Demande de remboursement</h3>
+              <p>
+                Vous envoyez les documents à votre mutuelle. Le remboursement INAMI + mutuelle est versé directement sur votre compte dans les 2 à 4 semaines suivant la demande. Nous vous guidons dans toutes ces démarches.
+              </p>
             </div>
           </div>
-        </div>
-
-        <div style="margin-top:16px;">
-          <a class="btn" href="../test-auditif-gratuit/index.html">✅ Faire un test auditif gratuit</a>
         </div>
       </div>
     </section>
 
-    <!-- Documents (safe + useful) -->
-    <section>
+    <!-- Section: Questions fréquentes -->
+    <section class="section">
       <div class="container">
-        <h2 class="sectionTitle">Que prévoir ? (checklist)</h2>
-        <p class="sectionLead">Même si tout n’est pas obligatoire, venir avec ces éléments aide à aller plus vite.</p>
+        <div class="section-header animate-on-scroll">
+          <span class="section-tag">Vos questions</span>
+          <h2 class="section-title">Questions sur les remboursements</h2>
+        </div>
 
-        <div class="grid2">
-          <div class="panel">
-            <div class="tag">Utile si vous les avez</div>
-            <ul class="list">
-              <li>Documents médicaux liés à l’audition</li>
-              <li>Résultats de tests antérieurs</li>
-              <li>Appareils actuels (si vous en avez)</li>
-              <li>Nom de votre mutuelle</li>
-            </ul>
-          </div>
-          <div class="panel">
-            <div class="tag">À noter</div>
-            <ul class="list">
-              <li>Vos difficultés concrètes (TV, téléphone, bruit, réunions…)</li>
-              <li>Les moments où ça vous gêne le plus</li>
-              <li>Votre objectif : confort, conversations, sécurité…</li>
-            </ul>
-            <p class="helper">Plus c’est concret, plus la solution (ou l’absence de solution) est adaptée.</p>
-          </div>
+        <div style="max-width: 900px; margin: 0 auto;">
+          <details class="animate-on-scroll">
+            <summary>Ai-je droit au remboursement INAMI ?</summary>
+            <p>
+              Vous avez droit au remboursement INAMI si vous avez une prescription d'un médecin ORL et une perte auditive mesurée. Il n'y a pas de condition d'âge minimum. Le montant varie selon votre âge et le degré de perte auditive.
+            </p>
+          </details>
+
+          <details class="animate-on-scroll">
+            <summary>Combien de temps pour recevoir le remboursement ?</summary>
+            <p>
+              Généralement, votre mutuelle verse le remboursement (INAMI + intervention mutuelle) dans les 2 à 4 semaines après réception des documents. Les délais peuvent varier selon les mutuelles.
+            </p>
+          </details>
+
+          <details class="animate-on-scroll">
+            <summary>Puis-je me faire rembourser les deux oreilles ?</summary>
+            <p>
+              Oui, si votre perte auditive concerne les deux oreilles et que votre ORL prescrit deux appareils, vous pouvez bénéficier du remboursement pour chaque oreille.
+            </p>
+          </details>
+
+          <details class="animate-on-scroll">
+            <summary>Tous les 5 ans, c'est vraiment strict ?</summary>
+            <p>
+              Oui, l'INAMI impose un délai de 5 ans minimum entre deux remboursements (sauf circonstances exceptionnelles : perte aggravée, appareil défectueux non réparable...). Si vous renouvelez avant 5 ans, vous ne serez pas remboursé.
+            </p>
+          </details>
+
+          <details class="animate-on-scroll">
+            <summary>Dois-je avancer l'argent ?</summary>
+            <p>
+              Oui, vous payez d'abord le montant total, puis vous êtes remboursé par votre mutuelle. Nous fournissons tous les documents nécessaires pour faciliter vos démarches.
+            </p>
+          </details>
+
+          <details class="animate-on-scroll">
+            <summary>Y a-t-il des frais cachés ?</summary>
+            <p>
+              Non. Le prix annoncé inclut tout : l'appareil, les réglages, le suivi à vie, l'entretien et les consommables (filtres, embouts...). Transparence totale, zéro surprise.
+            </p>
+          </details>
         </div>
       </div>
     </section>
 
-    <!-- FAQ -->
-    <section id="faq">
-      <div class="container">
-        <h2 class="sectionTitle">FAQ — Remboursements</h2>
-        <p class="sectionLead">Des réponses claires (et on détaille au rendez-vous selon votre dossier).</p>
-
-        <div class="grid2">
-          <div style="display:grid; gap:10px;">
-            <details open>
-              <summary>Puis-je être remboursé pour des aides auditives ?</summary>
-              <p>En Belgique, un remboursement peut exister via l’INAMI (selon conditions) et/ou via certaines mutuelles. Les règles varient selon la situation. Audire vous explique ce qui est applicable à votre cas.</p>
-            </details>
-            <details>
-              <summary>Dois-je avancer tous les frais ?</summary>
-              <p>Cela dépend du type de remboursement et des modalités. Lors du rendez-vous, on vous explique clairement ce qui est possible et les démarches à prévoir.</p>
-            </details>
-          </div>
-          <div style="display:grid; gap:10px;">
-            <details>
-              <summary>Quels documents faut-il prévoir ?</summary>
-              <p>Selon le cas : documents médicaux, résultats de tests, et éventuellement documents liés à la mutuelle. Audire vous dit exactement ce qui est nécessaire.</p>
-            </details>
-            <details>
-              <summary>Audire s’occupe-t-il des démarches ?</summary>
-              <p>Audire vous accompagne et vous aide à comprendre et préparer votre dossier. Certaines démarches restent à réaliser avec votre médecin et/ou votre mutuelle, selon le cadre applicable.</p>
-            </details>
-          </div>
-        </div>
-
-        <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn primary" type="button" data-open-modal>✅ En parler au rendez-vous</button>
-          <a class="btn" href="../contact/index.html">Contact</a>
+    <!-- Section: CTA Final -->
+    <section class="cta-section">
+      <div class="cta-content">
+        <h2 class="cta-title">Besoin de plus d'informations ?</h2>
+        <p class="cta-description">
+          Prenez rendez-vous ou appelez-nous. Nous vous expliquons tout en détail et vous aidons à calculer votre reste à charge personnalisé.
+        </p>
+        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-lg" data-open-modal style="background: white; color: var(--primary);">
+            <span>📅</span>
+            <span>Prendre rendez-vous</span>
+          </button>
+          <a class="btn btn-lg btn-outline" href="tel:+3242336125" style="border-color: white; color: white;">
+            <span>📞</span>
+            <span>04 233 61 25</span>
+          </a>
         </div>
       </div>
     </section>
-
-    <!-- Bottom CTA -->
-    <section>
-      <div class="container">
-        <div class="panel" style="padding:22px; border-radius: 26px;">
-          <div class="tag">Clarté & sérénité</div>
-          <h2 class="sectionTitle" style="margin-top:0;">Vous voulez une réponse fiable pour votre situation ?</h2>
-          <p class="sectionLead" style="margin-bottom:0;">
-            Le plus simple : faire le point ensemble. On vous explique clairement les options de remboursement possibles et les étapes.
-          </p>
-          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn primary" type="button" data-open-modal>📅 Demander un rendez-vous</button>
-            <a class="btn" href="../test-auditif-gratuit/index.html">Test auditif gratuit</a>
-            <a class="btn" data-tel href="tel:+3242336125">📞 Appeler</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-      <!-- Footer chargé dynamiquement -->
-  <div id="app-footer"></div>
-
-      <!-- Modal & Sticky CTA chargés dynamiquement -->
-  <div id="app-modal"></div>
 
   </main>
 
-  <script src="../js/components.js"></script>
-  <script src="../js/content-loader.js"></script>
-  <script src="../js/main.js" defer></script>
+  <!-- Footer -->
+  <div id="app-footer"></div>
+
+  <!-- Modal -->
+  <div id="app-modal"></div>
+
+  <!-- Scripts -->
+  <script src="/js/config.js"></script>
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
 </body>
 </html>

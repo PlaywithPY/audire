@@ -1,42 +1,79 @@
 <!-- Footer -->
 <footer>
   <div class="container">
-    <div class="footerGrid">
+    <div class="footer-grid">
+      <!-- Colonne 1: À propos -->
       <div>
-        <div class="brand" style="margin-bottom:10px;">
-          <img src="/images/logo.png" alt="Logo Audire" class="logo" />
+        <div class="footer-brand">
+          <div class="logo">A</div>
           <span>Audire</span>
         </div>
-        <p style="margin:0; line-height:1.55; color: var(--muted);">
-          Centre auditif en province de Liège — test auditif gratuit, solutions Oticon & Bernafon, réglages et suivi.
+        <p class="footer-description">
+          Centre auditif indépendant à Jemeppe-sur-Meuse. Test auditif gratuit, accompagnement humain, solutions Oticon & Bernafon, réglages et suivi personnalisé.
         </p>
+        <div style="margin-top: 20px;">
+          <p style="margin: 0; color: var(--text-subtle); font-size: 14px;">
+            <strong style="color: white;">📍 Adresse</strong><br>
+            30, rue Grand-Vinâve<br>
+            4101 Jemeppe-sur-Meuse
+          </p>
+        </div>
       </div>
 
+      <!-- Colonne 2: Patients -->
       <div>
-        <h4>Patients</h4>
-        <a href="/test-auditif-gratuit/">Test auditif gratuit PY</a>
-        <a href="/notre-accompagnement/">Notre accompagnement</a>
-        <a href="/solutions-auditives/">Solutions auditives</a>
-        <a href="/remboursements/">Remboursements</a>
-        <a href="/faq/">FAQ</a>
+        <h4 class="footer-title">Pour les patients</h4>
+        <div class="footer-links">
+          <a href="/test-auditif-gratuit/">Test auditif gratuit</a>
+          <a href="/notre-accompagnement/">Notre accompagnement</a>
+          <a href="/solutions-auditives/">Solutions auditives</a>
+          <a href="/remboursements/">Remboursements</a>
+          <a href="/faq/">FAQ</a>
+        </div>
       </div>
 
+      <!-- Colonne 3: Professionnels -->
       <div>
-        <h4>Contact</h4>
-        <a data-tel href="tel:+3242336125">📞 <span data-tel-text>04 233 61 25</span></a>
-        <a data-mail href="mailto:centre.audire@gmail.com">✉️ <span data-mail-text>centre.audire@gmail.com</span></a>
-        <a href="/contact/">📍 Nous contacter</a>
-        <a href="/partenaires-pharmaciens/">Professionnels (pharmacies)</a>
+        <h4 class="footer-title">Professionnels</h4>
+        <div class="footer-links">
+          <a href="/partenaires-pharmaciens/">Partenariats pharmaciens</a>
+          <a href="/contact/">Nous contacter</a>
+        </div>
+        <h4 class="footer-title" style="margin-top: 24px;">Légal</h4>
+        <div class="footer-links">
+          <a href="/mentions-legales/">Mentions légales</a>
+          <a href="/confidentialite/">Confidentialité</a>
+          <a href="/sitemap/">Plan du site</a>
+        </div>
+      </div>
+
+      <!-- Colonne 4: Contact -->
+      <div>
+        <h4 class="footer-title">Contact</h4>
+        <div class="footer-links">
+          <a href="tel:+3242336125">
+            <span>📞</span> 04 233 61 25
+          </a>
+          <a href="mailto:centre.audire@gmail.com">
+            <span>✉️</span> centre.audire@gmail.com
+          </a>
+        </div>
+        <h4 class="footer-title" style="margin-top: 24px;">Horaires</h4>
+        <div style="color: var(--text-subtle); font-size: 14px; line-height: 1.7;">
+          Lundi: 13h00 – 18h00<br>
+          Mar-Sam: 09h30 – 18h00<br>
+          <em>Sur rendez-vous uniquement</em>
+        </div>
       </div>
     </div>
 
-    <div class="fine">
-      <span>© <span id="year"></span> Audire — Tous droits réservés</span>
-      <span>
-        <a href="/mentions-legales/" style="color:inherit;">Mentions légales</a> ·
-        <a href="/confidentialité/" style="color:inherit;">Confidentialité</a> ·
-        <a href="/sitemap/" style="color:inherit;">Plan du site</a>
-      </span>
+    <div class="footer-bottom">
+      <div>
+        © <span id="year"></span> Audire — Tous droits réservés
+      </div>
+      <div>
+        Made with 💚 in Liège
+      </div>
     </div>
   </div>
 </footer>
