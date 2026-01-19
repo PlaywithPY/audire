@@ -41,7 +41,7 @@ window.AUDIRE_CONFIG = {
     shortName: "Audire",
     slogan: "Mieux entendre, simplement.",
     description: "Centre auditif indépendant à Jemeppe-sur-Meuse. Test auditif gratuit, accompagnement humain, solutions Oticon & Bernafon, réglages et suivi personnalisé.",
-    website: "https://audire.be",
+    website: "https://playwithpy.github.io/audire",
 
     // Prix indicatifs
     pricing: {
@@ -64,5 +64,5 @@ window.AUDIRE_CONFIG = {
   phoneDisplay: "04 233 61 25",
   phoneHref: "+3242336125",
   email: "centre.audire@gmail.com",
-  baseUrl: "https://audire.be"
+  baseUrl: "https://playwithpy.github.io/audire"
 };
