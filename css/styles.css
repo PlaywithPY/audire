@@ -1,32 +1,32 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap");
 
 :root {
-  /* Couleurs principales */
-  --primary: #2d7a5f;
-  --primary-light: #3a9270;
-  --primary-dark: #1f5742;
-  --secondary: #f0f4f8;
-  --accent: #ffa552;
+  /* Couleurs principales - Inspirées du logo Audire */
+  --primary: #D4A373;
+  --primary-light: #E4C4A0;
+  --primary-dark: #A67C52;
+  --secondary: #FFF8F0;
+  --accent: #D4A373;
 
   /* Backgrounds */
-  --bg: #fafbfc;
-  --bg-alt: #f5f7fa;
+  --bg: #FFFCF8;
+  --bg-alt: #FFF8F0;
   --panel: #ffffff;
-  --panel-hover: #f8fafb;
+  --panel-hover: #FFFCF8;
 
-  /* Textes */
-  --text: #0f172a;
-  --text-light: #475569;
-  --text-muted: #64748b;
-  --text-subtle: #94a3b8;
+  /* Textes - Tons sombres du logo */
+  --text: #1a1a1a;
+  --text-light: #3a3a3a;
+  --text-muted: #666666;
+  --text-subtle: #999999;
 
   /* Bordures & ombres */
-  --border: #e2e8f0;
-  --border-light: #f1f5f9;
-  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
-  --shadow-xl: 0 20px 48px rgba(15, 23, 42, 0.16);
+  --border: #E8D5C4;
+  --border-light: #F5EBE0;
+  --shadow-sm: 0 2px 8px rgba(212, 163, 115, 0.08);
+  --shadow-md: 0 4px 16px rgba(212, 163, 115, 0.12);
+  --shadow-lg: 0 12px 32px rgba(212, 163, 115, 0.16);
+  --shadow-xl: 0 20px 48px rgba(212, 163, 115, 0.20);
 
   /* Dimensions */
   --radius-sm: 12px;
@@ -205,11 +205,12 @@ img {
 
 /* ===== HEADER & NAVIGATION ===== */
 .topbar {
-  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-  color: white;
+  background: #1a1a1a;
+  color: var(--primary-light);
   padding: 12px 0;
   font-size: 14px;
   animation: slideInDown 0.6s ease-out;
+  border-bottom: 2px solid var(--primary);
 }
 
 @keyframes slideInDown {
@@ -291,21 +292,14 @@ header.scrolled {
 .logo {
   width: 48px;
   height: 48px;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 900;
-  font-size: 20px;
-  box-shadow: var(--shadow-md);
+  object-fit: contain;
   transition: all var(--transition-base);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .logo:hover {
-  transform: rotate(-5deg) scale(1.05);
-  box-shadow: var(--shadow-lg);
+  transform: scale(1.05);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
 }
 
 .navlinks {
@@ -1054,12 +1048,12 @@ footer {
   gap: 12px;
   font-size: 24px;
   font-weight: 800;
-  color: white;
+  color: var(--primary-light);
   margin-bottom: 16px;
 }
 
 .footer-description {
-  color: var(--text-subtle);
+  color: #cccccc;
   line-height: 1.7;
   margin-bottom: 20px;
 }
@@ -1067,7 +1061,7 @@ footer {
 .footer-title {
   font-size: 16px;
   font-weight: 700;
-  color: white;
+  color: var(--primary);
   margin-bottom: 16px;
 }
 
