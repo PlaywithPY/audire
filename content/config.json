@@ -1,0 +1,60 @@
+{
+  "contact": {
+    "phone": {
+      "display": "04 233 61 25",
+      "href": "+3242336125"
+    },
+    "email": "centre.audire@gmail.com",
+    "address": {
+      "street": "30, rue Grand-Vinâve",
+      "postalCode": "4101",
+      "city": "Jemeppe-sur-Meuse",
+      "region": "Province de Liège",
+      "country": "Belgique"
+    }
+  },
+  "hours": {
+    "monday": {
+      "opens": "13:00",
+      "closes": "18:00",
+      "display": "13h00 – 18h00"
+    },
+    "tuesday": {
+      "opens": "09:30",
+      "closes": "18:00",
+      "display": "09h30 – 18h00"
+    },
+    "wednesday": {
+      "opens": "09:30",
+      "closes": "18:00",
+      "display": "09h30 – 18h00"
+    },
+    "thursday": {
+      "opens": "09:30",
+      "closes": "18:00",
+      "display": "09h30 – 18h00"
+    },
+    "friday": {
+      "opens": "09:30",
+      "closes": "18:00",
+      "display": "09h30 – 18h00"
+    },
+    "saturday": {
+      "opens": "09:30",
+      "closes": "18:00",
+      "display": "09h30 – 18h00"
+    },
+    "sunday": {
+      "opens": null,
+      "closes": null,
+      "display": "Fermé"
+    },
+    "note": "Sur rendez-vous uniquement"
+  },
+  "business": {
+    "name": "Audire - Centre auditif",
+    "description": "Centre auditif indépendant à Jemeppe-sur-Meuse. Test auditif gratuit, accompagnement humain, solutions Oticon & Bernafon.",
+    "website": "https://playwithpy.github.io/audire",
+    "brands": ["Oticon", "Bernafon"]
+  }
+}
