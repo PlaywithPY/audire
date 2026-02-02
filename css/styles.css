@@ -251,6 +251,23 @@ img {
   opacity: 1;
 }
 
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+  animation: pulse 2s ease-in-out infinite;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.status-indicator.closed {
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+  animation: none;
+}
+
 header {
   position: sticky;
   top: 0;
@@ -271,7 +288,8 @@ header.scrolled {
   align-items: center;
   justify-content: space-between;
   padding: 16px 0;
-  gap: 24px;
+  gap: 32px;
+  flex-wrap: wrap;
 }
 
 .brand {
@@ -283,6 +301,7 @@ header.scrolled {
   letter-spacing: -0.5px;
   color: var(--primary-dark);
   transition: transform var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .brand:hover {
