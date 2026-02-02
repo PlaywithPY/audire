@@ -1,12 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap");
 
 :root {
-  /* Couleurs principales - Inspirées du logo Audire */
-  --primary: #D4A373;
-  --primary-light: #E4C4A0;
-  --primary-dark: #A67C52;
-  --secondary: #FFF8F0;
-  --accent: #D4A373;
+  /* Couleurs principales - Orange flashy inspiré du logo */
+  --primary: #FF8C42;
+  --primary-light: #FFA059;
+  --primary-dark: #E67A2E;
+  --secondary: #FFF5ED;
+  --accent: #FF8C42;
 
   /* Backgrounds */
   --bg: #FFFCF8;
@@ -182,6 +182,19 @@ img {
 
 .scale-in {
   animation: scaleIn 0.5s ease-out forwards;
+}
+
+/* ===== ZOOM ON SCROLL ANIMATION ===== */
+.zoom-on-scroll {
+  transform: scale(0.92);
+  opacity: 0.7;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  transform-origin: center center;
+}
+
+.zoom-on-scroll.zoomed {
+  transform: scale(1.02);
+  opacity: 1;
 }
 
 /* ===== UTILITIES ===== */

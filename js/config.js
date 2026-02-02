@@ -56,7 +56,7 @@ window.AUDIRE_CONFIG = {
 
   // ===== SEO =====
   seo: {
-    themeColor: "#D4A373",
+    themeColor: "#FF8C42",
     language: "fr-BE"
   },
 
