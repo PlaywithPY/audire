@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Éditeur de contenu - Audire</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #FF8C42, #FFA059);
+      color: white;
+      padding: 30px;
+      border-radius: 16px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 20px rgba(255, 140, 66, 0.3);
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      opacity: 0.95;
+      font-size: 16px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .section h2 {
+      color: #FF8C42;
+      margin-bottom: 20px;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #555;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 15px;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #FF8C42;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .chips-editor {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chip-input {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .chip-input input {
+      flex: 1;
+    }
+
+    .btn-remove {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    .btn-remove:hover {
+      background: #dc2626;
+    }
+
+    .btn-add {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    .btn-add:hover {
+      background: #059669;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #FF8C42, #FFA059);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(255, 140, 66, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 140, 66, 0.4);
+    }
+
+    .actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .btn-secondary {
+      background: #6b7280;
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+
+    .alert {
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-size: 15px;
+      display: none;
+    }
+
+    .alert.success {
+      background: #d1fae5;
+      color: #065f46;
+      border: 2px solid #10b981;
+    }
+
+    .alert.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 2px solid #ef4444;
+    }
+
+    .alert.info {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 2px solid #3b82f6;
+    }
+
+    .help-text {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 5px;
+    }
+
+    .code {
+      background: #f3f4f6;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎨 Éditeur de contenu Audire</h1>
+      <p class="subtitle">Modifiez facilement les textes de votre site sans toucher au code</p>
+    </header>
+
+    <div class="alert info" id="infoAlert">
+      <strong>ℹ️ Comment ça marche :</strong> Modifiez les textes ci-dessous, puis cliquez sur "Télécharger le fichier". Remplacez ensuite <span class="code">/content/textes.json</span> sur votre serveur.
+    </div>
+
+    <div class="alert success" id="successAlert">
+      <strong>✅ Succès !</strong> Le fichier a été téléchargé. Remplacez maintenant <span class="code">/content/textes.json</span> sur votre serveur.
+    </div>
+
+    <div class="alert error" id="errorAlert"></div>
+
+    <!-- Hero Section -->
+    <div class="section">
+      <h2>🏠 Page d'accueil - Hero</h2>
+
+      <div class="form-group">
+        <label>Badge (kicker)</label>
+        <input type="text" id="hero-kicker" placeholder="Centre auditif indépendant • Province de Liège">
+      </div>
+
+      <div class="form-group">
+        <label>Titre principal (H1)</label>
+        <input type="text" id="hero-title" placeholder="Mieux entendre, simplement.">
+      </div>
+
+      <div class="form-group">
+        <label>Sous-titre (description)</label>
+        <textarea id="hero-subtitle" rows="4" placeholder="Chez Audire, on commence par..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Chips (avantages rapides)</label>
+        <div id="chips-container" class="chips-editor"></div>
+        <button class="btn-add" onclick="addChip()">+ Ajouter un chip</button>
+      </div>
+
+      <div class="form-group">
+        <label>Note (sous les boutons)</label>
+        <input type="text" id="hero-note" placeholder="Vous hésitez ? Venez juste faire le point...">
+      </div>
+    </div>
+
+    <!-- Why Audire -->
+    <div class="section">
+      <h2>✨ Pourquoi choisir Audire</h2>
+
+      <div class="form-group">
+        <label>Tag</label>
+        <input type="text" id="why-tag" placeholder="Notre approche">
+      </div>
+
+      <div class="form-group">
+        <label>Titre</label>
+        <input type="text" id="why-title" placeholder="Pourquoi choisir Audire ?">
+      </div>
+
+      <div class="form-group">
+        <label>Sous-titre</label>
+        <textarea id="why-subtitle" rows="3"></textarea>
+      </div>
+    </div>
+
+    <!-- Process -->
+    <div class="section">
+      <h2>🔄 Le processus</h2>
+
+      <div class="form-group">
+        <label>Tag</label>
+        <input type="text" id="process-tag" placeholder="Le processus">
+      </div>
+
+      <div class="form-group">
+        <label>Titre</label>
+        <input type="text" id="process-title" placeholder="Comment ça se passe ?">
+      </div>
+
+      <div class="form-group">
+        <label>Sous-titre</label>
+        <textarea id="process-subtitle" rows="3"></textarea>
+      </div>
+    </div>
+
+    <!-- Pricing -->
+    <div class="section">
+      <h2>💰 Remboursements</h2>
+
+      <div class="form-group">
+        <label>Tag</label>
+        <input type="text" id="pricing-tag" placeholder="Remboursements">
+      </div>
+
+      <div class="form-group">
+        <label>Titre</label>
+        <input type="text" id="pricing-title" placeholder="Combien ça coûte vraiment ?">
+      </div>
+
+      <div class="form-group">
+        <label>Fourchette de prix</label>
+        <input type="text" id="pricing-range" placeholder="Les appareils auditifs coûtent entre 1 200 € et 3 500 € par oreille.">
+      </div>
+
+      <div class="form-group">
+        <label>Remboursement</label>
+        <input type="text" id="pricing-refund" placeholder="Mais grâce à l'INAMI...">
+      </div>
+
+      <div class="form-group">
+        <label>Note</label>
+        <textarea id="pricing-note" rows="2"></textarea>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="section">
+      <h2>📣 Appel à l'action final</h2>
+
+      <div class="form-group">
+        <label>Titre</label>
+        <input type="text" id="cta-title" placeholder="Prêt à mieux entendre ?">
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="cta-description" rows="3"></textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" onclick="downloadJSON()">💾 Télécharger le fichier JSON</button>
+      <button class="btn-secondary" onclick="resetForm()">🔄 Réinitialiser</button>
+    </div>
+  </div>
+
+  <script>
+    // Données par défaut
+    let defaultData = null;
+
+    // Charger les données depuis le JSON
+    async function loadData() {
+      try {
+        const response = await fetch('/audire/content/textes.json');
+        const data = await response.json();
+        defaultData = data;
+        populateForm(data);
+        document.getElementById('infoAlert').style.display = 'block';
+      } catch (error) {
+        console.error('Erreur chargement:', error);
+        showError('Impossible de charger le fichier textes.json');
+      }
+    }
+
+    // Remplir le formulaire
+    function populateForm(data) {
+      // Hero
+      document.getElementById('hero-kicker').value = data.hero.kicker || '';
+      document.getElementById('hero-title').value = data.hero.title || '';
+      document.getElementById('hero-subtitle').value = data.hero.subtitle || '';
+      document.getElementById('hero-note').value = data.hero.note || '';
+
+      // Chips
+      const chipsContainer = document.getElementById('chips-container');
+      chipsContainer.innerHTML = '';
+      data.hero.chips.forEach(chip => {
+        addChip(chip);
+      });
+
+      // Why Audire
+      document.getElementById('why-tag').value = data.whyAudire.tag || '';
+      document.getElementById('why-title').value = data.whyAudire.title || '';
+      document.getElementById('why-subtitle').value = data.whyAudire.subtitle || '';
+
+      // Process
+      document.getElementById('process-tag').value = data.process.tag || '';
+      document.getElementById('process-title').value = data.process.title || '';
+      document.getElementById('process-subtitle').value = data.process.subtitle || '';
+
+      // Pricing
+      document.getElementById('pricing-tag').value = data.pricing.tag || '';
+      document.getElementById('pricing-title').value = data.pricing.title || '';
+      document.getElementById('pricing-range').value = data.pricing.priceRange || '';
+      document.getElementById('pricing-refund').value = data.pricing.refund || '';
+      document.getElementById('pricing-note').value = data.pricing.note || '';
+
+      // CTA
+      document.getElementById('cta-title').value = data.cta.title || '';
+      document.getElementById('cta-description').value = data.cta.description || '';
+    }
+
+    // Ajouter un chip
+    function addChip(value = '') {
+      const container = document.getElementById('chips-container');
+      const div = document.createElement('div');
+      div.className = 'chip-input';
+      div.innerHTML = `
+        <input type="text" value="${value}" placeholder="Ex: Test auditif gratuit">
+        <button class="btn-remove" onclick="removeChip(this)">✕</button>
+      `;
+      container.appendChild(div);
+    }
+
+    // Supprimer un chip
+    function removeChip(button) {
+      button.parentElement.remove();
+    }
+
+    // Collecter les données du formulaire
+    function collectData() {
+      // Collecter les chips
+      const chipInputs = document.querySelectorAll('#chips-container input');
+      const chips = Array.from(chipInputs).map(input => input.value).filter(v => v);
+
+      return {
+        hero: {
+          kicker: document.getElementById('hero-kicker').value,
+          title: document.getElementById('hero-title').value,
+          subtitle: document.getElementById('hero-subtitle').value,
+          chips: chips,
+          note: document.getElementById('hero-note').value
+        },
+        whyAudire: {
+          tag: document.getElementById('why-tag').value,
+          title: document.getElementById('why-title').value,
+          subtitle: document.getElementById('why-subtitle').value,
+          features: defaultData.whyAudire.features // Garder les features existantes
+        },
+        process: {
+          tag: document.getElementById('process-tag').value,
+          title: document.getElementById('process-title').value,
+          subtitle: document.getElementById('process-subtitle').value,
+          steps: defaultData.process.steps // Garder les steps existantes
+        },
+        solutions: defaultData.solutions, // Garder les solutions existantes
+        pricing: {
+          tag: document.getElementById('pricing-tag').value,
+          title: document.getElementById('pricing-title').value,
+          priceRange: document.getElementById('pricing-range').value,
+          refund: document.getElementById('pricing-refund').value,
+          note: document.getElementById('pricing-note').value
+        },
+        cta: {
+          title: document.getElementById('cta-title').value,
+          description: document.getElementById('cta-description').value
+        }
+      };
+    }
+
+    // Télécharger le JSON
+    function downloadJSON() {
+      try {
+        const data = collectData();
+        const json = JSON.stringify(data, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'textes.json';
+        a.click();
+        URL.revokeObjectURL(url);
+
+        document.getElementById('successAlert').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => {
+          document.getElementById('successAlert').style.display = 'none';
+        }, 5000);
+      } catch (error) {
+        showError('Erreur lors de la génération du fichier : ' + error.message);
+      }
+    }
+
+    // Réinitialiser le formulaire
+    function resetForm() {
+      if (confirm('Êtes-vous sûr de vouloir réinitialiser tous les champs ?')) {
+        populateForm(defaultData);
+      }
+    }
+
+    // Afficher une erreur
+    function showError(message) {
+      const alert = document.getElementById('errorAlert');
+      alert.textContent = '❌ ' + message;
+      alert.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        alert.style.display = 'none';
+      }, 5000);
+    }
+
+    // Charger au démarrage
+    loadData();
+  </script>
+</body>
+</html>
