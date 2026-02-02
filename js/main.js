@@ -97,90 +97,6 @@ function initSmoothScroll() {
   });
 }
 
-// ====== ZOOM ON SCROLL ANIMATION ======
-class ZoomOnScroll {
-  constructor() {
-    this.elements = [];
-    this.init();
-  }
-
-  init() {
-    this.elements = $all('.zoom-on-scroll');
-    if (this.elements.length === 0) return;
-
-    // Observer pour détecter quand les éléments entrent/sortent du viewport
-    this.observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            this.updateZoom(entry.target);
-          } else {
-            // Réinitialiser quand l'élément sort du viewport
-            entry.target.style.transform = 'scale(0.92)';
-            entry.target.style.opacity = '0.7';
-          }
-        });
-      },
-      {
-        threshold: Array.from({ length: 100 }, (_, i) => i / 100), // 0 à 1 par pas de 0.01
-        rootMargin: '-10% 0px -10% 0px'
-      }
-    );
-
-    this.elements.forEach(el => this.observer.observe(el));
-
-    // Écouter le scroll pour mettre à jour le zoom en temps réel
-    window.addEventListener('scroll', () => this.onScroll(), { passive: true });
-
-    // Initialiser le zoom au chargement
-    this.onScroll();
-  }
-
-  onScroll() {
-    this.elements.forEach(el => {
-      const rect = el.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-
-      // Calculer la position relative de l'élément dans le viewport
-      // 0 = en haut du viewport, 1 = en bas du viewport
-      const elementCenter = rect.top + rect.height / 2;
-      const viewportCenter = windowHeight / 2;
-
-      // Distance du centre de l'élément au centre du viewport
-      const distanceFromCenter = Math.abs(elementCenter - viewportCenter);
-      const maxDistance = windowHeight / 2;
-
-      // Calculer le ratio (0 = au centre, 1 = en haut ou en bas du viewport)
-      let ratio = distanceFromCenter / maxDistance;
-      ratio = Math.max(0, Math.min(1, ratio)); // Clamp entre 0 et 1
-
-      // Calculer le scale (1.02 au centre, 0.92 aux extrémités)
-      const minScale = 0.92;
-      const maxScale = 1.02;
-      const scale = maxScale - (ratio * (maxScale - minScale));
-
-      // Calculer l'opacité (1 au centre, 0.7 aux extrémités)
-      const minOpacity = 0.7;
-      const maxOpacity = 1;
-      const opacity = maxOpacity - (ratio * (maxOpacity - minOpacity));
-
-      // Appliquer les transformations
-      if (rect.top < windowHeight && rect.bottom > 0) {
-        this.updateZoom(el, scale, opacity);
-      }
-    });
-  }
-
-  updateZoom(element, scale = null, opacity = null) {
-    if (scale !== null) {
-      element.style.transform = `scale(${scale})`;
-    }
-    if (opacity !== null) {
-      element.style.opacity = opacity;
-    }
-  }
-}
-
 // ====== MAIN INITIALIZATION ======
 document.addEventListener("DOMContentLoaded", () => {
   // Initialiser les animations au scroll
@@ -191,9 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialiser le smooth scroll
   initSmoothScroll();
-
-  // Initialiser l'animation de zoom au scroll
-  const zoomOnScroll = new ZoomOnScroll();
 
   // Year
   const y = $("#year");
