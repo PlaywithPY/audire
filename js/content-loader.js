@@ -1,151 +1,206 @@
 /**
  * Content Loader pour Audire
- * Charge les contenus depuis /content/*.json et met à jour le DOM
- * À charger AVANT components.js et main.js
+ * Charge textes.json et config.json et remplit automatiquement les pages
+ * Utilise des attributs data-content-key pour identifier les éléments à remplacer
  */
 
 (function() {
   'use strict';
 
-  // Cache pour les contenus chargés
-  const contentCache = {};
+  let textes = null;
+  let config = null;
+  let currentPage = null;
+
+  // Détecte la page actuelle depuis l'URL
+  function detectCurrentPage() {
+    const path = window.location.pathname;
+
+    if (path === '/' || path.endsWith('/index.html') || path === '/audire/' || path.endsWith('/audire/index.html')) {
+      return 'home';
+    }
+    if (path.includes('/test-auditif-gratuit')) return 'test-auditif-gratuit';
+    if (path.includes('/faq')) return 'faq';
+    if (path.includes('/contact')) return 'contact';
+    if (path.includes('/notre-accompagnement')) return 'notre-accompagnement';
+    if (path.includes('/solutions-auditives')) return 'solutions-auditives';
+    if (path.includes('/remboursements')) return 'remboursements';
+    if (path.includes('/partenaires-pharmaciens')) return 'partenaires-pharmaciens';
+
+    return null;
+  }
 
   // Charge un fichier JSON
-  async function loadJSON(path) {
-    if (contentCache[path]) {
-      return contentCache[path];
-    }
-
+  async function loadJSON(url) {
     try {
-      const response = await fetch(path);
+      const response = await fetch(url);
       if (!response.ok) {
-        console.warn(`Failed to load content: ${path}`);
+        console.warn(`Failed to load ${url}: ${response.status}`);
         return null;
       }
-      const data = await response.json();
-      contentCache[path] = data;
-      return data;
+      return await response.json();
     } catch (error) {
-      console.error(`Error loading content ${path}:`, error);
+      console.error(`Error loading ${url}:`, error);
       return null;
     }
   }
 
-  // Applique les contenus de contact (téléphone, email, adresse)
-  async function applyContactContent() {
-    const contact = await loadJSON('/content/contact.json');
-    if (!contact) return;
-
-    // Mise à jour du téléphone
-    document.querySelectorAll('[data-tel]').forEach(el => {
-      el.setAttribute('href', `tel:${contact.phoneHref}`);
-    });
-    document.querySelectorAll('[data-tel-text]').forEach(el => {
-      el.textContent = contact.phoneDisplay;
-    });
-
-    // Mise à jour de l'email
-    document.querySelectorAll('[data-mail]').forEach(el => {
-      el.setAttribute('href', `mailto:${contact.email}`);
-    });
-    document.querySelectorAll('[data-mail-text]').forEach(el => {
-      el.textContent = contact.email;
-    });
-
-    // Mise à jour des adresses
-    document.querySelectorAll('[data-address-street]').forEach(el => {
-      el.textContent = contact.street;
-    });
-    document.querySelectorAll('[data-address-city]').forEach(el => {
-      el.textContent = contact.city;
-    });
-    document.querySelectorAll('[data-address-zip]').forEach(el => {
-      el.textContent = contact.zip;
-    });
-    document.querySelectorAll('[data-address-full]').forEach(el => {
-      el.textContent = `${contact.street}, ${contact.zip} ${contact.city}`;
-    });
-
-    // Mise à jour de la province
-    document.querySelectorAll('[data-province]').forEach(el => {
-      el.textContent = contact.province;
-    });
-
-    // Mise à jour du JSON-LD
-    document.querySelectorAll('script[type="application/ld+json"][data-mail-json]').forEach(script => {
-      script.textContent = script.textContent.replace(/__AUDIRE_EMAIL__/g, contact.email);
-    });
-
-    console.log('✅ Contact content loaded');
+  // Récupère une valeur depuis un objet en utilisant une clé avec notation pointée
+  // Ex: "hero.title" => textes.home.hero.title
+  function getValueByKey(obj, key) {
+    const keys = key.split('.');
+    let value = obj;
+    for (const k of keys) {
+      if (value && typeof value === 'object') {
+        value = value[k];
+      } else {
+        return undefined;
+      }
+    }
+    return value;
   }
 
-  // Applique les contenus de la page d'accueil
-  async function applyHomepageContent() {
-    // Vérifie qu'on est sur la page d'accueil
-    if (window.location.pathname !== '/' && !window.location.pathname.endsWith('/index.html')) {
+  // Remplace le contenu des éléments avec data-content-key
+  function replacePageContent() {
+    if (!textes || !currentPage) return;
+
+    const pageData = textes[currentPage];
+    if (!pageData) {
+      console.warn(`No data found for page: ${currentPage}`);
       return;
     }
 
-    const homepage = await loadJSON('/content/pages/homepage.json');
-    if (!homepage) return;
+    // Trouve tous les éléments avec data-content-key
+    const elements = document.querySelectorAll('[data-content-key]');
 
-    // Mise à jour du titre H1
-    const h1 = document.querySelector('h1[data-content="title"]');
-    if (h1) h1.textContent = homepage.title;
+    elements.forEach(element => {
+      const key = element.getAttribute('data-content-key');
+      const value = getValueByKey(pageData, key);
 
-    // Mise à jour du sous-titre
-    const subtitle = document.querySelector('.lead[data-content="subtitle"]');
-    if (subtitle) subtitle.textContent = homepage.subtitle;
+      if (value !== undefined && value !== null) {
+        const type = element.getAttribute('data-content-type') || 'text';
 
-    // Mise à jour du kicker
-    const kicker = document.querySelector('.kicker span:last-child[data-content="kicker"]');
-    if (kicker) kicker.textContent = homepage.kicker;
+        switch (type) {
+          case 'html':
+            element.innerHTML = value;
+            break;
+          case 'text':
+            element.textContent = value;
+            break;
+          default:
+            element.textContent = value;
+        }
+      }
+    });
 
-    // Mise à jour des chips
-    const chipsContainer = document.querySelector('.chips[data-content="chips"]');
-    if (chipsContainer && homepage.chips) {
-      chipsContainer.innerHTML = homepage.chips
-        .map(chip => `<span class="chip">${chip}</span>`)
-        .join('');
-    }
-
-    // Mise à jour de la section "Ce qu'on fait"
-    if (homepage.whatWeDo) {
-      const sectionTitle = document.querySelector('[data-content="whatWeDo-title"]');
-      if (sectionTitle) sectionTitle.textContent = homepage.whatWeDo.title;
-
-      const sectionDesc = document.querySelector('[data-content="whatWeDo-description"]');
-      if (sectionDesc) sectionDesc.textContent = homepage.whatWeDo.description;
-    }
-
-    console.log('✅ Homepage content loaded');
+    console.log(`✅ Content loaded for page: ${currentPage}`);
   }
 
-  // Fonction principale
-  async function loadAllContent() {
-    await Promise.all([
-      applyContactContent(),
-      applyHomepageContent()
+  // Remplace les informations de configuration (téléphone, email, adresse, horaires)
+  function replaceConfig() {
+    if (!config) return;
+
+    // Téléphone
+    if (config.contact?.phone) {
+      document.querySelectorAll('[data-phone]').forEach(el => {
+        el.textContent = config.contact.phone.display;
+      });
+      document.querySelectorAll('[data-phone-href]').forEach(el => {
+        el.href = `tel:${config.contact.phone.href}`;
+      });
+      document.querySelectorAll('a[href^="tel:"]').forEach(el => {
+        // Mettre à jour tous les liens tel: si pas de data-phone-href
+        if (!el.hasAttribute('data-phone-href') && el.textContent.includes('04 ')) {
+          el.href = `tel:${config.contact.phone.href}`;
+          el.textContent = el.textContent.replace(/04\s*\d{3}\s*\d{2}\s*\d{2}/, config.contact.phone.display);
+        }
+      });
+    }
+
+    // Email
+    if (config.contact?.email) {
+      document.querySelectorAll('[data-email]').forEach(el => {
+        el.textContent = config.contact.email;
+        if (el.tagName === 'A') {
+          el.href = `mailto:${config.contact.email}`;
+        }
+      });
+      document.querySelectorAll('a[href^="mailto:"]').forEach(el => {
+        if (!el.hasAttribute('data-email')) {
+          el.href = `mailto:${config.contact.email}`;
+          if (el.textContent.includes('@')) {
+            el.textContent = config.contact.email;
+          }
+        }
+      });
+    }
+
+    // Adresse
+    if (config.contact?.address) {
+      const addr = config.contact.address;
+
+      document.querySelectorAll('[data-address-street]').forEach(el => {
+        el.textContent = addr.street;
+      });
+
+      document.querySelectorAll('[data-address-city]').forEach(el => {
+        el.textContent = `${addr.postalCode} ${addr.city}`;
+      });
+
+      document.querySelectorAll('[data-address-full]').forEach(el => {
+        el.textContent = `${addr.street}, ${addr.postalCode} ${addr.city}`;
+      });
+
+      document.querySelectorAll('[data-address-region]').forEach(el => {
+        el.textContent = addr.region;
+      });
+    }
+
+    console.log('✅ Configuration applied');
+  }
+
+  // Fonction principale d'initialisation
+  async function init() {
+    // Détecter la page actuelle
+    currentPage = detectCurrentPage();
+
+    if (!currentPage) {
+      console.log('Content loader: No matching page detected');
+      return;
+    }
+
+    console.log(`🔄 Loading content for page: ${currentPage}`);
+
+    // Charger les JSON en parallèle
+    [textes, config] = await Promise.all([
+      loadJSON('/audire/content/textes.json'),
+      loadJSON('/audire/content/config.json')
     ]);
 
-    // Dispatch un événement pour signaler que les contenus sont chargés
-    document.dispatchEvent(new CustomEvent('contentLoaded'));
-    console.log('✅ All content loaded and applied');
+    // Appliquer les contenus
+    replacePageContent();
+    replaceConfig();
+
+    // Dispatcher un événement pour signaler que le contenu est chargé
+    document.dispatchEvent(new CustomEvent('contentLoaded', {
+      detail: { page: currentPage }
+    }));
   }
 
-  // IMPORTANT: Attendre que les composants soient chargés AVANT d'appliquer les contenus
-  // Sinon, les éléments du header/footer n'existent pas encore !
-  document.addEventListener('componentsLoaded', () => {
-    console.log('🔄 Components loaded, now loading content...');
-    loadAllContent();
-  });
+  // Attendre que les composants (header, footer) soient chargés
+  // Puis charger le contenu
+  if (document.addEventListener) {
+    document.addEventListener('componentsLoaded', () => {
+      console.log('🔄 Components loaded, loading content...');
+      init();
+    });
 
-  // Fallback si l'événement componentsLoaded a déjà été dispatché
-  // (cas où content-loader.js se charge après components.js)
-  setTimeout(() => {
-    if (!document.querySelector('[data-tel]')) {
-      console.warn('⚠️ Retrying content load (components may have loaded before listener)');
-      loadAllContent();
-    }
-  }, 500);
+    // Fallback: Si componentsLoaded a déjà été dispatché ou n'existe pas
+    setTimeout(() => {
+      if (!textes) {
+        console.log('🔄 Fallback: Loading content anyway...');
+        init();
+      }
+    }, 1000);
+  }
+
 })();

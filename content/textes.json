@@ -1,116 +1,402 @@
 {
-  "hero": {
-    "kicker": "Centre auditif indépendant • Province de Liège",
-    "title": "Mieux \"(s')\" entendre, simplement.",
-    "subtitle": "Chez nous, on commence par comprendre votre quotidien et vos difficultés. Puis on vous propose une suite claire et sans pression. Test auditif gratuit, explications pédagogiques, réglages et suivi dans la durée.",
-    "chips": [
-      "Test gratuit et sans engagement",
-      "Explications claires, sans jargon",
-      "Oticon & Bernafon",
-      "Suivi personnalisé"
+  "home": {
+    "hero": {
+      "kicker": "Centre auditif indépendant • Province de Liège",
+      "title": "Mieux entendre, simplement.",
+      "subtitle": "Chez Audire, on commence par comprendre votre quotidien et vos difficultés. Puis on vous propose une suite claire et sans pression. Test auditif gratuit, explications pédagogiques, réglages et suivi dans la durée.",
+      "chips": [
+        "Test gratuit et sans engagement",
+        "Explications claires, sans jargon",
+        "Oticon & Bernafon",
+        "Suivi personnalisé"
+      ],
+      "note": "Vous hésitez ? Venez juste faire le point. Parfois la meilleure réponse est \"pas maintenant\" — et on vous le dira."
+    },
+    "whyAudire": {
+      "tag": "Notre approche",
+      "title": "Pourquoi choisir Audire ?",
+      "subtitle": "Parce que bien entendre, ce n'est pas qu'une question d'appareil. C'est une question d'accompagnement, d'écoute et de suivi dans la durée.",
+      "features": [
+        {
+          "icon": "👂",
+          "title": "Test auditif gratuit",
+          "description": "Un test complet et sans engagement pour comprendre votre audition. Nous prenons le temps d'expliquer les résultats clairement."
+        },
+        {
+          "icon": "💬",
+          "title": "Accompagnement humain",
+          "description": "Pas de jargon technique, pas de pression commerciale. Juste des explications claires et un accompagnement à votre rythme."
+        },
+        {
+          "icon": "🔧",
+          "title": "Suivi personnalisé",
+          "description": "Réglages progressifs, adaptations, suivi régulier. Nous restons à vos côtés pour que vous entendiez au mieux de vos capacités."
+        },
+        {
+          "icon": "🏆",
+          "title": "Solutions de qualité",
+          "description": "Nous travaillons avec Oticon et Bernafon, deux marques reconnues pour leur qualité et leur innovation technologique."
+        },
+        {
+          "icon": "🎯",
+          "title": "Centre indépendant",
+          "description": "Pas d'objectifs de vente, pas de réseau à satisfaire. Notre seul objectif : vous aider à mieux entendre."
+        },
+        {
+          "icon": "💰",
+          "title": "Transparence des prix",
+          "description": "Prix clairs, remboursements expliqués (INAMI + mutuelle). Pas de surprise, pas de frais cachés."
+        }
+      ]
+    },
+    "process": {
+      "tag": "Le processus",
+      "title": "Comment ça se passe ?",
+      "subtitle": "Un parcours simple et progressif, sans engagement. Vous gardez toujours le contrôle.",
+      "steps": [
+        {
+          "title": "Test auditif gratuit",
+          "description": "Un test complet (audiométrie) pour mesurer votre audition. Nous analysons vos difficultés au quotidien (TV, téléphone, conversations, bruit…). Gratuit, sans engagement, et vous repartez avec les résultats."
+        },
+        {
+          "title": "Explications et conseils",
+          "description": "On vous explique clairement ce qu'on a trouvé. Si un appareil n'est pas nécessaire, on vous le dit. Si ça peut aider, on vous propose un essai gratuit adapté à votre situation."
+        },
+        {
+          "title": "Essai et réglages",
+          "description": "Vous testez l'appareil chez vous, dans votre quotidien. On ajuste ensemble les réglages jusqu'à trouver le bon équilibre entre confort et efficacité. Vous prenez votre décision en toute connaissance de cause."
+        },
+        {
+          "title": "Suivi dans la durée",
+          "description": "Le vrai travail commence après l'achat : réglages fins, adaptations, nettoyage, conseils d'utilisation. Nous sommes là pour vous accompagner sur le long terme, pas juste pour une vente."
+        }
+      ]
+    },
+    "solutions": {
+      "tag": "Solutions",
+      "title": "Nos solutions auditives",
+      "subtitle": "Nous travaillons avec Oticon et Bernafon pour vous proposer des solutions adaptées à vos besoins et votre budget.",
+      "brands": [
+        {
+          "name": "Oticon",
+          "icon": "🎧",
+          "description": "Leader mondial de l'audition, Oticon propose des solutions innovantes reconnues pour leur qualité sonore exceptionnelle et leur technologie de pointe. Idéal pour les environnements bruyants et les conversations de groupe.",
+          "features": [
+            "Technologie BrainHearing™",
+            "Connectivité Bluetooth",
+            "Recharge lithium-ion",
+            "Design discret"
+          ]
+        },
+        {
+          "name": "Bernafon",
+          "icon": "🎵",
+          "description": "Marque suisse réputée pour son excellent rapport qualité-prix, Bernafon offre des appareils performants et fiables. Parfait pour un usage quotidien confortable avec une qualité sonore naturelle.",
+          "features": [
+            "Son naturel et équilibré",
+            "Facilité d'utilisation",
+            "Rapport qualité-prix excellent",
+            "Fiabilité suisse"
+          ]
+        }
+      ],
+      "note": "La discrétion n'est pas toujours synonyme de performance. Nous vous aidons à choisir l'appareil qui vous correspond vraiment, pas celui qui se voit le moins."
+    },
+    "pricing": {
+      "tag": "Remboursements",
+      "title": "Combien ça coûte vraiment ?",
+      "priceRange": "Les appareils auditifs coûtent entre 1 200 € et 3 500 € par oreille.",
+      "refund": "Mais grâce à l'INAMI et aux mutuelles, vous pouvez récupérer jusqu'à 840 € par oreille selon votre situation.",
+      "note": "Nous vous expliquons tout en détail lors de votre visite : conditions, démarches, délais. Transparence totale, zéro surprise."
+    },
+    "cta": {
+      "title": "Prêt à mieux entendre ?",
+      "description": "Prenez rendez-vous pour un test auditif gratuit et sans engagement. Ou appelez-nous directement, on se fera un plaisir de répondre à vos questions."
+    }
+  },
+
+  "test-auditif-gratuit": {
+    "hero": {
+      "kicker": "Gratuit et sans engagement",
+      "title": "Test auditif gratuit",
+      "subtitle": "Un test complet de votre audition, sans engagement et sans frais. Audiométrie professionnelle, analyse de vos difficultés au quotidien et explications claires des résultats.",
+      "chips": [
+        "100% gratuit",
+        "Sans engagement",
+        "Durée: 30 minutes",
+        "Résultats immédiats"
+      ]
+    },
+    "deroulement": {
+      "tag": "Le déroulement",
+      "title": "En quoi consiste le test auditif ?",
+      "subtitle": "Un test complet et professionnel pour comprendre précisément votre audition et vos difficultés au quotidien.",
+      "steps": [
+        {
+          "title": "Entretien initial (5 min)",
+          "description": "Nous commençons par discuter de vos difficultés au quotidien : TV trop forte, difficultés à suivre les conversations, gêne dans le bruit, etc. Cela nous permet de mieux comprendre votre situation et d'adapter le test."
+        },
+        {
+          "title": "Audiométrie tonale (15 min)",
+          "description": "Dans une cabine insonorisée, vous portez un casque et indiquez quand vous entendez des sons de différentes fréquences et intensités. Ce test mesure précisément votre capacité auditive sur chaque oreille."
+        },
+        {
+          "title": "Explication des résultats (10 min)",
+          "description": "Nous analysons ensemble les résultats sur un audiogramme. Nous vous expliquons clairement ce qu'on a trouvé, ce que ça signifie pour votre quotidien, et les solutions possibles (si nécessaire)."
+        },
+        {
+          "title": "Conseils et suite",
+          "description": "Si un appareil n'est pas nécessaire, on vous le dit franchement. Si ça peut aider, on vous propose un essai gratuit adapté à votre situation. Vous gardez toujours le contrôle, sans pression."
+        }
+      ]
+    },
+    "signes": {
+      "tag": "Les signes",
+      "title": "Pourquoi faire un test auditif ?",
+      "subtitle": "Voici les signes qui peuvent indiquer une perte auditive. Si vous en reconnaissez plusieurs, il est temps de faire un test.",
+      "signs": [
+        {
+          "icon": "📺",
+          "title": "Télévision trop forte",
+          "description": "Votre entourage vous demande régulièrement de baisser le volume de la TV ou de la radio."
+        },
+        {
+          "icon": "👥",
+          "title": "Conversations difficiles",
+          "description": "Vous avez du mal à suivre les conversations de groupe, surtout dans les endroits bruyants (restaurants, fêtes...)."
+        },
+        {
+          "icon": "🔁",
+          "title": "Faire répéter",
+          "description": "Vous devez souvent faire répéter vos interlocuteurs ou vous ne comprenez pas tout du premier coup."
+        },
+        {
+          "icon": "📞",
+          "title": "Téléphone difficile",
+          "description": "Vous avez des difficultés à comprendre au téléphone, surtout si la ligne n'est pas parfaite."
+        },
+        {
+          "icon": "😓",
+          "title": "Fatigue sociale",
+          "description": "Les réunions, repas de famille ou sorties vous fatiguent à cause de l'effort de concentration pour entendre."
+        },
+        {
+          "icon": "🚪",
+          "title": "Sons manqués",
+          "description": "Vous n'entendez pas toujours la sonnette, le téléphone, ou les voix aiguës (enfants, femmes)."
+        }
+      ],
+      "note": "La perte auditive est souvent progressive et invisible. On s'habitue sans s'en rendre compte. Un test permet de faire le point objectivement."
+    },
+    "faq": [
+      {
+        "question": "Le test est-il vraiment gratuit ?",
+        "answer": "Oui, absolument. Le test auditif est totalement gratuit, sans frais cachés et sans obligation d'achat. C'est un service que nous offrons pour vous aider à faire le point sur votre audition."
+      },
+      {
+        "question": "Combien de temps dure le test ?",
+        "answer": "Environ 30 minutes au total : 5 minutes d'entretien initial, 15 minutes de test audiométrique en cabine, et 10 minutes pour analyser et expliquer les résultats ensemble."
+      },
+      {
+        "question": "Dois-je me préparer pour le test ?",
+        "answer": "Non, aucune préparation particulière n'est nécessaire. Venez simplement tel que vous êtes. Si vous portez déjà des appareils auditifs, pensez à les apporter."
+      },
+      {
+        "question": "Est-ce que je repartirai avec les résultats ?",
+        "answer": "Oui, vous repartez avec votre audiogramme (le graphique de vos résultats) et nous vous expliquons tout en détail. Vous aurez une vision claire de votre situation auditive."
+      },
+      {
+        "question": "Et si je n'ai pas besoin d'appareil ?",
+        "answer": "Parfait ! On vous le dira franchement. Le but du test est de faire le point, pas de vendre à tout prix. Si votre audition est bonne ou si un appareil n'est pas nécessaire, on vous l'expliquera clairement."
+      },
+      {
+        "question": "Puis-je essayer un appareil après le test ?",
+        "answer": "Oui, si le test montre qu'un appareil peut vous aider, nous vous proposerons un essai gratuit à domicile, sans engagement. Vous pourrez ainsi tester dans votre quotidien avant de prendre une décision."
+      }
     ],
-    "note": "Vous hésitez ? Venez juste faire le point. Parfois la meilleure réponse est \"pas maintenant\" — et on vous le dira."
+    "cta": {
+      "title": "Prêt à faire le point sur votre audition ?",
+      "description": "Prenez rendez-vous pour un test auditif gratuit et sans engagement. 30 minutes pour comprendre votre audition et savoir où vous en êtes vraiment."
+    }
   },
-  "whyAudire": {
-    "tag": "Notre approche",
-    "title": "Pourquoi choisir Audire ?",
-    "subtitle": "Parce que bien entendre, ce n'est pas qu'une question d'appareil. C'est une question d'accompagnement, d'écoute et de suivi dans la durée.",
-    "features": [
+
+  "faq": {
+    "hero": {
+      "kicker": "Vos questions, nos réponses",
+      "title": "Questions fréquentes",
+      "subtitle": "Vous avez des questions sur les appareils auditifs, les tests, les remboursements ou notre centre ? Voici les réponses aux questions qu'on nous pose le plus souvent."
+    },
+    "sections": [
       {
-        "icon": "👂",
-        "title": "Test auditif gratuit",
-        "description": "Un test complet et sans engagement pour comprendre votre audition. Nous prenons le temps d'expliquer les résultats clairement."
-      },
-      {
-        "icon": "💬",
-        "title": "Accompagnement humain",
-        "description": "Pas de jargon technique, pas de pression commerciale. Juste des explications claires et un accompagnement à votre rythme."
-      },
-      {
-        "icon": "🔧",
-        "title": "Suivi personnalisé",
-        "description": "Réglages progressifs, adaptations, suivi régulier. Nous restons à vos côtés pour que vous entendiez au mieux de vos capacités."
-      },
-      {
-        "icon": "🏆",
-        "title": "Solutions de qualité",
-        "description": "Nous travaillons avec Oticon et Bernafon, deux marques reconnues pour leur qualité et leur innovation technologique."
-      },
-      {
-        "icon": "🎯",
-        "title": "Centre indépendant",
-        "description": "Pas d'objectifs de vente, pas de réseau à satisfaire. Notre seul objectif : vous aider à mieux entendre."
-      },
-      {
-        "icon": "💰",
-        "title": "Transparence des prix",
-        "description": "Prix clairs, remboursements expliqués (INAMI + mutuelle). Pas de surprise, pas de frais cachés."
-      }
-    ]
-  },
-  "process": {
-    "tag": "Le processus",
-    "title": "Comment ça se passe ?",
-    "subtitle": "Un parcours simple et progressif, sans engagement. Vous gardez toujours le contrôle.",
-    "steps": [
-      {
-        "title": "Test auditif gratuit",
-        "description": "Un test complet (audiométrie) pour mesurer votre audition. Nous analysons vos difficultés au quotidien (TV, téléphone, conversations, bruit…). Gratuit, sans engagement, et vous repartez avec les résultats."
-      },
-      {
-        "title": "Explications et conseils",
-        "description": "On vous explique clairement ce qu'on a trouvé. Si un appareil n'est pas nécessaire, on vous le dit. Si ça peut aider, on vous propose un essai gratuit adapté à votre situation."
-      },
-      {
-        "title": "Essai et réglages",
-        "description": "Vous testez l'appareil chez vous, dans votre quotidien. On ajuste ensemble les réglages jusqu'à trouver le bon équilibre entre confort et efficacité. Vous prenez votre décision en toute connaissance de cause."
-      },
-      {
-        "title": "Suivi dans la durée",
-        "description": "Le vrai travail commence après l'achat : réglages fins, adaptations, nettoyage, conseils d'utilisation. Nous sommes là pour vous accompagner sur le long terme, pas juste pour une vente."
-      }
-    ]
-  },
-  "solutions": {
-    "tag": "Solutions",
-    "title": "Nos solutions auditives",
-    "subtitle": "Nous travaillons avec Oticon et Bernafon pour vous proposer des solutions adaptées à vos besoins et votre budget.",
-    "brands": [
-      {
-        "name": "Oticon",
-        "icon": "🎧",
-        "description": "Leader mondial de l'audition, Oticon propose des solutions innovantes reconnues pour leur qualité sonore exceptionnelle et leur technologie de pointe. Idéal pour les environnements bruyants et les conversations de groupe.",
-        "features": [
-          "Technologie BrainHearing™",
-          "Connectivité Bluetooth",
-          "Recharge lithium-ion",
-          "Design discret"
+        "tag": "Test auditif",
+        "title": "Questions sur le test auditif",
+        "questions": [
+          {
+            "question": "Le test auditif est-il vraiment gratuit et sans engagement ?",
+            "answer": "Oui, absolument. Le test auditif dure environ 30 minutes, vous repartez avec les résultats, et vous ne devez rien acheter. Notre objectif est de vous donner une information claire sur votre audition, c'est tout."
+          },
+          {
+            "question": "Combien de temps dure le test ?",
+            "answer": "Environ 30 minutes au total : 5 minutes d'entretien initial pour comprendre vos difficultés, 15 minutes de test audiométrique en cabine, et 10 minutes pour analyser et expliquer les résultats ensemble."
+          },
+          {
+            "question": "Dois-je me préparer pour le test ?",
+            "answer": "Non, aucune préparation particulière n'est nécessaire. Venez simplement tel que vous êtes. Si vous portez déjà des appareils auditifs, pensez à les apporter pour que nous puissions vérifier leurs réglages."
+          },
+          {
+            "question": "Est-ce que je repartirai avec les résultats ?",
+            "answer": "Oui, vous repartez avec votre audiogramme (le graphique de vos résultats) et nous vous expliquons tout en détail. Vous aurez une vision claire de votre situation auditive et nous vous conseillons sur la suite."
+          },
+          {
+            "question": "À partir de quel âge peut-on faire un test ?",
+            "answer": "Il n'y a pas d'âge minimum ni maximum pour faire un test auditif. Nous testons aussi bien les enfants que les adultes et les seniors. L'important est de détecter une perte auditive le plus tôt possible."
+          },
+          {
+            "question": "Puis-je venir accompagné ?",
+            "answer": "Bien sûr ! Vous pouvez venir accompagné d'un proche (conjoint, enfant, ami...). C'est même conseillé, car vos proches remarquent souvent des choses que vous ne percevez pas vous-même."
+          }
         ]
       },
       {
-        "name": "Bernafon",
-        "icon": "🎵",
-        "description": "Marque suisse réputée pour son excellent rapport qualité-prix, Bernafon offre des appareils performants et fiables. Parfait pour un usage quotidien confortable avec une qualité sonore naturelle.",
-        "features": [
-          "Son naturel et équilibré",
-          "Facilité d'utilisation",
-          "Rapport qualité-prix excellent",
-          "Fiabilité suisse"
+        "tag": "Appareils",
+        "title": "Questions sur les appareils auditifs",
+        "questions": [
+          {
+            "question": "Combien coûte un appareil auditif ?",
+            "answer": "Entre 1 200 € et 3 500 € par oreille selon le modèle et les fonctionnalités. L'INAMI et les mutuelles remboursent jusqu'à 840 € par oreille selon votre situation. Nous vous expliquons tout en détail lors de votre visite. Le prix inclut l'appareil, les réglages, le suivi à vie et l'entretien."
+          },
+          {
+            "question": "Combien de temps dure l'adaptation à un appareil auditif ?",
+            "answer": "Cela varie selon les personnes, mais comptez généralement 2 à 3 mois pour une adaptation complète. Votre cerveau doit réapprendre à entendre des sons qu'il avait oubliés. Nous vous accompagnons avec des réglages réguliers jusqu'à ce que vous soyez parfaitement à l'aise."
+          },
+          {
+            "question": "Est-ce que les appareils auditifs se voient beaucoup ?",
+            "answer": "Les appareils modernes sont très discrets, mais la discrétion ne doit pas être votre seul critère. Un appareil plus visible peut être plus performant, plus facile à manipuler et mieux adapté à votre perte. Nous vous aidons à trouver le meilleur compromis entre discrétion et efficacité."
+          },
+          {
+            "question": "Quelle est la durée de vie d'un appareil auditif ?",
+            "answer": "En moyenne, un appareil auditif dure 5 à 7 ans. Tout dépend de l'entretien, de l'utilisation et des évolutions technologiques. Le remboursement INAMI est prévu tous les 5 ans, ce qui correspond à un cycle de renouvellement normal."
+          },
+          {
+            "question": "Puis-je porter mes appareils sous la douche ?",
+            "answer": "Non, même si les appareils modernes sont résistants à l'eau et à la transpiration (certification IP68), ils ne sont pas étanches. Il faut les retirer pour la douche, le bain ou la natation. En revanche, ils supportent très bien la transpiration et l'humidité du quotidien."
+          },
+          {
+            "question": "Les appareils auditifs ont-ils des piles ou une batterie ?",
+            "answer": "Cela dépend du modèle. Les appareils modernes proposent deux options : piles jetables (à changer toutes les semaines environ) ou batterie lithium-ion rechargeable (une charge nocturne = 24h d'autonomie). Nous vous conseillons selon vos préférences et votre dextérité."
+          },
+          {
+            "question": "Puis-je connecter mes appareils à mon smartphone ?",
+            "answer": "Oui, la plupart des appareils modernes (Oticon, Bernafon) disposent de la connectivité Bluetooth. Vous pouvez les connecter à votre smartphone (iPhone ou Android), votre TV, votre tablette... Les appels et la musique sont diffusés directement dans vos appareils auditifs."
+          }
+        ]
+      },
+      {
+        "tag": "Remboursements",
+        "title": "Questions sur les remboursements",
+        "questions": [
+          {
+            "question": "Ai-je droit au remboursement INAMI ?",
+            "answer": "Vous avez droit au remboursement INAMI si vous avez une prescription d'un médecin ORL et une perte auditive mesurée. Il n'y a pas de condition d'âge minimum. Le montant varie selon votre âge (moins de 18 ans ou plus) et le degré de perte auditive."
+          },
+          {
+            "question": "Combien vais-je récupérer ?",
+            "answer": "Cela dépend de votre situation : entre 400 € et 660 € de remboursement INAMI par oreille, plus 50 € à 180 € d'intervention de votre mutuelle. Au total, vous pouvez récupérer jusqu'à 840 € par oreille. Nous calculons avec vous votre remboursement personnalisé."
+          },
+          {
+            "question": "Combien de temps pour recevoir le remboursement ?",
+            "answer": "Généralement, votre mutuelle verse le remboursement (INAMI + intervention mutuelle) dans les 2 à 4 semaines après réception des documents. Les délais peuvent varier selon les mutuelles."
+          },
+          {
+            "question": "Puis-je me faire rembourser les deux oreilles ?",
+            "answer": "Oui, si votre perte auditive concerne les deux oreilles et que votre ORL prescrit deux appareils, vous pouvez bénéficier du remboursement pour chaque oreille (soit jusqu'à 1 680 € au total pour les deux oreilles)."
+          },
+          {
+            "question": "Le délai de 5 ans est-il strict ?",
+            "answer": "Oui, l'INAMI impose un délai de 5 ans minimum entre deux remboursements (sauf circonstances exceptionnelles : perte aggravée, appareil défectueux non réparable...). Si vous renouvelez avant 5 ans, vous ne serez pas remboursé."
+          },
+          {
+            "question": "Y a-t-il des frais cachés ?",
+            "answer": "Non. Le prix annoncé inclut tout : l'appareil, les réglages, le suivi à vie, l'entretien et les consommables (filtres, embouts, nettoyage...). Transparence totale, zéro surprise."
+          }
+        ]
+      },
+      {
+        "tag": "Centre Audire",
+        "title": "Questions sur notre centre",
+        "questions": [
+          {
+            "question": "Où êtes-vous situés ?",
+            "answer": "Nous sommes situés au 30, rue Grand-Vinâve à Jemeppe-sur-Meuse (4101), en province de Liège. Facile d'accès en voiture avec parking à proximité. À 10 minutes de Liège, 5 minutes de Seraing."
+          },
+          {
+            "question": "Quels sont vos horaires ?",
+            "answer": "Nous travaillons uniquement sur rendez-vous pour vous garantir un accueil personnalisé. Horaires : Lundi 13h-18h, Mardi à Samedi 9h30-18h. Appelez-nous au 04 233 61 25 pour prendre rendez-vous."
+          },
+          {
+            "question": "Proposez-vous un essai gratuit ?",
+            "answer": "Oui, si le test auditif montre qu'un appareil peut vous aider, nous vous proposons un essai gratuit à domicile, dans votre quotidien. Vous pouvez ainsi tester l'appareil en conditions réelles (1 à 4 semaines) avant de prendre une décision. Sans engagement."
+          },
+          {
+            "question": "Que signifie \"centre indépendant\" ?",
+            "answer": "Cela signifie que nous ne faisons partie d'aucune chaîne ou réseau. Nous n'avons pas d'objectifs de vente imposés, pas de pression commerciale. Notre seul objectif est de vous aider à mieux entendre, pas de vendre à tout prix."
+          },
+          {
+            "question": "Quelles marques proposez-vous ?",
+            "answer": "Nous travaillons avec Oticon et Bernafon, deux marques reconnues mondialement pour leur qualité, leur innovation et leur fiabilité. Nous avons choisi ces marques pour leur excellent rapport qualité-prix et leur service après-vente."
+          },
+          {
+            "question": "Assurez-vous le suivi après l'achat ?",
+            "answer": "Oui, le suivi est inclus à vie dans le prix de vos appareils. Réglages fins, adaptations, nettoyage, conseils, réparations courantes... Nous restons à vos côtés pendant toute la durée de vie de vos appareils. C'est notre engagement."
+          }
         ]
       }
     ],
-    "note": "La discrétion n'est pas toujours synonyme de performance. Nous vous aidons à choisir l'appareil qui vous correspond vraiment, pas celui qui se voit le moins."
+    "cta": {
+      "title": "Vous ne trouvez pas votre réponse ?",
+      "description": "Appelez-nous ou prenez rendez-vous. Nous répondons à toutes vos questions sans engagement."
+    }
   },
-  "pricing": {
-    "tag": "Remboursements",
-    "title": "Combien ça coûte vraiment ?",
-    "priceRange": "Les appareils auditifs coûtent entre 1 200 € et 3 500 € par oreille.",
-    "refund": "Mais grâce à l'INAMI et aux mutuelles, vous pouvez récupérer jusqu'à 840 € par oreille selon votre situation.",
-    "note": "Nous vous expliquons tout en détail lors de votre visite : conditions, démarches, délais. Transparence totale, zéro surprise."
-  },
-  "cta": {
-    "title": "Prêt à mieux entendre ?",
-    "description": "Prenez rendez-vous pour un test auditif gratuit et sans engagement. Ou appelez-nous directement, on se fera un plaisir de répondre à vos questions."
+
+  "contact": {
+    "hero": {
+      "kicker": "Jemeppe-sur-Meuse • Province de Liège",
+      "title": "Nous contacter",
+      "subtitle": "Une question ? Besoin d'un rendez-vous ? N'hésitez pas à nous contacter par téléphone, email ou en utilisant le formulaire ci-dessous. Nous vous répondons rapidement."
+    },
+    "infos": {
+      "tag": "Infos pratiques",
+      "title": "Comment nous trouver ?",
+      "parking": {
+        "title": "🚗 Parking",
+        "description": "Parking gratuit disponible à proximité immédiate du centre. Facile d'accès en voiture depuis Liège (10 min), Seraing (5 min), Flémalle ou Engis."
+      },
+      "transport": {
+        "title": "🚌 Transports en commun",
+        "description": "Arrêt de bus \"Jemeppe Vinâve\" à 2 minutes à pied. Lignes TEC desservant Jemeppe-sur-Meuse depuis Liège, Seraing et les communes environnantes."
+      }
+    },
+    "form": {
+      "tag": "Contactez-nous",
+      "title": "Envoyez-nous un message",
+      "subtitle": "Vous préférez nous écrire ? Remplissez le formulaire ci-dessous, nous vous répondrons dans les plus brefs délais."
+    },
+    "quick": {
+      "tag": "Contact rapide",
+      "title": "Par téléphone ou email",
+      "phone": {
+        "title": "Par téléphone",
+        "description": "Pour une réponse immédiate, appelez-nous directement. Nous sommes à votre écoute."
+      },
+      "email": {
+        "title": "Par email",
+        "description": "Envoyez-nous un email, nous vous répondrons dans les 24h (jours ouvrables)."
+      }
+    },
+    "cta": {
+      "title": "Prêt à prendre rendez-vous ?",
+      "description": "Appelez-nous ou utilisez notre formulaire de contact pour fixer un rendez-vous. Test auditif gratuit et sans engagement."
+    }
   }
 }
 
