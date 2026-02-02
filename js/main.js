@@ -78,6 +78,61 @@ class HeaderScroll {
   }
 }
 
+// ====== CHECK OPENING HOURS ======
+function updateOpenStatus() {
+  const indicator = $('#statusIndicator');
+  const statusText = $('#openStatus');
+
+  if (!indicator || !statusText) return;
+
+  const now = new Date();
+  const day = now.getDay(); // 0 = dimanche, 1 = lundi, etc.
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const currentTime = hours + minutes / 60;
+
+  let isOpen = false;
+  let statusMessage = '';
+
+  // Dimanche (0) = fermé
+  if (day === 0) {
+    isOpen = false;
+    statusMessage = 'Fermé • Dimanche';
+  }
+  // Lundi (1) = 13h-18h
+  else if (day === 1) {
+    if (currentTime >= 13 && currentTime < 18) {
+      isOpen = true;
+      statusMessage = 'Ouvert • Ferme à 18h';
+    } else if (currentTime < 13) {
+      statusMessage = 'Fermé • Ouvre à 13h';
+    } else {
+      statusMessage = 'Fermé • Ouvre demain à 9h30';
+    }
+  }
+  // Mardi à Samedi (2-6) = 9h30-18h
+  else if (day >= 2 && day <= 6) {
+    if (currentTime >= 9.5 && currentTime < 18) {
+      isOpen = true;
+      statusMessage = 'Ouvert • Ferme à 18h';
+    } else if (currentTime < 9.5) {
+      statusMessage = 'Fermé • Ouvre à 9h30';
+    } else {
+      const nextDay = day === 6 ? 'lundi à 13h' : 'demain à 9h30';
+      statusMessage = `Fermé • Ouvre ${nextDay}`;
+    }
+  }
+
+  // Mettre à jour l'indicateur
+  if (isOpen) {
+    indicator.classList.remove('closed');
+    statusText.textContent = statusMessage;
+  } else {
+    indicator.classList.add('closed');
+    statusText.textContent = statusMessage;
+  }
+}
+
 // ====== SMOOTH SCROLL FOR ANCHOR LINKS ======
 function initSmoothScroll() {
   $all('a[href^="#"]').forEach(anchor => {
@@ -107,6 +162,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialiser le smooth scroll
   initSmoothScroll();
+
+  // Mettre à jour le statut d'ouverture
+  updateOpenStatus();
+  // Mettre à jour toutes les 60 secondes
+  setInterval(updateOpenStatus, 60000);
 
   // Year
   const y = $("#year");
