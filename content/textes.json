@@ -1,7 +1,7 @@
 {
   "hero": {
     "kicker": "Centre auditif indépendant • Province de Liège",
-    "title": "Mieux entendre, simplement.",
+    "title": "Mieux (s')entendre, simplement.",
     "subtitle": "Chez Audire, on commence par comprendre votre quotidien et vos difficultés. Puis on vous propose une suite claire et sans pression. Test auditif gratuit, explications pédagogiques, réglages et suivi dans la durée.",
     "chips": [
       "Test gratuit et sans engagement",
@@ -11,7 +11,6 @@
     ],
     "note": "Vous hésitez ? Venez juste faire le point. Parfois la meilleure réponse est \"pas maintenant\" — et on vous le dira."
   },
-
   "whyAudire": {
     "tag": "Notre approche",
     "title": "Pourquoi choisir Audire ?",
@@ -49,7 +48,6 @@
       }
     ]
   },
-
   "process": {
     "tag": "Le processus",
     "title": "Comment ça se passe ?",
@@ -73,7 +71,6 @@
       }
     ]
   },
-
   "solutions": {
     "tag": "Solutions",
     "title": "Nos solutions auditives",
@@ -104,7 +101,6 @@
     ],
     "note": "La discrétion n'est pas toujours synonyme de performance. Nous vous aidons à choisir l'appareil qui vous correspond vraiment, pas celui qui se voit le moins."
   },
-
   "pricing": {
     "tag": "Remboursements",
     "title": "Combien ça coûte vraiment ?",
@@ -112,7 +108,6 @@
     "refund": "Mais grâce à l'INAMI et aux mutuelles, vous pouvez récupérer jusqu'à 840 € par oreille selon votre situation.",
     "note": "Nous vous expliquons tout en détail lors de votre visite : conditions, démarches, délais. Transparence totale, zéro surprise."
   },
-
   "cta": {
     "title": "Prêt à mieux entendre ?",
     "description": "Prenez rendez-vous pour un test auditif gratuit et sans engagement. Ou appelez-nous directement, on se fera un plaisir de répondre à vos questions."
