@@ -5,520 +5,822 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Éditeur de contenu - Audire</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#f4f4f4; color:#333; }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #f5f5f5;
-      color: #333;
-      line-height: 1.6;
-    }
+    /* ===== LOGIN ===== */
+    #loginScreen { display:flex; align-items:center; justify-content:center; min-height:100vh; background:linear-gradient(135deg,#FF8C42,#E67A2E); }
+    .login-card { background:#fff; padding:48px; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.3); width:100%; max-width:400px; text-align:center; }
+    .login-card h1 { font-size:26px; color:#FF8C42; margin-bottom:6px; }
+    .login-card .sub { color:#888; margin-bottom:28px; font-size:14px; }
+    .login-card input { width:100%; padding:13px 16px; font-size:15px; border:2px solid #e0e0e0; border-radius:8px; margin-bottom:14px; transition:.2s; }
+    .login-card input:focus { outline:none; border-color:#FF8C42; }
+    .login-card .login-btn { width:100%; padding:13px; font-size:16px; font-weight:600; color:#fff; background:#FF8C42; border:none; border-radius:8px; cursor:pointer; transition:.2s; }
+    .login-card .login-btn:hover { background:#E67A2E; }
+    .login-err { color:#d32f2f; font-size:13px; margin-top:10px; display:none; }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+    /* ===== EDITOR ===== */
+    #editorScreen { display:none; }
+    .top-bar { background:#fff; border-bottom:1px solid #ddd; padding:12px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10; }
+    .top-bar h1 { font-size:18px; color:#FF8C42; }
+    .top-bar .actions { display:flex; gap:10px; }
+    .btn { padding:9px 18px; font-size:13px; font-weight:600; border:none; border-radius:6px; cursor:pointer; transition:.15s; }
+    .btn-save { background:#FF8C42; color:#fff; }
+    .btn-save:hover { background:#E67A2E; }
+    .btn-save:disabled { background:#ccc; cursor:not-allowed; }
+    .btn-sec { background:#f0f0f0; color:#444; }
+    .btn-sec:hover { background:#e0e0e0; }
 
-    header {
-      background: linear-gradient(135deg, #FF8C42, #FFA059);
-      color: white;
-      padding: 30px;
-      border-radius: 16px;
-      margin-bottom: 30px;
-      box-shadow: 0 4px 20px rgba(255, 140, 66, 0.3);
-    }
+    /* ===== TABS ===== */
+    .tabs { background:#fff; border-bottom:1px solid #ddd; padding:0 24px; display:flex; gap:0; overflow-x:auto; }
+    .tab { flex-shrink:0; padding:14px 20px; font-size:13px; font-weight:500; color:#777; border-bottom:3px solid transparent; cursor:pointer; transition:.2s; white-space:nowrap; }
+    .tab:hover { color:#FF8C42; }
+    .tab.active { color:#FF8C42; border-bottom-color:#FF8C42; }
 
-    h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
-    }
+    /* ===== CONTENT ===== */
+    .content { max-width:960px; margin:0 auto; padding:24px; }
+    .tab-panel { display:none; } .tab-panel.active { display:block; }
+    .card { background:#fff; border-radius:10px; padding:24px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+    .card-head { font-size:16px; font-weight:700; color:#FF8C42; margin-bottom:16px; }
+    .fg { margin-bottom:16px; }
+    .fg label { display:block; font-size:13px; font-weight:600; color:#555; margin-bottom:5px; }
+    .fg input, .fg textarea, .fg select { width:100%; padding:10px 12px; font-size:14px; border:2px solid #e0e0e0; border-radius:6px; font-family:inherit; transition:.2s; }
+    .fg input:focus, .fg textarea:focus { outline:none; border-color:#FF8C42; }
+    .fg textarea { min-height:90px; resize:vertical; }
+    .fg .hint { font-size:11px; color:#999; margin-top:3px; }
+    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
 
-    .subtitle {
-      opacity: 0.95;
-      font-size: 16px;
-    }
+    /* ===== STATUS ===== */
+    .status { padding:11px 16px; border-radius:6px; font-size:13px; margin-bottom:16px; display:none; }
+    .status.ok { background:#e8f5e9; color:#2e7d32; border-left:4px solid #4caf50; }
+    .status.err { background:#ffebee; color:#c62828; border-left:4px solid #f44336; }
+    .status.info { background:#e3f2fd; color:#1565c0; border-left:4px solid #2196f3; }
 
-    .section {
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    }
+    /* ===== FAQ items ===== */
+    .faq-item { border:2px solid #eee; border-radius:8px; padding:14px; margin-bottom:12px; }
+    .faq-item-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    .faq-num { font-weight:700; color:#FF8C42; font-size:13px; }
+    .btn-rm { padding:4px 10px; font-size:11px; background:#ffebee; color:#d32f2f; border:none; border-radius:4px; cursor:pointer; }
+    .btn-rm:hover { background:#ffcdd2; }
+    .btn-add { padding:8px 14px; background:#e8f5e9; color:#2e7d32; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:13px; margin-top:8px; }
+    .btn-add:hover { background:#c8e6c9; }
 
-    .section h2 {
-      color: #FF8C42;
-      margin-bottom: 20px;
-      font-size: 24px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #555;
-      font-size: 14px;
-    }
-
-    input[type="text"],
-    textarea {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 15px;
-      transition: border-color 0.2s;
-    }
-
-    input[type="text"]:focus,
-    textarea:focus {
-      outline: none;
-      border-color: #FF8C42;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .chips-editor {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .chip-input {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .chip-input input {
-      flex: 1;
-    }
-
-    .btn-remove {
-      background: #ef4444;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background 0.2s;
-    }
-
-    .btn-remove:hover {
-      background: #dc2626;
-    }
-
-    .btn-add {
-      background: #10b981;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: background 0.2s;
-      margin-top: 10px;
-    }
-
-    .btn-add:hover {
-      background: #059669;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #FF8C42, #FFA059);
-      color: white;
-      border: none;
-      padding: 14px 32px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      box-shadow: 0 4px 16px rgba(255, 140, 66, 0.3);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(255, 140, 66, 0.4);
-    }
-
-    .actions {
-      display: flex;
-      gap: 15px;
-      margin-top: 30px;
-      flex-wrap: wrap;
-    }
-
-    .btn-secondary {
-      background: #6b7280;
-      color: white;
-      border: none;
-      padding: 14px 32px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      transition: background 0.2s;
-    }
-
-    .btn-secondary:hover {
-      background: #4b5563;
-    }
-
-    .alert {
-      padding: 16px 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      font-size: 15px;
-      display: none;
-    }
-
-    .alert.success {
-      background: #d1fae5;
-      color: #065f46;
-      border: 2px solid #10b981;
-    }
-
-    .alert.error {
-      background: #fee2e2;
-      color: #991b1b;
-      border: 2px solid #ef4444;
-    }
-
-    .alert.info {
-      background: #dbeafe;
-      color: #1e40af;
-      border: 2px solid #3b82f6;
-    }
-
-    .help-text {
-      font-size: 13px;
-      color: #6b7280;
-      margin-top: 5px;
-    }
-
-    .code {
-      background: #f3f4f6;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-family: monospace;
-      font-size: 13px;
-    }
+    /* spinner */
+    .spin { display:inline-block; width:14px; height:14px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:sp .5s linear infinite; margin-left:6px; vertical-align:middle; }
+    @keyframes sp { to { transform:rotate(360deg); } }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>🎨 Éditeur de contenu Audire</h1>
-      <p class="subtitle">Modifiez facilement les textes de votre site sans toucher au code</p>
-    </header>
 
-    <div class="alert info" id="infoAlert">
-      <strong>ℹ️ Comment ça marche :</strong> Modifiez les textes ci-dessous, puis cliquez sur "Télécharger le fichier". Remplacez ensuite <span class="code">/content/textes.json</span> sur votre serveur.
-    </div>
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <h1>Éditeur de contenu Audire</h1>
+    <p class="sub">Accès protégé par mot de passe</p>
+    <input type="password" id="pwInput" placeholder="Mot de passe" autocomplete="current-password" />
+    <button class="login-btn" onclick="doLogin()">Se connecter</button>
+    <div class="login-err" id="loginErr">Mot de passe incorrect</div>
+  </div>
+</div>
 
-    <div class="alert success" id="successAlert">
-      <strong>✅ Succès !</strong> Le fichier a été téléchargé. Remplacez maintenant <span class="code">/content/textes.json</span> sur votre serveur.
-    </div>
-
-    <div class="alert error" id="errorAlert"></div>
-
-    <!-- Hero Section -->
-    <div class="section">
-      <h2>🏠 Page d'accueil - Hero</h2>
-
-      <div class="form-group">
-        <label>Badge (kicker)</label>
-        <input type="text" id="hero-kicker" placeholder="Centre auditif indépendant • Province de Liège">
-      </div>
-
-      <div class="form-group">
-        <label>Titre principal (H1)</label>
-        <input type="text" id="hero-title" placeholder="Mieux entendre, simplement.">
-      </div>
-
-      <div class="form-group">
-        <label>Sous-titre (description)</label>
-        <textarea id="hero-subtitle" rows="4" placeholder="Chez Audire, on commence par..."></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>Chips (avantages rapides)</label>
-        <div id="chips-container" class="chips-editor"></div>
-        <button class="btn-add" onclick="addChip()">+ Ajouter un chip</button>
-      </div>
-
-      <div class="form-group">
-        <label>Note (sous les boutons)</label>
-        <input type="text" id="hero-note" placeholder="Vous hésitez ? Venez juste faire le point...">
-      </div>
-    </div>
-
-    <!-- Why Audire -->
-    <div class="section">
-      <h2>✨ Pourquoi choisir Audire</h2>
-
-      <div class="form-group">
-        <label>Tag</label>
-        <input type="text" id="why-tag" placeholder="Notre approche">
-      </div>
-
-      <div class="form-group">
-        <label>Titre</label>
-        <input type="text" id="why-title" placeholder="Pourquoi choisir Audire ?">
-      </div>
-
-      <div class="form-group">
-        <label>Sous-titre</label>
-        <textarea id="why-subtitle" rows="3"></textarea>
-      </div>
-    </div>
-
-    <!-- Process -->
-    <div class="section">
-      <h2>🔄 Le processus</h2>
-
-      <div class="form-group">
-        <label>Tag</label>
-        <input type="text" id="process-tag" placeholder="Le processus">
-      </div>
-
-      <div class="form-group">
-        <label>Titre</label>
-        <input type="text" id="process-title" placeholder="Comment ça se passe ?">
-      </div>
-
-      <div class="form-group">
-        <label>Sous-titre</label>
-        <textarea id="process-subtitle" rows="3"></textarea>
-      </div>
-    </div>
-
-    <!-- Pricing -->
-    <div class="section">
-      <h2>💰 Remboursements</h2>
-
-      <div class="form-group">
-        <label>Tag</label>
-        <input type="text" id="pricing-tag" placeholder="Remboursements">
-      </div>
-
-      <div class="form-group">
-        <label>Titre</label>
-        <input type="text" id="pricing-title" placeholder="Combien ça coûte vraiment ?">
-      </div>
-
-      <div class="form-group">
-        <label>Fourchette de prix</label>
-        <input type="text" id="pricing-range" placeholder="Les appareils auditifs coûtent entre 1 200 € et 3 500 € par oreille.">
-      </div>
-
-      <div class="form-group">
-        <label>Remboursement</label>
-        <input type="text" id="pricing-refund" placeholder="Mais grâce à l'INAMI...">
-      </div>
-
-      <div class="form-group">
-        <label>Note</label>
-        <textarea id="pricing-note" rows="2"></textarea>
-      </div>
-    </div>
-
-    <!-- CTA -->
-    <div class="section">
-      <h2>📣 Appel à l'action final</h2>
-
-      <div class="form-group">
-        <label>Titre</label>
-        <input type="text" id="cta-title" placeholder="Prêt à mieux entendre ?">
-      </div>
-
-      <div class="form-group">
-        <label>Description</label>
-        <textarea id="cta-description" rows="3"></textarea>
-      </div>
-    </div>
-
+<!-- EDITOR -->
+<div id="editorScreen">
+  <div class="top-bar">
+    <h1>Éditeur Audire</h1>
     <div class="actions">
-      <button class="btn-primary" onclick="downloadJSON()">💾 Télécharger le fichier JSON</button>
-      <button class="btn-secondary" onclick="resetForm()">🔄 Réinitialiser</button>
+      <button class="btn btn-sec" onclick="reloadAll()">↻ Recharger</button>
+      <button class="btn btn-save" id="saveBtn" onclick="saveAll()">💾 Sauvegarder sur GitHub</button>
+      <button class="btn btn-sec" onclick="doLogout()">Déco</button>
     </div>
   </div>
 
-  <script>
-    // Données par défaut
-    let defaultData = null;
+  <!-- TABS -->
+  <div class="tabs" id="tabBar"></div>
 
-    // Charger les données depuis le JSON
-    async function loadData() {
-      try {
-        const response = await fetch('/audire/content/textes.json');
-        const data = await response.json();
-        defaultData = data;
-        populateForm(data);
-        document.getElementById('infoAlert').style.display = 'block';
-      } catch (error) {
-        console.error('Erreur chargement:', error);
-        showError('Impossible de charger le fichier textes.json');
-      }
-    }
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="status" id="statusMsg"></div>
 
-    // Remplir le formulaire
-    function populateForm(data) {
-      // Hero
-      document.getElementById('hero-kicker').value = data.hero.kicker || '';
-      document.getElementById('hero-title').value = data.hero.title || '';
-      document.getElementById('hero-subtitle').value = data.hero.subtitle || '';
-      document.getElementById('hero-note').value = data.hero.note || '';
+    <!-- ⚙️ CONFIG -->
+    <div class="tab-panel active" id="panel-config">
+      <div class="card">
+        <div class="card-head">📞 Contact</div>
+        <div class="row3">
+          <div class="fg"><label>Téléphone (affichage)</label><input id="c-phone-disp" /></div>
+          <div class="fg"><label>Téléphone (lien)</label><input id="c-phone-href" /><div class="hint">Ex: +3242336125</div></div>
+          <div class="fg"><label>Email</label><input id="c-email" type="email" /></div>
+        </div>
+        <div class="fg"><label>Rue</label><input id="c-addr-street" /></div>
+        <div class="row3">
+          <div class="fg"><label>Code postal</label><input id="c-addr-zip" /></div>
+          <div class="fg"><label>Ville</label><input id="c-addr-city" /></div>
+          <div class="fg"><label>Région</label><input id="c-addr-region" /></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">⏰ Horaires</div>
+        <div class="row2">
+          <div class="fg"><label>Lundi</label><input id="c-h-mon" /></div>
+          <div class="fg"><label>Mardi</label><input id="c-h-tue" /></div>
+          <div class="fg"><label>Mercredi</label><input id="c-h-wed" /></div>
+          <div class="fg"><label>Jeudi</label><input id="c-h-thu" /></div>
+          <div class="fg"><label>Vendredi</label><input id="c-h-fri" /></div>
+          <div class="fg"><label>Samedi</label><input id="c-h-sat" /></div>
+          <div class="fg"><label>Dimanche</label><input id="c-h-sun" /></div>
+          <div class="fg"><label>Note</label><input id="c-h-note" /></div>
+        </div>
+      </div>
+    </div>
 
-      // Chips
-      const chipsContainer = document.getElementById('chips-container');
-      chipsContainer.innerHTML = '';
-      data.hero.chips.forEach(chip => {
-        addChip(chip);
+    <!-- 🏠 HOME -->
+    <div class="tab-panel" id="panel-home">
+      <div class="card">
+        <div class="card-head">Hero</div>
+        <div class="fg"><label>Kicker</label><input id="h-hero-kicker" /></div>
+        <div class="fg"><label>Titre</label><input id="h-hero-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="h-hero-subtitle"></textarea></div>
+        <div class="fg"><label>Note</label><textarea id="h-hero-note" style="min-height:50px"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Pourquoi Audire</div>
+        <div class="fg"><label>Tag</label><input id="h-why-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="h-why-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="h-why-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Le processus</div>
+        <div class="fg"><label>Tag</label><input id="h-proc-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="h-proc-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="h-proc-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Solutions</div>
+        <div class="fg"><label>Tag</label><input id="h-sol-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="h-sol-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="h-sol-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Remboursements</div>
+        <div class="fg"><label>Tag</label><input id="h-pri-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="h-pri-title" /></div>
+        <div class="fg"><label>Fourchette prix</label><input id="h-pri-range" /></div>
+        <div class="fg"><label>Remboursement</label><input id="h-pri-refund" /></div>
+        <div class="fg"><label>Note</label><textarea id="h-pri-note" style="min-height:50px"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">CTA final</div>
+        <div class="fg"><label>Titre</label><input id="h-cta-title" /></div>
+        <div class="fg"><label>Description</label><textarea id="h-cta-desc"></textarea></div>
+      </div>
+    </div>
+
+    <!-- 👂 TEST AUDITIF -->
+    <div class="tab-panel" id="panel-test">
+      <div class="card">
+        <div class="card-head">Hero</div>
+        <div class="fg"><label>Kicker</label><input id="t-hero-kicker" /></div>
+        <div class="fg"><label>Titre</label><input id="t-hero-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="t-hero-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Le déroulement</div>
+        <div class="fg"><label>Tag</label><input id="t-der-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="t-der-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="t-der-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Les signes</div>
+        <div class="fg"><label>Tag</label><input id="t-sig-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="t-sig-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="t-sig-subtitle"></textarea></div>
+        <div class="fg"><label>Note</label><textarea id="t-sig-note" style="min-height:50px"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">CTA</div>
+        <div class="fg"><label>Titre</label><input id="t-cta-title" /></div>
+        <div class="fg"><label>Description</label><textarea id="t-cta-desc"></textarea></div>
+      </div>
+    </div>
+
+    <!-- 👂 NOTRE ACCOMPAGNEMENT -->
+    <div class="tab-panel" id="panel-accompagnement">
+      <div class="card">
+        <div class="card-head">Hero</div>
+        <div class="fg"><label>Kicker</label><input id="a-hero-kicker" /></div>
+        <div class="fg"><label>Titre</label><input id="a-hero-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="a-hero-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Le parcours</div>
+        <div class="fg"><label>Tag</label><input id="a-par-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="a-par-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="a-par-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Notre philosophie</div>
+        <div class="fg"><label>Tag</label><input id="a-phi-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="a-phi-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="a-phi-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Pourquoi l'accompagnement est crucial</div>
+        <div class="fg"><label>Tag</label><input id="a-imp-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="a-imp-title" /></div>
+      </div>
+      <div class="card">
+        <div class="card-head">CTA</div>
+        <div class="fg"><label>Titre</label><input id="a-cta-title" /></div>
+        <div class="fg"><label>Description</label><textarea id="a-cta-desc"></textarea></div>
+      </div>
+    </div>
+
+    <!-- 🎧 SOLUTIONS -->
+    <div class="tab-panel" id="panel-solutions">
+      <div class="card">
+        <div class="card-head">Hero</div>
+        <div class="fg"><label>Kicker</label><input id="s-hero-kicker" /></div>
+        <div class="fg"><label>Titre</label><input id="s-hero-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="s-hero-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Nos marques</div>
+        <div class="fg"><label>Tag</label><input id="s-mar-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="s-mar-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="s-mar-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Types d'appareils</div>
+        <div class="fg"><label>Tag</label><input id="s-typ-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="s-typ-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="s-typ-subtitle"></textarea></div>
+        <div class="fg"><label>Note</label><textarea id="s-typ-note" style="min-height:50px"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Innovation</div>
+        <div class="fg"><label>Tag</label><input id="s-inn-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="s-inn-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="s-inn-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Prix</div>
+        <div class="fg"><label>Titre</label><input id="s-prix-title" /></div>
+        <div class="fg"><label>Description</label><textarea id="s-prix-desc"></textarea></div>
+        <div class="fg"><label>Note</label><textarea id="s-prix-note" style="min-height:50px"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">CTA</div>
+        <div class="fg"><label>Titre</label><input id="s-cta-title" /></div>
+        <div class="fg"><label>Description</label><textarea id="s-cta-desc"></textarea></div>
+      </div>
+    </div>
+
+    <!-- 💰 REMBOURSEMENTS -->
+    <div class="tab-panel" id="panel-remboursements">
+      <div class="card">
+        <div class="card-head">Hero</div>
+        <div class="fg"><label>Kicker</label><input id="r-hero-kicker" /></div>
+        <div class="fg"><label>Titre</label><input id="r-hero-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="r-hero-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">INAMI</div>
+        <div class="fg"><label>Tag</label><input id="r-in-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="r-in-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="r-in-subtitle"></textarea></div>
+        <div class="fg"><label>Conditions</label><textarea id="r-in-conditions" style="min-height:50px"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Mutuelle</div>
+        <div class="fg"><label>Tag</label><input id="r-mu-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="r-mu-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="r-mu-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Exemple de calcul</div>
+        <div class="fg"><label>Tag</label><input id="r-ex-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="r-ex-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="r-ex-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Démarches</div>
+        <div class="fg"><label>Tag</label><input id="r-dm-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="r-dm-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="r-dm-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">CTA</div>
+        <div class="fg"><label>Titre</label><input id="r-cta-title" /></div>
+        <div class="fg"><label>Description</label><textarea id="r-cta-desc"></textarea></div>
+      </div>
+    </div>
+
+    <!-- ❓ FAQ -->
+    <div class="tab-panel" id="panel-faq">
+      <div class="card">
+        <div class="card-head">Hero</div>
+        <div class="fg"><label>Kicker</label><input id="f-hero-kicker" /></div>
+        <div class="fg"><label>Titre</label><input id="f-hero-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="f-hero-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Questions & Réponses</div>
+        <p style="color:#666;font-size:13px;margin-bottom:12px;">Les Q&A sont organisées par section. Vous pouvez en ajouter ou en supprimer.</p>
+        <div id="faq-sections"></div>
+      </div>
+      <div class="card">
+        <div class="card-head">CTA</div>
+        <div class="fg"><label>Titre</label><input id="f-cta-title" /></div>
+        <div class="fg"><label>Description</label><textarea id="f-cta-desc"></textarea></div>
+      </div>
+    </div>
+
+    <!-- 📞 CONTACT -->
+    <div class="tab-panel" id="panel-contact">
+      <div class="card">
+        <div class="card-head">Hero</div>
+        <div class="fg"><label>Kicker</label><input id="ct-hero-kicker" /></div>
+        <div class="fg"><label>Titre</label><input id="ct-hero-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="ct-hero-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Infos pratiques</div>
+        <div class="fg"><label>Tag</label><input id="ct-inf-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="ct-inf-title" /></div>
+        <div class="row2">
+          <div class="fg"><label>Parking - Titre</label><input id="ct-park-title" /></div>
+          <div class="fg"><label>Parking - Texte</label><textarea id="ct-park-desc" style="min-height:50px"></textarea></div>
+        </div>
+        <div class="row2">
+          <div class="fg"><label>Transport - Titre</label><input id="ct-trans-title" /></div>
+          <div class="fg"><label>Transport - Texte</label><textarea id="ct-trans-desc" style="min-height:50px"></textarea></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">Formulaire</div>
+        <div class="fg"><label>Tag</label><input id="ct-form-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="ct-form-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="ct-form-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Contact rapide</div>
+        <div class="fg"><label>Tag</label><input id="ct-qk-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="ct-qk-title" /></div>
+        <div class="row2">
+          <div class="fg"><label>Téléphone - Titre</label><input id="ct-ph-title" /></div>
+          <div class="fg"><label>Téléphone - Texte</label><textarea id="ct-ph-desc" style="min-height:50px"></textarea></div>
+        </div>
+        <div class="row2">
+          <div class="fg"><label>Email - Titre</label><input id="ct-em-title" /></div>
+          <div class="fg"><label>Email - Texte</label><textarea id="ct-em-desc" style="min-height:50px"></textarea></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">CTA</div>
+        <div class="fg"><label>Titre</label><input id="ct-cta-title" /></div>
+        <div class="fg"><label>Description</label><textarea id="ct-cta-desc"></textarea></div>
+      </div>
+    </div>
+
+    <!-- 🤝 PHARMACIENS -->
+    <div class="tab-panel" id="panel-pharmaciens">
+      <div class="card">
+        <div class="card-head">Hero</div>
+        <div class="fg"><label>Kicker</label><input id="p-hero-kicker" /></div>
+        <div class="fg"><label>Titre</label><input id="p-hero-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="p-hero-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Le concept</div>
+        <div class="fg"><label>Tag</label><input id="p-con-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="p-con-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="p-con-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Avantages</div>
+        <div class="fg"><label>Tag</label><input id="p-av-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="p-av-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="p-av-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Conditions</div>
+        <div class="fg"><label>Tag</label><input id="p-cond-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="p-cond-title" /></div>
+        <div class="fg"><label>Sous-titre</label><textarea id="p-cond-subtitle"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Support</div>
+        <div class="fg"><label>Tag</label><input id="p-sup-tag" /></div>
+        <div class="fg"><label>Titre</label><input id="p-sup-title" /></div>
+      </div>
+      <div class="card">
+        <div class="card-head">CTA</div>
+        <div class="fg"><label>Titre</label><input id="p-cta-title" /></div>
+        <div class="fg"><label>Description</label><textarea id="p-cta-desc"></textarea></div>
+        <div class="fg"><label>Zone de déplacement</label><input id="p-cta-zone" /></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+// Mot de passe : changez ici !
+const PASSWORD = 'audire2026';
+
+// GitHub infos
+const GITHUB_OWNER = 'PlaywithPY';
+const GITHUB_REPO  = 'audire';
+const GITHUB_BRANCH = 'claude/audire-website-redesign-xqUXz';
+
+// ===== STATE =====
+let cfg = {}, txt = {};
+let ghToken = null; // sera demandé la première fois
+
+// ===== TABS CONFIG =====
+const TABS = [
+  { id: 'config',         label: '⚙️ Configuration' },
+  { id: 'home',           label: '🏠 Accueil' },
+  { id: 'test',           label: '👂 Test auditif' },
+  { id: 'accompagnement', label: '🤝 Accompagnement' },
+  { id: 'solutions',      label: '🎧 Solutions' },
+  { id: 'remboursements', label: '💰 Remboursements' },
+  { id: 'faq',            label: '❓ FAQ' },
+  { id: 'contact',        label: '📞 Contact' },
+  { id: 'pharmaciens',    label: '🏪 Pharmaciens' },
+];
+
+// ===== AUTH =====
+function doLogin() {
+  if (document.getElementById('pwInput').value === PASSWORD) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('editorScreen').style.display = 'block';
+    buildTabs();
+    reloadAll();
+  } else {
+    const e = document.getElementById('loginErr');
+    e.style.display = 'block';
+    setTimeout(() => e.style.display = 'none', 3000);
+  }
+}
+function doLogout() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('editorScreen').style.display = 'none';
+  document.getElementById('pwInput').value = '';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pwInput').addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+});
+
+// ===== TABS =====
+let activeTab = 'config';
+function buildTabs() {
+  const bar = document.getElementById('tabBar');
+  bar.innerHTML = TABS.map(t =>
+    `<div class="tab ${t.id === activeTab ? 'active' : ''}" onclick="switchTab('${t.id}')">${t.label}</div>`
+  ).join('');
+}
+function switchTab(id) {
+  activeTab = id;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + id).classList.add('active');
+}
+
+// ===== LOAD DATA =====
+async function reloadAll() {
+  showStatus('Chargement...', 'info');
+  try {
+    const [cr, tr] = await Promise.all([
+      fetch('/audire/content/config.json').then(r => r.json()),
+      fetch('/audire/content/textes.json').then(r => r.json())
+    ]);
+    cfg = cr; txt = tr;
+    fillConfig();
+    fillTextes();
+    showStatus('Données chargées ✓', 'ok');
+  } catch(e) {
+    showStatus('Erreur chargement : ' + e.message, 'err');
+  }
+}
+
+// ===== FILL FORMS =====
+function v(id, val) { const el = document.getElementById(id); if (el && val != null) el.value = val; }
+
+function fillConfig() {
+  v('c-phone-disp', cfg.contact?.phone?.display);
+  v('c-phone-href', cfg.contact?.phone?.href);
+  v('c-email',      cfg.contact?.email);
+  v('c-addr-street', cfg.contact?.address?.street);
+  v('c-addr-zip',    cfg.contact?.address?.postalCode);
+  v('c-addr-city',   cfg.contact?.address?.city);
+  v('c-addr-region', cfg.contact?.address?.region);
+  v('c-h-mon', cfg.hours?.monday?.display);
+  v('c-h-tue', cfg.hours?.tuesday?.display);
+  v('c-h-wed', cfg.hours?.wednesday?.display);
+  v('c-h-thu', cfg.hours?.thursday?.display);
+  v('c-h-fri', cfg.hours?.friday?.display);
+  v('c-h-sat', cfg.hours?.saturday?.display);
+  v('c-h-sun', cfg.hours?.sunday?.display);
+  v('c-h-note', cfg.hours?.note);
+}
+
+function fillTextes() {
+  const h = txt.home || {}, t = txt['test-auditif-gratuit'] || {},
+        a = txt['notre-accompagnement'] || {}, s = txt['solutions-auditives'] || {},
+        r = txt.remboursements || {}, f = txt.faq || {},
+        c = txt.contact || {}, p = txt['partenaires-pharmaciens'] || {};
+
+  // HOME
+  v('h-hero-kicker', h.hero?.kicker); v('h-hero-title', h.hero?.title);
+  v('h-hero-subtitle', h.hero?.subtitle); v('h-hero-note', h.hero?.note);
+  v('h-why-tag', h.whyAudire?.tag); v('h-why-title', h.whyAudire?.title); v('h-why-subtitle', h.whyAudire?.subtitle);
+  v('h-proc-tag', h.process?.tag); v('h-proc-title', h.process?.title); v('h-proc-subtitle', h.process?.subtitle);
+  v('h-sol-tag', h.solutions?.tag); v('h-sol-title', h.solutions?.title); v('h-sol-subtitle', h.solutions?.subtitle);
+  v('h-pri-tag', h.pricing?.tag); v('h-pri-title', h.pricing?.title);
+  v('h-pri-range', h.pricing?.priceRange); v('h-pri-refund', h.pricing?.refund); v('h-pri-note', h.pricing?.note);
+  v('h-cta-title', h.cta?.title); v('h-cta-desc', h.cta?.description);
+
+  // TEST AUDITIF
+  v('t-hero-kicker', t.hero?.kicker); v('t-hero-title', t.hero?.title); v('t-hero-subtitle', t.hero?.subtitle);
+  v('t-der-tag', t.deroulement?.tag); v('t-der-title', t.deroulement?.title); v('t-der-subtitle', t.deroulement?.subtitle);
+  v('t-sig-tag', t.signes?.tag); v('t-sig-title', t.signes?.title); v('t-sig-subtitle', t.signes?.subtitle); v('t-sig-note', t.signes?.note);
+  v('t-cta-title', t.cta?.title); v('t-cta-desc', t.cta?.description);
+
+  // ACCOMPAGNEMENT
+  v('a-hero-kicker', a.hero?.kicker); v('a-hero-title', a.hero?.title); v('a-hero-subtitle', a.hero?.subtitle);
+  v('a-par-tag', a.parcours?.tag); v('a-par-title', a.parcours?.title); v('a-par-subtitle', a.parcours?.subtitle);
+  v('a-phi-tag', a.philosophie?.tag); v('a-phi-title', a.philosophie?.title); v('a-phi-subtitle', a.philosophie?.subtitle);
+  v('a-imp-tag', a.importance?.tag); v('a-imp-title', a.importance?.title);
+  v('a-cta-title', a.cta?.title); v('a-cta-desc', a.cta?.description);
+
+  // SOLUTIONS
+  v('s-hero-kicker', s.hero?.kicker); v('s-hero-title', s.hero?.title); v('s-hero-subtitle', s.hero?.subtitle);
+  v('s-mar-tag', s.marques?.tag); v('s-mar-title', s.marques?.title); v('s-mar-subtitle', s.marques?.subtitle);
+  v('s-typ-tag', s.types?.tag); v('s-typ-title', s.types?.title); v('s-typ-subtitle', s.types?.subtitle); v('s-typ-note', s.types?.note);
+  v('s-inn-tag', s.innovation?.tag); v('s-inn-title', s.innovation?.title); v('s-inn-subtitle', s.innovation?.subtitle);
+  v('s-prix-title', s.prix?.title); v('s-prix-desc', s.prix?.description); v('s-prix-note', s.prix?.note);
+  v('s-cta-title', s.cta?.title); v('s-cta-desc', s.cta?.description);
+
+  // REMBOURSEMENTS
+  v('r-hero-kicker', r.hero?.kicker); v('r-hero-title', r.hero?.title); v('r-hero-subtitle', r.hero?.subtitle);
+  v('r-in-tag', r.inami?.tag); v('r-in-title', r.inami?.title); v('r-in-subtitle', r.inami?.subtitle); v('r-in-conditions', r.inami?.conditions);
+  v('r-mu-tag', r.mutuelle?.tag); v('r-mu-title', r.mutuelle?.title); v('r-mu-subtitle', r.mutuelle?.subtitle);
+  v('r-ex-tag', r.exemple?.tag); v('r-ex-title', r.exemple?.title); v('r-ex-subtitle', r.exemple?.subtitle);
+  v('r-dm-tag', r.demarches?.tag); v('r-dm-title', r.demarches?.title); v('r-dm-subtitle', r.demarches?.subtitle);
+  v('r-cta-title', r.cta?.title); v('r-cta-desc', r.cta?.description);
+
+  // FAQ
+  v('f-hero-kicker', f.hero?.kicker); v('f-hero-title', f.hero?.title); v('f-hero-subtitle', f.hero?.subtitle);
+  v('f-cta-title', f.cta?.title); v('f-cta-desc', f.cta?.description);
+  buildFAQSections(f.sections || []);
+
+  // CONTACT
+  v('ct-hero-kicker', c.hero?.kicker); v('ct-hero-title', c.hero?.title); v('ct-hero-subtitle', c.hero?.subtitle);
+  v('ct-inf-tag', c.infos?.tag); v('ct-inf-title', c.infos?.title);
+  v('ct-park-title', c.infos?.parking?.title); v('ct-park-desc', c.infos?.parking?.description);
+  v('ct-trans-title', c.infos?.transport?.title); v('ct-trans-desc', c.infos?.transport?.description);
+  v('ct-form-tag', c.form?.tag); v('ct-form-title', c.form?.title); v('ct-form-subtitle', c.form?.subtitle);
+  v('ct-qk-tag', c.quick?.tag); v('ct-qk-title', c.quick?.title);
+  v('ct-ph-title', c.quick?.phone?.title); v('ct-ph-desc', c.quick?.phone?.description);
+  v('ct-em-title', c.quick?.email?.title); v('ct-em-desc', c.quick?.email?.description);
+  v('ct-cta-title', c.cta?.title); v('ct-cta-desc', c.cta?.description);
+
+  // PHARMACIENS
+  v('p-hero-kicker', p.hero?.kicker); v('p-hero-title', p.hero?.title); v('p-hero-subtitle', p.hero?.subtitle);
+  v('p-con-tag', p.concept?.tag); v('p-con-title', p.concept?.title); v('p-con-subtitle', p.concept?.subtitle);
+  v('p-av-tag', p.avantages?.tag); v('p-av-title', p.avantages?.title); v('p-av-subtitle', p.avantages?.subtitle);
+  v('p-cond-tag', p.conditions?.tag); v('p-cond-title', p.conditions?.title); v('p-cond-subtitle', p.conditions?.subtitle);
+  v('p-sup-tag', p.support?.tag); v('p-sup-title', p.support?.title);
+  v('p-cta-title', p.cta?.title); v('p-cta-desc', p.cta?.description); v('p-cta-zone', p.cta?.zone);
+}
+
+// ===== FAQ dynamic Q&A =====
+function buildFAQSections(sections) {
+  const container = document.getElementById('faq-sections');
+  container.innerHTML = '';
+  sections.forEach((section, si) => {
+    let html = `<div style="margin-bottom:20px;border:2px solid #eee;border-radius:8px;padding:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <strong style="color:#FF8C42;">${section.title}</strong>
+      </div>`;
+    (section.questions || []).forEach((q, qi) => {
+      html += `<div class="faq-item">
+        <div class="faq-item-top">
+          <span class="faq-num">Q${qi+1}</span>
+          <button class="btn-rm" onclick="removeFAQ(${si},${qi})">✕ Supprimer</button>
+        </div>
+        <div class="fg"><label>Question</label><input class="faq-q" data-s="${si}" data-q="${qi}" value="${q.question.replace(/"/g,'&quot;')}" /></div>
+        <div class="fg"><label>Réponse</label><textarea class="faq-a" data-s="${si}" data-q="${qi}">${q.answer}</textarea></div>
+      </div>`;
+    });
+    html += `<button class="btn-add" onclick="addFAQ(${si})">+ Ajouter une question</button></div>`;
+    container.innerHTML += html;
+  });
+}
+function removeFAQ(si, qi) {
+  if (!txt.faq?.sections?.[si]?.questions) return;
+  txt.faq.sections[si].questions.splice(qi, 1);
+  buildFAQSections(txt.faq.sections);
+}
+function addFAQ(si) {
+  if (!txt.faq?.sections?.[si]) return;
+  txt.faq.sections[si].questions.push({ question: '', answer: '' });
+  buildFAQSections(txt.faq.sections);
+}
+
+// ===== COLLECT DATA =====
+function g(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+
+function collectAll() {
+  // Config
+  cfg.contact = {
+    phone: { display: g('c-phone-disp'), href: g('c-phone-href') },
+    email: g('c-email'),
+    address: { street: g('c-addr-street'), postalCode: g('c-addr-zip'), city: g('c-addr-city'), region: g('c-addr-region'), country: 'Belgique' }
+  };
+  cfg.hours = {
+    monday:    { display: g('c-h-mon'), opens: '13:00', closes: '18:00' },
+    tuesday:   { display: g('c-h-tue'), opens: '09:30', closes: '18:00' },
+    wednesday: { display: g('c-h-wed'), opens: '09:30', closes: '18:00' },
+    thursday:  { display: g('c-h-thu'), opens: '09:30', closes: '18:00' },
+    friday:    { display: g('c-h-fri'), opens: '09:30', closes: '18:00' },
+    saturday:  { display: g('c-h-sat'), opens: '09:30', closes: '18:00' },
+    sunday:    { display: g('c-h-sun'), opens: null, closes: null },
+    note: g('c-h-note')
+  };
+
+  // Home
+  if (!txt.home) txt.home = {};
+  txt.home.hero = { ...txt.home.hero, kicker: g('h-hero-kicker'), title: g('h-hero-title'), subtitle: g('h-hero-subtitle'), note: g('h-hero-note') };
+  if (!txt.home.whyAudire) txt.home.whyAudire = {};
+  txt.home.whyAudire.tag = g('h-why-tag'); txt.home.whyAudire.title = g('h-why-title'); txt.home.whyAudire.subtitle = g('h-why-subtitle');
+  if (!txt.home.process) txt.home.process = {};
+  txt.home.process.tag = g('h-proc-tag'); txt.home.process.title = g('h-proc-title'); txt.home.process.subtitle = g('h-proc-subtitle');
+  if (!txt.home.solutions) txt.home.solutions = {};
+  txt.home.solutions.tag = g('h-sol-tag'); txt.home.solutions.title = g('h-sol-title'); txt.home.solutions.subtitle = g('h-sol-subtitle');
+  if (!txt.home.pricing) txt.home.pricing = {};
+  txt.home.pricing.tag = g('h-pri-tag'); txt.home.pricing.title = g('h-pri-title'); txt.home.pricing.priceRange = g('h-pri-range'); txt.home.pricing.refund = g('h-pri-refund'); txt.home.pricing.note = g('h-pri-note');
+  txt.home.cta = { title: g('h-cta-title'), description: g('h-cta-desc') };
+
+  // Test auditif
+  if (!txt['test-auditif-gratuit']) txt['test-auditif-gratuit'] = {};
+  const ta = txt['test-auditif-gratuit'];
+  ta.hero = { ...ta.hero, kicker: g('t-hero-kicker'), title: g('t-hero-title'), subtitle: g('t-hero-subtitle') };
+  if (!ta.deroulement) ta.deroulement = {};
+  ta.deroulement.tag = g('t-der-tag'); ta.deroulement.title = g('t-der-title'); ta.deroulement.subtitle = g('t-der-subtitle');
+  if (!ta.signes) ta.signes = {};
+  ta.signes.tag = g('t-sig-tag'); ta.signes.title = g('t-sig-title'); ta.signes.subtitle = g('t-sig-subtitle'); ta.signes.note = g('t-sig-note');
+  ta.cta = { title: g('t-cta-title'), description: g('t-cta-desc') };
+
+  // Accompagnement
+  if (!txt['notre-accompagnement']) txt['notre-accompagnement'] = {};
+  const ac = txt['notre-accompagnement'];
+  ac.hero = { ...ac.hero, kicker: g('a-hero-kicker'), title: g('a-hero-title'), subtitle: g('a-hero-subtitle') };
+  if (!ac.parcours) ac.parcours = {};
+  ac.parcours.tag = g('a-par-tag'); ac.parcours.title = g('a-par-title'); ac.parcours.subtitle = g('a-par-subtitle');
+  if (!ac.philosophie) ac.philosophie = {};
+  ac.philosophie.tag = g('a-phi-tag'); ac.philosophie.title = g('a-phi-title'); ac.philosophie.subtitle = g('a-phi-subtitle');
+  if (!ac.importance) ac.importance = {};
+  ac.importance.tag = g('a-imp-tag'); ac.importance.title = g('a-imp-title');
+  ac.cta = { title: g('a-cta-title'), description: g('a-cta-desc') };
+
+  // Solutions
+  if (!txt['solutions-auditives']) txt['solutions-auditives'] = {};
+  const sa = txt['solutions-auditives'];
+  sa.hero = { ...sa.hero, kicker: g('s-hero-kicker'), title: g('s-hero-title'), subtitle: g('s-hero-subtitle') };
+  if (!sa.marques) sa.marques = {};
+  sa.marques.tag = g('s-mar-tag'); sa.marques.title = g('s-mar-title'); sa.marques.subtitle = g('s-mar-subtitle');
+  if (!sa.types) sa.types = {};
+  sa.types.tag = g('s-typ-tag'); sa.types.title = g('s-typ-title'); sa.types.subtitle = g('s-typ-subtitle'); sa.types.note = g('s-typ-note');
+  if (!sa.innovation) sa.innovation = {};
+  sa.innovation.tag = g('s-inn-tag'); sa.innovation.title = g('s-inn-title'); sa.innovation.subtitle = g('s-inn-subtitle');
+  if (!sa.prix) sa.prix = {};
+  sa.prix.title = g('s-prix-title'); sa.prix.description = g('s-prix-desc'); sa.prix.note = g('s-prix-note');
+  sa.cta = { title: g('s-cta-title'), description: g('s-cta-desc') };
+
+  // Remboursements
+  if (!txt.remboursements) txt.remboursements = {};
+  const rm = txt.remboursements;
+  rm.hero = { ...rm.hero, kicker: g('r-hero-kicker'), title: g('r-hero-title'), subtitle: g('r-hero-subtitle') };
+  if (!rm.inami) rm.inami = {};
+  rm.inami.tag = g('r-in-tag'); rm.inami.title = g('r-in-title'); rm.inami.subtitle = g('r-in-subtitle'); rm.inami.conditions = g('r-in-conditions');
+  if (!rm.mutuelle) rm.mutuelle = {};
+  rm.mutuelle.tag = g('r-mu-tag'); rm.mutuelle.title = g('r-mu-title'); rm.mutuelle.subtitle = g('r-mu-subtitle');
+  if (!rm.exemple) rm.exemple = {};
+  rm.exemple.tag = g('r-ex-tag'); rm.exemple.title = g('r-ex-title'); rm.exemple.subtitle = g('r-ex-subtitle');
+  if (!rm.demarches) rm.demarches = {};
+  rm.demarches.tag = g('r-dm-tag'); rm.demarches.title = g('r-dm-title'); rm.demarches.subtitle = g('r-dm-subtitle');
+  rm.cta = { title: g('r-cta-title'), description: g('r-cta-desc') };
+
+  // FAQ - collect from dynamic fields
+  if (txt.faq?.sections) {
+    txt.faq.sections.forEach((section, si) => {
+      section.questions.forEach((q, qi) => {
+        const qEl = document.querySelector(`.faq-q[data-s="${si}"][data-q="${qi}"]`);
+        const aEl = document.querySelector(`.faq-a[data-s="${si}"][data-q="${qi}"]`);
+        if (qEl) q.question = qEl.value;
+        if (aEl) q.answer = aEl.value;
       });
+    });
+  }
+  if (!txt.faq) txt.faq = {};
+  txt.faq.hero = { kicker: g('f-hero-kicker'), title: g('f-hero-title'), subtitle: g('f-hero-subtitle') };
+  txt.faq.cta = { title: g('f-cta-title'), description: g('f-cta-desc') };
 
-      // Why Audire
-      document.getElementById('why-tag').value = data.whyAudire.tag || '';
-      document.getElementById('why-title').value = data.whyAudire.title || '';
-      document.getElementById('why-subtitle').value = data.whyAudire.subtitle || '';
+  // Contact
+  if (!txt.contact) txt.contact = {};
+  const ct = txt.contact;
+  ct.hero = { kicker: g('ct-hero-kicker'), title: g('ct-hero-title'), subtitle: g('ct-hero-subtitle') };
+  ct.infos = { tag: g('ct-inf-tag'), title: g('ct-inf-title'),
+    parking: { title: g('ct-park-title'), description: g('ct-park-desc') },
+    transport: { title: g('ct-trans-title'), description: g('ct-trans-desc') }
+  };
+  ct.form = { tag: g('ct-form-tag'), title: g('ct-form-title'), subtitle: g('ct-form-subtitle') };
+  ct.quick = { tag: g('ct-qk-tag'), title: g('ct-qk-title'),
+    phone: { title: g('ct-ph-title'), description: g('ct-ph-desc') },
+    email: { title: g('ct-em-title'), description: g('ct-em-desc') }
+  };
+  ct.cta = { title: g('ct-cta-title'), description: g('ct-cta-desc') };
 
-      // Process
-      document.getElementById('process-tag').value = data.process.tag || '';
-      document.getElementById('process-title').value = data.process.title || '';
-      document.getElementById('process-subtitle').value = data.process.subtitle || '';
+  // Pharmaciens
+  if (!txt['partenaires-pharmaciens']) txt['partenaires-pharmaciens'] = {};
+  const ph = txt['partenaires-pharmaciens'];
+  ph.hero = { ...ph.hero, kicker: g('p-hero-kicker'), title: g('p-hero-title'), subtitle: g('p-hero-subtitle') };
+  if (!ph.concept) ph.concept = {};
+  ph.concept.tag = g('p-con-tag'); ph.concept.title = g('p-con-title'); ph.concept.subtitle = g('p-con-subtitle');
+  if (!ph.avantages) ph.avantages = {};
+  ph.avantages.tag = g('p-av-tag'); ph.avantages.title = g('p-av-title'); ph.avantages.subtitle = g('p-av-subtitle');
+  if (!ph.conditions) ph.conditions = {};
+  ph.conditions.tag = g('p-cond-tag'); ph.conditions.title = g('p-cond-title'); ph.conditions.subtitle = g('p-cond-subtitle');
+  if (!ph.support) ph.support = {};
+  ph.support.tag = g('p-sup-tag'); ph.support.title = g('p-sup-title');
+  ph.cta = { ...ph.cta, title: g('p-cta-title'), description: g('p-cta-desc'), zone: g('p-cta-zone') };
+}
 
-      // Pricing
-      document.getElementById('pricing-tag').value = data.pricing.tag || '';
-      document.getElementById('pricing-title').value = data.pricing.title || '';
-      document.getElementById('pricing-range').value = data.pricing.priceRange || '';
-      document.getElementById('pricing-refund').value = data.pricing.refund || '';
-      document.getElementById('pricing-note').value = data.pricing.note || '';
+// ===== GITHUB SAVE =====
+async function saveAll() {
+  // Ask for token if not stored
+  if (!ghToken) {
+    ghToken = prompt(
+      'Pour sauvegarder sur GitHub vous avez besoin d\'un Personal Access Token.\n\n' +
+      '→ github.com → Settings → Developer settings → Personal access tokens → Tokens (classic)\n' +
+      '→ Créez un token avec la permission "repo"\n\n' +
+      'Collez votre token ci-dessous :'
+    );
+    if (!ghToken) { ghToken = null; return; }
+  }
 
-      // CTA
-      document.getElementById('cta-title').value = data.cta.title || '';
-      document.getElementById('cta-description').value = data.cta.description || '';
+  collectAll();
+
+  const btn = document.getElementById('saveBtn');
+  btn.innerHTML = '💾 Sauvegarde... <span class="spin"></span>';
+  btn.disabled = true;
+
+  try {
+    await pushFile(ghToken, 'content/config.json', cfg, 'Mise à jour config.json');
+    await pushFile(ghToken, 'content/textes.json', txt, 'Mise à jour textes.json');
+    showStatus('✓ Sauvegardé sur GitHub avec succès !', 'ok');
+  } catch(e) {
+    showStatus('Erreur : ' + e.message, 'err');
+    if (e.message.includes('401') || e.message.includes('403') || e.message.includes('Bad credentials')) {
+      ghToken = null; // token invalide, on le réinitialise
     }
+  }
+  btn.innerHTML = '💾 Sauvegarder sur GitHub';
+  btn.disabled = false;
+}
 
-    // Ajouter un chip
-    function addChip(value = '') {
-      const container = document.getElementById('chips-container');
-      const div = document.createElement('div');
-      div.className = 'chip-input';
-      div.innerHTML = `
-        <input type="text" value="${value}" placeholder="Ex: Test auditif gratuit">
-        <button class="btn-remove" onclick="removeChip(this)">✕</button>
-      `;
-      container.appendChild(div);
-    }
+async function pushFile(token, path, content, message) {
+  const base = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`;
+  const headers = { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' };
 
-    // Supprimer un chip
-    function removeChip(button) {
-      button.parentElement.remove();
-    }
+  // Récupérer le SHA actuel du fichier
+  const getRes = await fetch(base + `?ref=${GITHUB_BRANCH}`, { headers });
+  let sha = null;
+  if (getRes.ok) { sha = (await getRes.json()).sha; }
 
-    // Collecter les données du formulaire
-    function collectData() {
-      // Collecter les chips
-      const chipInputs = document.querySelectorAll('#chips-container input');
-      const chips = Array.from(chipInputs).map(input => input.value).filter(v => v);
+  // Encoder le contenu en base64 (compatible UTF-8)
+  const jsonStr = JSON.stringify(content, null, 2);
+  const b64 = btoa(unescape(encodeURIComponent(jsonStr)));
 
-      return {
-        hero: {
-          kicker: document.getElementById('hero-kicker').value,
-          title: document.getElementById('hero-title').value,
-          subtitle: document.getElementById('hero-subtitle').value,
-          chips: chips,
-          note: document.getElementById('hero-note').value
-        },
-        whyAudire: {
-          tag: document.getElementById('why-tag').value,
-          title: document.getElementById('why-title').value,
-          subtitle: document.getElementById('why-subtitle').value,
-          features: defaultData.whyAudire.features // Garder les features existantes
-        },
-        process: {
-          tag: document.getElementById('process-tag').value,
-          title: document.getElementById('process-title').value,
-          subtitle: document.getElementById('process-subtitle').value,
-          steps: defaultData.process.steps // Garder les steps existantes
-        },
-        solutions: defaultData.solutions, // Garder les solutions existantes
-        pricing: {
-          tag: document.getElementById('pricing-tag').value,
-          title: document.getElementById('pricing-title').value,
-          priceRange: document.getElementById('pricing-range').value,
-          refund: document.getElementById('pricing-refund').value,
-          note: document.getElementById('pricing-note').value
-        },
-        cta: {
-          title: document.getElementById('cta-title').value,
-          description: document.getElementById('cta-description').value
-        }
-      };
-    }
+  const body = { message: message + ' via éditeur web', content: b64, branch: GITHUB_BRANCH };
+  if (sha) body.sha = sha;
 
-    // Télécharger le JSON
-    function downloadJSON() {
-      try {
-        const data = collectData();
-        const json = JSON.stringify(data, null, 2);
-        const blob = new Blob([json], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'textes.json';
-        a.click();
-        URL.revokeObjectURL(url);
+  const res = await fetch(base, { method: 'PUT', headers, body: JSON.stringify(body) });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || `HTTP ${res.status}`);
+  }
+}
 
-        document.getElementById('successAlert').style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        setTimeout(() => {
-          document.getElementById('successAlert').style.display = 'none';
-        }, 5000);
-      } catch (error) {
-        showError('Erreur lors de la génération du fichier : ' + error.message);
-      }
-    }
-
-    // Réinitialiser le formulaire
-    function resetForm() {
-      if (confirm('Êtes-vous sûr de vouloir réinitialiser tous les champs ?')) {
-        populateForm(defaultData);
-      }
-    }
-
-    // Afficher une erreur
-    function showError(message) {
-      const alert = document.getElementById('errorAlert');
-      alert.textContent = '❌ ' + message;
-      alert.style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      setTimeout(() => {
-        alert.style.display = 'none';
-      }, 5000);
-    }
-
-    // Charger au démarrage
-    loadData();
-  </script>
+// ===== STATUS =====
+function showStatus(msg, type) {
+  const el = document.getElementById('statusMsg');
+  el.textContent = msg; el.className = 'status ' + type; el.style.display = 'block';
+  if (type !== 'info') setTimeout(() => el.style.display = 'none', 6000);
+}
+</script>
 </body>
 </html>
