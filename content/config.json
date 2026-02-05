@@ -15,39 +15,39 @@
   },
   "hours": {
     "monday": {
+      "display": "13h00 – 18h00",
       "opens": "13:00",
-      "closes": "18:00",
-      "display": "13h00 – 18h00"
+      "closes": "18:00"
     },
     "tuesday": {
+      "display": "09h30 – 18h00",
       "opens": "09:30",
-      "closes": "18:00",
-      "display": "09h30 – 18h00"
+      "closes": "18:00"
     },
     "wednesday": {
+      "display": "09h30 – 18h00",
       "opens": "09:30",
-      "closes": "18:00",
-      "display": "09h30 – 18h00"
+      "closes": "18:00"
     },
     "thursday": {
+      "display": "09h30 – 18h00",
       "opens": "09:30",
-      "closes": "18:00",
-      "display": "09h30 – 18h00"
+      "closes": "18:00"
     },
     "friday": {
+      "display": "09h30 – 18h00",
       "opens": "09:30",
-      "closes": "18:00",
-      "display": "09h30 – 18h00"
+      "closes": "18:00"
     },
     "saturday": {
+      "display": "09h30 – 18h00",
       "opens": "09:30",
-      "closes": "18:00",
-      "display": "09h30 – 18h00"
+      "closes": "18:00"
     },
     "sunday": {
+      "display": "Fermé",
       "opens": null,
-      "closes": null,
-      "display": "Fermé"
+      "closes": null
     },
     "note": "Sur rendez-vous uniquement"
   },
@@ -55,6 +55,9 @@
     "name": "Audire - Centre auditif",
     "description": "Centre auditif indépendant à Jemeppe-sur-Meuse. Test auditif gratuit, accompagnement humain, solutions Oticon & Bernafon.",
     "website": "https://playwithpy.github.io/audire",
-    "brands": ["Oticon", "Bernafon"]
+    "brands": [
+      "Oticon",
+      "Bernafon"
+    ]
   }
 }
