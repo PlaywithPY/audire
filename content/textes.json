@@ -220,7 +220,7 @@
   },
   "faq": {
     "hero": {
-      "kicker": "Vos questions, nos réponses",
+      "kicker": "Vos questions, nos réponses oui oui",
       "title": "Questions fréquentes",
       "subtitle": "Vous avez des questions sur les appareils auditifs, les tests, les remboursements ou notre centre ? Voici les réponses aux questions qu'on nous pose le plus souvent."
     },
@@ -397,250 +397,122 @@
   },
   "notre-accompagnement": {
     "hero": {
-      "kicker": "Humain • Progressif • Sans pression",
-      "title": "Notre accompagnement",
-      "subtitle": "Bien entendre, ce n'est pas qu'une question d'appareil. C'est une question d'accompagnement, d'écoute et de suivi dans la durée. Chez Audire, nous vous guidons étape par étape, à votre rythme.",
-      "chips": [
-        "Écoute de vos besoins",
-        "Explications claires",
-        "Essai gratuit",
-        "Suivi personnalisé"
-      ]
+      "kicker": "",
+      "title": "",
+      "subtitle": ""
     },
     "parcours": {
-      "tag": "Le parcours",
-      "title": "Comment ça se passe ?",
-      "subtitle": "Un parcours simple et progressif, sans engagement. Vous gardez toujours le contrôle.",
-      "steps": [
-        {
-          "title": "Test auditif gratuit",
-          "description": "Nous commençons par un test complet de votre audition (audiométrie). Nous analysons vos difficultés au quotidien : TV, téléphone, conversations, bruit, etc. Vous repartez avec les résultats et des explications claires. Aucune obligation d'achat."
-        },
-        {
-          "title": "Explications et conseils",
-          "description": "On vous explique clairement ce qu'on a trouvé, sans jargon technique. Si un appareil n'est pas nécessaire, on vous le dit franchement. Si ça peut aider, on vous explique les options possibles, les solutions adaptées à votre situation."
-        },
-        {
-          "title": "Essai gratuit à domicile",
-          "description": "Vous testez l'appareil chez vous, dans votre quotidien réel. Nous ajustons ensemble les réglages lors de rendez-vous réguliers. Vous prenez le temps de vous habituer. Si ça ne convient pas, vous arrêtez, sans frais."
-        },
-        {
-          "title": "Suivi et accompagnement continu",
-          "description": "Le vrai travail commence après l'achat. Nous assurons le suivi dans la durée : réglages fins progressifs, adaptations, nettoyage régulier, conseils d'utilisation. Nous sommes là pour vous accompagner sur le long terme."
-        }
-      ]
+      "tag": "",
+      "title": "",
+      "subtitle": ""
     },
     "philosophie": {
-      "tag": "Notre approche",
-      "title": "Notre philosophie",
-      "subtitle": "Ce qui fait la différence chez Audire, ce n'est pas seulement la qualité des appareils, mais la manière dont nous vous accompagnons.",
-      "features": [
-        {
-          "icon": "👂",
-          "title": "Écoute avant tout",
-          "description": "Nous commençons par écouter vos difficultés, votre quotidien, vos attentes. Chaque personne est unique."
-        },
-        {
-          "icon": "💬",
-          "title": "Transparence totale",
-          "description": "Pas de jargon technique, pas de surprise. Nous expliquons tout clairement : résultats, solutions, prix, remboursements."
-        },
-        {
-          "icon": "🚫",
-          "title": "Zéro pression",
-          "description": "Pas d'objectifs de vente, pas de techniques commerciales. Si un appareil n'est pas nécessaire, on vous le dit."
-        },
-        {
-          "icon": "🧪",
-          "title": "Essai sans risque",
-          "description": "Vous testez dans votre quotidien avant de décider. Pas de théorie : vous vivez l'expérience réelle."
-        },
-        {
-          "icon": "🔧",
-          "title": "Réglages progressifs",
-          "description": "L'adaptation prend du temps. Nous ajustons étape par étape jusqu'à trouver le bon équilibre pour vous."
-        },
-        {
-          "icon": "♾️",
-          "title": "Suivi à vie",
-          "description": "Nous restons à vos côtés pendant toute la durée de vie de vos appareils. Vous n'êtes jamais seul."
-        }
-      ]
+      "tag": "",
+      "title": "",
+      "subtitle": ""
     },
     "importance": {
-      "tag": "L'importance du suivi",
-      "title": "Pourquoi l'accompagnement est crucial ?",
-      "cards": [
-        {
-          "title": "L'adaptation auditive prend du temps",
-          "description": "Quand vous commencez à porter des appareils auditifs, votre cerveau doit réapprendre à entendre. Il retrouve des sons qu'il avait oubliés : le bruit de vos pas, le froissement du papier, les oiseaux... Cette adaptation peut prendre 2 à 3 mois. C'est normal d'être parfois submergé au début."
-        },
-        {
-          "title": "Chaque oreille est différente",
-          "description": "Deux personnes avec le même audiogramme n'ont pas les mêmes besoins. Votre environnement, vos activités, votre sensibilité au bruit sont uniques. Les réglages \"sur mesure\" ne s'arrêtent pas au premier rendez-vous."
-        },
-        {
-          "title": "Le suivi technique est essentiel",
-          "description": "Les appareils auditifs sont des dispositifs techniques qui nécessitent un entretien régulier : nettoyage, changement de filtres, vérification des performances. Un appareil mal entretenu perd en efficacité."
-        }
-      ]
+      "tag": "",
+      "title": ""
     },
     "cta": {
-      "title": "Prêt à commencer ?",
-      "description": "Prenez rendez-vous pour un test auditif gratuit. C'est le premier pas d'un accompagnement qui vous ressemble."
+      "title": "",
+      "description": ""
     }
   },
   "solutions-auditives": {
     "hero": {
-      "kicker": "Oticon • Bernafon",
-      "title": "Nos solutions auditives",
-      "subtitle": "Nous travaillons avec Oticon et Bernafon, deux marques reconnues mondialement pour leur qualité, leur innovation et leur fiabilité. Des solutions adaptées à vos besoins et votre budget.",
-      "chips": [
-        "Technologies de pointe",
-        "Design discret",
-        "Connectivité Bluetooth",
-        "Recharge lithium-ion"
-      ]
+      "kicker": "",
+      "title": "",
+      "subtitle": ""
     },
     "marques": {
-      "tag": "Nos partenaires",
-      "title": "Oticon et Bernafon",
-      "subtitle": "Deux marques de référence mondiale pour des solutions auditives de qualité."
+      "tag": "",
+      "title": "",
+      "subtitle": ""
     },
     "types": {
-      "tag": "Types d'appareils",
-      "title": "Quel type d'appareil choisir ?",
-      "subtitle": "Il existe plusieurs formats d'appareils auditifs. Le choix dépend de votre perte auditive, de votre morphologie et de vos préférences.",
-      "note": "Important : La discrétion n'est pas toujours synonyme de performance. Nous vous aidons à choisir l'appareil qui vous correspond vraiment, pas celui qui se voit le moins."
+      "tag": "",
+      "title": "",
+      "subtitle": "",
+      "note": ""
     },
     "innovation": {
-      "tag": "Innovation",
-      "title": "Fonctionnalités modernes",
-      "subtitle": "Les appareils auditifs modernes sont bien plus que de simples amplificateurs. Voici les technologies disponibles."
+      "tag": "",
+      "title": "",
+      "subtitle": ""
     },
     "prix": {
-      "title": "Combien ça coûte ?",
-      "description": "Les appareils auditifs coûtent entre 1 200 € et 3 500 € par oreille, selon le modèle et les fonctionnalités. Grâce à l'INAMI et aux mutuelles, vous pouvez récupérer jusqu'à 840 € par oreille.",
-      "note": "Le prix comprend : l'appareil, les réglages, le suivi à vie, l'entretien, les consommables (embouts, filtres...)."
+      "title": "",
+      "description": "",
+      "note": ""
     },
     "cta": {
-      "title": "Quelle solution pour vous ?",
-      "description": "Prenez rendez-vous pour un test auditif gratuit. Nous analyserons votre situation et vous conseillerons la solution la plus adaptée."
+      "title": "",
+      "description": ""
     }
   },
   "remboursements": {
     "hero": {
-      "kicker": "INAMI + Mutuelle",
-      "title": "Remboursements",
-      "subtitle": "Les appareils auditifs coûtent entre 1 200 € et 3 500 € par oreille. Mais grâce à l'INAMI et aux mutuelles, vous pouvez récupérer jusqu'à 840 € par oreille selon votre situation. On vous explique tout.",
-      "chips": [
-        "Remboursement INAMI",
-        "Intervention mutuelle",
-        "Transparence totale",
-        "On vous aide"
-      ]
+      "kicker": "",
+      "title": "",
+      "subtitle": ""
     },
     "inami": {
-      "tag": "INAMI",
-      "title": "Remboursement de l'INAMI",
-      "subtitle": "L'Institut National d'Assurance Maladie-Invalidité (INAMI) rembourse une partie du coût des appareils auditifs selon votre âge et votre perte auditive.",
-      "conditions": "Conditions : Prescription médicale (ORL), test auditif validé, respect du délai de renouvellement."
+      "tag": "",
+      "title": "",
+      "subtitle": "",
+      "conditions": ""
     },
     "mutuelle": {
-      "tag": "Mutuelle",
-      "title": "Intervention de la mutuelle",
-      "subtitle": "En plus du remboursement INAMI, votre mutuelle intervient avec un montant supplémentaire. Ce montant varie selon votre mutuelle et votre formule."
+      "tag": "",
+      "title": "",
+      "subtitle": ""
     },
     "exemple": {
-      "tag": "Exemple",
-      "title": "Exemple de calcul",
-      "subtitle": "Voici un exemple concret pour comprendre le coût final après remboursements."
+      "tag": "",
+      "title": "",
+      "subtitle": ""
     },
     "demarches": {
-      "tag": "Démarches",
-      "title": "Comment ça marche ?",
-      "subtitle": "Les démarches sont simples. Nous vous accompagnons à chaque étape.",
-      "steps": [
-        {
-          "title": "Consultation ORL",
-          "description": "Avant de commander des appareils, vous devez consulter un médecin ORL qui établira une prescription. Cette prescription est obligatoire pour bénéficier des remboursements INAMI."
-        },
-        {
-          "title": "Test et essai chez Audire",
-          "description": "Nous réalisons le test auditif complet et vous proposons un essai gratuit des appareils adaptés. Nous effectuons les réglages nécessaires."
-        },
-        {
-          "title": "Commande et paiement",
-          "description": "Une fois votre décision prise, nous commandons vos appareils. Vous payez le montant total, puis nous vous fournissons tous les documents nécessaires pour les remboursements."
-        },
-        {
-          "title": "Demande de remboursement",
-          "description": "Vous envoyez les documents à votre mutuelle. Le remboursement est versé dans les 2 à 4 semaines suivant la demande. Nous vous guidons dans toutes ces démarches."
-        }
-      ]
+      "tag": "",
+      "title": "",
+      "subtitle": ""
     },
     "cta": {
-      "title": "Besoin de plus d'informations ?",
-      "description": "Prenez rendez-vous ou appelez-nous. Nous vous expliquons tout en détail et vous aidons à calculer votre reste à charge personnalisé."
+      "title": "",
+      "description": ""
     }
   },
   "partenaires-pharmaciens": {
     "hero": {
-      "kicker": "B2B • Pharmacies",
-      "title": "Partenariats pharmaciens",
-      "subtitle": "Vous êtes pharmacien et souhaitez proposer un service auditif de qualité à vos patients ? Audire vous accompagne avec des permanences régulières dans votre officine. Professionnalisme, indépendance et flexibilité.",
-      "chips": [
-        "Sans bail commercial",
-        "Redevance à l'activité",
-        "Service professionnel",
-        "Exclusivité audition"
-      ]
+      "kicker": "",
+      "title": "",
+      "subtitle": ""
     },
     "concept": {
-      "tag": "Le concept",
-      "title": "Comment ça fonctionne ?",
-      "subtitle": "Un service auditif professionnel directement dans votre pharmacie, sans investissement ni contrainte."
+      "tag": "",
+      "title": "",
+      "subtitle": ""
     },
     "avantages": {
-      "tag": "Avantages",
-      "title": "Pourquoi proposer un service auditif ?",
-      "subtitle": "Les bénéfices d'un partenariat avec Audire pour votre officine."
+      "tag": "",
+      "title": "",
+      "subtitle": ""
     },
     "conditions": {
-      "tag": "Conditions",
-      "title": "Conditions pratiques",
-      "subtitle": "Les prérequis pour mettre en place un partenariat.",
-      "steps": [
-        {
-          "title": "Local calme disponible",
-          "description": "Vous devez disposer d'un local calme et confidentiel pour les consultations. Minimum 8-10 m² suffisent. Nous apportons le matériel de test."
-        },
-        {
-          "title": "Gestion des rendez-vous",
-          "description": "Votre équipe gère la prise de rendez-vous des patients. Nous vous fournissons un planning prévisionnel."
-        },
-        {
-          "title": "Pas de bail commercial",
-          "description": "Nous ne demandons pas de bail. Le partenariat repose sur une convention simple et flexible. Chacun peut y mettre fin avec un préavis raisonnable."
-        },
-        {
-          "title": "Redevance basée sur l'activité",
-          "description": "La redevance est proportionnelle au chiffre d'affaires réalisé dans votre officine. Pas de chiffre d'affaires = pas de redevance."
-        },
-        {
-          "title": "Exclusivité audition",
-          "description": "Nous garantissons l'exclusivité du service auditif dans votre pharmacie. En contrepartie, vous vous engagez à ne pas collaborer avec d'autres audioprothésistes."
-        }
-      ]
+      "tag": "",
+      "title": "",
+      "subtitle": ""
     },
     "support": {
-      "tag": "Support",
-      "title": "Ce que nous apportons"
+      "tag": "",
+      "title": ""
     },
     "cta": {
-      "title": "Intéressé par un partenariat ?",
-      "description": "Contactez-nous pour discuter ensemble des modalités. Nous étudions chaque demande et adaptons notre offre à votre situation.",
-      "zone": "Zone de déplacement : Province de Liège et environs (Seraing, Flémalle, Engis, Grâce-Hollogne, Saint-Nicolas...)"
+      "title": "",
+      "description": "",
+      "zone": ""
     }
   }
 }
