@@ -2,7 +2,7 @@
   "home": {
     "hero": {
       "kicker": "Centre auditif indépendant • Province de Liège",
-      "title": "Mieux entendre, simplement.",
+      "title": "Mieux entendre, simplement. Et petit test de modif",
       "subtitle": "Chez Audire, on commence par comprendre votre quotidien et vos difficultés. Puis on vous propose une suite claire et sans pression. Test auditif gratuit, explications pédagogiques, réglages et suivi dans la durée.",
       "chips": [
         "Test gratuit et sans engagement",
@@ -472,14 +472,17 @@
       "title": "Pourquoi l'accompagnement est crucial ?",
       "cards": [
         {
+          "icon": "",
           "title": "L'adaptation auditive prend du temps",
           "description": "Quand vous commencez à porter des appareils auditifs, votre cerveau doit réapprendre à entendre. Il retrouve des sons qu'il avait oubliés : le bruit de vos pas, le froissement du papier, les oiseaux... Cette adaptation peut prendre 2 à 3 mois. C'est normal d'être parfois submergé au début."
         },
         {
+          "icon": "",
           "title": "Chaque oreille est différente",
           "description": "Deux personnes avec le même audiogramme n'ont pas les mêmes besoins. Votre environnement, vos activités, votre sensibilité au bruit sont uniques. Les réglages \"sur mesure\" ne s'arrêtent pas au premier rendez-vous."
         },
         {
+          "icon": "",
           "title": "Le suivi technique est essentiel",
           "description": "Les appareils auditifs sont des dispositifs techniques qui nécessitent un entretien régulier : nettoyage, changement de filtres, vérification des performances. Un appareil mal entretenu perd en efficacité."
         }
