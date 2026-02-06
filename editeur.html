@@ -555,14 +555,17 @@ async function reloadAll() {
   showStatus('Chargement...', 'info');
   try {
     const [cr, tr] = await Promise.all([
-      fetch('/audire/content/config.json').then(r => r.json()),
-      fetch('/audire/content/textes.json').then(r => r.json())
+      fetch('content/config.json').then(r => r.json()),
+      fetch('content/textes.json').then(r => r.json())
     ]);
     cfg = cr; txt = tr;
+    console.log('Loaded cfg:', cfg);
+    console.log('Loaded txt:', txt);
     fillConfig();
     fillTextes();
     showStatus('Données chargées ✓', 'ok');
   } catch(e) {
+    console.error('Error loading:', e);
     showStatus('Erreur chargement : ' + e.message, 'err');
   }
 }
@@ -589,10 +592,12 @@ function fillConfig() {
 }
 
 function fillTextes() {
+  console.log('fillTextes() called, txt:', txt);
   const h = txt.home || {}, t = txt['test-auditif-gratuit'] || {},
         a = txt['notre-accompagnement'] || {}, s = txt['solutions-auditives'] || {},
         r = txt.remboursements || {}, f = txt.faq || {},
         c = txt.contact || {}, p = txt['partenaires-pharmaciens'] || {};
+  console.log('Variables:', {h, t, a, s, r, f, c, p});
 
   // HOME
   v('h-hero-kicker', h.hero?.kicker); v('h-hero-title', h.hero?.title);
@@ -617,15 +622,21 @@ function fillTextes() {
   v('t-cta-title', t.cta?.title); v('t-cta-desc', t.cta?.description);
 
   // ACCOMPAGNEMENT
-  v('a-hero-kicker', a.hero?.kicker); v('a-hero-title', a.hero?.title); v('a-hero-subtitle', a.hero?.subtitle);
-  buildChips('a-hero-chips', a.hero?.chips);
-  v('a-par-tag', a.parcours?.tag); v('a-par-title', a.parcours?.title); v('a-par-subtitle', a.parcours?.subtitle);
-  buildSteps('a-par-steps', a.parcours?.steps);
-  v('a-phi-tag', a.philosophie?.tag); v('a-phi-title', a.philosophie?.title); v('a-phi-subtitle', a.philosophie?.subtitle);
-  buildFeatures('a-phi-features', a.philosophie?.features);
-  v('a-imp-tag', a.importance?.tag); v('a-imp-title', a.importance?.title);
-  buildFeatures('a-imp-cards', a.importance?.cards);
-  v('a-cta-title', a.cta?.title); v('a-cta-desc', a.cta?.description);
+  try {
+    console.log('Filling ACCOMPAGNEMENT, data:', a);
+    v('a-hero-kicker', a.hero?.kicker); v('a-hero-title', a.hero?.title); v('a-hero-subtitle', a.hero?.subtitle);
+    buildChips('a-hero-chips', a.hero?.chips);
+    v('a-par-tag', a.parcours?.tag); v('a-par-title', a.parcours?.title); v('a-par-subtitle', a.parcours?.subtitle);
+    buildSteps('a-par-steps', a.parcours?.steps);
+    v('a-phi-tag', a.philosophie?.tag); v('a-phi-title', a.philosophie?.title); v('a-phi-subtitle', a.philosophie?.subtitle);
+    buildFeatures('a-phi-features', a.philosophie?.features);
+    v('a-imp-tag', a.importance?.tag); v('a-imp-title', a.importance?.title);
+    buildFeatures('a-imp-cards', a.importance?.cards);
+    v('a-cta-title', a.cta?.title); v('a-cta-desc', a.cta?.description);
+    console.log('ACCOMPAGNEMENT filled successfully');
+  } catch(e) {
+    console.error('Error filling ACCOMPAGNEMENT:', e);
+  }
 
   // SOLUTIONS
   v('s-hero-kicker', s.hero?.kicker); v('s-hero-title', s.hero?.title); v('s-hero-subtitle', s.hero?.subtitle);
@@ -688,7 +699,7 @@ function buildChips(containerId, items) {
 
   container.innerHTML = items.map((chip, i) => `
     <div style="display:flex;gap:8px;margin-bottom:8px;">
-      <input type="text" class="chip-input" data-id="${containerId}" data-idx="${i}" value="${chip.replace(/"/g,'&quot;')}" style="flex:1;" />
+      <input type="text" class="chip-input" data-id="${containerId}" data-idx="${i}" value="${(chip||'').replace(/"/g,'&quot;')}" style="flex:1;" />
       <button class="btn-rm" onclick="removeChip('${containerId}', ${i})">✕</button>
     </div>
   `).join('') + `<button class="btn-add" onclick="addChip('${containerId}')">+ Ajouter un chip</button>`;
