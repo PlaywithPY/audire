@@ -92,7 +92,29 @@
       }
     });
 
+    // Gérer les chips (arrays de strings)
+    replaceChips(pageData);
+
     console.log(`✅ Content loaded for page: ${currentPage}`);
+  }
+
+  // Injecte les chips dynamiquement
+  function replaceChips(pageData) {
+    // Trouver tous les conteneurs de chips dans la page
+    const chipsContainers = document.querySelectorAll('.chips');
+
+    chipsContainers.forEach(container => {
+      // Déterminer quel array de chips charger en fonction du contexte
+      // On cherche le conteneur .hero le plus proche pour détecter que c'est hero.chips
+      const heroSection = container.closest('.hero');
+
+      if (heroSection && pageData.hero?.chips) {
+        // Injecter les chips depuis le JSON
+        container.innerHTML = pageData.hero.chips
+          .map(chip => `<span class="chip">${chip}</span>`)
+          .join('');
+      }
+    });
   }
 
   // Remplace les informations de configuration (téléphone, email, adresse, horaires)
