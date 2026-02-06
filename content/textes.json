@@ -8,7 +8,8 @@
         "Test gratuit et sans engagement",
         "Explications claires, sans jargon",
         "Oticon & Bernafon",
-        "Suivi personnalisé"
+        "Suivi personnalisé",
+        "Test"
       ],
       "note": "Vous hésitez ? Venez juste faire le point. Parfois la meilleure réponse est \"pas maintenant\" — et on vous le dira."
     },
@@ -399,7 +400,8 @@
     "hero": {
       "kicker": "",
       "title": "",
-      "subtitle": ""
+      "subtitle": "",
+      "chips": []
     },
     "parcours": {
       "tag": "",
@@ -424,7 +426,8 @@
     "hero": {
       "kicker": "",
       "title": "",
-      "subtitle": ""
+      "subtitle": "",
+      "chips": []
     },
     "marques": {
       "tag": "",
@@ -456,7 +459,8 @@
     "hero": {
       "kicker": "",
       "title": "",
-      "subtitle": ""
+      "subtitle": "",
+      "chips": []
     },
     "inami": {
       "tag": "",
@@ -488,7 +492,8 @@
     "hero": {
       "kicker": "",
       "title": "",
-      "subtitle": ""
+      "subtitle": "",
+      "chips": []
     },
     "concept": {
       "tag": "",
