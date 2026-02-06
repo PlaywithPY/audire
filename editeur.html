@@ -554,13 +554,15 @@ function switchTab(id) {
 async function reloadAll() {
   showStatus('Chargement...', 'info');
   try {
+    const timestamp = Date.now(); // Cache busting
     const [cr, tr] = await Promise.all([
-      fetch('content/config.json').then(r => r.json()),
-      fetch('content/textes.json').then(r => r.json())
+      fetch(`/audire/content/config.json?t=${timestamp}`).then(r => r.json()),
+      fetch(`/audire/content/textes.json?t=${timestamp}`).then(r => r.json())
     ]);
     cfg = cr; txt = tr;
     console.log('Loaded cfg:', cfg);
     console.log('Loaded txt:', txt);
+    console.log('notre-accompagnement from server:', txt['notre-accompagnement']);
     fillConfig();
     fillTextes();
     showStatus('Données chargées ✓', 'ok');
