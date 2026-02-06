@@ -571,7 +571,16 @@ async function reloadAll() {
 }
 
 // ===== FILL FORMS =====
-function v(id, val) { const el = document.getElementById(id); if (el && val != null) el.value = val; }
+function v(id, val) {
+  const el = document.getElementById(id);
+  if (!el) {
+    console.warn('Element not found:', id);
+    return;
+  }
+  if (val != null) {
+    el.value = val;
+  }
+}
 
 function fillConfig() {
   v('c-phone-disp', cfg.contact?.phone?.display);
@@ -688,14 +697,20 @@ function fillTextes() {
 
 // Chips (simple strings array)
 function buildChips(containerId, items) {
+  console.log('buildChips called:', containerId, items);
   const container = document.getElementById(containerId);
-  if (!container) return;
+  if (!container) {
+    console.warn('buildChips: container not found:', containerId);
+    return;
+  }
 
   // Protection contre items undefined/null
   if (!items || !Array.isArray(items)) {
+    console.log('buildChips: no items, adding button');
     container.innerHTML = `<button class="btn-add" onclick="addChip('${containerId}')">+ Ajouter un chip</button>`;
     return;
   }
+  console.log('buildChips: building', items.length, 'chips');
 
   container.innerHTML = items.map((chip, i) => `
     <div style="display:flex;gap:8px;margin-bottom:8px;">
@@ -707,13 +722,19 @@ function buildChips(containerId, items) {
 
 // Features/Cards (icon + title + description arrays)
 function buildFeatures(containerId, items) {
+  console.log('buildFeatures called:', containerId, items);
   const container = document.getElementById(containerId);
-  if (!container) return;
+  if (!container) {
+    console.warn('buildFeatures: container not found:', containerId);
+    return;
+  }
 
   if (!items || !Array.isArray(items)) {
+    console.log('buildFeatures: no items, adding button');
     container.innerHTML = `<button class="btn-add" onclick="addFeature('${containerId}')">+ Ajouter une feature</button>`;
     return;
   }
+  console.log('buildFeatures: building', items.length, 'items');
 
   container.innerHTML = items.map((item, i) => `
     <div class="faq-item" style="margin-bottom:12px;">
@@ -732,13 +753,19 @@ function buildFeatures(containerId, items) {
 
 // Steps (title + description arrays)
 function buildSteps(containerId, items) {
+  console.log('buildSteps called:', containerId, items);
   const container = document.getElementById(containerId);
-  if (!container) return;
+  if (!container) {
+    console.warn('buildSteps: container not found:', containerId);
+    return;
+  }
 
   if (!items || !Array.isArray(items)) {
+    console.log('buildSteps: no items, adding button');
     container.innerHTML = `<button class="btn-add" onclick="addStep('${containerId}')">+ Ajouter une étape</button>`;
     return;
   }
+  console.log('buildSteps: building', items.length, 'items');
 
   container.innerHTML = items.map((item, i) => `
     <div class="faq-item" style="margin-bottom:12px;">
