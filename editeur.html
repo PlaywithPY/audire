@@ -149,12 +149,14 @@
         <div class="fg"><label>Tag</label><input id="h-why-tag" /></div>
         <div class="fg"><label>Titre</label><input id="h-why-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="h-why-subtitle"></textarea></div>
+        <div class="fg"><label>Features</label><div id="h-why-features"></div></div>
       </div>
       <div class="card">
         <div class="card-head">Le processus</div>
         <div class="fg"><label>Tag</label><input id="h-proc-tag" /></div>
         <div class="fg"><label>Titre</label><input id="h-proc-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="h-proc-subtitle"></textarea></div>
+        <div class="fg"><label>Étapes</label><div id="h-proc-steps"></div></div>
       </div>
       <div class="card">
         <div class="card-head">Solutions</div>
@@ -191,6 +193,7 @@
         <div class="fg"><label>Tag</label><input id="t-der-tag" /></div>
         <div class="fg"><label>Titre</label><input id="t-der-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="t-der-subtitle"></textarea></div>
+        <div class="fg"><label>Étapes</label><div id="t-der-steps"></div></div>
       </div>
       <div class="card">
         <div class="card-head">Les signes</div>
@@ -198,6 +201,7 @@
         <div class="fg"><label>Titre</label><input id="t-sig-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="t-sig-subtitle"></textarea></div>
         <div class="fg"><label>Note</label><textarea id="t-sig-note" style="min-height:50px"></textarea></div>
+        <div class="fg"><label>Signes (features)</label><div id="t-sig-features"></div></div>
       </div>
       <div class="card">
         <div class="card-head">CTA</div>
@@ -220,17 +224,20 @@
         <div class="fg"><label>Tag</label><input id="a-par-tag" /></div>
         <div class="fg"><label>Titre</label><input id="a-par-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="a-par-subtitle"></textarea></div>
+        <div class="fg"><label>Étapes</label><div id="a-par-steps"></div></div>
       </div>
       <div class="card">
         <div class="card-head">Notre philosophie</div>
         <div class="fg"><label>Tag</label><input id="a-phi-tag" /></div>
         <div class="fg"><label>Titre</label><input id="a-phi-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="a-phi-subtitle"></textarea></div>
+        <div class="fg"><label>Features</label><div id="a-phi-features"></div></div>
       </div>
       <div class="card">
         <div class="card-head">Pourquoi l'accompagnement est crucial</div>
         <div class="fg"><label>Tag</label><input id="a-imp-tag" /></div>
         <div class="fg"><label>Titre</label><input id="a-imp-title" /></div>
+        <div class="fg"><label>Cards</label><div id="a-imp-cards"></div></div>
       </div>
       <div class="card">
         <div class="card-head">CTA</div>
@@ -313,6 +320,7 @@
         <div class="fg"><label>Tag</label><input id="r-dm-tag" /></div>
         <div class="fg"><label>Titre</label><input id="r-dm-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="r-dm-subtitle"></textarea></div>
+        <div class="fg"><label>Étapes</label><div id="r-dm-steps"></div></div>
       </div>
       <div class="card">
         <div class="card-head">CTA</div>
@@ -414,6 +422,7 @@
         <div class="fg"><label>Tag</label><input id="p-cond-tag" /></div>
         <div class="fg"><label>Titre</label><input id="p-cond-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="p-cond-subtitle"></textarea></div>
+        <div class="fg"><label>Étapes</label><div id="p-cond-steps"></div></div>
       </div>
       <div class="card">
         <div class="card-head">Support</div>
@@ -590,7 +599,9 @@ function fillTextes() {
   v('h-hero-subtitle', h.hero?.subtitle); v('h-hero-note', h.hero?.note);
   buildChips('h-hero-chips', h.hero?.chips);
   v('h-why-tag', h.whyAudire?.tag); v('h-why-title', h.whyAudire?.title); v('h-why-subtitle', h.whyAudire?.subtitle);
+  buildFeatures('h-why-features', h.whyAudire?.features);
   v('h-proc-tag', h.process?.tag); v('h-proc-title', h.process?.title); v('h-proc-subtitle', h.process?.subtitle);
+  buildSteps('h-proc-steps', h.process?.steps);
   v('h-sol-tag', h.solutions?.tag); v('h-sol-title', h.solutions?.title); v('h-sol-subtitle', h.solutions?.subtitle);
   v('h-pri-tag', h.pricing?.tag); v('h-pri-title', h.pricing?.title);
   v('h-pri-range', h.pricing?.priceRange); v('h-pri-refund', h.pricing?.refund); v('h-pri-note', h.pricing?.note);
@@ -600,15 +611,20 @@ function fillTextes() {
   v('t-hero-kicker', t.hero?.kicker); v('t-hero-title', t.hero?.title); v('t-hero-subtitle', t.hero?.subtitle);
   buildChips('t-hero-chips', t.hero?.chips);
   v('t-der-tag', t.deroulement?.tag); v('t-der-title', t.deroulement?.title); v('t-der-subtitle', t.deroulement?.subtitle);
+  buildSteps('t-der-steps', t.deroulement?.steps);
   v('t-sig-tag', t.signes?.tag); v('t-sig-title', t.signes?.title); v('t-sig-subtitle', t.signes?.subtitle); v('t-sig-note', t.signes?.note);
+  buildFeatures('t-sig-features', t.signes?.signs);
   v('t-cta-title', t.cta?.title); v('t-cta-desc', t.cta?.description);
 
   // ACCOMPAGNEMENT
   v('a-hero-kicker', a.hero?.kicker); v('a-hero-title', a.hero?.title); v('a-hero-subtitle', a.hero?.subtitle);
   buildChips('a-hero-chips', a.hero?.chips);
   v('a-par-tag', a.parcours?.tag); v('a-par-title', a.parcours?.title); v('a-par-subtitle', a.parcours?.subtitle);
+  buildSteps('a-par-steps', a.parcours?.steps);
   v('a-phi-tag', a.philosophie?.tag); v('a-phi-title', a.philosophie?.title); v('a-phi-subtitle', a.philosophie?.subtitle);
+  buildFeatures('a-phi-features', a.philosophie?.features);
   v('a-imp-tag', a.importance?.tag); v('a-imp-title', a.importance?.title);
+  buildFeatures('a-imp-cards', a.importance?.cards);
   v('a-cta-title', a.cta?.title); v('a-cta-desc', a.cta?.description);
 
   // SOLUTIONS
@@ -627,6 +643,7 @@ function fillTextes() {
   v('r-mu-tag', r.mutuelle?.tag); v('r-mu-title', r.mutuelle?.title); v('r-mu-subtitle', r.mutuelle?.subtitle);
   v('r-ex-tag', r.exemple?.tag); v('r-ex-title', r.exemple?.title); v('r-ex-subtitle', r.exemple?.subtitle);
   v('r-dm-tag', r.demarches?.tag); v('r-dm-title', r.demarches?.title); v('r-dm-subtitle', r.demarches?.subtitle);
+  buildSteps('r-dm-steps', r.demarches?.steps);
   v('r-cta-title', r.cta?.title); v('r-cta-desc', r.cta?.description);
 
   // FAQ
@@ -651,6 +668,7 @@ function fillTextes() {
   v('p-con-tag', p.concept?.tag); v('p-con-title', p.concept?.title); v('p-con-subtitle', p.concept?.subtitle);
   v('p-av-tag', p.avantages?.tag); v('p-av-title', p.avantages?.title); v('p-av-subtitle', p.avantages?.subtitle);
   v('p-cond-tag', p.conditions?.tag); v('p-cond-title', p.conditions?.title); v('p-cond-subtitle', p.conditions?.subtitle);
+  buildSteps('p-cond-steps', p.conditions?.steps);
   v('p-sup-tag', p.support?.tag); v('p-sup-title', p.support?.title);
   v('p-cta-title', p.cta?.title); v('p-cta-desc', p.cta?.description); v('p-cta-zone', p.cta?.zone);
 }
@@ -753,6 +771,78 @@ function collectChips(containerId) {
   return Array.from(inputs).map(input => input.value.trim()).filter(v => v);
 }
 
+// ===== FEATURES/CARDS =====
+function addFeature(containerId) {
+  const mapping = {
+    'h-why-features': () => { if (!txt.home.whyAudire.features) txt.home.whyAudire.features = []; txt.home.whyAudire.features.push({icon:'',title:'',description:''}); buildFeatures(containerId, txt.home.whyAudire.features); },
+    'a-phi-features': () => { if (!txt['notre-accompagnement'].philosophie.features) txt['notre-accompagnement'].philosophie.features = []; txt['notre-accompagnement'].philosophie.features.push({icon:'',title:'',description:''}); buildFeatures(containerId, txt['notre-accompagnement'].philosophie.features); },
+    't-sig-features': () => { if (!txt['test-auditif-gratuit'].signes.signs) txt['test-auditif-gratuit'].signes.signs = []; txt['test-auditif-gratuit'].signes.signs.push({icon:'',title:'',description:''}); buildFeatures(containerId, txt['test-auditif-gratuit'].signes.signs); },
+    'a-imp-cards': () => { if (!txt['notre-accompagnement'].importance.cards) txt['notre-accompagnement'].importance.cards = []; txt['notre-accompagnement'].importance.cards.push({icon:'',title:'',description:''}); buildFeatures(containerId, txt['notre-accompagnement'].importance.cards); }
+  };
+  mapping[containerId]?.();
+}
+
+function removeFeature(containerId, idx) {
+  const mapping = {
+    'h-why-features': () => { txt.home.whyAudire.features.splice(idx, 1); buildFeatures(containerId, txt.home.whyAudire.features); },
+    'a-phi-features': () => { txt['notre-accompagnement'].philosophie.features.splice(idx, 1); buildFeatures(containerId, txt['notre-accompagnement'].philosophie.features); },
+    't-sig-features': () => { txt['test-auditif-gratuit'].signes.signs.splice(idx, 1); buildFeatures(containerId, txt['test-auditif-gratuit'].signes.signs); },
+    'a-imp-cards': () => { txt['notre-accompagnement'].importance.cards.splice(idx, 1); buildFeatures(containerId, txt['notre-accompagnement'].importance.cards); }
+  };
+  mapping[containerId]?.();
+}
+
+function collectFeatures(containerId) {
+  const icons = document.querySelectorAll(`.feat-icon[data-id="${containerId}"]`);
+  const titles = document.querySelectorAll(`.feat-title[data-id="${containerId}"]`);
+  const descs = document.querySelectorAll(`.feat-desc[data-id="${containerId}"]`);
+  const result = [];
+  for (let i = 0; i < icons.length; i++) {
+    result.push({
+      icon: icons[i]?.value.trim() || '',
+      title: titles[i]?.value.trim() || '',
+      description: descs[i]?.value.trim() || ''
+    });
+  }
+  return result;
+}
+
+// ===== STEPS =====
+function addStep(containerId) {
+  const mapping = {
+    'h-proc-steps': () => { if (!txt.home.process.steps) txt.home.process.steps = []; txt.home.process.steps.push({title:'',description:''}); buildSteps(containerId, txt.home.process.steps); },
+    't-der-steps': () => { if (!txt['test-auditif-gratuit'].deroulement.steps) txt['test-auditif-gratuit'].deroulement.steps = []; txt['test-auditif-gratuit'].deroulement.steps.push({title:'',description:''}); buildSteps(containerId, txt['test-auditif-gratuit'].deroulement.steps); },
+    'a-par-steps': () => { if (!txt['notre-accompagnement'].parcours.steps) txt['notre-accompagnement'].parcours.steps = []; txt['notre-accompagnement'].parcours.steps.push({title:'',description:''}); buildSteps(containerId, txt['notre-accompagnement'].parcours.steps); },
+    'r-dm-steps': () => { if (!txt.remboursements.demarches.steps) txt.remboursements.demarches.steps = []; txt.remboursements.demarches.steps.push({title:'',description:''}); buildSteps(containerId, txt.remboursements.demarches.steps); },
+    'p-cond-steps': () => { if (!txt['partenaires-pharmaciens'].conditions.steps) txt['partenaires-pharmaciens'].conditions.steps = []; txt['partenaires-pharmaciens'].conditions.steps.push({title:'',description:''}); buildSteps(containerId, txt['partenaires-pharmaciens'].conditions.steps); }
+  };
+  mapping[containerId]?.();
+}
+
+function removeStep(containerId, idx) {
+  const mapping = {
+    'h-proc-steps': () => { txt.home.process.steps.splice(idx, 1); buildSteps(containerId, txt.home.process.steps); },
+    't-der-steps': () => { txt['test-auditif-gratuit'].deroulement.steps.splice(idx, 1); buildSteps(containerId, txt['test-auditif-gratuit'].deroulement.steps); },
+    'a-par-steps': () => { txt['notre-accompagnement'].parcours.steps.splice(idx, 1); buildSteps(containerId, txt['notre-accompagnement'].parcours.steps); },
+    'r-dm-steps': () => { txt.remboursements.demarches.steps.splice(idx, 1); buildSteps(containerId, txt.remboursements.demarches.steps); },
+    'p-cond-steps': () => { txt['partenaires-pharmaciens'].conditions.steps.splice(idx, 1); buildSteps(containerId, txt['partenaires-pharmaciens'].conditions.steps); }
+  };
+  mapping[containerId]?.();
+}
+
+function collectSteps(containerId) {
+  const titles = document.querySelectorAll(`.step-title[data-id="${containerId}"]`);
+  const descs = document.querySelectorAll(`.step-desc[data-id="${containerId}"]`);
+  const result = [];
+  for (let i = 0; i < titles.length; i++) {
+    result.push({
+      title: titles[i]?.value.trim() || '',
+      description: descs[i]?.value.trim() || ''
+    });
+  }
+  return result;
+}
+
 // ===== FAQ dynamic Q&A =====
 function buildFAQSections(sections) {
   const container = document.getElementById('faq-sections');
@@ -813,8 +903,10 @@ function collectAll() {
   txt.home.hero = { ...txt.home.hero, kicker: g('h-hero-kicker'), title: g('h-hero-title'), subtitle: g('h-hero-subtitle'), note: g('h-hero-note'), chips: collectChips('h-hero-chips') };
   if (!txt.home.whyAudire) txt.home.whyAudire = {};
   txt.home.whyAudire.tag = g('h-why-tag'); txt.home.whyAudire.title = g('h-why-title'); txt.home.whyAudire.subtitle = g('h-why-subtitle');
+  txt.home.whyAudire.features = collectFeatures('h-why-features');
   if (!txt.home.process) txt.home.process = {};
   txt.home.process.tag = g('h-proc-tag'); txt.home.process.title = g('h-proc-title'); txt.home.process.subtitle = g('h-proc-subtitle');
+  txt.home.process.steps = collectSteps('h-proc-steps');
   if (!txt.home.solutions) txt.home.solutions = {};
   txt.home.solutions.tag = g('h-sol-tag'); txt.home.solutions.title = g('h-sol-title'); txt.home.solutions.subtitle = g('h-sol-subtitle');
   if (!txt.home.pricing) txt.home.pricing = {};
@@ -827,8 +919,10 @@ function collectAll() {
   ta.hero = { ...ta.hero, kicker: g('t-hero-kicker'), title: g('t-hero-title'), subtitle: g('t-hero-subtitle'), chips: collectChips('t-hero-chips') };
   if (!ta.deroulement) ta.deroulement = {};
   ta.deroulement.tag = g('t-der-tag'); ta.deroulement.title = g('t-der-title'); ta.deroulement.subtitle = g('t-der-subtitle');
+  ta.deroulement.steps = collectSteps('t-der-steps');
   if (!ta.signes) ta.signes = {};
   ta.signes.tag = g('t-sig-tag'); ta.signes.title = g('t-sig-title'); ta.signes.subtitle = g('t-sig-subtitle'); ta.signes.note = g('t-sig-note');
+  ta.signes.signs = collectFeatures('t-sig-features');
   ta.cta = { title: g('t-cta-title'), description: g('t-cta-desc') };
 
   // Accompagnement
@@ -837,10 +931,13 @@ function collectAll() {
   ac.hero = { ...ac.hero, kicker: g('a-hero-kicker'), title: g('a-hero-title'), subtitle: g('a-hero-subtitle'), chips: collectChips('a-hero-chips') };
   if (!ac.parcours) ac.parcours = {};
   ac.parcours.tag = g('a-par-tag'); ac.parcours.title = g('a-par-title'); ac.parcours.subtitle = g('a-par-subtitle');
+  ac.parcours.steps = collectSteps('a-par-steps');
   if (!ac.philosophie) ac.philosophie = {};
   ac.philosophie.tag = g('a-phi-tag'); ac.philosophie.title = g('a-phi-title'); ac.philosophie.subtitle = g('a-phi-subtitle');
+  ac.philosophie.features = collectFeatures('a-phi-features');
   if (!ac.importance) ac.importance = {};
   ac.importance.tag = g('a-imp-tag'); ac.importance.title = g('a-imp-title');
+  ac.importance.cards = collectFeatures('a-imp-cards');
   ac.cta = { title: g('a-cta-title'), description: g('a-cta-desc') };
 
   // Solutions
@@ -869,6 +966,7 @@ function collectAll() {
   rm.exemple.tag = g('r-ex-tag'); rm.exemple.title = g('r-ex-title'); rm.exemple.subtitle = g('r-ex-subtitle');
   if (!rm.demarches) rm.demarches = {};
   rm.demarches.tag = g('r-dm-tag'); rm.demarches.title = g('r-dm-title'); rm.demarches.subtitle = g('r-dm-subtitle');
+  rm.demarches.steps = collectSteps('r-dm-steps');
   rm.cta = { title: g('r-cta-title'), description: g('r-cta-desc') };
 
   // FAQ - collect from dynamic fields
@@ -911,6 +1009,7 @@ function collectAll() {
   ph.avantages.tag = g('p-av-tag'); ph.avantages.title = g('p-av-title'); ph.avantages.subtitle = g('p-av-subtitle');
   if (!ph.conditions) ph.conditions = {};
   ph.conditions.tag = g('p-cond-tag'); ph.conditions.title = g('p-cond-title'); ph.conditions.subtitle = g('p-cond-subtitle');
+  ph.conditions.steps = collectSteps('p-cond-steps');
   if (!ph.support) ph.support = {};
   ph.support.tag = g('p-sup-tag'); ph.support.title = g('p-sup-title');
   ph.cta = { ...ph.cta, title: g('p-cta-title'), description: g('p-cta-desc'), zone: g('p-cta-zone') };
