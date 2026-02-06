@@ -588,7 +588,7 @@ function fillTextes() {
   // HOME
   v('h-hero-kicker', h.hero?.kicker); v('h-hero-title', h.hero?.title);
   v('h-hero-subtitle', h.hero?.subtitle); v('h-hero-note', h.hero?.note);
-  if (h.hero?.chips) buildChips('h-hero-chips', h.hero.chips);
+  buildChips('h-hero-chips', h.hero?.chips);
   v('h-why-tag', h.whyAudire?.tag); v('h-why-title', h.whyAudire?.title); v('h-why-subtitle', h.whyAudire?.subtitle);
   v('h-proc-tag', h.process?.tag); v('h-proc-title', h.process?.title); v('h-proc-subtitle', h.process?.subtitle);
   v('h-sol-tag', h.solutions?.tag); v('h-sol-title', h.solutions?.title); v('h-sol-subtitle', h.solutions?.subtitle);
@@ -598,14 +598,14 @@ function fillTextes() {
 
   // TEST AUDITIF
   v('t-hero-kicker', t.hero?.kicker); v('t-hero-title', t.hero?.title); v('t-hero-subtitle', t.hero?.subtitle);
-  if (t.hero?.chips) buildChips('t-hero-chips', t.hero.chips);
+  buildChips('t-hero-chips', t.hero?.chips);
   v('t-der-tag', t.deroulement?.tag); v('t-der-title', t.deroulement?.title); v('t-der-subtitle', t.deroulement?.subtitle);
   v('t-sig-tag', t.signes?.tag); v('t-sig-title', t.signes?.title); v('t-sig-subtitle', t.signes?.subtitle); v('t-sig-note', t.signes?.note);
   v('t-cta-title', t.cta?.title); v('t-cta-desc', t.cta?.description);
 
   // ACCOMPAGNEMENT
   v('a-hero-kicker', a.hero?.kicker); v('a-hero-title', a.hero?.title); v('a-hero-subtitle', a.hero?.subtitle);
-  if (a.hero?.chips) buildChips('a-hero-chips', a.hero.chips);
+  buildChips('a-hero-chips', a.hero?.chips);
   v('a-par-tag', a.parcours?.tag); v('a-par-title', a.parcours?.title); v('a-par-subtitle', a.parcours?.subtitle);
   v('a-phi-tag', a.philosophie?.tag); v('a-phi-title', a.philosophie?.title); v('a-phi-subtitle', a.philosophie?.subtitle);
   v('a-imp-tag', a.importance?.tag); v('a-imp-title', a.importance?.title);
@@ -613,7 +613,7 @@ function fillTextes() {
 
   // SOLUTIONS
   v('s-hero-kicker', s.hero?.kicker); v('s-hero-title', s.hero?.title); v('s-hero-subtitle', s.hero?.subtitle);
-  if (s.hero?.chips) buildChips('s-hero-chips', s.hero.chips);
+  buildChips('s-hero-chips', s.hero?.chips);
   v('s-mar-tag', s.marques?.tag); v('s-mar-title', s.marques?.title); v('s-mar-subtitle', s.marques?.subtitle);
   v('s-typ-tag', s.types?.tag); v('s-typ-title', s.types?.title); v('s-typ-subtitle', s.types?.subtitle); v('s-typ-note', s.types?.note);
   v('s-inn-tag', s.innovation?.tag); v('s-inn-title', s.innovation?.title); v('s-inn-subtitle', s.innovation?.subtitle);
@@ -622,7 +622,7 @@ function fillTextes() {
 
   // REMBOURSEMENTS
   v('r-hero-kicker', r.hero?.kicker); v('r-hero-title', r.hero?.title); v('r-hero-subtitle', r.hero?.subtitle);
-  if (r.hero?.chips) buildChips('r-hero-chips', r.hero.chips);
+  buildChips('r-hero-chips', r.hero?.chips);
   v('r-in-tag', r.inami?.tag); v('r-in-title', r.inami?.title); v('r-in-subtitle', r.inami?.subtitle); v('r-in-conditions', r.inami?.conditions);
   v('r-mu-tag', r.mutuelle?.tag); v('r-mu-title', r.mutuelle?.title); v('r-mu-subtitle', r.mutuelle?.subtitle);
   v('r-ex-tag', r.exemple?.tag); v('r-ex-title', r.exemple?.title); v('r-ex-subtitle', r.exemple?.subtitle);
@@ -647,7 +647,7 @@ function fillTextes() {
 
   // PHARMACIENS
   v('p-hero-kicker', p.hero?.kicker); v('p-hero-title', p.hero?.title); v('p-hero-subtitle', p.hero?.subtitle);
-  if (p.hero?.chips) buildChips('p-hero-chips', p.hero.chips);
+  buildChips('p-hero-chips', p.hero?.chips);
   v('p-con-tag', p.concept?.tag); v('p-con-title', p.concept?.title); v('p-con-subtitle', p.concept?.subtitle);
   v('p-av-tag', p.avantages?.tag); v('p-av-title', p.avantages?.title); v('p-av-subtitle', p.avantages?.subtitle);
   v('p-cond-tag', p.conditions?.tag); v('p-cond-title', p.conditions?.title); v('p-cond-subtitle', p.conditions?.subtitle);
@@ -661,6 +661,12 @@ function fillTextes() {
 function buildChips(containerId, items, onChange) {
   const container = document.getElementById(containerId);
   if (!container) return;
+
+  // Protection contre items undefined/null
+  if (!items || !Array.isArray(items)) {
+    container.innerHTML = `<button class="btn-add" onclick="addChip('${containerId}')">+ Ajouter un chip</button>`;
+    return;
+  }
 
   container.innerHTML = items.map((chip, i) => `
     <div style="display:flex;gap:8px;margin-bottom:8px;">
