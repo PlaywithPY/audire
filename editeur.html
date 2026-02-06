@@ -91,6 +91,7 @@
     <div class="actions">
       <button class="btn btn-sec" onclick="reloadAll()">↻ Recharger</button>
       <button class="btn btn-save" id="saveBtn" onclick="saveAll()">💾 Sauvegarder sur GitHub</button>
+      <button class="btn btn-sec" onclick="forgetToken()" title="Oublier le token GitHub stocké">🔑 Oublier token</button>
       <button class="btn btn-sec" onclick="doLogout()">Déco</button>
     </div>
   </div>
@@ -431,11 +432,56 @@ const PASSWORD = 'audire2026';
 // GitHub infos
 const GITHUB_OWNER = 'PlaywithPY';
 const GITHUB_REPO  = 'audire';
-const GITHUB_BRANCH = 'claude/audire-website-redesign-xqUXz';
+const GITHUB_BRANCH = 'main';
 
 // ===== STATE =====
 let cfg = {}, txt = {};
-let ghToken = null; // sera demandé la première fois
+let ghToken = null; // chargé depuis localStorage ou demandé
+
+// ===== TOKEN ENCRYPTION =====
+const STORAGE_KEY = 'audire_gh_token';
+const ENCRYPT_KEY = 'audire-editor-2026-secure'; // clé de chiffrement simple
+
+async function encryptToken(token) {
+  // Simple XOR encryption pour obscurcir le token en localStorage
+  let result = '';
+  for (let i = 0; i < token.length; i++) {
+    result += String.fromCharCode(token.charCodeAt(i) ^ ENCRYPT_KEY.charCodeAt(i % ENCRYPT_KEY.length));
+  }
+  return btoa(result); // encode en base64
+}
+
+async function decryptToken(encrypted) {
+  try {
+    const decoded = atob(encrypted);
+    let result = '';
+    for (let i = 0; i < decoded.length; i++) {
+      result += String.fromCharCode(decoded.charCodeAt(i) ^ ENCRYPT_KEY.charCodeAt(i % ENCRYPT_KEY.length));
+    }
+    return result;
+  } catch(e) {
+    return null;
+  }
+}
+
+async function loadToken() {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    ghToken = await decryptToken(stored);
+  }
+}
+
+async function saveToken(token) {
+  const encrypted = await encryptToken(token);
+  localStorage.setItem(STORAGE_KEY, encrypted);
+  ghToken = token;
+}
+
+function forgetToken() {
+  localStorage.removeItem(STORAGE_KEY);
+  ghToken = null;
+  showStatus('Token oublié. Il sera redemandé à la prochaine sauvegarde.', 'info');
+}
 
 // ===== TABS CONFIG =====
 const TABS = [
@@ -451,10 +497,11 @@ const TABS = [
 ];
 
 // ===== AUTH =====
-function doLogin() {
+async function doLogin() {
   if (document.getElementById('pwInput').value === PASSWORD) {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('editorScreen').style.display = 'block';
+    await loadToken(); // charger le token depuis localStorage
     buildTabs();
     reloadAll();
   } else {
@@ -763,13 +810,14 @@ function collectAll() {
 async function saveAll() {
   // Ask for token if not stored
   if (!ghToken) {
-    ghToken = prompt(
+    const token = prompt(
       'Pour sauvegarder sur GitHub vous avez besoin d\'un Personal Access Token.\n\n' +
       '→ github.com → Settings → Developer settings → Personal access tokens → Tokens (classic)\n' +
       '→ Créez un token avec la permission "repo"\n\n' +
       'Collez votre token ci-dessous :'
     );
-    if (!ghToken) { ghToken = null; return; }
+    if (!token) return;
+    await saveToken(token); // sauvegarder crypté dans localStorage
   }
 
   collectAll();
@@ -785,7 +833,8 @@ async function saveAll() {
   } catch(e) {
     showStatus('Erreur : ' + e.message, 'err');
     if (e.message.includes('401') || e.message.includes('403') || e.message.includes('Bad credentials')) {
-      ghToken = null; // token invalide, on le réinitialise
+      forgetToken(); // token invalide, on l'oublie
+      showStatus('Token invalide. Veuillez ressaisir votre token à la prochaine sauvegarde.', 'err');
     }
   }
   btn.innerHTML = '💾 Sauvegarder sur GitHub';
