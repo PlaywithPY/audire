@@ -405,16 +405,19 @@
     "parcours": {
       "tag": "",
       "title": "",
-      "subtitle": ""
+      "subtitle": "",
+      "steps": []
     },
     "philosophie": {
       "tag": "",
       "title": "",
-      "subtitle": ""
+      "subtitle": "",
+      "features": []
     },
     "importance": {
       "tag": "",
-      "title": ""
+      "title": "",
+      "cards": []
     },
     "cta": {
       "title": "",
@@ -480,7 +483,8 @@
     "demarches": {
       "tag": "",
       "title": "",
-      "subtitle": ""
+      "subtitle": "",
+      "steps": []
     },
     "cta": {
       "title": "",
@@ -507,7 +511,8 @@
     "conditions": {
       "tag": "",
       "title": "",
-      "subtitle": ""
+      "subtitle": "",
+      "steps": []
     },
     "support": {
       "tag": "",
