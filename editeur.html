@@ -142,6 +142,7 @@
         <div class="fg"><label>Titre</label><input id="h-hero-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="h-hero-subtitle"></textarea></div>
         <div class="fg"><label>Note</label><textarea id="h-hero-note" style="min-height:50px"></textarea></div>
+        <div class="fg"><label>Chips (badges)</label><div id="h-hero-chips"></div></div>
       </div>
       <div class="card">
         <div class="card-head">Pourquoi Audire</div>
@@ -183,6 +184,7 @@
         <div class="fg"><label>Kicker</label><input id="t-hero-kicker" /></div>
         <div class="fg"><label>Titre</label><input id="t-hero-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="t-hero-subtitle"></textarea></div>
+        <div class="fg"><label>Chips (badges)</label><div id="t-hero-chips"></div></div>
       </div>
       <div class="card">
         <div class="card-head">Le déroulement</div>
@@ -211,6 +213,7 @@
         <div class="fg"><label>Kicker</label><input id="a-hero-kicker" /></div>
         <div class="fg"><label>Titre</label><input id="a-hero-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="a-hero-subtitle"></textarea></div>
+        <div class="fg"><label>Chips (badges)</label><div id="a-hero-chips"></div></div>
       </div>
       <div class="card">
         <div class="card-head">Le parcours</div>
@@ -243,6 +246,7 @@
         <div class="fg"><label>Kicker</label><input id="s-hero-kicker" /></div>
         <div class="fg"><label>Titre</label><input id="s-hero-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="s-hero-subtitle"></textarea></div>
+        <div class="fg"><label>Chips (badges)</label><div id="s-hero-chips"></div></div>
       </div>
       <div class="card">
         <div class="card-head">Nos marques</div>
@@ -283,6 +287,7 @@
         <div class="fg"><label>Kicker</label><input id="r-hero-kicker" /></div>
         <div class="fg"><label>Titre</label><input id="r-hero-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="r-hero-subtitle"></textarea></div>
+        <div class="fg"><label>Chips (badges)</label><div id="r-hero-chips"></div></div>
       </div>
       <div class="card">
         <div class="card-head">INAMI</div>
@@ -390,6 +395,7 @@
         <div class="fg"><label>Kicker</label><input id="p-hero-kicker" /></div>
         <div class="fg"><label>Titre</label><input id="p-hero-title" /></div>
         <div class="fg"><label>Sous-titre</label><textarea id="p-hero-subtitle"></textarea></div>
+        <div class="fg"><label>Chips (badges)</label><div id="p-hero-chips"></div></div>
       </div>
       <div class="card">
         <div class="card-head">Le concept</div>
@@ -582,6 +588,7 @@ function fillTextes() {
   // HOME
   v('h-hero-kicker', h.hero?.kicker); v('h-hero-title', h.hero?.title);
   v('h-hero-subtitle', h.hero?.subtitle); v('h-hero-note', h.hero?.note);
+  if (h.hero?.chips) buildChips('h-hero-chips', h.hero.chips);
   v('h-why-tag', h.whyAudire?.tag); v('h-why-title', h.whyAudire?.title); v('h-why-subtitle', h.whyAudire?.subtitle);
   v('h-proc-tag', h.process?.tag); v('h-proc-title', h.process?.title); v('h-proc-subtitle', h.process?.subtitle);
   v('h-sol-tag', h.solutions?.tag); v('h-sol-title', h.solutions?.title); v('h-sol-subtitle', h.solutions?.subtitle);
@@ -591,12 +598,14 @@ function fillTextes() {
 
   // TEST AUDITIF
   v('t-hero-kicker', t.hero?.kicker); v('t-hero-title', t.hero?.title); v('t-hero-subtitle', t.hero?.subtitle);
+  if (t.hero?.chips) buildChips('t-hero-chips', t.hero.chips);
   v('t-der-tag', t.deroulement?.tag); v('t-der-title', t.deroulement?.title); v('t-der-subtitle', t.deroulement?.subtitle);
   v('t-sig-tag', t.signes?.tag); v('t-sig-title', t.signes?.title); v('t-sig-subtitle', t.signes?.subtitle); v('t-sig-note', t.signes?.note);
   v('t-cta-title', t.cta?.title); v('t-cta-desc', t.cta?.description);
 
   // ACCOMPAGNEMENT
   v('a-hero-kicker', a.hero?.kicker); v('a-hero-title', a.hero?.title); v('a-hero-subtitle', a.hero?.subtitle);
+  if (a.hero?.chips) buildChips('a-hero-chips', a.hero.chips);
   v('a-par-tag', a.parcours?.tag); v('a-par-title', a.parcours?.title); v('a-par-subtitle', a.parcours?.subtitle);
   v('a-phi-tag', a.philosophie?.tag); v('a-phi-title', a.philosophie?.title); v('a-phi-subtitle', a.philosophie?.subtitle);
   v('a-imp-tag', a.importance?.tag); v('a-imp-title', a.importance?.title);
@@ -604,6 +613,7 @@ function fillTextes() {
 
   // SOLUTIONS
   v('s-hero-kicker', s.hero?.kicker); v('s-hero-title', s.hero?.title); v('s-hero-subtitle', s.hero?.subtitle);
+  if (s.hero?.chips) buildChips('s-hero-chips', s.hero.chips);
   v('s-mar-tag', s.marques?.tag); v('s-mar-title', s.marques?.title); v('s-mar-subtitle', s.marques?.subtitle);
   v('s-typ-tag', s.types?.tag); v('s-typ-title', s.types?.title); v('s-typ-subtitle', s.types?.subtitle); v('s-typ-note', s.types?.note);
   v('s-inn-tag', s.innovation?.tag); v('s-inn-title', s.innovation?.title); v('s-inn-subtitle', s.innovation?.subtitle);
@@ -612,6 +622,7 @@ function fillTextes() {
 
   // REMBOURSEMENTS
   v('r-hero-kicker', r.hero?.kicker); v('r-hero-title', r.hero?.title); v('r-hero-subtitle', r.hero?.subtitle);
+  if (r.hero?.chips) buildChips('r-hero-chips', r.hero.chips);
   v('r-in-tag', r.inami?.tag); v('r-in-title', r.inami?.title); v('r-in-subtitle', r.inami?.subtitle); v('r-in-conditions', r.inami?.conditions);
   v('r-mu-tag', r.mutuelle?.tag); v('r-mu-title', r.mutuelle?.title); v('r-mu-subtitle', r.mutuelle?.subtitle);
   v('r-ex-tag', r.exemple?.tag); v('r-ex-title', r.exemple?.title); v('r-ex-subtitle', r.exemple?.subtitle);
@@ -636,11 +647,57 @@ function fillTextes() {
 
   // PHARMACIENS
   v('p-hero-kicker', p.hero?.kicker); v('p-hero-title', p.hero?.title); v('p-hero-subtitle', p.hero?.subtitle);
+  if (p.hero?.chips) buildChips('p-hero-chips', p.hero.chips);
   v('p-con-tag', p.concept?.tag); v('p-con-title', p.concept?.title); v('p-con-subtitle', p.concept?.subtitle);
   v('p-av-tag', p.avantages?.tag); v('p-av-title', p.avantages?.title); v('p-av-subtitle', p.avantages?.subtitle);
   v('p-cond-tag', p.conditions?.tag); v('p-cond-title', p.conditions?.title); v('p-cond-subtitle', p.conditions?.subtitle);
   v('p-sup-tag', p.support?.tag); v('p-sup-title', p.support?.title);
   v('p-cta-title', p.cta?.title); v('p-cta-desc', p.cta?.description); v('p-cta-zone', p.cta?.zone);
+}
+
+// ===== GENERIC DYNAMIC LISTS =====
+
+// Chips (simple strings array)
+function buildChips(containerId, items, onChange) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = items.map((chip, i) => `
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <input type="text" class="chip-input" data-id="${containerId}" data-idx="${i}" value="${chip.replace(/"/g,'&quot;')}" style="flex:1;" />
+      <button class="btn-rm" onclick="removeChip('${containerId}', ${i})">✕</button>
+    </div>
+  `).join('') + `<button class="btn-add" onclick="addChip('${containerId}')">+ Ajouter un chip</button>`;
+}
+
+function addChip(containerId) {
+  // Extract page and field from containerId (e.g., "h-hero-chips" -> home.hero.chips)
+  const mapping = {
+    'h-hero-chips': () => { if (!txt.home.hero.chips) txt.home.hero.chips = []; txt.home.hero.chips.push(''); buildChips(containerId, txt.home.hero.chips); },
+    't-hero-chips': () => { if (!txt['test-auditif-gratuit'].hero.chips) txt['test-auditif-gratuit'].hero.chips = []; txt['test-auditif-gratuit'].hero.chips.push(''); buildChips(containerId, txt['test-auditif-gratuit'].hero.chips); },
+    'a-hero-chips': () => { if (!txt['notre-accompagnement'].hero.chips) txt['notre-accompagnement'].hero.chips = []; txt['notre-accompagnement'].hero.chips.push(''); buildChips(containerId, txt['notre-accompagnement'].hero.chips); },
+    's-hero-chips': () => { if (!txt['solutions-auditives'].hero.chips) txt['solutions-auditives'].hero.chips = []; txt['solutions-auditives'].hero.chips.push(''); buildChips(containerId, txt['solutions-auditives'].hero.chips); },
+    'r-hero-chips': () => { if (!txt.remboursements.hero.chips) txt.remboursements.hero.chips = []; txt.remboursements.hero.chips.push(''); buildChips(containerId, txt.remboursements.hero.chips); },
+    'p-hero-chips': () => { if (!txt['partenaires-pharmaciens'].hero.chips) txt['partenaires-pharmaciens'].hero.chips = []; txt['partenaires-pharmaciens'].hero.chips.push(''); buildChips(containerId, txt['partenaires-pharmaciens'].hero.chips); }
+  };
+  mapping[containerId]?.();
+}
+
+function removeChip(containerId, idx) {
+  const mapping = {
+    'h-hero-chips': () => { txt.home.hero.chips.splice(idx, 1); buildChips(containerId, txt.home.hero.chips); },
+    't-hero-chips': () => { txt['test-auditif-gratuit'].hero.chips.splice(idx, 1); buildChips(containerId, txt['test-auditif-gratuit'].hero.chips); },
+    'a-hero-chips': () => { txt['notre-accompagnement'].hero.chips.splice(idx, 1); buildChips(containerId, txt['notre-accompagnement'].hero.chips); },
+    's-hero-chips': () => { txt['solutions-auditives'].hero.chips.splice(idx, 1); buildChips(containerId, txt['solutions-auditives'].hero.chips); },
+    'r-hero-chips': () => { txt.remboursements.hero.chips.splice(idx, 1); buildChips(containerId, txt.remboursements.hero.chips); },
+    'p-hero-chips': () => { txt['partenaires-pharmaciens'].hero.chips.splice(idx, 1); buildChips(containerId, txt['partenaires-pharmaciens'].hero.chips); }
+  };
+  mapping[containerId]?.();
+}
+
+function collectChips(containerId) {
+  const inputs = document.querySelectorAll(`input.chip-input[data-id="${containerId}"]`);
+  return Array.from(inputs).map(input => input.value.trim()).filter(v => v);
 }
 
 // ===== FAQ dynamic Q&A =====
@@ -700,7 +757,7 @@ function collectAll() {
 
   // Home
   if (!txt.home) txt.home = {};
-  txt.home.hero = { ...txt.home.hero, kicker: g('h-hero-kicker'), title: g('h-hero-title'), subtitle: g('h-hero-subtitle'), note: g('h-hero-note') };
+  txt.home.hero = { ...txt.home.hero, kicker: g('h-hero-kicker'), title: g('h-hero-title'), subtitle: g('h-hero-subtitle'), note: g('h-hero-note'), chips: collectChips('h-hero-chips') };
   if (!txt.home.whyAudire) txt.home.whyAudire = {};
   txt.home.whyAudire.tag = g('h-why-tag'); txt.home.whyAudire.title = g('h-why-title'); txt.home.whyAudire.subtitle = g('h-why-subtitle');
   if (!txt.home.process) txt.home.process = {};
@@ -714,7 +771,7 @@ function collectAll() {
   // Test auditif
   if (!txt['test-auditif-gratuit']) txt['test-auditif-gratuit'] = {};
   const ta = txt['test-auditif-gratuit'];
-  ta.hero = { ...ta.hero, kicker: g('t-hero-kicker'), title: g('t-hero-title'), subtitle: g('t-hero-subtitle') };
+  ta.hero = { ...ta.hero, kicker: g('t-hero-kicker'), title: g('t-hero-title'), subtitle: g('t-hero-subtitle'), chips: collectChips('t-hero-chips') };
   if (!ta.deroulement) ta.deroulement = {};
   ta.deroulement.tag = g('t-der-tag'); ta.deroulement.title = g('t-der-title'); ta.deroulement.subtitle = g('t-der-subtitle');
   if (!ta.signes) ta.signes = {};
@@ -724,7 +781,7 @@ function collectAll() {
   // Accompagnement
   if (!txt['notre-accompagnement']) txt['notre-accompagnement'] = {};
   const ac = txt['notre-accompagnement'];
-  ac.hero = { ...ac.hero, kicker: g('a-hero-kicker'), title: g('a-hero-title'), subtitle: g('a-hero-subtitle') };
+  ac.hero = { ...ac.hero, kicker: g('a-hero-kicker'), title: g('a-hero-title'), subtitle: g('a-hero-subtitle'), chips: collectChips('a-hero-chips') };
   if (!ac.parcours) ac.parcours = {};
   ac.parcours.tag = g('a-par-tag'); ac.parcours.title = g('a-par-title'); ac.parcours.subtitle = g('a-par-subtitle');
   if (!ac.philosophie) ac.philosophie = {};
@@ -736,7 +793,7 @@ function collectAll() {
   // Solutions
   if (!txt['solutions-auditives']) txt['solutions-auditives'] = {};
   const sa = txt['solutions-auditives'];
-  sa.hero = { ...sa.hero, kicker: g('s-hero-kicker'), title: g('s-hero-title'), subtitle: g('s-hero-subtitle') };
+  sa.hero = { ...sa.hero, kicker: g('s-hero-kicker'), title: g('s-hero-title'), subtitle: g('s-hero-subtitle'), chips: collectChips('s-hero-chips') };
   if (!sa.marques) sa.marques = {};
   sa.marques.tag = g('s-mar-tag'); sa.marques.title = g('s-mar-title'); sa.marques.subtitle = g('s-mar-subtitle');
   if (!sa.types) sa.types = {};
@@ -750,7 +807,7 @@ function collectAll() {
   // Remboursements
   if (!txt.remboursements) txt.remboursements = {};
   const rm = txt.remboursements;
-  rm.hero = { ...rm.hero, kicker: g('r-hero-kicker'), title: g('r-hero-title'), subtitle: g('r-hero-subtitle') };
+  rm.hero = { ...rm.hero, kicker: g('r-hero-kicker'), title: g('r-hero-title'), subtitle: g('r-hero-subtitle'), chips: collectChips('r-hero-chips') };
   if (!rm.inami) rm.inami = {};
   rm.inami.tag = g('r-in-tag'); rm.inami.title = g('r-in-title'); rm.inami.subtitle = g('r-in-subtitle'); rm.inami.conditions = g('r-in-conditions');
   if (!rm.mutuelle) rm.mutuelle = {};
@@ -794,7 +851,7 @@ function collectAll() {
   // Pharmaciens
   if (!txt['partenaires-pharmaciens']) txt['partenaires-pharmaciens'] = {};
   const ph = txt['partenaires-pharmaciens'];
-  ph.hero = { ...ph.hero, kicker: g('p-hero-kicker'), title: g('p-hero-title'), subtitle: g('p-hero-subtitle') };
+  ph.hero = { ...ph.hero, kicker: g('p-hero-kicker'), title: g('p-hero-title'), subtitle: g('p-hero-subtitle'), chips: collectChips('p-hero-chips') };
   if (!ph.concept) ph.concept = {};
   ph.concept.tag = g('p-con-tag'); ph.concept.title = g('p-con-title'); ph.concept.subtitle = g('p-con-subtitle');
   if (!ph.avantages) ph.avantages = {};

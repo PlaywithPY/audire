@@ -163,17 +163,27 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialiser le smooth scroll
   initSmoothScroll();
 
-  // Mettre à jour le statut d'ouverture
-  updateOpenStatus();
-  // Mettre à jour toutes les 60 secondes
-  setInterval(updateOpenStatus, 60000);
-
   // Year
   const y = $("#year");
   if (y) y.textContent = new Date().getFullYear();
 
   // Note: Tel/Email/Contact info updates are now handled by content-loader.js
-  // which loads data from /content/contact.json
+  // which loads data from /content/config.json and /content/textes.json
+
+  // Attendre que les composants (header/footer) soient chargés avant d'initialiser le statut
+  let statusInitialized = false;
+  function initOpenStatus() {
+    if (statusInitialized) return;
+    if ($('#statusIndicator')) {
+      statusInitialized = true;
+      updateOpenStatus();
+      setInterval(updateOpenStatus, 60000);
+    }
+  }
+
+  document.addEventListener('componentsLoaded', initOpenStatus);
+  // Fallback au cas où l'événement a déjà été déclenché
+  setTimeout(initOpenStatus, 1000);
 
   // Mobile menu
   const menuBtn = $("#menuBtn");
