@@ -577,9 +577,12 @@ function v(id, val) {
     console.warn('Element not found:', id);
     return;
   }
-  if (val != null) {
-    el.value = val;
+  if (val == null) {
+    console.warn('Value is null/undefined for', id, '- value:', val);
+    return;
   }
+  el.value = val;
+  console.log('Set', id, '=', val.substring ? val.substring(0, 50) : val);
 }
 
 function fillConfig() {
@@ -602,6 +605,8 @@ function fillConfig() {
 
 function fillTextes() {
   console.log('fillTextes() called, txt:', txt);
+  console.log('txt["notre-accompagnement"]:', txt['notre-accompagnement']);
+  console.log('txt.home:', txt.home);
   const h = txt.home || {}, t = txt['test-auditif-gratuit'] || {},
         a = txt['notre-accompagnement'] || {}, s = txt['solutions-auditives'] || {},
         r = txt.remboursements || {}, f = txt.faq || {},
@@ -633,6 +638,12 @@ function fillTextes() {
   // ACCOMPAGNEMENT
   try {
     console.log('Filling ACCOMPAGNEMENT, data:', a);
+    console.log('a.hero:', a.hero);
+    console.log('a.hero.kicker:', a.hero?.kicker);
+    console.log('a.hero.title:', a.hero?.title);
+    console.log('a.parcours:', a.parcours);
+    console.log('a.philosophie:', a.philosophie);
+    console.log('a.importance:', a.importance);
     v('a-hero-kicker', a.hero?.kicker); v('a-hero-title', a.hero?.title); v('a-hero-subtitle', a.hero?.subtitle);
     buildChips('a-hero-chips', a.hero?.chips);
     v('a-par-tag', a.parcours?.tag); v('a-par-title', a.parcours?.title); v('a-par-subtitle', a.parcours?.subtitle);
