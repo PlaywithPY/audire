@@ -658,7 +658,7 @@ function fillTextes() {
 // ===== GENERIC DYNAMIC LISTS =====
 
 // Chips (simple strings array)
-function buildChips(containerId, items, onChange) {
+function buildChips(containerId, items) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
@@ -674,6 +674,53 @@ function buildChips(containerId, items, onChange) {
       <button class="btn-rm" onclick="removeChip('${containerId}', ${i})">✕</button>
     </div>
   `).join('') + `<button class="btn-add" onclick="addChip('${containerId}')">+ Ajouter un chip</button>`;
+}
+
+// Features/Cards (icon + title + description arrays)
+function buildFeatures(containerId, items) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  if (!items || !Array.isArray(items)) {
+    container.innerHTML = `<button class="btn-add" onclick="addFeature('${containerId}')">+ Ajouter une feature</button>`;
+    return;
+  }
+
+  container.innerHTML = items.map((item, i) => `
+    <div class="faq-item" style="margin-bottom:12px;">
+      <div class="faq-item-top">
+        <span class="faq-num">Feature ${i+1}</span>
+        <button class="btn-rm" onclick="removeFeature('${containerId}', ${i})">✕</button>
+      </div>
+      <div class="row3">
+        <div class="fg"><label>Icône</label><input class="feat-icon" data-id="${containerId}" data-idx="${i}" value="${(item.icon||'').replace(/"/g,'&quot;')}" /></div>
+        <div class="fg" style="grid-column:span 2;"><label>Titre</label><input class="feat-title" data-id="${containerId}" data-idx="${i}" value="${(item.title||'').replace(/"/g,'&quot;')}" /></div>
+      </div>
+      <div class="fg"><label>Description</label><textarea class="feat-desc" data-id="${containerId}" data-idx="${i}" style="min-height:60px">${item.description||''}</textarea></div>
+    </div>
+  `).join('') + `<button class="btn-add" onclick="addFeature('${containerId}')">+ Ajouter une feature</button>`;
+}
+
+// Steps (title + description arrays)
+function buildSteps(containerId, items) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  if (!items || !Array.isArray(items)) {
+    container.innerHTML = `<button class="btn-add" onclick="addStep('${containerId}')">+ Ajouter une étape</button>`;
+    return;
+  }
+
+  container.innerHTML = items.map((item, i) => `
+    <div class="faq-item" style="margin-bottom:12px;">
+      <div class="faq-item-top">
+        <span class="faq-num">Étape ${i+1}</span>
+        <button class="btn-rm" onclick="removeStep('${containerId}', ${i})">✕</button>
+      </div>
+      <div class="fg"><label>Titre</label><input class="step-title" data-id="${containerId}" data-idx="${i}" value="${(item.title||'').replace(/"/g,'&quot;')}" /></div>
+      <div class="fg"><label>Description</label><textarea class="step-desc" data-id="${containerId}" data-idx="${i}" style="min-height:70px">${item.description||''}</textarea></div>
+    </div>
+  `).join('') + `<button class="btn-add" onclick="addStep('${containerId}')">+ Ajouter une étape</button>`;
 }
 
 function addChip(containerId) {
