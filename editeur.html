@@ -69,6 +69,65 @@
     /* spinner */
     .spin { display:inline-block; width:14px; height:14px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:sp .5s linear infinite; margin-left:6px; vertical-align:middle; }
     @keyframes sp { to { transform:rotate(360deg); } }
+
+    /* ===== CANVAS EDITOR (Solutions auditives) ===== */
+    .canvas-container { display:grid; grid-template-columns:1fr 420px; gap:20px; margin-top:20px; min-height:600px; }
+    .canvas-form { display:flex; flex-direction:column; gap:20px; }
+    .canvas-preview { background:#1a1a2e; padding:24px; border-radius:10px; position:sticky; top:80px; height:fit-content; max-height:calc(100vh - 100px); overflow-y:auto; }
+    .preview-label { font-size:11px; font-weight:700; text-transform:uppercase; color:#4a4a6a; letter-spacing:1px; margin-bottom:16px; }
+    .preview-card { background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,.3); }
+    .prev-img { width:100%; height:200px; object-fit:cover; background:#e8eaf0; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:13px; }
+    .prev-img img { width:100%; height:100%; object-fit:cover; }
+    .prev-body { padding:20px; }
+    .prev-badge { display:inline-block; padding:4px 12px; background:#FF8C42; color:#fff; border-radius:20px; font-size:12px; font-weight:700; margin-bottom:10px; }
+    .prev-title { font-size:20px; font-weight:800; color:#1a1a1a; margin-bottom:10px; line-height:1.3; }
+    .prev-desc { font-size:13px; color:#555; line-height:1.6; margin-bottom:16px; }
+    .prev-section-title { font-size:11px; font-weight:700; text-transform:uppercase; color:#777; letter-spacing:.5px; margin-bottom:8px; }
+    .prev-list { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+    .prev-list-item { display:flex; align-items:flex-start; gap:8px; font-size:13px; color:#1a1a1a; }
+    .prev-list-item .icon { font-size:14px; margin-top:1px; flex-shrink:0; }
+    .prev-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+    .prev-tag { padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600; background:#f0f0f0; color:#555; }
+    .prev-tag.perte { background:#e8f4fd; color:#1a6fa0; }
+    .prev-tag.marque { background:#fff3e8; color:#E67A2E; }
+    .prev-page-main { padding:20px; }
+    .prev-page-main h2 { font-size:18px; font-weight:800; margin-bottom:10px; color:#1a1a1a; }
+    .prev-page-main p { font-size:13px; color:#555; line-height:1.6; margin-bottom:14px; }
+    .prev-page-main h3 { font-size:15px; font-weight:700; margin-bottom:8px; color:#1a1a1a; }
+
+    /* Image upload */
+    .img-upload-zone { border:2px dashed #ddd; border-radius:10px; padding:20px; text-align:center; cursor:pointer; transition:all .2s; position:relative; }
+    .img-upload-zone:hover { border-color:#FF8C42; background:#fff8f3; }
+    .img-upload-zone input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; border:none; padding:0; }
+    .img-preview { width:100%; max-height:180px; object-fit:cover; border-radius:8px; display:none; margin-top:10px; }
+    .img-placeholder { color:#999; font-size:14px; }
+    .img-placeholder span { font-size:32px; display:block; margin-bottom:8px; }
+    .img-filename { font-size:12px; color:#FF8C42; margin-top:6px; font-weight:600; }
+
+    /* Checkbox group */
+    .check-group { display:flex; flex-wrap:wrap; gap:10px; }
+    .check-item { display:flex; align-items:center; gap:8px; padding:8px 14px; border:2px solid #ddd; border-radius:8px; cursor:pointer; font-size:14px; transition:all .2s; user-select:none; }
+    .check-item:hover { border-color:#FF8C42; }
+    .check-item.checked { border-color:#FF8C42; background:#fff3e8; color:#FF8C42; font-weight:600; }
+    .check-item input { display:none; }
+
+    /* Dynamic list */
+    .dyn-list { display:flex; flex-direction:column; gap:8px; }
+    .dyn-item { display:flex; align-items:center; gap:8px; }
+    .dyn-item input { flex:1; padding:9px 12px; border:2px solid#e0e0e0; border-radius:8px; font-size:14px; transition:border-color .2s; }
+    .dyn-item input:focus { outline:none; border-color:#FF8C42; }
+    .dyn-remove { width:32px; height:32px; border:none; background:#fde8e8; color:#d32f2f; border-radius:6px; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .2s; }
+    .dyn-remove:hover { background:#d32f2f; color:#fff; }
+    .add-item-btn { display:flex; align-items:center; gap:6px; padding:8px 14px; border:2px dashed #ddd; background:none; border-radius:8px; color:#777; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; align-self:flex-start; }
+    .add-item-btn:hover { border-color:#FF8C42; color:#FF8C42; }
+
+    /* Sub tabs for canvas */
+    .canvas-subtabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+    .canvas-subtab { padding:10px 18px; background:#f0f0f0; border:none; border-radius:8px; font-size:13px; font-weight:600; color:#777; cursor:pointer; transition:all .2s; }
+    .canvas-subtab:hover { background:#e0e0e0; color:#FF8C42; }
+    .canvas-subtab.active { background:#FF8C42; color:#fff; }
+    .canvas-panel { display:none; }
+    .canvas-panel.active { display:block; }
   </style>
 </head>
 <body>
@@ -245,44 +304,34 @@
       </div>
     </div>
 
-    <!-- 🎧 SOLUTIONS -->
+    <!-- 🎧 SOLUTIONS AUDITIVES (Éditeur Canvas) -->
     <div class="tab-panel" id="panel-solutions">
       <div class="card">
-        <div class="card-head">Hero</div>
-        <div class="fg"><label>Kicker</label><input id="s-hero-kicker" /></div>
-        <div class="fg"><label>Titre</label><input id="s-hero-title" /></div>
-        <div class="fg"><label>Sous-titre</label><textarea id="s-hero-subtitle"></textarea></div>
-        <div class="fg"><label>Chips (badges)</label><div id="s-hero-chips"></div></div>
-      </div>
-      <div class="card">
-        <div class="card-head">Nos marques</div>
-        <div class="fg"><label>Tag</label><input id="s-mar-tag" /></div>
-        <div class="fg"><label>Titre</label><input id="s-mar-title" /></div>
-        <div class="fg"><label>Sous-titre</label><textarea id="s-mar-subtitle"></textarea></div>
-      </div>
-      <div class="card">
-        <div class="card-head">Types d'appareils</div>
-        <div class="fg"><label>Tag</label><input id="s-typ-tag" /></div>
-        <div class="fg"><label>Titre</label><input id="s-typ-title" /></div>
-        <div class="fg"><label>Sous-titre</label><textarea id="s-typ-subtitle"></textarea></div>
-        <div class="fg"><label>Note</label><textarea id="s-typ-note" style="min-height:50px"></textarea></div>
-      </div>
-      <div class="card">
-        <div class="card-head">Innovation</div>
-        <div class="fg"><label>Tag</label><input id="s-inn-tag" /></div>
-        <div class="fg"><label>Titre</label><input id="s-inn-title" /></div>
-        <div class="fg"><label>Sous-titre</label><textarea id="s-inn-subtitle"></textarea></div>
-      </div>
-      <div class="card">
-        <div class="card-head">Prix</div>
-        <div class="fg"><label>Titre</label><input id="s-prix-title" /></div>
-        <div class="fg"><label>Description</label><textarea id="s-prix-desc"></textarea></div>
-        <div class="fg"><label>Note</label><textarea id="s-prix-note" style="min-height:50px"></textarea></div>
-      </div>
-      <div class="card">
-        <div class="card-head">CTA</div>
-        <div class="fg"><label>Titre</label><input id="s-cta-title" /></div>
-        <div class="fg"><label>Description</label><textarea id="s-cta-desc"></textarea></div>
+        <div class="card-head">🖼️ Éditeur visuel Solutions auditives</div>
+        <p style="margin-bottom:20px; color:#777; line-height:1.6;">
+          Éditeur complet avec aperçu en temps réel pour gérer les contenus de la page Solutions auditives.<br>
+          Modifiez les textes, uploadez des images et prévisualisez instantanément.
+        </p>
+
+        <!-- Sous-onglets -->
+        <div class="canvas-subtabs">
+          <button class="canvas-subtab active" onclick="switchCanvasPanel('page-principale')">📄 Page principale</button>
+          <button class="canvas-subtab" onclick="switchCanvasPanel(0)">🎧 Contour d'oreille</button>
+          <button class="canvas-subtab" onclick="switchCanvasPanel(1)">👂 Intra-auriculaire</button>
+          <button class="canvas-subtab" onclick="switchCanvasPanel(2)">⭐ Oticon Intent</button>
+        </div>
+
+        <!-- Canvas (formulaire + aperçu) -->
+        <div class="canvas-container">
+          <!-- Formulaire (gauche) -->
+          <div class="canvas-form" id="canvas-form"></div>
+
+          <!-- Aperçu (droite) -->
+          <div class="canvas-preview">
+            <div class="preview-label">Aperçu en direct</div>
+            <div class="preview-card" id="canvas-preview"></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -780,17 +829,19 @@ async function reloadAll() {
   showStatus('Chargement...', 'info');
   try {
     const t = Date.now();
-    const [cr, tr, dr, pr] = await Promise.all([
+    const [cr, tr, dr, pr, sr] = await Promise.all([
       fetch(`/audire/content/config.json?t=${t}`).then(r => r.json()),
       fetch(`/audire/content/textes.json?t=${t}`).then(r => r.json()),
       fetch(`/audire/content/design.json?t=${t}`).then(r => r.json()).catch(() => ({})),
-      fetch(`/audire/content/produits.json?t=${t}`).then(r => r.json()).catch(() => ({}))
+      fetch(`/audire/content/produits.json?t=${t}`).then(r => r.json()).catch(() => ({})),
+      fetch(`/audire/content/solutions-auditives.json?t=${t}`).then(r => r.json()).catch(() => ({}))
     ]);
-    cfg = cr; txt = tr; dsn = dr; prd = pr;
+    cfg = cr; txt = tr; dsn = dr; prd = pr; sac = sr;
     fillConfig();
     fillTextes();
     fillDesign();
     fillProduits();
+    fillSolutionsCanvas();
     showStatus('Données chargées ✓', 'ok');
   } catch(e) {
     showStatus('Erreur chargement : ' + e.message, 'err');
@@ -1505,16 +1556,32 @@ async function saveAllGitHub() {
   collectAll();
   collectDesign();
   collectProduits();
+  collectSolutionsCanvas();
 
   const btn = document.getElementById('saveBtn');
   btn.innerHTML = '💾 Sauvegarde... <span class="spin"></span>';
   btn.disabled = true;
 
   try {
+    // Upload pending images first
+    if (sac.solutions) {
+      for (const sol of sac.solutions) {
+        if (sol && sol._pendingImage) {
+          showStatus('Upload image ' + sol.titre + '…', 'info');
+          const ext = sol._pendingImage.mimeType.split('/')[1] || 'jpg';
+          const imgPath = `images/solutions/${sol.id}.${ext}`;
+          await pushImage(ghToken, imgPath, sol._pendingImage.base64);
+          sol.image = `/audire/${imgPath}`;
+          delete sol._pendingImage;
+        }
+      }
+    }
+
     await pushFile(ghToken, 'content/config.json',  cfg, 'Mise à jour config.json');
     await pushFile(ghToken, 'content/textes.json',  txt, 'Mise à jour textes.json');
     await pushFile(ghToken, 'content/design.json',  dsn, 'Mise à jour design.json');
     await pushFile(ghToken, 'content/produits.json', prd, 'Mise à jour produits.json');
+    await pushFile(ghToken, 'content/solutions-auditives.json', sac, 'Mise à jour solutions-auditives.json');
     showStatus('✓ Sauvegardé sur GitHub avec succès !', 'ok');
   } catch(e) {
     showStatus('Erreur : ' + e.message, 'err');
@@ -1548,6 +1615,294 @@ async function pushFile(token, path, content, message) {
     const err = await res.json();
     throw new Error(err.message || `HTTP ${res.status}`);
   }
+}
+
+// ===== SOLUTIONS AUDITIVES CANVAS =====
+let sac = {}; // Solutions-Auditives Canvas data
+let currentCanvasPanel = 'page-principale';
+
+function switchCanvasPanel(idx) {
+  collectCurrentCanvasForm();
+  currentCanvasPanel = idx;
+  document.querySelectorAll('.canvas-subtab').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderCanvasForm();
+  renderCanvasPreview();
+}
+
+function renderCanvasForm() {
+  const panel = document.getElementById('canvas-form');
+  if (!panel) return;
+
+  if (currentCanvasPanel === 'page-principale') {
+    const pp = sac.page_principale || {};
+    panel.innerHTML = `
+      <div class="card">
+        <div class="card-head">En-tête de la page</div>
+        <div class="fg"><label>Titre principal</label><input id="sac-pp-titre" value="${esc(pp.titre || '')}" oninput="renderCanvasPreview()" /></div>
+        <div class="fg"><label>Texte d'introduction</label><textarea id="sac-pp-intro" oninput="renderCanvasPreview()">${esc(pp.intro || '')}</textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Section "Types d'appareils"</div>
+        <div class="fg"><label>Titre de la section</label><input id="sac-pp-types-titre" value="${esc(pp.types_titre || '')}" oninput="renderCanvasPreview()" /></div>
+        <div class="fg"><label>Texte d'introduction</label><textarea id="sac-pp-types-intro" oninput="renderCanvasPreview()">${esc(pp.types_intro || '')}</textarea></div>
+      </div>
+    `;
+  } else {
+    const sol = (sac.solutions || [])[currentCanvasPanel] || {};
+    const badges = ['', 'Nouveauté', 'Populaire', 'Recommandé', 'Meilleure vente'];
+    const types = ['Contour d\'oreille', 'Intra-auriculaire', 'À conduction osseuse'];
+    const niveaux = ['Légère', 'Modérée', 'Sévère', 'Profonde'];
+    const marques = ['Oticon', 'Bernafon'];
+
+    panel.innerHTML = `
+      <div class="card">
+        <div class="card-head">Identité</div>
+        <div class="fg"><label>Titre</label><input id="sac-titre" value="${esc(sol.titre || '')}" oninput="renderCanvasPreview()" /></div>
+        <div class="fg">
+          <label>Badge</label>
+          <select id="sac-badge" onchange="renderCanvasPreview()">
+            ${badges.map(b => `<option value="${b}" ${sol.badge===b?'selected':''}>${b||'— Aucun —'}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Image</div>
+        <div class="fg">
+          ${sol.image ? `<img src="${sol.image}" style="width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px;" onerror="this.style.display='none'">
+          <div class="hint">${sol.image}</div>` : '<div class="hint">Aucune image</div>'}
+        </div>
+        <div class="fg">
+          <label>Uploader une nouvelle image</label>
+          <div class="img-upload-zone">
+            <input type="file" accept="image/*" onchange="handleCanvasImageUpload(event, ${currentCanvasPanel})">
+            <div class="img-placeholder">
+              <span>🖼️</span>
+              Glissez une image ou cliquez
+            </div>
+            <img class="img-preview" id="canvas-img-prev-${currentCanvasPanel}">
+            <div class="img-filename" id="canvas-img-name-${currentCanvasPanel}"></div>
+          </div>
+          <div class="hint">JPG, PNG, WebP — Sera uploadée sur GitHub</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Descriptions</div>
+        <div class="fg"><label>Description courte</label><textarea id="sac-desc-courte" oninput="renderCanvasPreview()">${esc(sol.description_courte || '')}</textarea></div>
+        <div class="fg"><label>Description longue</label><textarea id="sac-desc-longue" style="min-height:120px" oninput="renderCanvasPreview()">${esc(sol.description_longue || '')}</textarea></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">✅ Avantages</div>
+        <div class="dyn-list" id="canvas-avantages">
+          ${(sol.avantages || []).map(a => `<div class="dyn-item"><input value="${esc(a)}" oninput="renderCanvasPreview()"><button class="dyn-remove" onclick="this.parentElement.remove();renderCanvasPreview()">✕</button></div>`).join('')}
+        </div>
+        <button class="add-item-btn" onclick="addCanvasItem('canvas-avantages')">+ Ajouter un avantage</button>
+      </div>
+
+      <div class="card">
+        <div class="card-head">❌ Inconvénients</div>
+        <div class="dyn-list" id="canvas-inconvenients">
+          ${(sol.inconvenients || []).map(a => `<div class="dyn-item"><input value="${esc(a)}" oninput="renderCanvasPreview()"><button class="dyn-remove" onclick="this.parentElement.remove();renderCanvasPreview()">✕</button></div>`).join('')}
+        </div>
+        <button class="add-item-btn" onclick="addCanvasItem('canvas-inconvenients')">+ Ajouter un inconvénient</button>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Caractéristiques</div>
+        <div class="fg">
+          <label>Type d'appareil</label>
+          <select id="sac-type" onchange="renderCanvasPreview()">
+            ${types.map(t => `<option value="${t}" ${sol.type===t?'selected':''}>${t}</option>`).join('')}
+          </select>
+        </div>
+        <div class="fg">
+          <label>Niveaux de perte compatibles</label>
+          <div class="check-group" id="canvas-niveaux">
+            ${niveaux.map(n => `<label class="check-item ${(sol.niveaux_perte||[]).includes(n)?'checked':''}" data-val="${n}" onclick="toggleCanvasCheck(this)"><input type="checkbox" ${(sol.niveaux_perte||[]).includes(n)?'checked':''}>${n}</label>`).join('')}
+          </div>
+        </div>
+        <div class="fg">
+          <label>Marques disponibles</label>
+          <div class="check-group" id="canvas-marques">
+            ${marques.map(m => `<label class="check-item ${(sol.marques||[]).includes(m)?'checked':''}" data-val="${m}" onclick="toggleCanvasCheck(this)"><input type="checkbox" ${(sol.marques||[]).includes(m)?'checked':''}>${m}</label>`).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Restore pending image if any
+    if (sol._pendingImage) {
+      const prev = document.getElementById(`canvas-img-prev-${currentCanvasPanel}`);
+      const name = document.getElementById(`canvas-img-name-${currentCanvasPanel}`);
+      if (prev) { prev.src = sol._pendingImage.base64; prev.style.display = 'block'; }
+      if (name) name.textContent = sol._pendingImage.name;
+    }
+  }
+}
+
+function renderCanvasPreview() {
+  collectCurrentCanvasForm();
+  const card = document.getElementById('canvas-preview');
+  if (!card) return;
+
+  if (currentCanvasPanel === 'page-principale') {
+    const pp = sac.page_principale || {};
+    card.innerHTML = `
+      <div class="prev-page-main">
+        <h2>${pp.titre || '<em style="color:#aaa">Titre…</em>'}</h2>
+        <p>${pp.intro || '<em style="color:#aaa">Introduction…</em>'}</p>
+        <h3>${pp.types_titre || '<em style="color:#aaa">Titre section…</em>'}</h3>
+        <p>${pp.types_intro || '<em style="color:#aaa">Introduction section…</em>'}</p>
+      </div>
+    `;
+  } else {
+    const sol = (sac.solutions || [])[currentCanvasPanel] || {};
+    const imgSrc = sol._pendingImage ? sol._pendingImage.base64 : sol.image;
+
+    card.innerHTML = `
+      <div class="prev-img">
+        ${imgSrc ? `<img src="${imgSrc}" onerror="this.parentElement.innerHTML='<span>Image non disponible</span>'">` : '<span>Aucune image</span>'}
+      </div>
+      <div class="prev-body">
+        ${sol.badge ? `<div class="prev-badge">${sol.badge}</div>` : ''}
+        <div class="prev-title">${sol.titre || '<em style="color:#aaa">Titre…</em>'}</div>
+        <div class="prev-desc">${sol.description_courte || '<em style="color:#aaa">Description courte…</em>'}</div>
+
+        ${(sol.avantages || []).length ? `
+          <div class="prev-section-title">Avantages</div>
+          <div class="prev-list">
+            ${sol.avantages.map(a => `<div class="prev-list-item"><span class="icon">✅</span>${a}</div>`).join('')}
+          </div>
+        ` : ''}
+
+        ${(sol.inconvenients || []).length ? `
+          <div class="prev-section-title">Inconvénients</div>
+          <div class="prev-list">
+            ${sol.inconvenients.map(a => `<div class="prev-list-item"><span class="icon">❌</span>${a}</div>`).join('')}
+          </div>
+        ` : ''}
+
+        <div class="prev-tags">
+          ${(sol.niveaux_perte || []).map(n => `<span class="prev-tag perte">${n}</span>`).join('')}
+          ${(sol.marques || []).map(m => `<span class="prev-tag marque">${m}</span>`).join('')}
+          ${sol.type ? `<span class="prev-tag">${sol.type}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }
+}
+
+function collectCurrentCanvasForm() {
+  if (currentCanvasPanel === 'page-principale') {
+    if (!sac.page_principale) sac.page_principale = {};
+    sac.page_principale.titre = gv('sac-pp-titre');
+    sac.page_principale.intro = gv('sac-pp-intro');
+    sac.page_principale.types_titre = gv('sac-pp-types-titre');
+    sac.page_principale.types_intro = gv('sac-pp-types-intro');
+  } else {
+    if (!sac.solutions) sac.solutions = [];
+    if (!sac.solutions[currentCanvasPanel]) sac.solutions[currentCanvasPanel] = {};
+    const sol = sac.solutions[currentCanvasPanel];
+    sol.titre = gv('sac-titre');
+    sol.badge = gv('sac-badge');
+    sol.description_courte = gv('sac-desc-courte');
+    sol.description_longue = gv('sac-desc-longue');
+    sol.avantages = collectCanvasList('canvas-avantages');
+    sol.inconvenients = collectCanvasList('canvas-inconvenients');
+    sol.niveaux_perte = collectCanvasChecks('canvas-niveaux');
+    sol.type = gv('sac-type');
+    sol.marques = collectCanvasChecks('canvas-marques');
+  }
+}
+
+function gv(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+
+function collectCanvasList(containerId) {
+  const inputs = document.querySelectorAll(`#${containerId} .dyn-item input`);
+  return Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
+}
+
+function collectCanvasChecks(groupId) {
+  const items = document.querySelectorAll(`#${groupId} .check-item.checked`);
+  return Array.from(items).map(i => i.dataset.val);
+}
+
+function addCanvasItem(listId) {
+  const list = document.getElementById(listId);
+  if (!list) return;
+  const item = document.createElement('div');
+  item.className = 'dyn-item';
+  item.innerHTML = `<input placeholder="Saisir ici…" oninput="renderCanvasPreview()"><button class="dyn-remove" onclick="this.parentElement.remove();renderCanvasPreview()">✕</button>`;
+  list.appendChild(item);
+  item.querySelector('input').focus();
+  renderCanvasPreview();
+}
+
+function toggleCanvasCheck(label) {
+  label.classList.toggle('checked');
+  const cb = label.querySelector('input');
+  if (cb) cb.checked = label.classList.contains('checked');
+  renderCanvasPreview();
+}
+
+function handleCanvasImageUpload(event, idx) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    if (!sac.solutions) sac.solutions = [];
+    if (!sac.solutions[idx]) sac.solutions[idx] = {};
+
+    sac.solutions[idx]._pendingImage = {
+      base64: e.target.result,
+      name: file.name,
+      mimeType: file.type
+    };
+
+    const prev = document.getElementById(`canvas-img-prev-${idx}`);
+    const name = document.getElementById(`canvas-img-name-${idx}`);
+    if (prev) { prev.src = e.target.result; prev.style.display = 'block'; }
+    if (name) name.textContent = `${file.name} (sera envoyé sur GitHub)`;
+
+    renderCanvasPreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function esc(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function fillSolutionsCanvas() {
+  if (!sac || !sac.solutions) return;
+  renderCanvasForm();
+  renderCanvasPreview();
+}
+
+function collectSolutionsCanvas() {
+  collectCurrentCanvasForm();
+}
+
+async function pushImage(token, path, base64Data) {
+  const raw = base64Data.split(',')[1] || base64Data;
+  const base = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`;
+  const headers = {
+    'Authorization': `token ${token}`,
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  };
+  const getRes = await fetch(`${base}?ref=${GITHUB_BRANCH}`, { headers });
+  let sha = null;
+  if (getRes.ok) sha = (await getRes.json()).sha;
+  const body = { message: 'Upload image via éditeur web', content: raw, branch: GITHUB_BRANCH };
+  if (sha) body.sha = sha;
+  const res = await fetch(base, { method: 'PUT', headers, body: JSON.stringify(body) });
+  if (!res.ok) { const e = await res.json(); throw new Error(e.message || `HTTP ${res.status}`); }
+  return await res.json();
 }
 
 // ===== STATUS =====
