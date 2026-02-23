@@ -1,8 +1,7 @@
 (async () => {
   try {
-    const base = document.querySelector('base')?.href || '/';
-    const url  = base.replace(/\/$/, '') + '/content/design.json?t=' + Date.now();
-    const d    = await fetch(url).then(r => r.json());
+    const url = '/audire/content/design.json?t=' + Date.now();
+    const d   = await fetch(url).then(r => r.json());
     const root = document.documentElement.style;
 
     const c = d.colors   || {};
