@@ -24,6 +24,192 @@
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="/audire/css/styles.css">
+  <style>
+    .filters {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .filter-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+    .filter-group select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      background: var(--bg);
+      color: var(--text);
+      transition: all var(--transition-fast);
+    }
+    .filter-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 28px;
+      margin-bottom: 60px;
+    }
+    .product-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: all var(--transition-base);
+      display: flex;
+      flex-direction: column;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+      border-color: var(--primary);
+    }
+    .product-card.highlight {
+      border: 2px solid var(--primary);
+      position: relative;
+    }
+    .product-card.highlight::before {
+      content: '⭐ Recommandé';
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      z-index: 2;
+    }
+    .product-image {
+      width: 100%;
+      height: 240px;
+      background: var(--bg-alt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .product-image.placeholder {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--bg-alt) 100%);
+    }
+    .product-image.placeholder::after {
+      content: '📷';
+      font-size: 48px;
+      opacity: 0.3;
+    }
+    .product-body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-header {
+      margin-bottom: 12px;
+    }
+    .product-marque {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--primary);
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .product-nom {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .product-type {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .product-description {
+      color: var(--text-light);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .product-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px 0;
+      flex: 1;
+    }
+    .product-features li {
+      padding: 6px 0;
+      font-size: 14px;
+      color: var(--text-light);
+      display: flex;
+      align-items: start;
+      gap: 8px;
+    }
+    .product-features li::before {
+      content: '✓';
+      color: var(--primary);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .product-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .product-prix {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .product-prix small {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .no-results h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+      color: var(--text-light);
+    }
+    @media (max-width: 768px) {
+      .filters-grid {
+        grid-template-columns: 1fr;
+      }
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -36,266 +222,75 @@
     <!-- Hero Section -->
     <section class="hero">
       <div class="container">
-        <div class="hero-grid">
-          <div class="hero-content">
-            <div class="kicker">
-              <span class="dot"></span>
-              <span data-content-key="hero.kicker">Oticon • Bernafon</span>
-            </div>
-
-            <h1 data-content-key="hero.title">Nos solutions auditives</h1>
-
-            <p class="lead">
-              Nous travaillons avec <strong>Oticon</strong> et <strong>Bernafon</strong>, deux marques reconnues mondialement pour leur qualité, leur innovation et leur fiabilité. Des solutions adaptées à vos besoins et votre budget.
-            </p>
-
-            <div class="chips">
-              <span class="chip">Technologies de pointe</span>
-              <span class="chip">Design discret</span>
-              <span class="chip">Connectivité Bluetooth</span>
-              <span class="chip">Recharge lithium-ion</span>
-            </div>
-
-            <div class="hero-ctas">
-              <button class="btn btn-primary btn-lg" data-open-modal>
-                <span>📅</span>
-                <span>Prendre rendez-vous</span>
-              </button>
-              <a class="btn btn-secondary btn-lg" href="/audire/test-auditif-gratuit/">
-                <span>✓</span>
-                <span>Test auditif gratuit</span>
-              </a>
-            </div>
+        <div class="hero-content" style="max-width: 800px; margin: 0 auto; text-align: center;">
+          <div class="kicker" style="justify-content: center;">
+            <span class="dot"></span>
+            <span>Oticon • Bernafon</span>
           </div>
 
-          <div class="hero-cards">
-            <div class="info-card animate-on-scroll">
-              <div class="info-item">
-                <span class="info-label">💰 Prix</span>
-                <div class="info-value">1 200 € - 3 500 €</div>
-                <div class="info-detail">Par oreille</div>
-              </div>
-              <div class="info-item">
-                <span class="info-label">💵 Remboursement</span>
-                <div class="info-value">Jusqu'à 840 €</div>
-                <div class="info-detail">INAMI + mutuelle par oreille</div>
-              </div>
-              <div class="info-item">
-                <span class="info-label">🔧 Garantie</span>
-                <div class="info-value">2-4 ans</div>
-                <div class="info-detail">Selon le modèle</div>
-              </div>
+          <h1 id="page-title">Nos solutions auditives</h1>
+
+          <p class="lead" id="page-subtitle">
+            Découvrez notre sélection d'appareils auditifs Oticon et Bernafon, choisis pour leur qualité, leur discrétion et leur performance. Chaque appareil est adapté à votre mode de vie et à vos besoins spécifiques.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section style="padding: 0 0 60px 0; background: var(--bg);">
+      <div class="container">
+        <div class="filters">
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label for="filter-marque">Marque</label>
+              <select id="filter-marque" onchange="filterProducts()">
+                <option value="Toutes">Toutes les marques</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filter-gamme">Gamme</label>
+              <select id="filter-gamme" onchange="filterProducts()">
+                <option value="Toutes">Toutes les gammes</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filter-type">Type d'appareil</label>
+              <select id="filter-type" onchange="filterProducts()">
+                <option value="Tous">Tous les types</option>
+              </select>
             </div>
           </div>
         </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid" id="products-grid">
+          <!-- Products will be loaded here by JavaScript -->
+        </div>
+
+        <!-- No Results Message -->
+        <div class="no-results" id="no-results" style="display: none;">
+          <h3>Aucun produit trouvé</h3>
+          <p>Essayez de modifier vos critères de recherche.</p>
+        </div>
       </div>
     </section>
 
-    <!-- Section: Nos marques -->
-    <section class="section">
+    <!-- CTA Section -->
+    <section class="cta-section" style="padding: 80px 0; background: var(--bg-alt);">
       <div class="container">
-        <div class="section-header animate-on-scroll">
-          <span class="section-tag" data-content-key="marques.tag">Nos partenaires</span>
-          <h2 class="section-title" data-content-key="marques.title">Oticon et Bernafon</h2>
-          <p class="section-subtitle" data-content-key="marques.subtitle">
-            Deux marques de référence mondiale pour des solutions auditives de qualité.
+        <div class="cta-box" style="max-width: 700px; margin: 0 auto; text-align: center; background: var(--panel); padding: 48px; border-radius: var(--radius-lg); border: 1px solid var(--border);">
+          <h2 id="cta-title" style="font-size: 32px; margin-bottom: 16px; color: var(--text);">Quel appareil vous convient ?</h2>
+          <p id="cta-description" style="font-size: 17px; color: var(--text-light); line-height: 1.7; margin-bottom: 28px;">
+            Chaque situation auditive est unique. Venez tester nos appareils lors d'un rendez-vous sans engagement. On prend le temps de comprendre vos besoins et de vous conseiller la solution la plus adaptée.
           </p>
-        </div>
-
-        <div class="grid-2">
-          <!-- Oticon -->
-          <div class="card animate-on-scroll">
-            <div class="card-icon">🎧</div>
-            <h3>Oticon</h3>
-            <p>
-              <strong>Leader mondial de l'audition</strong>, Oticon propose des solutions innovantes reconnues pour leur qualité sonore exceptionnelle et leur technologie de pointe. Fondée au Danemark en 1904, la marque est pionnière dans l'innovation auditive.
-            </p>
-            
-            <h4 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px; color: var(--primary);">Technologies Oticon</h4>
-            <ul style="margin: 0; padding-left: 20px; color: var(--text-light); line-height: 1.8;">
-              <li><strong>BrainHearing™</strong> : Soutient le cerveau dans son travail d'écoute naturelle</li>
-              <li><strong>MoreSound Intelligence™</strong> : Distinction claire entre parole et bruit</li>
-              <li><strong>Connectivité Bluetooth</strong> : Connexion directe à iPhone, Android, TV</li>
-              <li><strong>Recharge lithium-ion</strong> : 24h d'autonomie, plus besoin de piles</li>
-              <li><strong>Design discret</strong> : Mini contours d'oreille invisibles</li>
-            </ul>
-
-            <h4 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px; color: var(--primary);">Idéal pour :</h4>
-            <p class="text-muted">
-              Environnements bruyants, conversations de groupe, personnes actives, utilisation intensive (TV, téléphone, musique).
-            </p>
-          </div>
-
-          <!-- Bernafon -->
-          <div class="card animate-on-scroll">
-            <div class="card-icon">🎵</div>
-            <h3>Bernafon</h3>
-            <p>
-              <strong>Marque suisse réputée</strong> pour son excellent rapport qualité-prix, Bernafon offre des appareils performants et fiables avec une qualité sonore naturelle. Fondée en 1946, elle allie tradition suisse et innovation technologique.
-            </p>
-            
-            <h4 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px; color: var(--primary);">Technologies Bernafon</h4>
-            <ul style="margin: 0; padding-left: 20px; color: var(--text-light); line-height: 1.8;">
-              <li><strong>Son naturel et équilibré</strong> : Restitution fidèle des sons</li>
-              <li><strong>DECS™</strong> : Suppression d'écho et réduction du bruit</li>
-              <li><strong>Connectivité sans fil</strong> : Compatible avec smartphones et TV</li>
-              <li><strong>Facilité d'utilisation</strong> : Réglages simples et intuitifs</li>
-              <li><strong>Fiabilité suisse</strong> : Robustesse et durabilité reconnues</li>
-            </ul>
-
-            <h4 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px; color: var(--primary);">Idéal pour :</h4>
-            <p class="text-muted">
-              Usage quotidien confortable, personnes recherchant un bon rapport qualité-prix, première appareillage, utilisation classique.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section: Types d'appareils -->
-    <section class="section" style="background: var(--bg-alt);">
-      <div class="container">
-        <div class="section-header animate-on-scroll">
-          <span class="section-tag" data-content-key="types.tag">Types d'appareils</span>
-          <h2 class="section-title" data-content-key="types.title">Quel type d'appareil choisir ?</h2>
-          <p class="section-subtitle" data-content-key="types.subtitle">
-            Il existe plusieurs formats d'appareils auditifs. Le choix dépend de votre perte auditive, de votre morphologie et de vos préférences.
-          </p>
-        </div>
-
-        <div class="grid-3">
-          <div class="feature-box animate-on-scroll">
-            <div class="feature-icon">🔊</div>
-            <h3 class="feature-title">Contour d'oreille (BTE)</h3>
-            <p class="feature-description">
-              L'appareil se place derrière l'oreille. C'est le format le plus polyvalent : puissant, confortable, facile à manipuler. Idéal pour toutes les pertes auditives.
-            </p>
-          </div>
-
-          <div class="feature-box animate-on-scroll">
-            <div class="feature-icon">🎯</div>
-            <h3 class="feature-title">Mini contour (RIC/RITE)</h3>
-            <p class="feature-description">
-              Plus discret que le contour classique, avec un écouteur dans le conduit auditif. Très populaire : petit, léger, performant. Notre recommandation pour la plupart des cas.
-            </p>
-          </div>
-
-          <div class="feature-box animate-on-scroll">
-            <div class="feature-icon">🤏</div>
-            <h3 class="feature-title">Intra-auriculaire (ITE/ITC/CIC)</h3>
-            <p class="feature-description">
-              Moulé sur mesure, entièrement dans l'oreille. Très discret mais limité en puissance. Convient aux pertes légères à moyennes. Manipulation plus délicate.
-            </p>
-          </div>
-        </div>
-
-        <div class="text-center" style="margin-top: 48px;">
-          <p class="text-muted mb-3">
-            <strong>Important :</strong> La discrétion n'est pas toujours synonyme de performance. Nous vous aidons à choisir l'appareil qui vous correspond vraiment, pas celui qui se voit le moins.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section: Fonctionnalités modernes -->
-    <section class="section">
-      <div class="container">
-        <div class="section-header animate-on-scroll">
-          <span class="section-tag" data-content-key="innovation.tag">Innovation</span>
-          <h2 class="section-title" data-content-key="innovation.title">Fonctionnalités modernes</h2>
-          <p class="section-subtitle" data-content-key="innovation.subtitle">
-            Les appareils auditifs modernes sont bien plus que de simples amplificateurs. Voici les technologies disponibles.
-          </p>
-        </div>
-
-        <div class="grid-3">
-          <div class="feature-box animate-on-scroll">
-            <div class="feature-icon">📱</div>
-            <h3 class="feature-title">Connectivité Bluetooth</h3>
-            <p class="feature-description">
-              Connexion directe avec smartphone, TV, tablette. Écoutez musique, appels et vidéos directement dans vos appareils auditifs.
-            </p>
-          </div>
-
-          <div class="feature-box animate-on-scroll">
-            <div class="feature-icon">🔋</div>
-            <h3 class="feature-title">Recharge lithium-ion</h3>
-            <p class="feature-description">
-              Fini les piles à changer. Une charge nocturne = 24h d'autonomie. Simple, écologique, économique.
-            </p>
-          </div>
-
-          <div class="feature-box animate-on-scroll">
-            <div class="feature-icon">🤖</div>
-            <h3 class="feature-title">Intelligence artificielle</h3>
-            <p class="feature-description">
-              Adaptation automatique aux environnements. L'appareil reconnaît les situations (restaurant, rue, maison) et ajuste les réglages.
-            </p>
-          </div>
-
-          <div class="feature-box animate-on-scroll">
-            <div class="feature-icon">🎙️</div>
-            <h3 class="feature-title">Microphones directionnels</h3>
-            <p class="feature-description">
-              Focus sur la voix devant vous, réduction du bruit ambiant. Essentiel pour comprendre dans le bruit.
-            </p>
-          </div>
-
-          <div class="feature-box animate-on-scroll">
-            <div class="feature-icon">🛡️</div>
-            <h3 class="feature-title">Réduction de bruit</h3>
-            <p class="feature-description">
-              Suppression intelligente du bruit de fond (vent, ventilation, circulation) pour un confort optimal.
-            </p>
-          </div>
-
-          <div class="feature-box animate-on-scroll">
-            <div class="feature-icon">💧</div>
-            <h3 class="feature-title">Résistance eau et poussière</h3>
-            <p class="feature-description">
-              Certification IP68 : résistance à la transpiration, à l'humidité et à la poussière. Fiabilité au quotidien.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section: Prix et remboursements -->
-    <section class="section" style="background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white;">
-      <div class="container">
-        <div class="cta-content">
-          <span class="section-tag" style="background: rgba(255,255,255,0.2); color: white;">Prix</span>
-          <h2 class="cta-title">Combien ça coûte ?</h2>
-          <p class="cta-description">
-            Les appareils auditifs coûtent entre <strong>1 200 € et 3 500 €</strong> par oreille, selon le modèle et les fonctionnalités. Grâce à l'INAMI et aux mutuelles, vous pouvez récupérer jusqu'à <strong>840 € par oreille</strong>.
-          </p>
-          <p style="margin-bottom: 32px; opacity: 0.95;">
-            Le prix comprend : l'appareil, les réglages, le suivi à vie, l'entretien, les consommables (embouts, filtres...).
-          </p>
-          <a href="/audire/remboursements/" class="btn btn-lg" style="background: white; color: var(--primary);">
-            <span>💰</span>
-            <span>Tout savoir sur les remboursements</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section: CTA Final -->
-    <section class="cta-section">
-      <div class="cta-content">
-        <h2 class="cta-title" data-content-key="cta.title">Quelle solution pour vous ?</h2>
-        <p class="cta-description" data-content-key="cta.description">
-          Prenez rendez-vous pour un test auditif gratuit. Nous analyserons votre situation et vous conseillerons la solution la plus adaptée.
-        </p>
-        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-          <button class="btn btn-lg" data-open-modal style="background: white; color: var(--primary);">
+          <button class="btn btn-primary btn-lg" data-open-modal>
             <span>📅</span>
-            <span>Prendre rendez-vous</span>
+            <span id="cta-button">Prendre rendez-vous</span>
           </button>
-          <a class="btn btn-lg btn-outline" href="tel:+3242336125" style="border-color: white; color: white;">
-            <span>📞</span>
-            <span>04 233 61 25</span>
-          </a>
+          <p id="cta-note" style="margin-top: 16px; font-size: 14px; color: var(--text-muted);">
+            Test gratuit • Sans engagement • Conseils personnalisés
+          </p>
         </div>
       </div>
     </section>
@@ -305,15 +300,138 @@
   <!-- Footer -->
   <div id="app-footer"></div>
 
-  <!-- Modal -->
-  <div id="app-modal"></div>
-
   <!-- Scripts -->
-  <script src="/audire/js/config.js"></script>
   <script src="/audire/js/design-loader.js"></script>
-  <script src="/audire/js/content-loader.js"></script>
-  <script src="/audire/js/components.js"></script>
-  <script src="/audire/js/main.js"></script>
+  <script src="/audire/js/app.js"></script>
 
+  <script>
+    let allProducts = [];
+    let filters = {};
+
+    // Load products data
+    async function loadProducts() {
+      try {
+        const response = await fetch('/audire/content/produits.json?t=' + Date.now());
+        const data = await response.json();
+
+        allProducts = data.produits || [];
+        filters = data.filtres || {};
+
+        // Update hero content
+        if (data.hero) {
+          document.getElementById('page-title').textContent = data.hero.title;
+          document.getElementById('page-subtitle').textContent = data.hero.subtitle;
+        }
+
+        // Update CTA content
+        if (data.cta) {
+          if (data.cta.title) document.getElementById('cta-title').textContent = data.cta.title;
+          if (data.cta.description) document.getElementById('cta-description').textContent = data.cta.description;
+          if (data.cta.buttonText) document.getElementById('cta-button').textContent = data.cta.buttonText;
+          if (data.cta.note) document.getElementById('cta-note').textContent = data.cta.note;
+        }
+
+        // Populate filter options
+        populateFilters();
+
+        // Display all products initially
+        displayProducts(allProducts);
+      } catch (error) {
+        console.error('Error loading products:', error);
+      }
+    }
+
+    function populateFilters() {
+      const marqueSelect = document.getElementById('filter-marque');
+      const gammeSelect = document.getElementById('filter-gamme');
+      const typeSelect = document.getElementById('filter-type');
+
+      // Populate marques
+      if (filters.marques) {
+        marqueSelect.innerHTML = filters.marques.map(m =>
+          `<option value="${m}">${m === 'Toutes' ? 'Toutes les marques' : m}</option>`
+        ).join('');
+      }
+
+      // Populate gammes
+      if (filters.gammes) {
+        gammeSelect.innerHTML = filters.gammes.map(g =>
+          `<option value="${g}">${g === 'Toutes' ? 'Toutes les gammes' : g}</option>`
+        ).join('');
+      }
+
+      // Populate types
+      if (filters.types) {
+        typeSelect.innerHTML = filters.types.map(t =>
+          `<option value="${t}">${t === 'Tous' ? 'Tous les types' : t}</option>`
+        ).join('');
+      }
+    }
+
+    function filterProducts() {
+      const marqueFilter = document.getElementById('filter-marque').value;
+      const gammeFilter = document.getElementById('filter-gamme').value;
+      const typeFilter = document.getElementById('filter-type').value;
+
+      const filtered = allProducts.filter(product => {
+        const marqueMatch = marqueFilter === 'Toutes' || product.marque === marqueFilter;
+        const gammeMatch = gammeFilter === 'Toutes' || product.gamme === gammeFilter;
+        const typeMatch = typeFilter === 'Tous' || product.type === typeFilter;
+        return marqueMatch && gammeMatch && typeMatch;
+      });
+
+      displayProducts(filtered);
+    }
+
+    function displayProducts(products) {
+      const grid = document.getElementById('products-grid');
+      const noResults = document.getElementById('no-results');
+
+      if (products.length === 0) {
+        grid.style.display = 'none';
+        noResults.style.display = 'block';
+        return;
+      }
+
+      grid.style.display = 'grid';
+      noResults.style.display = 'none';
+
+      grid.innerHTML = products.map(product => `
+        <div class="product-card ${product.highlight ? 'highlight' : ''} animate-on-scroll">
+          <div class="product-image ${!product.image || product.image.includes('placeholder') ? 'placeholder' : ''}">
+            ${product.image && !product.image.includes('placeholder') ?
+              `<img src="${product.image}" alt="${product.nom}" onerror="this.parentElement.classList.add('placeholder'); this.style.display='none';">` :
+              ''
+            }
+          </div>
+          <div class="product-body">
+            <div class="product-header">
+              <div class="product-marque">${product.marque}</div>
+              <h3 class="product-nom">${product.nom}</h3>
+              <div class="product-type">${product.type} • ${product.gamme}</div>
+            </div>
+            <p class="product-description">${product.description}</p>
+            <ul class="product-features">
+              ${product.caracteristiques.map(feat => `<li>${feat}</li>`).join('')}
+            </ul>
+            <div class="product-footer">
+              <div class="product-prix">
+                ${product.prix}
+                <small>par oreille</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Re-trigger animations
+      if (typeof observeElements === 'function') {
+        observeElements();
+      }
+    }
+
+    // Load products on page load
+    loadProducts();
+  </script>
 </body>
 </html>
