@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>Appareils intra-auriculaires | Audire</title>
+  <meta name="description" content="Les appareils intra-auriculaires : discrets, sur mesure et invisibles. Confort optimal pour un usage quotidien.">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/audire/css/styles.css">
+  <style>
+    .detail-hero {
+      padding: 60px 0;
+      background: var(--bg);
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    .detail-content h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+    .detail-content p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+    .detail-image {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--bg-alt) 100%);
+      border-radius: var(--radius-lg);
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 120px;
+      opacity: 0.4;
+    }
+    .detail-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: var(--radius-lg);
+    }
+
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 60px;
+    }
+    .pros-cons-box {
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+    }
+    .pros-cons-box h3 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pros-cons-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .pros-cons-box li {
+      padding: 8px 0;
+      display: flex;
+      align-items: start;
+      gap: 12px;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    .pros-cons-box.pros {
+      border-color: #4CAF50;
+    }
+    .pros-cons-box.pros h3 {
+      color: #4CAF50;
+    }
+    .pros-cons-box.pros li::before {
+      content: '✓';
+      color: #4CAF50;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .pros-cons-box.cons {
+      border-color: #FF6B6B;
+    }
+    .pros-cons-box.cons h3 {
+      color: #FF6B6B;
+    }
+    .pros-cons-box.cons li::before {
+      content: '✗';
+      color: #FF6B6B;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .info-section {
+      padding: 60px 0;
+      background: var(--bg-alt);
+    }
+    .info-block {
+      max-width: 900px;
+      margin: 0 auto 50px;
+    }
+    .info-block h2 {
+      font-size: 28px;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    .info-block p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+    .info-block strong {
+      color: var(--text);
+    }
+
+    .brands-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+    .brand-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .accessories-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .accessory-item {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all var(--transition-fast);
+    }
+    .accessory-item:hover {
+      border-color: var(--primary);
+      transform: translateX(4px);
+    }
+    .accessory-icon {
+      font-size: 24px;
+    }
+    .accessory-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    @media (max-width: 768px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .pros-cons {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div id="app-header"></div>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- Hero Section -->
+    <section class="detail-hero">
+      <div class="container">
+        <div class="detail-grid">
+          <!-- Content -->
+          <div class="detail-content animate-on-scroll">
+            <h1>Les intra-auriculaires</h1>
+            <p>
+              Les appareils intra-auriculaires sont entièrement sur mesure et se logent directement dans le conduit auditif. Ils sont pratiquement invisibles et offrent un confort optimal pour une utilisation quotidienne.
+            </p>
+            <p>
+              Moulés sur mesure pour s'adapter parfaitement à la forme de votre conduit auditif, ces appareils offrent une discrétion maximale tout en garantissant une excellente qualité sonore. Ils conviennent particulièrement aux personnes souhaitant une solution invisible.
+            </p>
+          </div>
+          <!-- Image -->
+          <div class="detail-image animate-on-scroll">
+            👂
+          </div>
+        </div>
+
+        <!-- Pros & Cons -->
+        <div class="pros-cons">
+          <div class="pros-cons-box pros animate-on-scroll">
+            <h3>✓ Points forts</h3>
+            <ul>
+              <li>Pratiquement invisible dans l'oreille</li>
+              <li>Moulage 100% personnalisé</li>
+              <li>Confort optimal</li>
+              <li>Pas de gêne avec les lunettes</li>
+              <li>Son naturel grâce au positionnement</li>
+              <li>Idéal pour le sport</li>
+            </ul>
+          </div>
+          <div class="pros-cons-box cons animate-on-scroll">
+            <h3>✗ Points faibles</h3>
+            <ul>
+              <li>Nécessite une prise d'empreinte</li>
+              <li>Manipulation plus délicate</li>
+              <li>Batterie plus petite (autonomie réduite)</li>
+              <li>Non adapté aux pertes auditives sévères</li>
+              <li>Sensible au cérumen</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Info Sections -->
+    <section class="info-section">
+      <div class="container">
+
+        <!-- Fonctionnement -->
+        <div class="info-block animate-on-scroll">
+          <h2>Comment fonctionnent les appareils intra-auriculaires ?</h2>
+          <p>
+            Ces appareils sont entièrement logés dans le conduit auditif. Tous les composants (microphone, amplificateur, haut-parleur) sont miniaturisés et intégrés dans une coque sur mesure. L'empreinte de votre oreille est prise pour créer un appareil parfaitement adapté à votre anatomie, garantissant confort et efficacité.
+          </p>
+        </div>
+
+        <!-- À qui convient -->
+        <div class="info-block animate-on-scroll">
+          <h2>À qui conviennent les appareils intra-auriculaires ?</h2>
+          <p>
+            Chez Audire, nous proposons des appareils intra-auriculaires de <strong>marques reconnues</strong>. Ces appareils sont particulièrement adaptés aux personnes recherchant une solution discrète et confortable.
+          </p>
+
+          <div class="brands-grid">
+            <div class="brand-card">Oticon</div>
+            <div class="brand-card">Bernafon</div>
+          </div>
+
+          <h3 style="margin-top: 32px; font-size: 20px; color: var(--text); margin-bottom: 12px;">Type de perte auditive</h3>
+          <p>
+            Les appareils intra-auriculaires conviennent aux pertes auditives légères à modérées. Pour les pertes auditives sévères, un appareil contour d'oreille sera généralement plus approprié car il peut délivrer une amplification plus puissante.
+          </p>
+
+          <h3 style="margin-top: 32px; font-size: 20px; color: var(--text); margin-bottom: 12px;">Profil utilisateur</h3>
+          <p>
+            Ces appareils sont idéaux si vous recherchez avant tout la discrétion, si vous portez des lunettes, ou si vous pratiquez des activités sportives régulièrement. Ils nécessitent cependant une certaine dextérité pour la manipulation quotidienne (mise en place, changement de pile).
+          </p>
+        </div>
+
+        <!-- Accessoires -->
+        <div class="info-block animate-on-scroll">
+          <h2>Accessoires compatibles</h2>
+          <p>
+            Selon le modèle choisi, vous pouvez bénéficier de différents accessoires pour améliorer votre expérience auditive.
+          </p>
+
+          <div class="accessories-list">
+            <div class="accessory-item">
+              <div class="accessory-icon">📱</div>
+              <div class="accessory-name">Connexion Bluetooth</div>
+            </div>
+            <div class="accessory-item">
+              <div class="accessory-icon">📞</div>
+              <div class="accessory-name">Télécommande discrète</div>
+            </div>
+            <div class="accessory-item">
+              <div class="accessory-icon">📺</div>
+              <div class="accessory-name">Streaming TV</div>
+            </div>
+            <div class="accessory-item">
+              <div class="accessory-icon">🎧</div>
+              <div class="accessory-name">Application smartphone</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="info-block animate-on-scroll" style="text-align: center; margin-top: 60px;">
+          <h2>Intéressé par les appareils intra-auriculaires ?</h2>
+          <p style="margin-bottom: 28px;">
+            Venez découvrir nos modèles intra-auriculaires lors d'une consultation personnalisée. Nous prendrons une empreinte de votre oreille pour vous proposer la solution la plus adaptée.
+          </p>
+          <button class="btn btn-primary btn-lg" data-open-modal>
+            <span>📅</span>
+            <span>Prendre rendez-vous</span>
+          </button>
+          <p style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">
+            Consultation gratuite • Prise d'empreinte • Conseils d'expert
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="app-footer"></div>
+
+  <!-- Scripts -->
+  <script src="/audire/js/design-loader.js"></script>
+  <script src="/audire/js/app.js"></script>
+</body>
+</html>

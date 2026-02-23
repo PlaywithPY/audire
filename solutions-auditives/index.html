@@ -6,8 +6,8 @@
 
   <!-- SEO -->
   <title>Solutions auditives Oticon & Bernafon | Audire</title>
-  <meta name="description" content="Découvrez nos solutions auditives de qualité : Oticon et Bernafon. Appareils modernes, discrets et performants. Prix de 1200€ à 3500€ par oreille.">
-  <meta name="keywords" content="appareil auditif Oticon, appareil auditif Bernafon, audioprothèse, aide auditive, Jemeppe-sur-Meuse">
+  <meta name="description" content="Découvrez nos solutions auditives : contour d'oreille, intra-auriculaire, Oticon Intent. Appareils modernes adaptés à tous les types de perte auditive.">
+  <meta name="keywords" content="appareil auditif, contour d'oreille, intra-auriculaire, Oticon Intent, Bernafon, audioprothèse">
 
   <!-- Canonical -->
   <meta name="robots" content="index, follow">
@@ -16,198 +16,174 @@
   <!-- Theme Color -->
   <meta name="theme-color" content="#FF8C42">
 
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://playwithpy.github.io/audire/solutions-auditives/">
-  <meta property="og:title" content="Solutions auditives Oticon & Bernafon | Audire">
-  <meta property="og:description" content="Découvrez nos solutions auditives de qualité : Oticon et Bernafon. Appareils modernes, discrets et performants.">
-
   <!-- Stylesheets -->
   <link rel="stylesheet" href="/audire/css/styles.css">
   <style>
-    .filters {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 24px;
-      margin-bottom: 40px;
-    }
-    .filters-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-    }
-    .filter-group label {
-      display: block;
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--text-light);
-      margin-bottom: 8px;
-    }
-    .filter-group select {
-      width: 100%;
-      padding: 10px 14px;
-      border: 2px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 15px;
+    .page-header {
+      padding: 60px 0 40px;
+      text-align: center;
       background: var(--bg);
+    }
+    .page-header h1 {
+      font-size: 42px;
+      margin-bottom: 20px;
       color: var(--text);
-      transition: all var(--transition-fast);
     }
-    .filter-group select:focus {
-      outline: none;
-      border-color: var(--primary);
+    .page-intro {
+      max-width: 800px;
+      margin: 0 auto 20px;
+      font-size: 17px;
+      line-height: 1.8;
+      color: var(--text-light);
     }
-    .products-grid {
+
+    .types-section {
+      padding: 60px 0;
+      background: var(--bg-alt);
+    }
+    .section-title {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    .section-intro {
+      max-width: 800px;
+      margin: 0 auto 50px;
+      text-align: center;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-light);
+    }
+
+    .types-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 28px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
       margin-bottom: 60px;
     }
-    .product-card {
+    .type-card {
       background: var(--panel);
-      border: 1px solid var(--border);
       border-radius: var(--radius-md);
       overflow: hidden;
+      border: 1px solid var(--border);
       transition: all var(--transition-base);
+      text-decoration: none;
       display: flex;
       flex-direction: column;
     }
-    .product-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    .type-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.12);
       border-color: var(--primary);
     }
-    .product-card.highlight {
-      border: 2px solid var(--primary);
-      position: relative;
-    }
-    .product-card.highlight::before {
-      content: '⭐ Recommandé';
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: var(--primary);
-      color: white;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-      z-index: 2;
-    }
-    .product-image {
-      width: 100%;
+    .type-image {
       height: 240px;
-      background: var(--bg-alt);
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--bg-alt) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      position: relative;
     }
-    .product-image img {
+    .type-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-    .product-image.placeholder {
-      background: linear-gradient(135deg, var(--secondary) 0%, var(--bg-alt) 100%);
+    .type-image.placeholder {
+      font-size: 64px;
+      opacity: 0.4;
     }
-    .product-image.placeholder::after {
-      content: '📷';
-      font-size: 48px;
-      opacity: 0.3;
-    }
-    .product-body {
-      padding: 24px;
+    .type-body {
+      padding: 28px;
       flex: 1;
       display: flex;
       flex-direction: column;
     }
-    .product-header {
-      margin-bottom: 12px;
-    }
-    .product-marque {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--primary);
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-    }
-    .product-nom {
-      font-size: 22px;
+    .type-title {
+      font-size: 24px;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 4px;
+      margin-bottom: 12px;
     }
-    .product-type {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-    .product-description {
+    .type-description {
       color: var(--text-light);
-      font-size: 15px;
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
-    .product-features {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 20px 0;
+      line-height: 1.7;
+      margin-bottom: 20px;
       flex: 1;
     }
-    .product-features li {
-      padding: 6px 0;
-      font-size: 14px;
-      color: var(--text-light);
+    .type-cta {
+      color: var(--primary);
+      font-weight: 600;
       display: flex;
-      align-items: start;
+      align-items: center;
       gap: 8px;
     }
-    .product-features li::before {
-      content: '✓';
-      color: var(--primary);
-      font-weight: 700;
-      flex-shrink: 0;
+    .type-cta::after {
+      content: '→';
+      transition: transform var(--transition-fast);
     }
-    .product-footer {
-      border-top: 1px solid var(--border);
-      padding-top: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .type-card:hover .type-cta::after {
+      transform: translateX(4px);
     }
-    .product-prix {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--primary);
+
+    .info-section {
+      padding: 60px 0;
+      background: var(--bg);
     }
-    .product-prix small {
-      display: block;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-muted);
-      margin-top: 2px;
+    .info-block {
+      max-width: 900px;
+      margin: 0 auto 50px;
     }
-    .no-results {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-muted);
+    .info-block h2 {
+      font-size: 28px;
+      margin-bottom: 16px;
+      color: var(--text);
     }
-    .no-results h3 {
-      font-size: 20px;
-      margin-bottom: 8px;
+    .info-block p {
+      font-size: 16px;
+      line-height: 1.8;
       color: var(--text-light);
+      margin-bottom: 16px;
     }
-    @media (max-width: 768px) {
-      .filters-grid {
-        grid-template-columns: 1fr;
-      }
-      .products-grid {
-        grid-template-columns: 1fr;
-      }
+    .info-block strong {
+      color: var(--text);
+    }
+
+    .cta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+      margin-top: 50px;
+    }
+    .cta-card {
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 32px 24px;
+      text-align: center;
+      transition: all var(--transition-base);
+    }
+    .cta-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .cta-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    .cta-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .cta-text {
+      color: var(--text-light);
+      line-height: 1.6;
+      margin-bottom: 20px;
+      font-size: 15px;
     }
   </style>
 </head>
@@ -219,79 +195,144 @@
   <!-- Main Content -->
   <main>
 
-    <!-- Hero Section -->
-    <section class="hero">
+    <!-- Page Header -->
+    <section class="page-header">
       <div class="container">
-        <div class="hero-content" style="max-width: 800px; margin: 0 auto; text-align: center;">
-          <div class="kicker" style="justify-content: center;">
-            <span class="dot"></span>
-            <span>Oticon • Bernafon</span>
-          </div>
+        <h1>Quels sont les différents types d'appareils auditifs ?</h1>
+        <p class="page-intro">
+          Un appareil auditif capte les bruits ambiants. Le son est alors traité sous forme d'impulsions électriques qui, une fois modulées, sont transmises à l'oreille. Selon la perte auditive et les besoins du patient, les modèles d'appareils auditifs sont sensiblement différents. Découvrez quelle solution auditive vous convient le mieux.
+        </p>
+      </div>
+    </section>
 
-          <h1 id="page-title">Nos solutions auditives</h1>
+    <!-- Types Section -->
+    <section class="types-section">
+      <div class="container">
+        <h2 class="section-title">Types d'appareils auditifs</h2>
+        <p class="section-intro">
+          Les aides auditives sont disponibles dans des modèles les plus variés qui conviennent à tout type de perte auditive. Cette diversité vous assure <strong>une solution adaptée à vos désirs et attentes</strong>. Nous avons regroupé pour vous les principaux types d'appareils auditifs, selon les caractéristiques qui les différencient ainsi que leurs avantages et inconvénients.
+        </p>
 
-          <p class="lead" id="page-subtitle">
-            Découvrez notre sélection d'appareils auditifs Oticon et Bernafon, choisis pour leur qualité, leur discrétion et leur performance. Chaque appareil est adapté à votre mode de vie et à vos besoins spécifiques.
-          </p>
+        <div class="types-grid">
+          <!-- Contour d'oreille -->
+          <a href="/audire/solutions-auditives/contour-oreille/" class="type-card animate-on-scroll">
+            <div class="type-image placeholder">
+              🎧
+            </div>
+            <div class="type-body">
+              <h3 class="type-title">Contour d'oreille</h3>
+              <p class="type-description">
+                Petits, discrets et presque invisibles. Conviennent à tous les types de perte auditive. Disponibles en différentes couleurs et se placent confortablement derrière l'oreille.
+              </p>
+              <span class="type-cta">En savoir plus</span>
+            </div>
+          </a>
+
+          <!-- Intra-auriculaire -->
+          <a href="/audire/solutions-auditives/intra-auriculaire/" class="type-card animate-on-scroll">
+            <div class="type-image placeholder">
+              👂
+            </div>
+            <div class="type-body">
+              <h3 class="type-title">Intra-auriculaire</h3>
+              <p class="type-description">
+                Discrets et entièrement sur mesure, ces appareils se logent directement dans le conduit auditif. Confort optimal et invisibilité maximale pour une utilisation quotidienne.
+              </p>
+              <span class="type-cta">En savoir plus</span>
+            </div>
+          </a>
+
+          <!-- Oticon Intent -->
+          <a href="/audire/solutions-auditives/oticon-intent/" class="type-card animate-on-scroll">
+            <div class="type-image placeholder">
+              ⭐
+            </div>
+            <div class="type-body">
+              <h3 class="type-title">Oticon Intent</h3>
+              <p class="type-description">
+                La nouvelle génération d'appareils auditifs intelligents. Technologie révolutionnaire qui s'adapte à vos intentions et à votre environnement en temps réel.
+              </p>
+              <span class="type-cta">Découvrir Intent</span>
+            </div>
+          </a>
         </div>
       </div>
     </section>
 
-    <!-- Filters Section -->
-    <section style="padding: 0 0 60px 0; background: var(--bg);">
+    <!-- Info Sections -->
+    <section class="info-section">
       <div class="container">
-        <div class="filters">
-          <div class="filters-grid">
-            <div class="filter-group">
-              <label for="filter-marque">Marque</label>
-              <select id="filter-marque" onchange="filterProducts()">
-                <option value="Toutes">Toutes les marques</option>
-              </select>
-            </div>
-            <div class="filter-group">
-              <label for="filter-gamme">Gamme</label>
-              <select id="filter-gamme" onchange="filterProducts()">
-                <option value="Toutes">Toutes les gammes</option>
-              </select>
-            </div>
-            <div class="filter-group">
-              <label for="filter-type">Type d'appareil</label>
-              <select id="filter-type" onchange="filterProducts()">
-                <option value="Tous">Tous les types</option>
-              </select>
-            </div>
-          </div>
+
+        <!-- Analogique vs Numérique -->
+        <div class="info-block animate-on-scroll">
+          <h2>Quelles sont les différences entre des appareils auditifs analogiques et numériques ?</h2>
+          <p>
+            En principe, on fait une distinction entre les aides auditives analogiques et celles numériques. La plupart des nouvelles aides auditives sont numériques. L'unique différence entre une prothèse numérique et une prothèse analogique réside dans le traitement du signal. Les aides auditives analogiques captent les signaux de notre environnement. Ces derniers sont retransmis de manière amplifiée via le haut-parleur. Vous ne pouvez ni filtrer ni réduire les bruits.
+          </p>
+          <p>
+            Les aides auditives numériques convertissent le son en informations électroniques. Seuls les principaux signaux sont amplifiés et transmis. Les forts bruits ambiants sont réduits. Cela permet de mieux entendre dans un environnement bruyant. La prothèse peut être adaptée aux besoins de chacun et est plus petite que les modèles analogiques. En outre, les aides auditives numériques confèrent une meilleure qualité sonore, ainsi qu'une compréhension vocale plus nette. Écouter devient alors plus facile.
+          </p>
         </div>
 
-        <!-- Products Grid -->
-        <div class="products-grid" id="products-grid">
-          <!-- Products will be loaded here by JavaScript -->
+        <!-- Fermé vs Ouvert -->
+        <div class="info-block animate-on-scroll">
+          <h2>Quelles sont les différences entre un appareillage de type fermé et de type ouvert ?</h2>
+          <p>
+            En matière de formes de systèmes auditifs, on distingue les appareils auditifs à embout fermé de ceux à embout ouvert. Un embout ouvert signifie que les ondes sonores peuvent continuer à parvenir jusqu'au tympan par voie naturelle. Les appareils contour d'oreille et les modèles à écouteur déporté disposent d'un embout ouvert. Ce type d'embouts confère une audition plus naturelle. De plus, l'embout ouvert permet une meilleure ventilation du conduit auditif.
+          </p>
+          <p>
+            Sur les appareils auditifs à embout fermé, le conduit auditif extérieur est en grande partie bouché par un embout ou une prothèse intra-auriculaire siégeant dans le conduit. Cela ne signifie pas que votre oreille n'est plus ventilée. Grâce à l'adaptation sur mesure de l'embout, celui-ci s'insère mieux dans l'oreille et garantit une transmission plus directe. Le choix d'appareils ouverts ou fermés sera fait en fonction de votre perte auditive.
+          </p>
         </div>
 
-        <!-- No Results Message -->
-        <div class="no-results" id="no-results" style="display: none;">
-          <h3>Aucun produit trouvé</h3>
-          <p>Essayez de modifier vos critères de recherche.</p>
+        <!-- Autres modèles -->
+        <div class="info-block animate-on-scroll">
+          <h2>Quels sont les autres modèles disponibles ?</h2>
+          <p>
+            Si les aides auditives courantes ne satisfont pas les besoins d'un patient, il existe quelques alternatives. Vous pouvez par exemple opter pour des appareils auditifs à conduction osseuse ou des appareils auditifs à ancrage osseux, qui transmettent le son aux os du crâne via les branches qui compriment la tête. En outre, il existe plusieurs implants comme l'implant cochléaire qui pallie les cellules sensorielles manquantes de la cochlée et stimule directement le nerf auditif.
+          </p>
         </div>
+
       </div>
     </section>
 
     <!-- CTA Section -->
-    <section class="cta-section" style="padding: 80px 0; background: var(--bg-alt);">
+    <section class="types-section" style="padding-top: 40px;">
       <div class="container">
-        <div class="cta-box" style="max-width: 700px; margin: 0 auto; text-align: center; background: var(--panel); padding: 48px; border-radius: var(--radius-lg); border: 1px solid var(--border);">
-          <h2 id="cta-title" style="font-size: 32px; margin-bottom: 16px; color: var(--text);">Quel appareil vous convient ?</h2>
-          <p id="cta-description" style="font-size: 17px; color: var(--text-light); line-height: 1.7; margin-bottom: 28px;">
-            Chaque situation auditive est unique. Venez tester nos appareils lors d'un rendez-vous sans engagement. On prend le temps de comprendre vos besoins et de vous conseiller la solution la plus adaptée.
-          </p>
-          <button class="btn btn-primary btn-lg" data-open-modal>
-            <span>📅</span>
-            <span id="cta-button">Prendre rendez-vous</span>
-          </button>
-          <p id="cta-note" style="margin-top: 16px; font-size: 14px; color: var(--text-muted);">
-            Test gratuit • Sans engagement • Conseils personnalisés
-          </p>
+        <h2 class="section-title">Mieux entendre en trois étapes faciles</h2>
+
+        <div class="cta-grid">
+          <!-- CTA 1 -->
+          <div class="cta-card animate-on-scroll">
+            <div class="cta-icon">📅</div>
+            <h3 class="cta-title">Prenez rendez-vous en ligne</h3>
+            <p class="cta-text">
+              Prenez rapidement et facilement votre rendez-vous en ligne dans notre centre auditif.
+            </p>
+            <button class="btn btn-primary" data-open-modal>Prendre rendez-vous</button>
+          </div>
+
+          <!-- CTA 2 -->
+          <div class="cta-card animate-on-scroll">
+            <div class="cta-icon">📍</div>
+            <h3 class="cta-title">Notre centre auditif</h3>
+            <p class="cta-text">
+              Audire est situé à Jemeppe-sur-Meuse. Notre audioprothésiste est à votre service.
+            </p>
+            <a href="/audire/contact/" class="btn btn-secondary">Nous trouver</a>
+          </div>
+
+          <!-- CTA 3 -->
+          <div class="cta-card animate-on-scroll">
+            <div class="cta-icon">📞</div>
+            <h3 class="cta-title">Contactez-nous !</h3>
+            <p class="cta-text">
+              Laissez-nous vos coordonnées et nous vous contactons dans les plus brefs délais.
+            </p>
+            <a href="tel:+3242336125" class="btn btn-secondary">04 233 61 25</a>
+          </div>
         </div>
+
       </div>
     </section>
 
@@ -303,135 +344,5 @@
   <!-- Scripts -->
   <script src="/audire/js/design-loader.js"></script>
   <script src="/audire/js/app.js"></script>
-
-  <script>
-    let allProducts = [];
-    let filters = {};
-
-    // Load products data
-    async function loadProducts() {
-      try {
-        const response = await fetch('/audire/content/produits.json?t=' + Date.now());
-        const data = await response.json();
-
-        allProducts = data.produits || [];
-        filters = data.filtres || {};
-
-        // Update hero content
-        if (data.hero) {
-          document.getElementById('page-title').textContent = data.hero.title;
-          document.getElementById('page-subtitle').textContent = data.hero.subtitle;
-        }
-
-        // Update CTA content
-        if (data.cta) {
-          if (data.cta.title) document.getElementById('cta-title').textContent = data.cta.title;
-          if (data.cta.description) document.getElementById('cta-description').textContent = data.cta.description;
-          if (data.cta.buttonText) document.getElementById('cta-button').textContent = data.cta.buttonText;
-          if (data.cta.note) document.getElementById('cta-note').textContent = data.cta.note;
-        }
-
-        // Populate filter options
-        populateFilters();
-
-        // Display all products initially
-        displayProducts(allProducts);
-      } catch (error) {
-        console.error('Error loading products:', error);
-      }
-    }
-
-    function populateFilters() {
-      const marqueSelect = document.getElementById('filter-marque');
-      const gammeSelect = document.getElementById('filter-gamme');
-      const typeSelect = document.getElementById('filter-type');
-
-      // Populate marques
-      if (filters.marques) {
-        marqueSelect.innerHTML = filters.marques.map(m =>
-          `<option value="${m}">${m === 'Toutes' ? 'Toutes les marques' : m}</option>`
-        ).join('');
-      }
-
-      // Populate gammes
-      if (filters.gammes) {
-        gammeSelect.innerHTML = filters.gammes.map(g =>
-          `<option value="${g}">${g === 'Toutes' ? 'Toutes les gammes' : g}</option>`
-        ).join('');
-      }
-
-      // Populate types
-      if (filters.types) {
-        typeSelect.innerHTML = filters.types.map(t =>
-          `<option value="${t}">${t === 'Tous' ? 'Tous les types' : t}</option>`
-        ).join('');
-      }
-    }
-
-    function filterProducts() {
-      const marqueFilter = document.getElementById('filter-marque').value;
-      const gammeFilter = document.getElementById('filter-gamme').value;
-      const typeFilter = document.getElementById('filter-type').value;
-
-      const filtered = allProducts.filter(product => {
-        const marqueMatch = marqueFilter === 'Toutes' || product.marque === marqueFilter;
-        const gammeMatch = gammeFilter === 'Toutes' || product.gamme === gammeFilter;
-        const typeMatch = typeFilter === 'Tous' || product.type === typeFilter;
-        return marqueMatch && gammeMatch && typeMatch;
-      });
-
-      displayProducts(filtered);
-    }
-
-    function displayProducts(products) {
-      const grid = document.getElementById('products-grid');
-      const noResults = document.getElementById('no-results');
-
-      if (products.length === 0) {
-        grid.style.display = 'none';
-        noResults.style.display = 'block';
-        return;
-      }
-
-      grid.style.display = 'grid';
-      noResults.style.display = 'none';
-
-      grid.innerHTML = products.map(product => `
-        <div class="product-card ${product.highlight ? 'highlight' : ''} animate-on-scroll">
-          <div class="product-image ${!product.image || product.image.includes('placeholder') ? 'placeholder' : ''}">
-            ${product.image && !product.image.includes('placeholder') ?
-              `<img src="${product.image}" alt="${product.nom}" onerror="this.parentElement.classList.add('placeholder'); this.style.display='none';">` :
-              ''
-            }
-          </div>
-          <div class="product-body">
-            <div class="product-header">
-              <div class="product-marque">${product.marque}</div>
-              <h3 class="product-nom">${product.nom}</h3>
-              <div class="product-type">${product.type} • ${product.gamme}</div>
-            </div>
-            <p class="product-description">${product.description}</p>
-            <ul class="product-features">
-              ${product.caracteristiques.map(feat => `<li>${feat}</li>`).join('')}
-            </ul>
-            <div class="product-footer">
-              <div class="product-prix">
-                ${product.prix}
-                <small>par oreille</small>
-              </div>
-            </div>
-          </div>
-        </div>
-      `).join('');
-
-      // Re-trigger animations
-      if (typeof observeElements === 'function') {
-        observeElements();
-      }
-    }
-
-    // Load products on page load
-    loadProducts();
-  </script>
 </body>
 </html>
