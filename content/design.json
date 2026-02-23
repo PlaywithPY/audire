@@ -2,7 +2,7 @@
   "colors": {
     "primary": {
       "label": "Couleur principale",
-      "value": "#a600ff"
+      "value": "#ff8c42"
     },
     "primaryLight": {
       "label": "Couleur principale claire",
@@ -26,7 +26,7 @@
     },
     "panel": {
       "label": "Fond des cartes",
-      "value": "#ff0000"
+      "value": "#ffffff"
     },
     "text": {
       "label": "Texte principal",
