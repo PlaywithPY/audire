@@ -18,7 +18,7 @@
     },
     "bg": {
       "label": "Fond de page",
-      "value": "#fffcf8"
+      "value": "#f7aa45"
     },
     "bgAlt": {
       "label": "Fond alternatif",
@@ -26,7 +26,7 @@
     },
     "panel": {
       "label": "Fond des cartes",
-      "value": "#ffffff"
+      "value": "#ff0000"
     },
     "text": {
       "label": "Texte principal",
