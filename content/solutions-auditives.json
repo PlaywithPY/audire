@@ -1,0 +1,77 @@
+{
+  "page_principale": {
+    "titre": "Retrouver le son qui vous correspond",
+    "intro": "Chaque perte auditive est différente. C'est pourquoi nous proposons plusieurs types d'aides auditives, choisies pour s'adapter à votre situation, vos habitudes et vos préférences. Lors de votre rendez-vous au centre Audire, nous prenons le temps d'évaluer vos besoins pour vous proposer la solution la plus adaptée.",
+    "types_titre": "Quelle aide auditive vous convient ?",
+    "types_intro": "Il n'existe pas une solution universelle, mais bien une aide auditive qui correspond à votre oreille et à votre quotidien. Voici les principaux modèles que nous proposons."
+  },
+  "solutions": [
+    {
+      "id": "contour-oreille",
+      "titre": "Le contour d'oreille",
+      "badge": "",
+      "image": "/audire/images/solutions/contour-oreille.jpg",
+      "description_courte": "Modèle polyvalent et simple d'utilisation, le contour d'oreille se porte derrière le pavillon. Un tube fin relie l'appareil à un embout dans le conduit auditif. Il convient à la grande majorité des pertes auditives.",
+      "description_longue": "Grâce à son boîtier positionné derrière l'oreille, le contour d'oreille est facile à manipuler et à entretenir au quotidien. Il peut intégrer une batterie rechargeable et une connexion Bluetooth pour s'associer à votre téléphone, votre télévision ou d'autres accessoires. Disponible dans différentes teintes pour se fondre dans la couleur de vos cheveux ou de votre peau, il reste très discret malgré son placement externe.",
+      "avantages": [
+        "Convient à presque tous les degrés de perte auditive",
+        "Facile à manipuler et à entretenir",
+        "Batterie rechargeable disponible",
+        "Connectivité Bluetooth (TV, téléphone…)",
+        "Large choix de teintes discrètes"
+      ],
+      "inconvenients": [
+        "Visible derrière l'oreille",
+        "Peut parfois gêner le port de lunettes"
+      ],
+      "niveaux_perte": ["Légère", "Modérée", "Sévère", "Profonde"],
+      "type": "Contour d'oreille",
+      "marques": ["Oticon", "Bernafon"]
+    },
+    {
+      "id": "intra-auriculaire",
+      "titre": "L'intra-auriculaire",
+      "badge": "",
+      "image": "/audire/images/solutions/intra-auriculaire.jpg",
+      "description_courte": "Fabriqué sur mesure à partir d'une empreinte de votre conduit auditif, l'intra-auriculaire se glisse entièrement dans l'oreille. Sa discrétion en fait le choix préféré des personnes qui souhaitent un appareil quasi invisible.",
+      "description_longue": "Positionné directement dans le conduit auditif, l'intra-auriculaire capte les sons de façon naturelle grâce à sa proximité avec le tympan. Il est particulièrement adapté aux personnes qui portent des lunettes, car son placement ne génère aucune interférence avec les branches. Sa conception sur mesure garantit un ajustement précis et un confort de port élevé.",
+      "avantages": [
+        "Discrétion maximale",
+        "Moulage personnalisé pour un confort optimal",
+        "Son naturel grâce à la position dans l'oreille",
+        "Pas de gêne avec les lunettes ou le casque"
+      ],
+      "inconvenients": [
+        "Non adapté aux pertes sévères à profondes",
+        "Manipulation plus délicate",
+        "Entretien fréquent (cérumen)"
+      ],
+      "niveaux_perte": ["Légère", "Modérée"],
+      "type": "Intra-auriculaire",
+      "marques": ["Oticon", "Bernafon"]
+    },
+    {
+      "id": "oticon-intent",
+      "titre": "Oticon Intent",
+      "badge": "Nouveauté",
+      "image": "/audire/images/solutions/oticon-intent.jpg",
+      "description_courte": "L'Oticon Intent est une aide auditive haut de gamme équipée de capteurs de mouvement. Elle analyse vos gestes et vos déplacements pour adapter l'amplification à chaque situation, sans aucune intervention de votre part.",
+      "description_longue": "Doté d'une puce de traitement performante et de quatre capteurs intégrés, l'Oticon Intent détecte en temps réel ce que vous faites et s'ajuste automatiquement pour vous offrir le son le plus clair possible dans chaque contexte. Sa connectivité Bluetooth vous permet de le coupler à votre smartphone ou à votre télévision. La batterie rechargeable tient toute la journée, et son boîtier est certifié résistant à l'eau et à la poussière (IP68).",
+      "avantages": [
+        "Adaptation automatique à chaque situation",
+        "Capteurs de mouvement intégrés",
+        "Son clair et naturel dans le bruit",
+        "Connectivité Bluetooth complète",
+        "Batterie rechargeable longue durée",
+        "Résistant à l'eau et à la poussière (IP68)"
+      ],
+      "inconvenients": [
+        "Tarif haut de gamme",
+        "Nécessite un temps d'adaptation"
+      ],
+      "niveaux_perte": ["Légère", "Modérée", "Sévère"],
+      "type": "Contour d'oreille",
+      "marques": ["Oticon"]
+    }
+  ]
+}
