@@ -5,379 +5,883 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Éditeur Solutions auditives | Audire</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #FF8C42;
+      --orange-dark: #E67A2E;
+      --green: #2ecc71;
+      --red: #e74c3c;
+      --bg: #f0f2f5;
+      --white: #fff;
+      --border: #dde1e7;
+      --text: #1a1a2e;
+      --muted: #7a8499;
+      --radius: 10px;
     }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #f5f5f5;
-      padding: 20px;
-    }
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    .header {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .header h1 {
-      font-size: 28px;
-      color: #333;
-      margin-bottom: 8px;
-    }
-    .header p {
-      color: #666;
-      font-size: 15px;
-    }
-    .section {
-      background: white;
-      padding: 28px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .section-title {
-      font-size: 20px;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid #FF8C42;
-    }
-    .field {
-      margin-bottom: 20px;
-    }
-    .field label {
-      display: block;
-      font-weight: 600;
-      color: #444;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
-    .field input,
-    .field textarea {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 15px;
-      font-family: inherit;
-      transition: border-color 0.2s;
-    }
-    .field input:focus,
-    .field textarea:focus {
-      outline: none;
-      border-color: #FF8C42;
-    }
-    .field textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-    .field .hint {
-      font-size: 13px;
-      color: #999;
-      margin-top: 6px;
-    }
-    .actions {
-      position: sticky;
-      bottom: 20px;
-      background: white;
-      padding: 20px 28px;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      background: var(--bg);
+      min-height: 100vh;
       display: flex;
-      gap: 12px;
-      justify-content: space-between;
+      flex-direction: column;
+    }
+
+    /* ── APP HEADER ── */
+    .app-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
       align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
     }
-    .btn {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .back-btn {
+      color: var(--muted); text-decoration: none; font-size: 14px;
+      display: flex; align-items: center; gap: 6px;
     }
-    .btn-primary {
-      background: #FF8C42;
-      color: white;
-    }
-    .btn-primary:hover {
-      background: #E67A2E;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255,140,66,0.3);
-    }
-    .btn-secondary {
-      background: #f0f0f0;
-      color: #333;
-    }
-    .btn-secondary:hover {
-      background: #e0e0e0;
-    }
-    .status {
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-size: 14px;
+    .back-btn:hover { color: var(--orange); }
+    .app-header h1 { font-size: 18px; font-weight: 700; color: var(--text); }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+
+    #status-badge {
+      font-size: 13px; padding: 6px 14px; border-radius: 20px;
       display: none;
-      margin-bottom: 20px;
     }
-    .status.ok {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
+    #status-badge.ok  { background: #d4edda; color: #155724; display: block; }
+    #status-badge.err { background: #f8d7da; color: #721c24; display: block; }
+    #status-badge.info { background: #cce5ff; color: #004085; display: block; }
+
+    .save-btn {
+      background: var(--orange); color: white;
+      border: none; border-radius: 8px;
+      padding: 10px 20px; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 8px;
     }
-    .status.err {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
+    .save-btn:hover { background: var(--orange-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,140,66,.3); }
+    .save-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    /* ── TABS ── */
     .tabs {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
       display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 4px;
       overflow-x: auto;
     }
-    .tab {
-      padding: 12px 24px;
-      background: white;
-      border: 2px solid #e0e0e0;
+    .tab-btn {
+      padding: 14px 20px; border: none; background: none;
+      font-size: 14px; font-weight: 500; color: var(--muted);
+      cursor: pointer; border-bottom: 3px solid transparent;
+      margin-bottom: -1px; transition: all .2s; white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--orange); }
+    .tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); font-weight: 700; }
+
+    /* ── CANVAS (2 colonnes) ── */
+    .canvas {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 0;
+      min-height: calc(100vh - 120px);
+    }
+
+    /* ── FORM PANEL ── */
+    .form-panel {
+      padding: 28px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 14px 20px;
+      background: #fafbfc;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .card-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+
+    /* ── FORM FIELDS ── */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label {
+      font-size: 13px; font-weight: 600; color: var(--text);
+    }
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%; padding: 10px 14px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px; font-family: inherit;
+      color: var(--text);
+      transition: border-color .2s;
+      background: var(--white);
+    }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      outline: none; border-color: var(--orange);
+    }
+    .field textarea { min-height: 80px; resize: vertical; }
+    .field .hint { font-size: 12px; color: var(--muted); }
+
+    /* ── IMAGE UPLOAD ── */
+    .img-upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+    }
+    .img-upload-zone:hover { border-color: var(--orange); background: #fff8f3; }
+    .img-upload-zone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer;
+      width: 100%; height: 100%; border: none; padding: 0;
+    }
+    .img-preview {
+      width: 100%; max-height: 180px; object-fit: cover;
+      border-radius: 8px; display: none; margin-top: 10px;
+    }
+    .img-placeholder { color: var(--muted); font-size: 14px; }
+    .img-placeholder span { font-size: 32px; display: block; margin-bottom: 8px; }
+    .img-filename { font-size: 12px; color: var(--orange); margin-top: 6px; font-weight: 600; }
+
+    /* ── CHECKBOX GROUP ── */
+    .check-group { display: flex; flex-wrap: wrap; gap: 10px; }
+    .check-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      border: 2px solid var(--border);
       border-radius: 8px;
       cursor: pointer;
-      font-weight: 600;
-      color: #666;
-      transition: all 0.2s;
-      white-space: nowrap;
+      font-size: 14px;
+      transition: all .2s;
+      user-select: none;
     }
-    .tab:hover {
-      border-color: #FF8C42;
-      color: #FF8C42;
+    .check-item:hover { border-color: var(--orange); }
+    .check-item.checked { border-color: var(--orange); background: #fff3e8; color: var(--orange); font-weight: 600; }
+    .check-item input { display: none; }
+
+    /* ── DYNAMIC LIST ── */
+    .dyn-list { display: flex; flex-direction: column; gap: 8px; }
+    .dyn-item {
+      display: flex; align-items: center; gap: 8px;
     }
-    .tab.active {
-      background: #FF8C42;
-      color: white;
-      border-color: #FF8C42;
+    .dyn-item input {
+      flex: 1; padding: 9px 12px;
+      border: 2px solid var(--border);
+      border-radius: 8px; font-size: 14px; font-family: inherit;
+      transition: border-color .2s;
     }
-    .page-content {
-      display: none;
+    .dyn-item input:focus { outline: none; border-color: var(--orange); }
+    .dyn-remove {
+      width: 32px; height: 32px;
+      border: none; background: #fde8e8; color: var(--red);
+      border-radius: 6px; cursor: pointer; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all .2s;
     }
-    .page-content.active {
-      display: block;
+    .dyn-remove:hover { background: var(--red); color: white; }
+    .add-item-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border: 2px dashed var(--border);
+      background: none; border-radius: 8px;
+      color: var(--muted); font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all .2s; align-self: flex-start;
     }
+    .add-item-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* ── PREVIEW PANEL ── */
+    .preview-panel {
+      background: #1a1a2e;
+      padding: 24px;
+      overflow-y: auto;
+      border-left: 1px solid #2d2d4a;
+    }
+    .preview-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      color: #4a4a6a; letter-spacing: 1px; margin-bottom: 16px;
+    }
+    .preview-card {
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.3);
+    }
+    .prev-img {
+      width: 100%; height: 200px; object-fit: cover;
+      background: #e8eaf0; display: flex; align-items: center; justify-content: center;
+      color: #aaa; font-size: 13px;
+    }
+    .prev-img img { width: 100%; height: 100%; object-fit: cover; }
+    .prev-body { padding: 20px; }
+    .prev-badge {
+      display: inline-block; padding: 4px 12px;
+      background: var(--orange); color: white;
+      border-radius: 20px; font-size: 12px; font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .prev-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
+    .prev-desc { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 16px; }
+    .prev-section-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      color: var(--muted); letter-spacing: .5px; margin-bottom: 8px;
+    }
+    .prev-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .prev-list-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13px; color: var(--text);
+    }
+    .prev-list-item .icon { font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+    .prev-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .prev-tag {
+      padding: 4px 10px; border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+      background: #f0f0f0; color: #555;
+    }
+    .prev-tag.perte { background: #e8f4fd; color: #1a6fa0; }
+    .prev-tag.marque { background: #fff3e8; color: var(--orange-dark); }
+
+    /* Page principale preview */
+    .prev-page-main { padding: 20px; }
+    .prev-page-main h2 { font-size: 18px; font-weight: 800; margin-bottom: 10px; color: var(--text); }
+    .prev-page-main p { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 14px; }
+    .prev-page-main h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>✏️ Éditeur Solutions auditives</h1>
-      <p>Modifiez facilement les textes de vos pages Solutions auditives</p>
-    </div>
 
-    <div id="status" class="status"></div>
+<!-- APP HEADER -->
+<header class="app-header">
+  <div class="header-left">
+    <a href="/audire/solutions-auditives/" class="back-btn">← Retour au site</a>
+    <h1>Éditeur — Solutions auditives</h1>
+  </div>
+  <div class="header-right">
+    <span id="status-badge"></span>
+    <button class="save-btn" id="save-btn" onclick="saveToGitHub()">💾 Sauvegarder sur GitHub</button>
+  </div>
+</header>
 
-    <div class="tabs">
-      <div class="tab active" onclick="showPage('page-principale')">📄 Page principale</div>
-      <div class="tab" onclick="showPage('contour')">🎧 Contour d'oreille</div>
-      <div class="tab" onclick="showPage('intra')">👂 Intra-auriculaire</div>
-      <div class="tab" onclick="showPage('intent')">⭐ Oticon Intent</div>
-    </div>
+<!-- TABS -->
+<nav class="tabs">
+  <button class="tab-btn active" onclick="switchTab(this, 'page-principale')">📄 Page principale</button>
+  <button class="tab-btn" onclick="switchTab(this, 0)">🎧 Contour d'oreille</button>
+  <button class="tab-btn" onclick="switchTab(this, 1)">👂 Intra-auriculaire</button>
+  <button class="tab-btn" onclick="switchTab(this, 2)">⭐ Oticon Intent</button>
+</nav>
 
-    <!-- Page principale -->
-    <div class="page-content active" id="page-principale">
-      <div class="section">
-        <div class="section-title">En-tête de la page</div>
+<!-- CANVAS -->
+<div class="canvas">
+  <!-- FORM PANEL -->
+  <div class="form-panel" id="form-panel"></div>
+
+  <!-- PREVIEW PANEL -->
+  <div class="preview-panel">
+    <div class="preview-label">Aperçu en direct</div>
+    <div class="preview-card" id="preview-card"></div>
+  </div>
+</div>
+
+<script>
+// ────────────────────────────────────────────────────────────────
+// CONFIG GITHUB
+// ────────────────────────────────────────────────────────────────
+const GITHUB_OWNER  = 'PlaywithPY';
+const GITHUB_REPO   = 'audire';
+const GITHUB_BRANCH = 'main';
+const GH_FILE_PATH  = 'content/solutions-auditives.json';
+const STORAGE_KEY   = 'audire_gh_token';
+const ENCRYPT_KEY   = 'audire-editor-2026-secure';
+
+let ghToken = null;
+let currentTab = 'page-principale';
+
+// ────────────────────────────────────────────────────────────────
+// DONNÉES (initialisées depuis le JSON embarqué, modifiées en live)
+// ────────────────────────────────────────────────────────────────
+let data = {
+  page_principale: {
+    titre: '',
+    intro: '',
+    types_titre: '',
+    types_intro: ''
+  },
+  solutions: [
+    {
+      id: 'contour-oreille',
+      titre: '', badge: '', image: '',
+      description_courte: '', description_longue: '',
+      avantages: [], inconvenients: [],
+      niveaux_perte: [], type: '', marques: []
+    },
+    {
+      id: 'intra-auriculaire',
+      titre: '', badge: '', image: '',
+      description_courte: '', description_longue: '',
+      avantages: [], inconvenients: [],
+      niveaux_perte: [], type: '', marques: []
+    },
+    {
+      id: 'oticon-intent',
+      titre: '', badge: '', image: '',
+      description_courte: '', description_longue: '',
+      avantages: [], inconvenients: [],
+      niveaux_perte: [], type: '', marques: []
+    }
+  ]
+};
+
+// ────────────────────────────────────────────────────────────────
+// TOKEN GITHUB
+// ────────────────────────────────────────────────────────────────
+function xor(str, key) {
+  let r = '';
+  for (let i = 0; i < str.length; i++)
+    r += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+  return r;
+}
+async function encryptToken(t) { return btoa(xor(t, ENCRYPT_KEY)); }
+async function decryptToken(e) { try { return xor(atob(e), ENCRYPT_KEY); } catch { return null; } }
+async function loadToken() {
+  const s = localStorage.getItem(STORAGE_KEY);
+  if (s) ghToken = await decryptToken(s);
+}
+async function saveToken(t) {
+  localStorage.setItem(STORAGE_KEY, await encryptToken(t));
+  ghToken = t;
+}
+function forgetToken() { localStorage.removeItem(STORAGE_KEY); ghToken = null; }
+
+// ────────────────────────────────────────────────────────────────
+// STATUS
+// ────────────────────────────────────────────────────────────────
+let statusTimer;
+function showStatus(msg, type) {
+  const el = document.getElementById('status-badge');
+  el.textContent = msg;
+  el.className = type;
+  clearTimeout(statusTimer);
+  if (type !== 'info') statusTimer = setTimeout(() => { el.className = ''; el.textContent = ''; }, 5000);
+}
+
+// ────────────────────────────────────────────────────────────────
+// CHARGER DONNÉES DEPUIS GITHUB
+// ────────────────────────────────────────────────────────────────
+async function loadFromGitHub() {
+  showStatus('Chargement…', 'info');
+  try {
+    const headers = { 'Accept': 'application/vnd.github.v3+json' };
+    if (ghToken) headers['Authorization'] = `token ${ghToken}`;
+    const res = await fetch(
+      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GH_FILE_PATH}?ref=${GITHUB_BRANCH}`,
+      { headers }
+    );
+    if (!res.ok) throw new Error('Impossible de charger le fichier');
+    const json = await res.json();
+    const decoded = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ''))));
+    data = JSON.parse(decoded);
+    showStatus('✓ Données chargées', 'ok');
+  } catch(e) {
+    showStatus('Chargement depuis cache local', 'info');
+    const local = localStorage.getItem('solutions-auditives-draft');
+    if (local) data = JSON.parse(local);
+  }
+  renderForm();
+  updatePreview();
+}
+
+// ────────────────────────────────────────────────────────────────
+// SAUVEGARDER SUR GITHUB
+// ────────────────────────────────────────────────────────────────
+async function pushFile(token, path, content, message) {
+  const base = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`;
+  const headers = {
+    'Authorization': `token ${token}`,
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  };
+  const getRes = await fetch(`${base}?ref=${GITHUB_BRANCH}`, { headers });
+  let sha = null;
+  if (getRes.ok) sha = (await getRes.json()).sha;
+  const b64 = btoa(unescape(encodeURIComponent(content)));
+  const body = { message: message + ' via éditeur web', content: b64, branch: GITHUB_BRANCH };
+  if (sha) body.sha = sha;
+  const res = await fetch(base, { method: 'PUT', headers, body: JSON.stringify(body) });
+  if (!res.ok) { const e = await res.json(); throw new Error(e.message || `HTTP ${res.status}`); }
+  return await res.json();
+}
+
+async function pushImage(token, path, base64Data, mimeType) {
+  // Retire le header data:image/...;base64,
+  const raw = base64Data.split(',')[1] || base64Data;
+  const base = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`;
+  const headers = {
+    'Authorization': `token ${token}`,
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  };
+  const getRes = await fetch(`${base}?ref=${GITHUB_BRANCH}`, { headers });
+  let sha = null;
+  if (getRes.ok) sha = (await getRes.json()).sha;
+  const body = { message: 'Upload image via éditeur web', content: raw, branch: GITHUB_BRANCH };
+  if (sha) body.sha = sha;
+  const res = await fetch(base, { method: 'PUT', headers, body: JSON.stringify(body) });
+  if (!res.ok) { const e = await res.json(); throw new Error(e.message || `HTTP ${res.status}`); }
+  return await res.json();
+}
+
+async function saveToGitHub() {
+  if (!ghToken) {
+    const token = prompt(
+      'Sauvegarde sur GitHub — Token requis\n\n' +
+      '→ github.com → Settings → Developer settings\n' +
+      '→ Personal access tokens → Tokens (classic)\n' +
+      '→ Créez un token avec la permission "repo"\n\n' +
+      'Collez votre token ci-dessous :'
+    );
+    if (!token) return;
+    await saveToken(token);
+  }
+
+  collectCurrentForm();
+
+  const btn = document.getElementById('save-btn');
+  btn.textContent = '⏳ Sauvegarde…';
+  btn.disabled = true;
+
+  try {
+    // 1. Upload les images en attente
+    for (const sol of data.solutions) {
+      if (sol._pendingImage) {
+        showStatus('Upload image ' + sol.titre + '…', 'info');
+        const ext = sol._pendingImage.mimeType.split('/')[1] || 'jpg';
+        const imgPath = `images/solutions/${sol.id}.${ext}`;
+        await pushImage(ghToken, imgPath, sol._pendingImage.base64, sol._pendingImage.mimeType);
+        sol.image = `/audire/${imgPath}`;
+        delete sol._pendingImage;
+      }
+    }
+
+    // 2. Sauvegarder le JSON
+    showStatus('Sauvegarde JSON…', 'info');
+    await pushFile(ghToken, GH_FILE_PATH, JSON.stringify(data, null, 2), 'Mise à jour solutions-auditives.json');
+
+    // 3. Sauvegarder en local aussi
+    localStorage.setItem('solutions-auditives-draft', JSON.stringify(data));
+
+    showStatus('✓ Sauvegardé sur GitHub !', 'ok');
+  } catch(e) {
+    showStatus('Erreur : ' + e.message, 'err');
+    if (e.message.includes('401') || e.message.includes('403') || e.message.includes('Bad credentials')) {
+      forgetToken();
+      showStatus('Token invalide — ressaisir à la prochaine sauvegarde', 'err');
+    }
+  }
+
+  btn.textContent = '💾 Sauvegarder sur GitHub';
+  btn.disabled = false;
+}
+
+// ────────────────────────────────────────────────────────────────
+// COLLECTE DES DONNÉES DU FORMULAIRE COURANT
+// ────────────────────────────────────────────────────────────────
+function collectCurrentForm() {
+  if (currentTab === 'page-principale') {
+    data.page_principale.titre       = v('pp-titre');
+    data.page_principale.intro       = v('pp-intro');
+    data.page_principale.types_titre = v('pp-types-titre');
+    data.page_principale.types_intro = v('pp-types-intro');
+  } else {
+    const idx = currentTab;
+    const sol = data.solutions[idx];
+    sol.titre              = v('sol-titre');
+    sol.badge              = v('sol-badge');
+    sol.description_courte = v('sol-desc-courte');
+    sol.description_longue = v('sol-desc-longue');
+    sol.avantages          = collectList('avantages-list');
+    sol.inconvenients      = collectList('inconvenients-list');
+    sol.niveaux_perte      = collectChecks('niveaux-perte');
+    sol.type               = v('sol-type');
+    sol.marques            = collectChecks('marques');
+  }
+}
+
+function v(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : '';
+}
+
+function collectList(containerId) {
+  const inputs = document.querySelectorAll(`#${containerId} .dyn-item input`);
+  return Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
+}
+
+function collectChecks(groupId) {
+  const items = document.querySelectorAll(`#${groupId} .check-item.checked`);
+  return Array.from(items).map(i => i.dataset.val);
+}
+
+// ────────────────────────────────────────────────────────────────
+// RENDU DU FORMULAIRE
+// ────────────────────────────────────────────────────────────────
+function renderForm() {
+  const panel = document.getElementById('form-panel');
+  if (currentTab === 'page-principale') {
+    renderPagePrincipale(panel);
+  } else {
+    renderSolution(panel, data.solutions[currentTab]);
+  }
+}
+
+function renderPagePrincipale(panel) {
+  const pp = data.page_principale;
+  panel.innerHTML = `
+    <div class="card">
+      <div class="card-header">En-tête de la page</div>
+      <div class="card-body">
         <div class="field">
           <label>Titre principal</label>
-          <input type="text" id="main-title" value="Quels sont les différents types d'appareils auditifs ?">
+          <input type="text" id="pp-titre" value="${esc(pp.titre)}" oninput="updatePreview()">
         </div>
         <div class="field">
           <label>Texte d'introduction</label>
-          <textarea id="main-intro">Un appareil auditif capte les bruits ambiants. Le son est alors traité sous forme d'impulsions électriques qui, une fois modulées, sont transmises à l'oreille. Selon la perte auditive et les besoins du patient, les modèles d'appareils auditifs sont sensiblement différents. Découvrez quelle solution auditive vous convient le mieux.</textarea>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">Section Types d'appareils</div>
-        <div class="field">
-          <label>Titre de section</label>
-          <input type="text" id="types-title" value="Types d'appareils auditifs">
-        </div>
-        <div class="field">
-          <label>Introduction</label>
-          <textarea id="types-intro">Les aides auditives sont disponibles dans des modèles les plus variés qui conviennent à tout type de perte auditive. Cette diversité vous assure une solution adaptée à vos désirs et attentes. Nous avons regroupé pour vous les principaux types d'appareils auditifs, selon les caractéristiques qui les différencient ainsi que leurs avantages et inconvénients.</textarea>
+          <textarea id="pp-intro" oninput="updatePreview()">${esc(pp.intro)}</textarea>
         </div>
       </div>
     </div>
 
-    <!-- Contour d'oreille -->
-    <div class="page-content" id="contour">
-      <div class="section">
-        <div class="section-title">Contour d'oreille</div>
+    <div class="card">
+      <div class="card-header">Section "Types d'appareils"</div>
+      <div class="card-body">
         <div class="field">
-          <label>Titre</label>
-          <input type="text" id="contour-title" value="Les contours d'oreille">
+          <label>Titre de la section</label>
+          <input type="text" id="pp-types-titre" value="${esc(pp.types_titre)}" oninput="updatePreview()">
         </div>
         <div class="field">
-          <label>Description courte (paragraphe 1)</label>
-          <textarea id="contour-desc1">Les appareils auditifs contour d'oreille sont petits, discrets et presque invisibles. Les boîtiers sont disponibles en différentes couleurs. Ils conviennent à tous les types de perte auditive.</textarea>
+          <label>Texte d'introduction</label>
+          <textarea id="pp-types-intro" oninput="updatePreview()">${esc(pp.types_intro)}</textarea>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderSolution(panel, sol) {
+  const idx = currentTab;
+  const TYPES = ['Contour d\'oreille', 'Intra-auriculaire', 'À conduction osseuse'];
+  const BADGES = ['', 'Nouveauté', 'Populaire', 'Recommandé', 'Meilleure vente'];
+  const NIVEAUX = ['Légère', 'Modérée', 'Sévère', 'Profonde'];
+  const MARQUES = ['Oticon', 'Bernafon'];
+
+  panel.innerHTML = `
+    <!-- IDENTITÉ -->
+    <div class="card">
+      <div class="card-header">Identité</div>
+      <div class="card-body">
+        <div class="field">
+          <label>Titre de la page</label>
+          <input type="text" id="sol-titre" value="${esc(sol.titre)}" oninput="updatePreview()">
         </div>
         <div class="field">
-          <label>Description courte (paragraphe 2)</label>
-          <textarea id="contour-desc2">Un appareil auditif contour d'oreille repose sur votre pavillon de l'oreille. L'appareil recueille les sons et les envoie à votre oreille grâce à un petit tube en plastique. Un appareil de ce type est reconnaissable à l'embout sur mesure ou le petit bouchon universel qui se trouve au bout du tube.</textarea>
+          <label>Badge</label>
+          <select id="sol-badge" onchange="updatePreview()">
+            ${BADGES.map(b => `<option value="${b}" ${sol.badge===b?'selected':''}>${b||'— Aucun —'}</option>`).join('')}
+          </select>
+          <span class="hint">Affiché en surbrillance sur la carte</span>
         </div>
       </div>
     </div>
 
-    <!-- Intra-auriculaire -->
-    <div class="page-content" id="intra">
-      <div class="section">
-        <div class="section-title">Intra-auriculaire</div>
+    <!-- IMAGE -->
+    <div class="card">
+      <div class="card-header">Image</div>
+      <div class="card-body">
         <div class="field">
-          <label>Titre</label>
-          <input type="text" id="intra-title" value="Les intra-auriculaires">
+          <label>Image actuelle</label>
+          ${sol.image ? `<img src="${sol.image}" style="width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px;" onerror="this.style.display='none'">` : ''}
+          <span class="hint">${sol.image || 'Aucune image définie'}</span>
         </div>
         <div class="field">
-          <label>Description courte (paragraphe 1)</label>
-          <textarea id="intra-desc1">Les appareils intra-auriculaires sont entièrement sur mesure et se logent directement dans le conduit auditif. Ils sont pratiquement invisibles et offrent un confort optimal pour une utilisation quotidienne.</textarea>
-        </div>
-        <div class="field">
-          <label>Description courte (paragraphe 2)</label>
-          <textarea id="intra-desc2">Moulés sur mesure pour s'adapter parfaitement à la forme de votre conduit auditif, ces appareils offrent une discrétion maximale tout en garantissant une excellente qualité sonore. Ils conviennent particulièrement aux personnes souhaitant une solution invisible.</textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- Oticon Intent -->
-    <div class="page-content" id="intent">
-      <div class="section">
-        <div class="section-title">Oticon Intent</div>
-        <div class="field">
-          <label>Titre</label>
-          <input type="text" id="intent-title" value="Oticon Intent">
-        </div>
-        <div class="field">
-          <label>Description courte (paragraphe 1)</label>
-          <textarea id="intent-desc1">Oticon Intent est la nouvelle génération d'appareils auditifs intelligents. Grâce à une technologie révolutionnaire de capteurs 4D, Intent comprend vos intentions et adapte automatiquement le son en temps réel.</textarea>
-        </div>
-        <div class="field">
-          <label>Description courte (paragraphe 2)</label>
-          <textarea id="intent-desc2">Que vous souhaitiez vous concentrer sur une conversation, profiter de la musique ou simplement vous détendre, Oticon Intent reconnaît ce que vous voulez entendre et ajuste l'expérience sonore instantanément.</textarea>
+          <label>Uploader une nouvelle image depuis votre PC</label>
+          <div class="img-upload-zone" id="upload-zone-${idx}">
+            <input type="file" accept="image/*" onchange="handleImageUpload(event, ${idx})">
+            <div class="img-placeholder">
+              <span>🖼️</span>
+              Glissez une image ou cliquez pour parcourir
+            </div>
+            <img class="img-preview" id="img-preview-${idx}" alt="Aperçu">
+            <div class="img-filename" id="img-filename-${idx}"></div>
+          </div>
+          <span class="hint">JPG, PNG, WebP — L'image sera envoyée sur GitHub lors de la sauvegarde</span>
         </div>
       </div>
     </div>
 
-    <div class="actions">
-      <button class="btn btn-secondary" onclick="window.location.href='/audire/solutions-auditives/'">← Retour au site</button>
-      <div style="display: flex; gap: 12px;">
-        <button class="btn btn-secondary" onclick="reloadData()">↻ Recharger</button>
-        <button class="btn btn-primary" onclick="saveChanges()">💾 Sauvegarder les modifications</button>
+    <!-- DESCRIPTIONS -->
+    <div class="card">
+      <div class="card-header">Descriptions</div>
+      <div class="card-body">
+        <div class="field">
+          <label>Description courte <span class="hint" style="font-weight:400">(affichée sur la liste)</span></label>
+          <textarea id="sol-desc-courte" oninput="updatePreview()">${esc(sol.description_courte)}</textarea>
+        </div>
+        <div class="field">
+          <label>Description longue <span class="hint" style="font-weight:400">(affichée sur la page détail)</span></label>
+          <textarea id="sol-desc-longue" style="min-height:120px" oninput="updatePreview()">${esc(sol.description_longue)}</textarea>
+        </div>
       </div>
     </div>
-  </div>
 
-  <script>
-    function showPage(pageId) {
-      // Hide all pages
-      document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    <!-- AVANTAGES -->
+    <div class="card">
+      <div class="card-header">✅ Avantages</div>
+      <div class="card-body">
+        <div class="dyn-list" id="avantages-list">
+          ${sol.avantages.map((a, i) => dynItem(a, `avantages-list`, i, 'green')).join('')}
+        </div>
+        <button class="add-item-btn" onclick="addItem('avantages-list', 'green')">+ Ajouter un avantage</button>
+      </div>
+    </div>
 
-      // Show selected page
-      document.getElementById(pageId).classList.add('active');
-      event.target.classList.add('active');
-    }
+    <!-- INCONVÉNIENTS -->
+    <div class="card">
+      <div class="card-header">❌ Inconvénients</div>
+      <div class="card-body">
+        <div class="dyn-list" id="inconvenients-list">
+          ${sol.inconvenients.map((a, i) => dynItem(a, `inconvenients-list`, i, 'red')).join('')}
+        </div>
+        <button class="add-item-btn" onclick="addItem('inconvenients-list', 'red')">+ Ajouter un inconvénient</button>
+      </div>
+    </div>
 
-    function showStatus(message, type) {
-      const status = document.getElementById('status');
-      status.textContent = message;
-      status.className = 'status ' + type;
-      status.style.display = 'block';
-      if (type !== 'info') {
-        setTimeout(() => status.style.display = 'none', 5000);
-      }
-    }
+    <!-- CARACTÉRISTIQUES -->
+    <div class="card">
+      <div class="card-header">Caractéristiques techniques</div>
+      <div class="card-body">
+        <div class="field">
+          <label>Type d'appareil</label>
+          <select id="sol-type" onchange="updatePreview()">
+            ${TYPES.map(t => `<option value="${t}" ${sol.type===t?'selected':''}>${t}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Niveaux de perte compatibles</label>
+          <div class="check-group" id="niveaux-perte">
+            ${NIVEAUX.map(n => `
+              <label class="check-item ${sol.niveaux_perte.includes(n)?'checked':''}" data-val="${n}" onclick="toggleCheck(this)">
+                <input type="checkbox" ${sol.niveaux_perte.includes(n)?'checked':''}>
+                ${n}
+              </label>
+            `).join('')}
+          </div>
+        </div>
+        <div class="field">
+          <label>Marques disponibles</label>
+          <div class="check-group" id="marques">
+            ${MARQUES.map(m => `
+              <label class="check-item ${sol.marques.includes(m)?'checked':''}" data-val="${m}" onclick="toggleCheck(this)">
+                <input type="checkbox" ${sol.marques.includes(m)?'checked':''}>
+                ${m}
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 
-    function reloadData() {
-      location.reload();
-    }
+  // Restaurer l'image en attente si elle existe
+  if (sol._pendingImage) {
+    const preview = document.getElementById(`img-preview-${idx}`);
+    const filename = document.getElementById(`img-filename-${idx}`);
+    if (preview) { preview.src = sol._pendingImage.base64; preview.style.display = 'block'; }
+    if (filename) filename.textContent = sol._pendingImage.name;
+  }
+}
 
-    async function saveChanges() {
-      showStatus('Sauvegarde en cours...', 'info');
+function dynItem(val, listId, i, color) {
+  return `
+    <div class="dyn-item">
+      <input type="text" value="${esc(val)}" oninput="updatePreview()" placeholder="Saisir ici…">
+      <button class="dyn-remove" onclick="removeItem(this)" title="Supprimer">✕</button>
+    </div>
+  `;
+}
 
-      const updates = {
-        'page-principale': {
-          title: document.getElementById('main-title').value,
-          intro: document.getElementById('main-intro').value,
-          typesTitle: document.getElementById('types-title').value,
-          typesIntro: document.getElementById('types-intro').value
-        },
-        'contour': {
-          title: document.getElementById('contour-title').value,
-          desc1: document.getElementById('contour-desc1').value,
-          desc2: document.getElementById('contour-desc2').value
-        },
-        'intra': {
-          title: document.getElementById('intra-title').value,
-          desc1: document.getElementById('intra-desc1').value,
-          desc2: document.getElementById('intra-desc2').value
-        },
-        'intent': {
-          title: document.getElementById('intent-title').value,
-          desc1: document.getElementById('intent-desc1').value,
-          desc2: document.getElementById('intent-desc2').value
-        }
-      };
+function esc(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
-      // Sauvegarder dans localStorage pour l'instant
-      localStorage.setItem('solutions-auditives-data', JSON.stringify(updates));
+// ────────────────────────────────────────────────────────────────
+// LISTE DYNAMIQUE
+// ────────────────────────────────────────────────────────────────
+function addItem(listId, color) {
+  const list = document.getElementById(listId);
+  const item = document.createElement('div');
+  item.className = 'dyn-item';
+  item.innerHTML = `
+    <input type="text" placeholder="Saisir ici…" oninput="updatePreview()">
+    <button class="dyn-remove" onclick="removeItem(this)" title="Supprimer">✕</button>
+  `;
+  list.appendChild(item);
+  item.querySelector('input').focus();
+  updatePreview();
+}
 
-      showStatus('✓ Modifications sauvegardées avec succès !', 'ok');
+function removeItem(btn) {
+  btn.closest('.dyn-item').remove();
+  updatePreview();
+}
 
-      // TODO: Envoyer au serveur ou GitHub
-      console.log('Données sauvegardées:', updates);
-    }
+// ────────────────────────────────────────────────────────────────
+// CHECKBOXES
+// ────────────────────────────────────────────────────────────────
+function toggleCheck(label) {
+  label.classList.toggle('checked');
+  const cb = label.querySelector('input');
+  if (cb) cb.checked = label.classList.contains('checked');
+  updatePreview();
+}
 
-    // Charger les données au démarrage
-    window.addEventListener('DOMContentLoaded', () => {
-      const saved = localStorage.getItem('solutions-auditives-data');
-      if (saved) {
-        const data = JSON.parse(saved);
+// ────────────────────────────────────────────────────────────────
+// UPLOAD D'IMAGE
+// ────────────────────────────────────────────────────────────────
+function handleImageUpload(event, idx) {
+  const file = event.target.files[0];
+  if (!file) return;
 
-        // Page principale
-        if (data['page-principale']) {
-          document.getElementById('main-title').value = data['page-principale'].title || '';
-          document.getElementById('main-intro').value = data['page-principale'].intro || '';
-          document.getElementById('types-title').value = data['page-principale'].typesTitle || '';
-          document.getElementById('types-intro').value = data['page-principale'].typesIntro || '';
-        }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64 = e.target.result;
 
-        // Contour
-        if (data['contour']) {
-          document.getElementById('contour-title').value = data['contour'].title || '';
-          document.getElementById('contour-desc1').value = data['contour'].desc1 || '';
-          document.getElementById('contour-desc2').value = data['contour'].desc2 || '';
-        }
+    // Stocker dans data pour upload GitHub lors de la sauvegarde
+    data.solutions[idx]._pendingImage = {
+      base64: base64,
+      name: file.name,
+      mimeType: file.type
+    };
 
-        // Intra
-        if (data['intra']) {
-          document.getElementById('intra-title').value = data['intra'].title || '';
-          document.getElementById('intra-desc1').value = data['intra'].desc1 || '';
-          document.getElementById('intra-desc2').value = data['intra'].desc2 || '';
-        }
+    // Aperçu
+    const preview = document.getElementById(`img-preview-${idx}`);
+    const filename = document.getElementById(`img-filename-${idx}`);
+    if (preview) { preview.src = base64; preview.style.display = 'block'; }
+    if (filename) filename.textContent = `${file.name} (sera envoyé sur GitHub à la sauvegarde)`;
 
-        // Intent
-        if (data['intent']) {
-          document.getElementById('intent-title').value = data['intent'].title || '';
-          document.getElementById('intent-desc1').value = data['intent'].desc1 || '';
-          document.getElementById('intent-desc2').value = data['intent'].desc2 || '';
-        }
-      }
-    });
-  </script>
+    updatePreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+// ────────────────────────────────────────────────────────────────
+// APERÇU EN TEMPS RÉEL
+// ────────────────────────────────────────────────────────────────
+function updatePreview() {
+  collectCurrentForm();
+  const card = document.getElementById('preview-card');
+
+  if (currentTab === 'page-principale') {
+    const pp = data.page_principale;
+    card.innerHTML = `
+      <div class="prev-page-main">
+        <h2>${pp.titre || '<em style="color:#aaa">Titre…</em>'}</h2>
+        <p>${pp.intro || '<em style="color:#aaa">Introduction…</em>'}</p>
+        <h3>${pp.types_titre || '<em style="color:#aaa">Titre section…</em>'}</h3>
+        <p>${pp.types_intro || '<em style="color:#aaa">Introduction section…</em>'}</p>
+      </div>
+    `;
+    return;
+  }
+
+  const sol = data.solutions[currentTab];
+  const avantages = collectList('avantages-list');
+  const inconvenients = collectList('inconvenients-list');
+  const niveaux = collectChecks('niveaux-perte');
+  const marques = collectChecks('marques');
+  const imgSrc = sol._pendingImage ? sol._pendingImage.base64 : sol.image;
+
+  card.innerHTML = `
+    <div class="prev-img">
+      ${imgSrc
+        ? `<img src="${imgSrc}" alt="${esc(sol.titre)}" onerror="this.parentElement.innerHTML='<span>Image non disponible</span>'">`
+        : '<span>Aucune image</span>'}
+    </div>
+    <div class="prev-body">
+      ${sol.badge ? `<div class="prev-badge">${sol.badge}</div>` : ''}
+      <div class="prev-title">${sol.titre || '<em style="color:#aaa">Titre…</em>'}</div>
+      <div class="prev-desc">${sol.description_courte || '<em style="color:#aaa">Description courte…</em>'}</div>
+
+      ${avantages.length ? `
+        <div class="prev-section-title">Avantages</div>
+        <div class="prev-list">
+          ${avantages.map(a => `<div class="prev-list-item"><span class="icon">✅</span>${a}</div>`).join('')}
+        </div>
+      ` : ''}
+
+      ${inconvenients.length ? `
+        <div class="prev-section-title">Inconvénients</div>
+        <div class="prev-list">
+          ${inconvenients.map(a => `<div class="prev-list-item"><span class="icon">❌</span>${a}</div>`).join('')}
+        </div>
+      ` : ''}
+
+      <div class="prev-tags">
+        ${niveaux.map(n => `<span class="prev-tag perte">${n}</span>`).join('')}
+        ${marques.map(m => `<span class="prev-tag marque">${m}</span>`).join('')}
+        ${sol.type ? `<span class="prev-tag">${sol.type}</span>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// ────────────────────────────────────────────────────────────────
+// NAVIGATION PAR ONGLETS
+// ────────────────────────────────────────────────────────────────
+function switchTab(btn, tab) {
+  // Collecter l'état avant de changer
+  collectCurrentForm();
+
+  // Mettre à jour l'onglet actif
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  currentTab = tab;
+  renderForm();
+  updatePreview();
+}
+
+// ────────────────────────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────────────────────────
+async function init() {
+  await loadToken();
+  await loadFromGitHub();
+}
+
+init();
+</script>
 </body>
 </html>
