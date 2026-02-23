@@ -1,76 +1,28 @@
 {
   "colors": {
-    "primary": {
-      "label": "Couleur principale",
-      "value": "#ff8c42"
-    },
-    "primaryLight": {
-      "label": "Couleur principale claire",
-      "value": "#ffa059"
-    },
-    "primaryDark": {
-      "label": "Couleur principale foncée",
-      "value": "#e67a2e"
-    },
-    "secondary": {
-      "label": "Couleur secondaire",
-      "value": "#fff5ed"
-    },
-    "bg": {
-      "label": "Fond de page",
-      "value": "#fffcf8"
-    },
-    "bgAlt": {
-      "label": "Fond alternatif",
-      "value": "#fff8f0"
-    },
-    "panel": {
-      "label": "Fond des cartes",
-      "value": "#ffffff"
-    },
-    "text": {
-      "label": "Texte principal",
-      "value": "#1a1a1a"
-    },
-    "textLight": {
-      "label": "Texte secondaire",
-      "value": "#3a3a3a"
-    },
-    "textMuted": {
-      "label": "Texte discret",
-      "value": "#666666"
-    },
-    "border": {
-      "label": "Bordures",
-      "value": "#e8d5c4"
-    }
+    "primary":       { "label": "Couleur principale",    "value": "#FF8C42" },
+    "primaryLight":  { "label": "Couleur principale claire", "value": "#FFA059" },
+    "primaryDark":   { "label": "Couleur principale foncée",  "value": "#E67A2E" },
+    "secondary":     { "label": "Couleur secondaire",    "value": "#FFF5ED" },
+    "bg":            { "label": "Fond de page",          "value": "#FFFCF8" },
+    "bgAlt":         { "label": "Fond alternatif",       "value": "#FFF8F0" },
+    "panel":         { "label": "Fond des cartes",       "value": "#ffffff" },
+    "text":          { "label": "Texte principal",       "value": "#1a1a1a" },
+    "textLight":     { "label": "Texte secondaire",      "value": "#3a3a3a" },
+    "textMuted":     { "label": "Texte discret",         "value": "#666666" },
+    "border":        { "label": "Bordures",              "value": "#E8D5C4" }
   },
   "typography": {
-    "fontBody": {
-      "label": "Police du texte",
-      "value": "Inter"
-    },
-    "fontHeading": {
-      "label": "Police des titres",
-      "value": "Playfair Display"
-    }
+    "fontBody":    { "label": "Police du texte",   "value": "Inter" },
+    "fontHeading": { "label": "Police des titres", "value": "Playfair Display" }
   },
   "radius": {
-    "sm": {
-      "label": "Arrondi petit",
-      "value": "12px"
-    },
-    "md": {
-      "label": "Arrondi moyen",
-      "value": "16px"
-    },
-    "lg": {
-      "label": "Arrondi grand",
-      "value": "24px"
-    },
-    "xl": {
-      "label": "Arrondi très grand",
-      "value": "32px"
-    }
+    "sm": { "label": "Arrondi petit",     "value": "12px" },
+    "md": { "label": "Arrondi moyen",     "value": "16px" },
+    "lg": { "label": "Arrondi grand",     "value": "24px" },
+    "xl": { "label": "Arrondi très grand","value": "32px" }
+  },
+  "branding": {
+    "logoSize": { "label": "Taille du logo", "value": "64px" }
   }
 }

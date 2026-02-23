@@ -7,6 +7,7 @@
     const c = d.colors   || {};
     const r = d.radius   || {};
     const t = d.typography || {};
+    const b = d.branding || {};
 
     // Couleurs
     if (c.primary)      root.setProperty('--primary',      c.primary.value);
@@ -41,6 +42,9 @@
 
     root.setProperty('--font-body',    `"${bodyFont}", -apple-system, sans-serif`);
     root.setProperty('--font-heading', `"${headingFont}", Georgia, serif`);
+
+    // Branding
+    if (b.logoSize) root.setProperty('--logo-size', b.logoSize.value);
 
     document.dispatchEvent(new CustomEvent('designLoaded', { detail: d }));
   } catch (e) {

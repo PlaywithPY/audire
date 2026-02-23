@@ -309,8 +309,8 @@ header.scrolled {
 }
 
 .logo {
-  width: 48px;
-  height: 48px;
+  width: var(--logo-size, 64px);
+  height: var(--logo-size, 64px);
   object-fit: contain;
   transition: all var(--transition-base);
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));

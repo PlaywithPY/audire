@@ -588,6 +588,16 @@
       </div>
 
       <div class="card">
+        <div class="card-head">Branding (logo, identité)</div>
+        <div class="row2">
+          <div class="fg">
+            <label>Taille du logo — <span id="d-logo-size-val" style="color:#FF8C42;font-weight:600"></span></label>
+            <input type="range" id="d-logo-size" min="32" max="128" step="4" style="width:100%" oninput="document.getElementById('d-logo-size-val').textContent=this.value+'px';previewDesign()" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
         <div class="card-head">Aperçu en direct</div>
         <div id="design-preview" style="border:2px solid #e0e0e0;border-radius:16px;padding:28px;background:var(--bg, #FFFCF8);">
           <h2 style="font-family:var(--font-heading,'Playfair Display'),Georgia,serif;color:var(--primary,#FF8C42);margin-bottom:12px;">Titre exemple — Audire</h2>
@@ -1241,6 +1251,7 @@ function fillDesign() {
   const c = dsn.colors    || {};
   const r = dsn.radius    || {};
   const t = dsn.typography || {};
+  const b = dsn.branding  || {};
 
   const set = (id, val) => {
     const el = document.getElementById(id);
@@ -1283,6 +1294,17 @@ function fillDesign() {
       if (lbl) lbl.textContent = n + 'px';
     }
   });
+
+  // Branding
+  if (b.logoSize?.value) {
+    const n = parseInt(b.logoSize.value);
+    const el = document.getElementById('d-logo-size');
+    if (el) {
+      el.value = n;
+      const lbl = document.getElementById('d-logo-size-val');
+      if (lbl) lbl.textContent = n + 'px';
+    }
+  }
 }
 
 function syncColorFromHex(baseId) {
@@ -1326,6 +1348,9 @@ function previewDesign() {
   if (rmd) root.setProperty('--radius-md', rmd + 'px');
   if (rlg) root.setProperty('--radius-lg', rlg + 'px');
   if (rxl) root.setProperty('--radius-xl', rxl + 'px');
+
+  const logoSize = document.getElementById('d-logo-size')?.value;
+  if (logoSize) root.setProperty('--logo-size', logoSize + 'px');
 }
 
 function collectDesign() {
@@ -1354,6 +1379,9 @@ function collectDesign() {
     md: { label: 'Arrondi moyen',      value: gr('d-radius-md') },
     lg: { label: 'Arrondi grand',      value: gr('d-radius-lg') },
     xl: { label: 'Arrondi très grand', value: gr('d-radius-xl') },
+  };
+  dsn.branding = {
+    logoSize: { label: 'Taille du logo', value: gr('d-logo-size') },
   };
 }
 
