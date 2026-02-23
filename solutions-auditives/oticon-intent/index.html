@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>Oticon Intent - Appareil auditif intelligent | Audire</title>
+  <meta name="description" content="Découvrez Oticon Intent : la nouvelle génération d'appareils auditifs intelligents qui s'adaptent à vos intentions en temps réel.">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/audire/css/styles.css">
+  <style>
+    .detail-hero {
+      padding: 60px 0;
+      background: var(--bg);
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    .detail-content h1 {
+      font-size: 36px;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+    .detail-content .badge {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .detail-content p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+    .detail-image {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: var(--radius-lg);
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 120px;
+      color: white;
+      opacity: 0.9;
+    }
+    .detail-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: var(--radius-lg);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin: 40px 0 60px;
+    }
+    .feature-card {
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      transition: all var(--transition-base);
+    }
+    .feature-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .feature-icon {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+    .feature-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .feature-text {
+      color: var(--text-light);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 60px;
+    }
+    .pros-cons-box {
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+    }
+    .pros-cons-box h3 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pros-cons-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .pros-cons-box li {
+      padding: 8px 0;
+      display: flex;
+      align-items: start;
+      gap: 12px;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    .pros-cons-box.pros {
+      border-color: #4CAF50;
+    }
+    .pros-cons-box.pros h3 {
+      color: #4CAF50;
+    }
+    .pros-cons-box.pros li::before {
+      content: '✓';
+      color: #4CAF50;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .pros-cons-box.cons {
+      border-color: #FF6B6B;
+    }
+    .pros-cons-box.cons h3 {
+      color: #FF6B6B;
+    }
+    .pros-cons-box.cons li::before {
+      content: '✗';
+      color: #FF6B6B;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .info-section {
+      padding: 60px 0;
+      background: var(--bg-alt);
+    }
+    .info-block {
+      max-width: 900px;
+      margin: 0 auto 50px;
+    }
+    .info-block h2 {
+      font-size: 28px;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    .info-block p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+    .info-block strong {
+      color: var(--text);
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--bg-alt) 100%);
+      border-left: 4px solid var(--primary);
+      padding: 24px;
+      border-radius: var(--radius-sm);
+      margin: 24px 0;
+    }
+    .highlight-box p {
+      margin: 0;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .pros-cons {
+        grid-template-columns: 1fr;
+      }
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div id="app-header"></div>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- Hero Section -->
+    <section class="detail-hero">
+      <div class="container">
+        <div class="detail-grid">
+          <!-- Content -->
+          <div class="detail-content animate-on-scroll">
+            <span class="badge">⭐ Nouvelle génération</span>
+            <h1>Oticon Intent</h1>
+            <p>
+              <strong>Oticon Intent</strong> est la nouvelle génération d'appareils auditifs intelligents. Grâce à une technologie révolutionnaire de capteurs 4D, Intent comprend vos intentions et adapte automatiquement le son en temps réel.
+            </p>
+            <p>
+              Que vous souhaitiez vous concentrer sur une conversation, profiter de la musique ou simplement vous détendre, Oticon Intent reconnaît ce que vous voulez entendre et ajuste l'expérience sonore instantanément.
+            </p>
+          </div>
+          <!-- Image -->
+          <div class="detail-image animate-on-scroll">
+            ⭐
+          </div>
+        </div>
+
+        <!-- Features -->
+        <div class="features-grid">
+          <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">🧠</div>
+            <h3 class="feature-title">Intelligence artificielle</h3>
+            <p class="feature-text">
+              Technologie Deep Neural Network qui analyse 12 millions de sons pour offrir une qualité sonore exceptionnelle.
+            </p>
+          </div>
+          <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">👁️</div>
+            <div class="feature-title">Capteurs 4D</div>
+            <p class="feature-text">
+              Détecte vos mouvements de tête et vos intentions pour adapter le son en fonction de votre activité.
+            </p>
+          </div>
+          <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">🎯</div>
+            <div class="feature-title">Focus adaptatif</div>
+            <p class="feature-text">
+              S'ajuste automatiquement selon que vous écoutez une personne, un groupe ou votre environnement.
+            </p>
+          </div>
+          <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">📱</div>
+            <div class="feature-title">Connectivité totale</div>
+            <p class="feature-text">
+              Bluetooth intégré pour smartphone, TV et tous vos appareils. Application Oticon Companion incluse.
+            </p>
+          </div>
+          <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">🔋</div>
+            <div class="feature-title">Batterie rechargeable</div>
+            <p class="feature-text">
+              Jusqu'à 24h d'autonomie avec une seule charge. Chargeur portable pour usage nomade.
+            </p>
+          </div>
+          <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">💧</div>
+            <div class="feature-title">Résistant et durable</div>
+            <p class="feature-text">
+              Protection IP68 contre l'eau et la poussière. Design robuste pour un usage quotidien intensif.
+            </p>
+          </div>
+        </div>
+
+        <!-- Pros & Cons -->
+        <div class="pros-cons">
+          <div class="pros-cons-box pros animate-on-scroll">
+            <h3>✓ Points forts</h3>
+            <ul>
+              <li>Technologie de pointe (capteurs 4D + IA)</li>
+              <li>Adaptation automatique aux situations</li>
+              <li>Son naturel et immersif</li>
+              <li>Connectivité Bluetooth avancée</li>
+              <li>Batterie rechargeable longue durée</li>
+              <li>Application mobile intuitive</li>
+              <li>Design moderne et discret</li>
+            </ul>
+          </div>
+          <div class="pros-cons-box cons animate-on-scroll">
+            <h3>✗ Points faibles</h3>
+            <ul>
+              <li>Prix premium (haut de gamme)</li>
+              <li>Nécessite une adaptation initiale</li>
+              <li>Dépend de la charge régulière</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Info Sections -->
+    <section class="info-section">
+      <div class="container">
+
+        <!-- Technologie -->
+        <div class="info-block animate-on-scroll">
+          <h2>Comment fonctionne la technologie Intent ?</h2>
+          <p>
+            Oticon Intent intègre des <strong>capteurs de mouvement 4D</strong> qui détectent vos mouvements de tête et votre posture. En analysant ces données en temps réel, l'appareil comprend si vous êtes en train de converser avec une personne, d'écouter un groupe, ou simplement d'observer votre environnement.
+          </p>
+          <div class="highlight-box">
+            <p>
+              💡 <strong>Exemple concret :</strong> Si vous tournez la tête vers quelqu'un qui vous parle, Intent comprend que vous voulez vous concentrer sur cette personne et réduit automatiquement les bruits environnants.
+            </p>
+          </div>
+          <p>
+            Combinée au réseau neuronal profond Deep Neural Network (DNN), cette technologie offre une expérience auditive sans précédent, naturelle et adaptée à chaque instant de votre journée.
+          </p>
+        </div>
+
+        <!-- À qui convient -->
+        <div class="info-block animate-on-scroll">
+          <h2>À qui convient Oticon Intent ?</h2>
+          <p>
+            Oticon Intent est l'appareil auditif le plus avancé de la gamme Oticon. Il s'adresse aux personnes exigeantes qui recherchent <strong>le meilleur de la technologie auditive</strong>.
+          </p>
+
+          <h3 style="margin-top: 32px; font-size: 20px; color: var(--text); margin-bottom: 12px;">Profil idéal</h3>
+          <ul style="margin-left: 20px; line-height: 1.8; color: var(--text-light);">
+            <li>Perte auditive légère à sévère</li>
+            <li>Vie sociale active (réunions, restaurants, événements)</li>
+            <li>Utilisateur de smartphone et appareils connectés</li>
+            <li>Recherche de performance et de confort</li>
+            <li>Sensible à la qualité sonore</li>
+          </ul>
+
+          <h3 style="margin-top: 32px; font-size: 20px; color: var(--text); margin-bottom: 12px;">Situations d'usage</h3>
+          <p>
+            Oticon Intent excelle dans les environnements complexes : restaurants bruyants, réunions professionnelles, concerts, conversations en groupe. Sa capacité à s'adapter automatiquement vous permet de profiter pleinement de chaque moment sans avoir à toucher l'appareil.
+          </p>
+        </div>
+
+        <!-- CTA -->
+        <div class="info-block animate-on-scroll" style="text-align: center; margin-top: 60px;">
+          <h2>Découvrez Oticon Intent chez Audire</h2>
+          <p style="margin-bottom: 28px;">
+            Venez tester Oticon Intent lors d'une démonstration personnalisée. Expérimentez par vous-même la différence qu'apporte cette technologie révolutionnaire.
+          </p>
+          <button class="btn btn-primary btn-lg" data-open-modal>
+            <span>📅</span>
+            <span>Réserver une démo</span>
+          </button>
+          <p style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">
+            Démonstration gratuite • Essai sans engagement • Expert Oticon
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="app-footer"></div>
+
+  <!-- Scripts -->
+  <script src="/audire/js/design-loader.js"></script>
+  <script src="/audire/js/app.js"></script>
+</body>
+</html>
