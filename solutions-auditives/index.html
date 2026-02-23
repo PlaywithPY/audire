@@ -350,5 +350,77 @@
   <script src="/audire/js/content-loader.js"></script>
   <script src="/audire/js/components.js"></script>
   <script src="/audire/js/main.js"></script>
+
+  <!-- Solutions Auditives Dynamic Loader -->
+  <script>
+    (async function() {
+      try {
+        const res = await fetch('/audire/content/solutions-auditives.json?t=' + Date.now());
+        const data = await res.json();
+
+        // Update page header
+        if (data.page_principale) {
+          const h1 = document.querySelector('.page-header h1');
+          const intro = document.querySelector('.page-intro');
+          const sectionTitle = document.querySelector('.section-title');
+          const sectionIntro = document.querySelector('.section-intro');
+
+          if (h1 && data.page_principale.titre) h1.textContent = data.page_principale.titre;
+          if (intro && data.page_principale.intro) intro.textContent = data.page_principale.intro;
+          if (sectionTitle && data.page_principale.types_titre) sectionTitle.textContent = data.page_principale.types_titre;
+          if (sectionIntro && data.page_principale.types_intro) sectionIntro.textContent = data.page_principale.types_intro;
+        }
+
+        // Update cards
+        if (data.solutions && data.solutions.length > 0) {
+          const grid = document.querySelector('.types-grid');
+          if (grid) {
+            grid.innerHTML = data.solutions.map(sol => {
+              const imgHtml = sol.image
+                ? `<img src="${sol.image}" alt="${sol.titre}" onerror="this.parentElement.innerHTML='<span style=\\'font-size:64px;opacity:0.4\\'>${getEmoji(sol.id)}</span>'">`
+                : `<span style="font-size:64px;opacity:0.4">${getEmoji(sol.id)}</span>`;
+
+              return `
+                <a href="/audire/solutions-auditives/${sol.id}/" class="type-card animate-on-scroll">
+                  <div class="type-image ${sol.image ? '' : 'placeholder'}">
+                    ${imgHtml}
+                  </div>
+                  <div class="type-body">
+                    ${sol.badge ? `<div style="display:inline-block;padding:4px 12px;background:var(--primary);color:white;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:10px;">${sol.badge}</div>` : ''}
+                    <h3 class="type-title">${sol.titre}</h3>
+                    <p class="type-description">${sol.description_courte}</p>
+                    <span class="type-cta">En savoir plus</span>
+                  </div>
+                </a>
+              `;
+            }).join('');
+
+            // Re-trigger animations
+            const observer = new IntersectionObserver((entries) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('visible');
+                }
+              });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+          }
+        }
+
+        function getEmoji(id) {
+          const emojis = {
+            'contour-oreille': '🎧',
+            'intra-auriculaire': '👂',
+            'oticon-intent': '⭐'
+          };
+          return emojis[id] || '🔊';
+        }
+
+      } catch (e) {
+        console.error('Erreur chargement solutions-auditives.json:', e);
+      }
+    })();
+  </script>
 </body>
 </html>

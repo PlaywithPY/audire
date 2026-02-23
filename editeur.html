@@ -313,13 +313,8 @@
           Modifiez les textes, uploadez des images et prévisualisez instantanément.
         </p>
 
-        <!-- Sous-onglets -->
-        <div class="canvas-subtabs">
-          <button class="canvas-subtab active" onclick="switchCanvasPanel('page-principale')">📄 Page principale</button>
-          <button class="canvas-subtab" onclick="switchCanvasPanel(0)">🎧 Contour d'oreille</button>
-          <button class="canvas-subtab" onclick="switchCanvasPanel(1)">👂 Intra-auriculaire</button>
-          <button class="canvas-subtab" onclick="switchCanvasPanel(2)">⭐ Oticon Intent</button>
-        </div>
+        <!-- Sous-onglets (dynamiques) -->
+        <div class="canvas-subtabs" id="canvas-subtabs"></div>
 
         <!-- Canvas (formulaire + aperçu) -->
         <div class="canvas-container">
@@ -1624,8 +1619,7 @@ let currentCanvasPanel = 'page-principale';
 function switchCanvasPanel(idx) {
   collectCurrentCanvasForm();
   currentCanvasPanel = idx;
-  document.querySelectorAll('.canvas-subtab').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  renderCanvasTabs();
   renderCanvasForm();
   renderCanvasPreview();
 }
@@ -1729,6 +1723,16 @@ function renderCanvasForm() {
           <div class="check-group" id="canvas-marques">
             ${marques.map(m => `<label class="check-item ${(sol.marques||[]).includes(m)?'checked':''}" data-val="${m}" onclick="toggleCanvasCheck(this)"><input type="checkbox" ${(sol.marques||[]).includes(m)?'checked':''}>${m}</label>`).join('')}
           </div>
+        </div>
+      </div>
+
+      <div class="card" style="border:2px solid #ffebee;">
+        <div class="card-head" style="color:#d32f2f;">🗑️ Supprimer cette solution</div>
+        <div class="fg">
+          <p style="color:#777;margin-bottom:16px;line-height:1.6;">
+            Attention : Cette action est irréversible. La solution sera supprimée définitivement lors de la sauvegarde.
+          </p>
+          <button class="btn-rm" style="padding:10px 20px;font-size:14px;" onclick="deleteSolution(${currentCanvasPanel})">✕ Supprimer définitivement</button>
         </div>
       </div>
     `;
@@ -1877,8 +1881,71 @@ function esc(str) {
   return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function renderCanvasTabs() {
+  const container = document.getElementById('canvas-subtabs');
+  if (!container) return;
+
+  const emojis = { 'contour-oreille': '🎧', 'intra-auriculaire': '👂', 'oticon-intent': '⭐' };
+
+  let html = `<button class="canvas-subtab ${currentCanvasPanel==='page-principale'?'active':''}" onclick="switchCanvasPanel('page-principale')">📄 Page principale</button>`;
+
+  if (sac.solutions) {
+    sac.solutions.forEach((sol, idx) => {
+      const emoji = emojis[sol.id] || '🔊';
+      const active = currentCanvasPanel === idx ? 'active' : '';
+      html += `
+        <button class="canvas-subtab ${active}" onclick="switchCanvasPanel(${idx})">${emoji} ${sol.titre || 'Solution ' + (idx+1)}</button>
+      `;
+    });
+  }
+
+  html += `<button class="canvas-subtab" style="background:#e8f5e9;color:#2e7d32;font-weight:700;" onclick="addNewSolution()">+ Ajouter une solution</button>`;
+
+  container.innerHTML = html;
+}
+
+function addNewSolution() {
+  if (!sac.solutions) sac.solutions = [];
+  const newId = 'solution-' + Date.now();
+  sac.solutions.push({
+    id: newId,
+    titre: 'Nouvelle solution',
+    badge: '',
+    image: '',
+    description_courte: '',
+    description_longue: '',
+    avantages: [],
+    inconvenients: [],
+    niveaux_perte: [],
+    type: 'Contour d\'oreille',
+    marques: []
+  });
+  currentCanvasPanel = sac.solutions.length - 1;
+  renderCanvasTabs();
+  renderCanvasForm();
+  renderCanvasPreview();
+  showStatus('✓ Nouvelle solution ajoutée !', 'ok');
+}
+
+function deleteSolution(idx) {
+  if (!confirm('Êtes-vous sûr de vouloir supprimer cette solution ?\n\nCette action est irréversible.')) return;
+
+  if (!sac.solutions || idx < 0 || idx >= sac.solutions.length) return;
+
+  const solTitle = sac.solutions[idx].titre || 'Solution';
+  sac.solutions.splice(idx, 1);
+
+  // Retourner à la page principale
+  currentCanvasPanel = 'page-principale';
+  renderCanvasTabs();
+  renderCanvasForm();
+  renderCanvasPreview();
+  showStatus(`✓ "${solTitle}" supprimée ! N'oubliez pas de sauvegarder.`, 'ok');
+}
+
 function fillSolutionsCanvas() {
   if (!sac || !sac.solutions) return;
+  renderCanvasTabs();
   renderCanvasForm();
   renderCanvasPreview();
 }
