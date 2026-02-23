@@ -2,15 +2,15 @@
   "colors": {
     "primary": {
       "label": "Couleur principale",
-      "value": "#ff8c42"
+      "value": "#70aeff"
     },
     "primaryLight": {
       "label": "Couleur principale claire",
-      "value": "#ffa059"
+      "value": "#70aeff"
     },
     "primaryDark": {
       "label": "Couleur principale foncée",
-      "value": "#e67a2e"
+      "value": "#6692cc"
     },
     "secondary": {
       "label": "Couleur secondaire",
