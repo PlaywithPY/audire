@@ -437,6 +437,176 @@
       </div>
     </div>
   </div>
+
+    <!-- 🎨 DESIGN -->
+    <div class="tab-panel" id="panel-design">
+
+      <div class="card">
+        <div class="card-head">Couleurs principales</div>
+        <div class="row2">
+          <div class="fg">
+            <label>Couleur principale <small style="color:#999">(boutons, accents)</small></label>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <input type="color" id="d-primary" style="width:52px;height:36px;border:2px solid #e0e0e0;border-radius:8px;cursor:pointer;padding:2px;" oninput="syncHexFromColor('d-primary');previewDesign()" />
+              <input type="text" id="d-primary-hex" maxlength="7" style="flex:1;font-family:monospace;" oninput="syncColorFromHex('d-primary')" placeholder="#FF8C42" />
+            </div>
+          </div>
+          <div class="fg">
+            <label>Couleur claire <small style="color:#999">(dégradés, hover)</small></label>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <input type="color" id="d-primary-light" style="width:52px;height:36px;border:2px solid #e0e0e0;border-radius:8px;cursor:pointer;padding:2px;" oninput="syncHexFromColor('d-primary-light');previewDesign()" />
+              <input type="text" id="d-primary-light-hex" maxlength="7" style="flex:1;font-family:monospace;" oninput="syncColorFromHex('d-primary-light')" placeholder="#FFA059" />
+            </div>
+          </div>
+          <div class="fg">
+            <label>Couleur foncée <small style="color:#999">(CTA, ombres)</small></label>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <input type="color" id="d-primary-dark" style="width:52px;height:36px;border:2px solid #e0e0e0;border-radius:8px;cursor:pointer;padding:2px;" oninput="syncHexFromColor('d-primary-dark');previewDesign()" />
+              <input type="text" id="d-primary-dark-hex" maxlength="7" style="flex:1;font-family:monospace;" oninput="syncColorFromHex('d-primary-dark')" placeholder="#E67A2E" />
+            </div>
+          </div>
+          <div class="fg">
+            <label>Couleur secondaire <small style="color:#999">(fonds légers)</small></label>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <input type="color" id="d-secondary" style="width:52px;height:36px;border:2px solid #e0e0e0;border-radius:8px;cursor:pointer;padding:2px;" oninput="syncHexFromColor('d-secondary');previewDesign()" />
+              <input type="text" id="d-secondary-hex" maxlength="7" style="flex:1;font-family:monospace;" oninput="syncColorFromHex('d-secondary')" placeholder="#FFF5ED" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Fonds de page</div>
+        <div class="row2">
+          <div class="fg">
+            <label>Fond principal</label>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <input type="color" id="d-bg" style="width:52px;height:36px;border:2px solid #e0e0e0;border-radius:8px;cursor:pointer;padding:2px;" oninput="syncHexFromColor('d-bg');previewDesign()" />
+              <input type="text" id="d-bg-hex" maxlength="7" style="flex:1;font-family:monospace;" oninput="syncColorFromHex('d-bg')" placeholder="#FFFCF8" />
+            </div>
+          </div>
+          <div class="fg">
+            <label>Fond alternatif <small style="color:#999">(sections)</small></label>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <input type="color" id="d-bg-alt" style="width:52px;height:36px;border:2px solid #e0e0e0;border-radius:8px;cursor:pointer;padding:2px;" oninput="syncHexFromColor('d-bg-alt');previewDesign()" />
+              <input type="text" id="d-bg-alt-hex" maxlength="7" style="flex:1;font-family:monospace;" oninput="syncColorFromHex('d-bg-alt')" placeholder="#FFF8F0" />
+            </div>
+          </div>
+          <div class="fg">
+            <label>Fond des cartes</label>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <input type="color" id="d-panel" style="width:52px;height:36px;border:2px solid #e0e0e0;border-radius:8px;cursor:pointer;padding:2px;" oninput="syncHexFromColor('d-panel');previewDesign()" />
+              <input type="text" id="d-panel-hex" maxlength="7" style="flex:1;font-family:monospace;" oninput="syncColorFromHex('d-panel')" placeholder="#ffffff" />
+            </div>
+          </div>
+          <div class="fg">
+            <label>Bordures</label>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <input type="color" id="d-border" style="width:52px;height:36px;border:2px solid #e0e0e0;border-radius:8px;cursor:pointer;padding:2px;" oninput="syncHexFromColor('d-border');previewDesign()" />
+              <input type="text" id="d-border-hex" maxlength="7" style="flex:1;font-family:monospace;" oninput="syncColorFromHex('d-border')" placeholder="#E8D5C4" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Couleurs du texte</div>
+        <div class="row2">
+          <div class="fg">
+            <label>Texte principal</label>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <input type="color" id="d-text" style="width:52px;height:36px;border:2px solid #e0e0e0;border-radius:8px;cursor:pointer;padding:2px;" oninput="syncHexFromColor('d-text');previewDesign()" />
+              <input type="text" id="d-text-hex" maxlength="7" style="flex:1;font-family:monospace;" oninput="syncColorFromHex('d-text')" placeholder="#1a1a1a" />
+            </div>
+          </div>
+          <div class="fg">
+            <label>Texte secondaire</label>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <input type="color" id="d-text-light" style="width:52px;height:36px;border:2px solid #e0e0e0;border-radius:8px;cursor:pointer;padding:2px;" oninput="syncHexFromColor('d-text-light');previewDesign()" />
+              <input type="text" id="d-text-light-hex" maxlength="7" style="flex:1;font-family:monospace;" oninput="syncColorFromHex('d-text-light')" placeholder="#3a3a3a" />
+            </div>
+          </div>
+          <div class="fg">
+            <label>Texte discret</label>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <input type="color" id="d-text-muted" style="width:52px;height:36px;border:2px solid #e0e0e0;border-radius:8px;cursor:pointer;padding:2px;" oninput="syncHexFromColor('d-text-muted');previewDesign()" />
+              <input type="text" id="d-text-muted-hex" maxlength="7" style="flex:1;font-family:monospace;" oninput="syncColorFromHex('d-text-muted')" placeholder="#666666" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Typographie</div>
+        <div class="row2">
+          <div class="fg">
+            <label>Police du texte courant</label>
+            <select id="d-font-body" onchange="previewDesign()">
+              <option value="Inter">Inter (défaut)</option>
+              <option value="Roboto">Roboto</option>
+              <option value="Open Sans">Open Sans</option>
+              <option value="Lato">Lato</option>
+              <option value="Montserrat">Montserrat</option>
+              <option value="Nunito">Nunito</option>
+              <option value="Source Sans 3">Source Sans 3</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Police des titres</label>
+            <select id="d-font-heading" onchange="previewDesign()">
+              <option value="Playfair Display">Playfair Display (défaut)</option>
+              <option value="Inter">Inter</option>
+              <option value="Merriweather">Merriweather</option>
+              <option value="Lora">Lora</option>
+              <option value="Raleway">Raleway</option>
+              <option value="Montserrat">Montserrat</option>
+              <option value="Cormorant Garamond">Cormorant Garamond</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Arrondis des éléments</div>
+        <div class="row2">
+          <div class="fg">
+            <label>Arrondi petit — <span id="d-radius-sm-val" style="color:#FF8C42;font-weight:600"></span></label>
+            <input type="range" id="d-radius-sm" min="0" max="32" step="2" style="width:100%" oninput="document.getElementById('d-radius-sm-val').textContent=this.value+'px';previewDesign()" />
+          </div>
+          <div class="fg">
+            <label>Arrondi moyen — <span id="d-radius-md-val" style="color:#FF8C42;font-weight:600"></span></label>
+            <input type="range" id="d-radius-md" min="0" max="48" step="2" style="width:100%" oninput="document.getElementById('d-radius-md-val').textContent=this.value+'px';previewDesign()" />
+          </div>
+          <div class="fg">
+            <label>Arrondi grand — <span id="d-radius-lg-val" style="color:#FF8C42;font-weight:600"></span></label>
+            <input type="range" id="d-radius-lg" min="0" max="64" step="2" style="width:100%" oninput="document.getElementById('d-radius-lg-val').textContent=this.value+'px';previewDesign()" />
+          </div>
+          <div class="fg">
+            <label>Arrondi très grand — <span id="d-radius-xl-val" style="color:#FF8C42;font-weight:600"></span></label>
+            <input type="range" id="d-radius-xl" min="0" max="80" step="2" style="width:100%" oninput="document.getElementById('d-radius-xl-val').textContent=this.value+'px';previewDesign()" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Aperçu en direct</div>
+        <div id="design-preview" style="border:2px solid #e0e0e0;border-radius:16px;padding:28px;background:var(--bg, #FFFCF8);">
+          <h2 style="font-family:var(--font-heading,'Playfair Display'),Georgia,serif;color:var(--primary,#FF8C42);margin-bottom:12px;">Titre exemple — Audire</h2>
+          <p style="color:var(--text,#1a1a1a);margin-bottom:8px;">Voici un exemple de texte principal pour voir l'effet des couleurs et des polices.</p>
+          <p style="color:var(--text-muted,#666);font-size:14px;margin-bottom:20px;">Texte secondaire discret pour les descriptions et les notes.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+            <button style="background:var(--primary,#FF8C42);color:#fff;border:none;padding:12px 24px;border-radius:var(--radius-sm,12px);font-weight:600;cursor:default;">Bouton principal</button>
+            <button style="background:transparent;color:var(--primary,#FF8C42);border:2px solid var(--primary,#FF8C42);padding:12px 24px;border-radius:var(--radius-sm,12px);font-weight:600;cursor:default;">Bouton secondaire</button>
+          </div>
+          <div style="background:var(--panel,#fff);border:1px solid var(--border,#E8D5C4);border-radius:var(--radius-md,16px);padding:20px;">
+            <p style="color:var(--text-light,#3a3a3a);margin:0;">Exemple de carte avec fond panel et bordure.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+</div>
 </div>
 
 <script>
@@ -501,6 +671,7 @@ function forgetToken() {
 // ===== TABS CONFIG =====
 const TABS = [
   { id: 'config',         label: '⚙️ Configuration' },
+  { id: 'design',         label: '🎨 Design' },
   { id: 'home',           label: '🏠 Accueil' },
   { id: 'test',           label: '👂 Test auditif' },
   { id: 'accompagnement', label: '🤝 Accompagnement' },
@@ -554,20 +725,18 @@ function switchTab(id) {
 async function reloadAll() {
   showStatus('Chargement...', 'info');
   try {
-    const timestamp = Date.now(); // Cache busting
-    const [cr, tr] = await Promise.all([
-      fetch(`/audire/content/config.json?t=${timestamp}`).then(r => r.json()),
-      fetch(`/audire/content/textes.json?t=${timestamp}`).then(r => r.json())
+    const t = Date.now();
+    const [cr, tr, dr] = await Promise.all([
+      fetch(`/audire/content/config.json?t=${t}`).then(r => r.json()),
+      fetch(`/audire/content/textes.json?t=${t}`).then(r => r.json()),
+      fetch(`/audire/content/design.json?t=${t}`).then(r => r.json()).catch(() => ({}))
     ]);
-    cfg = cr; txt = tr;
-    console.log('Loaded cfg:', cfg);
-    console.log('Loaded txt:', txt);
-    console.log('notre-accompagnement from server:', txt['notre-accompagnement']);
+    cfg = cr; txt = tr; dsn = dr;
     fillConfig();
     fillTextes();
+    fillDesign();
     showStatus('Données chargées ✓', 'ok');
   } catch(e) {
-    console.error('Error loading:', e);
     showStatus('Erreur chargement : ' + e.message, 'err');
   }
 }
@@ -1066,6 +1235,129 @@ function collectAll() {
   ph.cta = { ...ph.cta, title: g('p-cta-title'), description: g('p-cta-desc'), zone: g('p-cta-zone') };
 }
 
+// ===== DESIGN =====
+let dsn = {};
+
+function fillDesign() {
+  const c = dsn.colors    || {};
+  const r = dsn.radius    || {};
+  const t = dsn.typography || {};
+
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el && val) el.value = val;
+  };
+
+  // Color pickers + hex inputs
+  const cols = {
+    'd-primary':      c.primary?.value,
+    'd-primary-light':c.primaryLight?.value,
+    'd-primary-dark': c.primaryDark?.value,
+    'd-secondary':    c.secondary?.value,
+    'd-bg':           c.bg?.value,
+    'd-bg-alt':       c.bgAlt?.value,
+    'd-panel':        c.panel?.value,
+    'd-text':         c.text?.value,
+    'd-text-light':   c.textLight?.value,
+    'd-text-muted':   c.textMuted?.value,
+    'd-border':       c.border?.value,
+  };
+  Object.entries(cols).forEach(([id, val]) => {
+    if (!val) return;
+    set(id, val);
+    set(id + '-hex', val);
+  });
+
+  // Polices
+  if (t.fontBody?.value)    set('d-font-body',    t.fontBody.value);
+  if (t.fontHeading?.value) set('d-font-heading', t.fontHeading.value);
+
+  // Sliders rayons
+  const radii = { 'd-radius-sm': r.sm?.value, 'd-radius-md': r.md?.value, 'd-radius-lg': r.lg?.value, 'd-radius-xl': r.xl?.value };
+  Object.entries(radii).forEach(([id, val]) => {
+    if (!val) return;
+    const n = parseInt(val);
+    const el = document.getElementById(id);
+    if (el) {
+      el.value = n;
+      const lbl = document.getElementById(id + '-val');
+      if (lbl) lbl.textContent = n + 'px';
+    }
+  });
+}
+
+function syncColorFromHex(baseId) {
+  const hex = document.getElementById(baseId + '-hex')?.value;
+  if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+    const el = document.getElementById(baseId);
+    if (el) el.value = hex;
+    previewDesign();
+  }
+}
+
+function syncHexFromColor(baseId) {
+  const val = document.getElementById(baseId)?.value;
+  if (val) {
+    const el = document.getElementById(baseId + '-hex');
+    if (el) el.value = val;
+  }
+}
+
+function previewDesign() {
+  const root = document.documentElement.style;
+  const gc = id => document.getElementById(id)?.value;
+
+  root.setProperty('--primary',      gc('d-primary')      || '#FF8C42');
+  root.setProperty('--primary-light',gc('d-primary-light')|| '#FFA059');
+  root.setProperty('--primary-dark', gc('d-primary-dark') || '#E67A2E');
+  root.setProperty('--secondary',    gc('d-secondary')    || '#FFF5ED');
+  root.setProperty('--bg',           gc('d-bg')           || '#FFFCF8');
+  root.setProperty('--bg-alt',       gc('d-bg-alt')       || '#FFF8F0');
+  root.setProperty('--panel',        gc('d-panel')        || '#ffffff');
+  root.setProperty('--text',         gc('d-text')         || '#1a1a1a');
+  root.setProperty('--text-light',   gc('d-text-light')   || '#3a3a3a');
+  root.setProperty('--text-muted',   gc('d-text-muted')   || '#666666');
+  root.setProperty('--border',       gc('d-border')       || '#E8D5C4');
+
+  const rsm = document.getElementById('d-radius-sm')?.value;
+  const rmd = document.getElementById('d-radius-md')?.value;
+  const rlg = document.getElementById('d-radius-lg')?.value;
+  const rxl = document.getElementById('d-radius-xl')?.value;
+  if (rsm) root.setProperty('--radius-sm', rsm + 'px');
+  if (rmd) root.setProperty('--radius-md', rmd + 'px');
+  if (rlg) root.setProperty('--radius-lg', rlg + 'px');
+  if (rxl) root.setProperty('--radius-xl', rxl + 'px');
+}
+
+function collectDesign() {
+  const gc = id => document.getElementById(id)?.value;
+  const gr = id => (document.getElementById(id)?.value || '0') + 'px';
+
+  dsn.colors = {
+    primary:      { label: 'Couleur principale',       value: gc('d-primary')       || '#FF8C42' },
+    primaryLight: { label: 'Couleur principale claire', value: gc('d-primary-light') || '#FFA059' },
+    primaryDark:  { label: 'Couleur principale foncée', value: gc('d-primary-dark')  || '#E67A2E' },
+    secondary:    { label: 'Couleur secondaire',        value: gc('d-secondary')     || '#FFF5ED' },
+    bg:           { label: 'Fond de page',              value: gc('d-bg')            || '#FFFCF8' },
+    bgAlt:        { label: 'Fond alternatif',           value: gc('d-bg-alt')        || '#FFF8F0' },
+    panel:        { label: 'Fond des cartes',           value: gc('d-panel')         || '#ffffff' },
+    text:         { label: 'Texte principal',           value: gc('d-text')          || '#1a1a1a' },
+    textLight:    { label: 'Texte secondaire',          value: gc('d-text-light')    || '#3a3a3a' },
+    textMuted:    { label: 'Texte discret',             value: gc('d-text-muted')    || '#666666' },
+    border:       { label: 'Bordures',                  value: gc('d-border')        || '#E8D5C4' },
+  };
+  dsn.typography = {
+    fontBody:    { label: 'Police du texte',   value: gc('d-font-body')    || 'Inter' },
+    fontHeading: { label: 'Police des titres', value: gc('d-font-heading') || 'Playfair Display' },
+  };
+  dsn.radius = {
+    sm: { label: 'Arrondi petit',      value: gr('d-radius-sm') },
+    md: { label: 'Arrondi moyen',      value: gr('d-radius-md') },
+    lg: { label: 'Arrondi grand',      value: gr('d-radius-lg') },
+    xl: { label: 'Arrondi très grand', value: gr('d-radius-xl') },
+  };
+}
+
 // ===== GITHUB SAVE =====
 async function saveAll() {
   // Ask for token if not stored
@@ -1081,14 +1373,16 @@ async function saveAll() {
   }
 
   collectAll();
+  collectDesign();
 
   const btn = document.getElementById('saveBtn');
   btn.innerHTML = '💾 Sauvegarde... <span class="spin"></span>';
   btn.disabled = true;
 
   try {
-    await pushFile(ghToken, 'content/config.json', cfg, 'Mise à jour config.json');
-    await pushFile(ghToken, 'content/textes.json', txt, 'Mise à jour textes.json');
+    await pushFile(ghToken, 'content/config.json',  cfg, 'Mise à jour config.json');
+    await pushFile(ghToken, 'content/textes.json',  txt, 'Mise à jour textes.json');
+    await pushFile(ghToken, 'content/design.json',  dsn, 'Mise à jour design.json');
     showStatus('✓ Sauvegardé sur GitHub avec succès !', 'ok');
   } catch(e) {
     showStatus('Erreur : ' + e.message, 'err');
