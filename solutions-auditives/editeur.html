@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Éditeur Solutions auditives | Audire</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .header {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .header h1 {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .header p {
+      color: #666;
+      font-size: 15px;
+    }
+    .section {
+      background: white;
+      padding: 28px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #FF8C42;
+    }
+    .field {
+      margin-bottom: 20px;
+    }
+    .field label {
+      display: block;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .field input,
+    .field textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .field input:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: #FF8C42;
+    }
+    .field textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .field .hint {
+      font-size: 13px;
+      color: #999;
+      margin-top: 6px;
+    }
+    .actions {
+      position: sticky;
+      bottom: 20px;
+      background: white;
+      padding: 20px 28px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: #FF8C42;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #E67A2E;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255,140,66,0.3);
+    }
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+    .status {
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+      margin-bottom: 20px;
+    }
+    .status.ok {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status.err {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+    .tab {
+      padding: 12px 24px;
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #666;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab:hover {
+      border-color: #FF8C42;
+      color: #FF8C42;
+    }
+    .tab.active {
+      background: #FF8C42;
+      color: white;
+      border-color: #FF8C42;
+    }
+    .page-content {
+      display: none;
+    }
+    .page-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>✏️ Éditeur Solutions auditives</h1>
+      <p>Modifiez facilement les textes de vos pages Solutions auditives</p>
+    </div>
+
+    <div id="status" class="status"></div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="showPage('page-principale')">📄 Page principale</div>
+      <div class="tab" onclick="showPage('contour')">🎧 Contour d'oreille</div>
+      <div class="tab" onclick="showPage('intra')">👂 Intra-auriculaire</div>
+      <div class="tab" onclick="showPage('intent')">⭐ Oticon Intent</div>
+    </div>
+
+    <!-- Page principale -->
+    <div class="page-content active" id="page-principale">
+      <div class="section">
+        <div class="section-title">En-tête de la page</div>
+        <div class="field">
+          <label>Titre principal</label>
+          <input type="text" id="main-title" value="Quels sont les différents types d'appareils auditifs ?">
+        </div>
+        <div class="field">
+          <label>Texte d'introduction</label>
+          <textarea id="main-intro">Un appareil auditif capte les bruits ambiants. Le son est alors traité sous forme d'impulsions électriques qui, une fois modulées, sont transmises à l'oreille. Selon la perte auditive et les besoins du patient, les modèles d'appareils auditifs sont sensiblement différents. Découvrez quelle solution auditive vous convient le mieux.</textarea>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Section Types d'appareils</div>
+        <div class="field">
+          <label>Titre de section</label>
+          <input type="text" id="types-title" value="Types d'appareils auditifs">
+        </div>
+        <div class="field">
+          <label>Introduction</label>
+          <textarea id="types-intro">Les aides auditives sont disponibles dans des modèles les plus variés qui conviennent à tout type de perte auditive. Cette diversité vous assure une solution adaptée à vos désirs et attentes. Nous avons regroupé pour vous les principaux types d'appareils auditifs, selon les caractéristiques qui les différencient ainsi que leurs avantages et inconvénients.</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contour d'oreille -->
+    <div class="page-content" id="contour">
+      <div class="section">
+        <div class="section-title">Contour d'oreille</div>
+        <div class="field">
+          <label>Titre</label>
+          <input type="text" id="contour-title" value="Les contours d'oreille">
+        </div>
+        <div class="field">
+          <label>Description courte (paragraphe 1)</label>
+          <textarea id="contour-desc1">Les appareils auditifs contour d'oreille sont petits, discrets et presque invisibles. Les boîtiers sont disponibles en différentes couleurs. Ils conviennent à tous les types de perte auditive.</textarea>
+        </div>
+        <div class="field">
+          <label>Description courte (paragraphe 2)</label>
+          <textarea id="contour-desc2">Un appareil auditif contour d'oreille repose sur votre pavillon de l'oreille. L'appareil recueille les sons et les envoie à votre oreille grâce à un petit tube en plastique. Un appareil de ce type est reconnaissable à l'embout sur mesure ou le petit bouchon universel qui se trouve au bout du tube.</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Intra-auriculaire -->
+    <div class="page-content" id="intra">
+      <div class="section">
+        <div class="section-title">Intra-auriculaire</div>
+        <div class="field">
+          <label>Titre</label>
+          <input type="text" id="intra-title" value="Les intra-auriculaires">
+        </div>
+        <div class="field">
+          <label>Description courte (paragraphe 1)</label>
+          <textarea id="intra-desc1">Les appareils intra-auriculaires sont entièrement sur mesure et se logent directement dans le conduit auditif. Ils sont pratiquement invisibles et offrent un confort optimal pour une utilisation quotidienne.</textarea>
+        </div>
+        <div class="field">
+          <label>Description courte (paragraphe 2)</label>
+          <textarea id="intra-desc2">Moulés sur mesure pour s'adapter parfaitement à la forme de votre conduit auditif, ces appareils offrent une discrétion maximale tout en garantissant une excellente qualité sonore. Ils conviennent particulièrement aux personnes souhaitant une solution invisible.</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Oticon Intent -->
+    <div class="page-content" id="intent">
+      <div class="section">
+        <div class="section-title">Oticon Intent</div>
+        <div class="field">
+          <label>Titre</label>
+          <input type="text" id="intent-title" value="Oticon Intent">
+        </div>
+        <div class="field">
+          <label>Description courte (paragraphe 1)</label>
+          <textarea id="intent-desc1">Oticon Intent est la nouvelle génération d'appareils auditifs intelligents. Grâce à une technologie révolutionnaire de capteurs 4D, Intent comprend vos intentions et adapte automatiquement le son en temps réel.</textarea>
+        </div>
+        <div class="field">
+          <label>Description courte (paragraphe 2)</label>
+          <textarea id="intent-desc2">Que vous souhaitiez vous concentrer sur une conversation, profiter de la musique ou simplement vous détendre, Oticon Intent reconnaît ce que vous voulez entendre et ajuste l'expérience sonore instantanément.</textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="window.location.href='/audire/solutions-auditives/'">← Retour au site</button>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-secondary" onclick="reloadData()">↻ Recharger</button>
+        <button class="btn btn-primary" onclick="saveChanges()">💾 Sauvegarder les modifications</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showPage(pageId) {
+      // Hide all pages
+      document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+      // Show selected page
+      document.getElementById(pageId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function showStatus(message, type) {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = 'status ' + type;
+      status.style.display = 'block';
+      if (type !== 'info') {
+        setTimeout(() => status.style.display = 'none', 5000);
+      }
+    }
+
+    function reloadData() {
+      location.reload();
+    }
+
+    async function saveChanges() {
+      showStatus('Sauvegarde en cours...', 'info');
+
+      const updates = {
+        'page-principale': {
+          title: document.getElementById('main-title').value,
+          intro: document.getElementById('main-intro').value,
+          typesTitle: document.getElementById('types-title').value,
+          typesIntro: document.getElementById('types-intro').value
+        },
+        'contour': {
+          title: document.getElementById('contour-title').value,
+          desc1: document.getElementById('contour-desc1').value,
+          desc2: document.getElementById('contour-desc2').value
+        },
+        'intra': {
+          title: document.getElementById('intra-title').value,
+          desc1: document.getElementById('intra-desc1').value,
+          desc2: document.getElementById('intra-desc2').value
+        },
+        'intent': {
+          title: document.getElementById('intent-title').value,
+          desc1: document.getElementById('intent-desc1').value,
+          desc2: document.getElementById('intent-desc2').value
+        }
+      };
+
+      // Sauvegarder dans localStorage pour l'instant
+      localStorage.setItem('solutions-auditives-data', JSON.stringify(updates));
+
+      showStatus('✓ Modifications sauvegardées avec succès !', 'ok');
+
+      // TODO: Envoyer au serveur ou GitHub
+      console.log('Données sauvegardées:', updates);
+    }
+
+    // Charger les données au démarrage
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('solutions-auditives-data');
+      if (saved) {
+        const data = JSON.parse(saved);
+
+        // Page principale
+        if (data['page-principale']) {
+          document.getElementById('main-title').value = data['page-principale'].title || '';
+          document.getElementById('main-intro').value = data['page-principale'].intro || '';
+          document.getElementById('types-title').value = data['page-principale'].typesTitle || '';
+          document.getElementById('types-intro').value = data['page-principale'].typesIntro || '';
+        }
+
+        // Contour
+        if (data['contour']) {
+          document.getElementById('contour-title').value = data['contour'].title || '';
+          document.getElementById('contour-desc1').value = data['contour'].desc1 || '';
+          document.getElementById('contour-desc2').value = data['contour'].desc2 || '';
+        }
+
+        // Intra
+        if (data['intra']) {
+          document.getElementById('intra-title').value = data['intra'].title || '';
+          document.getElementById('intra-desc1').value = data['intra'].desc1 || '';
+          document.getElementById('intra-desc2').value = data['intra'].desc2 || '';
+        }
+
+        // Intent
+        if (data['intent']) {
+          document.getElementById('intent-title').value = data['intent'].title || '';
+          document.getElementById('intent-desc1').value = data['intent'].desc1 || '';
+          document.getElementById('intent-desc2').value = data['intent'].desc2 || '';
+        }
+      }
+    });
+  </script>
+</body>
+</html>
