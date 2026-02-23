@@ -1,0 +1,121 @@
+{
+  "hero": {
+    "title": "Nos solutions auditives",
+    "subtitle": "Découvrez notre sélection d'appareils auditifs Oticon et Bernafon, choisis pour leur qualité, leur discrétion et leur performance. Chaque appareil est adapté à votre mode de vie et à vos besoins spécifiques."
+  },
+  "produits": [
+    {
+      "id": "oticon-real",
+      "nom": "Oticon Real",
+      "marque": "Oticon",
+      "gamme": "Premium",
+      "type": "Contour d'oreille",
+      "image": "/audire/images/produits/oticon-real.jpg",
+      "description": "La technologie RealSound qui reproduit fidèlement tous les sons de votre environnement, même dans les situations bruyantes.",
+      "caracteristiques": [
+        "Réduction du bruit du vent",
+        "Son naturel et équilibré",
+        "Connectivité Bluetooth",
+        "Batterie rechargeable"
+      ],
+      "prix": "2800€ - 3500€",
+      "highlight": true
+    },
+    {
+      "id": "oticon-more",
+      "nom": "Oticon More",
+      "marque": "Oticon",
+      "gamme": "Premium",
+      "type": "Intra-auriculaire",
+      "image": "/audire/images/produits/oticon-more.jpg",
+      "description": "Intelligence artificielle embarquée pour un traitement du son révolutionnaire. Accès complet à tous les sons qui vous entourent.",
+      "caracteristiques": [
+        "Deep Neural Network (IA)",
+        "360° de son",
+        "Connexion sans fil",
+        "Discrétion maximale"
+      ],
+      "prix": "2500€ - 3200€",
+      "highlight": false
+    },
+    {
+      "id": "oticon-own",
+      "nom": "Oticon Own",
+      "marque": "Oticon",
+      "gamme": "Confort",
+      "type": "Intra-auriculaire sur mesure",
+      "image": "/audire/images/produits/oticon-own.jpg",
+      "description": "Appareil invisible moulé sur mesure pour votre oreille. Confort et discrétion optimaux.",
+      "caracteristiques": [
+        "100% invisible",
+        "Moulage personnalisé",
+        "Son naturel",
+        "Facile à manipuler"
+      ],
+      "prix": "1800€ - 2400€",
+      "highlight": false
+    },
+    {
+      "id": "bernafon-alpha",
+      "nom": "Bernafon Alpha",
+      "marque": "Bernafon",
+      "gamme": "Premium",
+      "type": "Contour d'oreille",
+      "image": "/audire/images/produits/bernafon-alpha.jpg",
+      "description": "Performance exceptionnelle avec réduction avancée du bruit et clarté de parole optimale, même dans les environnements complexes.",
+      "caracteristiques": [
+        "Hybrid Technology™",
+        "Réduction bruit intelligente",
+        "Streaming audio HD",
+        "Autonomie longue durée"
+      ],
+      "prix": "2400€ - 3000€",
+      "highlight": true
+    },
+    {
+      "id": "bernafon-viron",
+      "nom": "Bernafon Viron",
+      "marque": "Bernafon",
+      "gamme": "Confort",
+      "type": "Contour d'oreille",
+      "image": "/audire/images/produits/bernafon-viron.jpg",
+      "description": "Solution fiable et performante pour un usage quotidien confortable. Excellent rapport qualité-prix.",
+      "caracteristiques": [
+        "Programmes automatiques",
+        "Design ergonomique",
+        "Facile d'utilisation",
+        "Robuste et fiable"
+      ],
+      "prix": "1500€ - 2000€",
+      "highlight": false
+    },
+    {
+      "id": "bernafon-everest",
+      "nom": "Bernafon Everest",
+      "marque": "Bernafon",
+      "gamme": "Essentiel",
+      "type": "Contour d'oreille",
+      "image": "/audire/images/produits/bernafon-everest.jpg",
+      "description": "Solution économique sans compromis sur la qualité. Idéal pour débuter avec un appareil auditif.",
+      "caracteristiques": [
+        "Simplicité d'usage",
+        "Son clair et confortable",
+        "Pile longue durée",
+        "Prix accessible"
+      ],
+      "prix": "1200€ - 1600€",
+      "highlight": false
+    }
+  ],
+  "filtres": {
+    "marques": ["Toutes", "Oticon", "Bernafon"],
+    "gammes": ["Toutes", "Premium", "Confort", "Essentiel"],
+    "types": ["Tous", "Contour d'oreille", "Intra-auriculaire", "Intra-auriculaire sur mesure"]
+  },
+  "cta": {
+    "title": "Quel appareil vous convient ?",
+    "description": "Chaque situation auditive est unique. Venez tester nos appareils lors d'un rendez-vous sans engagement. On prend le temps de comprendre vos besoins et de vous conseiller la solution la plus adaptée.",
+    "buttonText": "Prendre rendez-vous",
+    "note": "Test gratuit • Sans engagement • Conseils personnalisés"
+  }
+}
