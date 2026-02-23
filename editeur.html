@@ -90,8 +90,7 @@
     <h1>Éditeur Audire</h1>
     <div class="actions">
       <button class="btn btn-sec" onclick="reloadAll()">↻ Recharger</button>
-      <button class="btn btn-save" id="saveBtn" onclick="saveAll()">💾 Sauvegarder sur GitHub</button>
-      <button class="btn btn-sec" onclick="forgetToken()" title="Oublier le token GitHub stocké">🔑 Oublier token</button>
+      <button class="btn btn-save" id="saveBtn" onclick="saveAll()">💾 Sauvegarder</button>
       <button class="btn btn-sec" onclick="doLogout()">Déco</button>
     </div>
   </div>
@@ -1358,8 +1357,42 @@ function collectDesign() {
   };
 }
 
-// ===== GITHUB SAVE =====
+// ===== LOCAL SAVE via save.php =====
 async function saveAll() {
+  collectAll();
+  collectDesign();
+
+  const btn = document.getElementById('saveBtn');
+  btn.innerHTML = '💾 Sauvegarde... <span class="spin"></span>';
+  btn.disabled = true;
+
+  try {
+    await saveLocal('config.json',  cfg);
+    await saveLocal('textes.json',  txt);
+    await saveLocal('design.json',  dsn);
+    showStatus('✓ Sauvegardé localement avec succès !', 'ok');
+  } catch(e) {
+    showStatus('Erreur : ' + e.message, 'err');
+  }
+  btn.innerHTML = '💾 Sauvegarder';
+  btn.disabled = false;
+}
+
+async function saveLocal(file, content) {
+  const res = await fetch('/audire/save.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ file, content })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Unknown error' }));
+    throw new Error(err.error || 'Save failed');
+  }
+  return res.json();
+}
+
+// ===== GITHUB SAVE (optionnel) =====
+async function saveAllGitHub() {
   // Ask for token if not stored
   if (!ghToken) {
     const token = prompt(
