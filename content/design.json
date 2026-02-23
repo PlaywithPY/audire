@@ -21,5 +21,8 @@
     "md": { "label": "Arrondi moyen",     "value": "16px" },
     "lg": { "label": "Arrondi grand",     "value": "24px" },
     "xl": { "label": "Arrondi très grand","value": "32px" }
+  },
+  "branding": {
+    "logoSize": { "label": "Taille du logo", "value": "64px" }
   }
 }
