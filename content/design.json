@@ -76,7 +76,7 @@
   "branding": {
     "logoSize": {
       "label": "Taille du logo",
-      "value": "100px"
+      "value": "128px"
     }
   }
 }
