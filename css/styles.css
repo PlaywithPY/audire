@@ -295,6 +295,7 @@ header.scrolled {
 .brand {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   font-weight: 800;
   font-size: 24px;
   letter-spacing: -0.5px;
@@ -302,6 +303,7 @@ header.scrolled {
   transition: transform var(--transition-fast);
   flex-shrink: 0;
   margin-right: auto;
+  margin-left: 0;
 }
 
 .brand:hover {
@@ -309,8 +311,8 @@ header.scrolled {
 }
 
 .logo {
-  width: var(--logo-size, 64px);
-  height: var(--logo-size, 64px);
+  width: calc(var(--logo-size, 64px) * 1.5);
+  height: calc(var(--logo-size, 64px) * 1.5);
   object-fit: contain;
   transition: all var(--transition-base);
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
