@@ -277,12 +277,27 @@ header {
   border-bottom: 1px solid var(--border-light);
   transition: all var(--transition-base);
   box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 header.scrolled {
   box-shadow: var(--shadow-md);
 }
 
+/* wrapper nav + cta, prend l'espace restant */
+.header-nav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px 12px 16px;
+  gap: 24px;
+  min-width: 0;
+}
+
+/* .nav garde ses styles pour les autres usages éventuels */
 .nav {
   display: flex;
   align-items: center;
@@ -295,13 +310,8 @@ header.scrolled {
 .brand {
   display: flex;
   align-items: center;
-  font-weight: 800;
-  font-size: 24px;
-  letter-spacing: -0.5px;
-  color: var(--primary-dark);
-  transition: transform var(--transition-fast);
   flex-shrink: 0;
-  margin-right: auto;
+  transition: transform var(--transition-fast);
 }
 
 .brand:hover {
@@ -385,8 +395,9 @@ header.scrolled {
 
 .mobile-nav {
   display: none;
-  padding: 16px 0;
+  padding: 16px 24px;
   border-top: 1px solid var(--border-light);
+  width: 100%;
 }
 
 .mobile-nav a {
@@ -1252,7 +1263,8 @@ footer {
     display: flex;
   }
 
-  .mobile-nav.active {
+  .mobile-nav.active,
+  .mobile-nav.show {
     display: block;
   }
 
