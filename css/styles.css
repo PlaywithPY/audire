@@ -269,7 +269,7 @@ img {
 }
 
 header {
-  position: sticky;
+  position: sticky; /* sticky sert aussi de contexte pour absolute */
   top: 0;
   z-index: 100;
   background: rgba(255, 255, 255, 0.95);
@@ -292,7 +292,7 @@ header.scrolled {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 24px 8px 16px;
+  padding: 8px 24px 8px 160px; /* padding-left augmenté pour laisser place au logo */
   gap: 24px;
   min-width: 0;
 }
@@ -308,27 +308,29 @@ header.scrolled {
 }
 
 .brand {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
-  flex-shrink: 0;
-  padding: 8px 12px 8px 16px;
-  transition: transform var(--transition-fast);
+  z-index: 101; /* Au-dessus du header */
+  transition: all var(--transition-fast);
 }
 
 .brand:hover {
-  transform: scale(1.02);
+  transform: translateY(-50%) scale(1.02);
 }
 
 .logo {
-  width: calc(var(--logo-size, 64px) * 0.75);
-  height: calc(var(--logo-size, 64px) * 0.75);
+  width: 128px;
+  height: auto;
   object-fit: contain;
   transition: all var(--transition-base);
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .logo:hover {
-  transform: scale(1.05);
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
 }
 
