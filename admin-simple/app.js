@@ -184,7 +184,8 @@ async function loadAllContent() {
     await Promise.all([
       loadContact(),
       loadHomepage(),
-      loadNavigation()
+      loadNavigation(),
+      loadSolutionsAuditives()
     ]);
   } catch (error) {
     showStatus('Erreur lors du chargement des contenus', 'error');
@@ -228,6 +229,111 @@ async function loadNavigation() {
   } catch (error) {
     console.error('Erreur chargement navigation:', error);
   }
+}
+
+let solutionsData = null;
+
+async function loadSolutionsAuditives() {
+  try {
+    const { content } = await getFile('content/solutions-auditives.json');
+    solutionsData = content;
+    renderSolutions(content.solutions || []);
+  } catch (error) {
+    console.error('Erreur chargement solutions:', error);
+  }
+}
+
+function renderSolutions(solutions) {
+  const container = $('#solutionsEditor');
+  container.innerHTML = '';
+
+  solutions.forEach((sol, index) => {
+    const div = document.createElement('div');
+    div.className = 'solution-editor-item';
+    div.style.cssText = 'margin-bottom: 24px; padding: 20px; border: 2px solid var(--border); border-radius: 8px; background: var(--bg-alt);';
+
+    div.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="margin: 0; color: var(--text);">${sol.titre || 'Nouvelle solution'}</h3>
+        <button class="btn-link" data-remove-solution="${index}" style="color: #ff6b6b;">❌ Supprimer</button>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>ID (slug URL)</label>
+          <input type="text" data-sol="${index}" data-field="id" value="${sol.id || ''}" placeholder="contour-oreille" />
+          <small>Sans espaces ni accents (ex: contour-oreille)</small>
+        </div>
+        <div class="form-group">
+          <label>Titre</label>
+          <input type="text" data-sol="${index}" data-field="titre" value="${sol.titre || ''}" placeholder="Le contour d'oreille" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Badge (optionnel)</label>
+          <input type="text" data-sol="${index}" data-field="badge" value="${sol.badge || ''}" placeholder="Nouveauté" />
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select data-sol="${index}" data-field="type">
+            <option value="Contour d'oreille" ${sol.type === 'Contour d\'oreille' ? 'selected' : ''}>Contour d'oreille</option>
+            <option value="Intra-auriculaire" ${sol.type === 'Intra-auriculaire' ? 'selected' : ''}>Intra-auriculaire</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Image (URL)</label>
+        <input type="text" data-sol="${index}" data-field="image" value="${sol.image || ''}" placeholder="/audire/images/solutions/nom.jpg" />
+      </div>
+
+      <div class="form-group">
+        <label>Description courte</label>
+        <textarea data-sol="${index}" data-field="description_courte" rows="2">${sol.description_courte || ''}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Description longue</label>
+        <textarea data-sol="${index}" data-field="description_longue" rows="3">${sol.description_longue || ''}</textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Marques (séparées par virgule)</label>
+          <input type="text" data-sol="${index}" data-field="marques" value="${(sol.marques || []).join(', ')}" placeholder="Oticon, Bernafon" />
+        </div>
+        <div class="form-group">
+          <label>Niveaux de perte (séparés par virgule)</label>
+          <input type="text" data-sol="${index}" data-field="niveaux_perte" value="${(sol.niveaux_perte || []).join(', ')}" placeholder="Légère, Modérée, Sévère" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Avantages (un par ligne)</label>
+        <textarea data-sol="${index}" data-field="avantages" rows="4">${(sol.avantages || []).join('\n')}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Inconvénients (un par ligne)</label>
+        <textarea data-sol="${index}" data-field="inconvenients" rows="3">${(sol.inconvenients || []).join('\n')}</textarea>
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+
+  // Event listeners pour la suppression
+  $all('[data-remove-solution]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const index = parseInt(e.target.getAttribute('data-remove-solution'));
+      if (confirm('Supprimer cette solution ?')) {
+        solutionsData.solutions.splice(index, 1);
+        renderSolutions(solutionsData.solutions);
+      }
+    });
+  });
 }
 
 // ========== SAUVEGARDE DES CONTENUS ==========
@@ -369,6 +475,85 @@ function getLinksFromEditor(type) {
   }).filter(link => link.text && link.url);
 }
 
+function addSolution() {
+  const newSolution = {
+    id: '',
+    titre: 'Nouvelle solution',
+    badge: '',
+    image: '/audire/images/solutions/',
+    description_courte: '',
+    description_longue: '',
+    avantages: [],
+    inconvenients: [],
+    niveaux_perte: ['Légère', 'Modérée'],
+    type: 'Contour d\'oreille',
+    marques: ['Oticon', 'Bernafon']
+  };
+
+  solutionsData.solutions.push(newSolution);
+  renderSolutions(solutionsData.solutions);
+}
+
+function getSolutionsFromEditor() {
+  const solutions = [];
+  const inputs = $all('[data-sol]');
+
+  // Grouper par index de solution
+  const grouped = {};
+  inputs.forEach(input => {
+    const solIndex = parseInt(input.getAttribute('data-sol'));
+    const field = input.getAttribute('data-field');
+
+    if (!grouped[solIndex]) {
+      grouped[solIndex] = {};
+    }
+
+    let value = input.value.trim();
+
+    // Traiter les arrays
+    if (field === 'marques' || field === 'niveaux_perte') {
+      value = value.split(',').map(v => v.trim()).filter(v => v);
+    } else if (field === 'avantages' || field === 'inconvenients') {
+      value = value.split('\n').map(v => v.trim()).filter(v => v);
+    }
+
+    grouped[solIndex][field] = value;
+  });
+
+  // Convertir en array
+  Object.keys(grouped).sort((a, b) => a - b).forEach(index => {
+    solutions.push(grouped[index]);
+  });
+
+  return solutions;
+}
+
+async function saveSolutionsAuditives() {
+  const btn = $('#saveSolutions');
+  btn.classList.add('loading');
+
+  try {
+    const solutions = getSolutionsFromEditor();
+
+    // Mettre à jour le data
+    solutionsData.solutions = solutions;
+
+    // Sauvegarder le JSON
+    await updateFile('content/solutions-auditives.json', solutionsData, 'Mise à jour solutions auditives');
+
+    showStatus('✅ Solutions auditives sauvegardées !', 'success');
+
+    // Note: La génération des pages HTML se fera côté serveur ou manuellement
+    // car créer des fichiers via l'API GitHub nécessite de multiples appels
+
+  } catch (error) {
+    showStatus('Erreur lors de la sauvegarde des solutions', 'error');
+    console.error(error);
+  } finally {
+    btn.classList.remove('loading');
+  }
+}
+
 // ========== GESTION DES ONGLETS ==========
 
 function initTabs() {
@@ -431,8 +616,10 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#saveContact').addEventListener('click', saveContact);
   $('#saveHomepage').addEventListener('click', saveHomepage);
   $('#saveNavigation').addEventListener('click', saveNavigation);
+  $('#saveSolutions').addEventListener('click', saveSolutionsAuditives);
   $('#addMainLink').addEventListener('click', () => addLink('mainLinks'));
   $('#addTopLink').addEventListener('click', () => addLink('topLinks'));
+  $('#addSolution').addEventListener('click', addSolution);
 
   // Support Enter key pour login
   $('#githubToken').addEventListener('keypress', (e) => {
