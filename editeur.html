@@ -150,6 +150,7 @@
     <div class="actions">
       <button class="btn btn-sec" onclick="reloadAll()">↻ Recharger</button>
       <button class="btn btn-save" id="saveBtn" onclick="saveAllGitHub()">💾 Sauvegarder sur GitHub</button>
+      <button class="btn btn-sec" id="generateBtn" onclick="generateAllPages()">🚀 Générer pages HTML</button>
       <button class="btn btn-sec" onclick="doLogout()">Déco</button>
     </div>
   </div>
@@ -1970,6 +1971,391 @@ async function pushImage(token, path, base64Data) {
   const res = await fetch(base, { method: 'PUT', headers, body: JSON.stringify(body) });
   if (!res.ok) { const e = await res.json(); throw new Error(e.message || `HTTP ${res.status}`); }
   return await res.json();
+}
+
+// ===== GÉNÉRATION DES PAGES HTML =====
+
+async function createOrUpdateHTMLFile(token, path, htmlContent, message) {
+  const base = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`;
+  const headers = {
+    'Authorization': `token ${token}`,
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  };
+
+  // Récupérer le SHA actuel du fichier
+  let sha = null;
+  try {
+    const getRes = await fetch(base + `?ref=${GITHUB_BRANCH}`, { headers });
+    if (getRes.ok) {
+      const data = await getRes.json();
+      sha = data.sha;
+    }
+  } catch (e) {
+    // Fichier n'existe pas, on va le créer
+  }
+
+  // Encoder le contenu HTML (pas JSON, juste le HTML brut)
+  const b64 = btoa(unescape(encodeURIComponent(htmlContent)));
+
+  const body = {
+    message: message + ' via éditeur web',
+    content: b64,
+    branch: GITHUB_BRANCH
+  };
+
+  if (sha) body.sha = sha;
+
+  const res = await fetch(base, { method: 'PUT', headers, body: JSON.stringify(body) });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || `HTTP ${res.status}`);
+  }
+  return await res.json();
+}
+
+function generateHTMLPage(solution) {
+  const badgeHTML = solution.badge
+    ? `<span class="badge">⭐ ${solution.badge}</span>`
+    : '';
+
+  const avantagesHTML = (solution.avantages || [])
+    .map(av => `              <li>${av}</li>`)
+    .join('\n');
+
+  const inconvenientsHTML = (solution.inconvenients || [])
+    .map(inc => `              <li>${inc}</li>`)
+    .join('\n');
+
+  return `<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>${solution.titre} - Appareil auditif | Audire</title>
+  <meta name="description" content="${solution.description_courte || ''}">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/audire/css/styles.css">
+  <style>
+    .detail-hero {
+      padding: 60px 0;
+      background: var(--bg);
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    .detail-content h1 {
+      font-size: 36px;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+    .detail-content .badge {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .detail-content p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+    .detail-image {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: var(--radius-lg);
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .detail-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 16px;
+    }
+
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 60px;
+    }
+    .pros-cons-box {
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+    }
+    .pros-cons-box h3 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pros-cons-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .pros-cons-box li {
+      padding: 8px 0;
+      display: flex;
+      align-items: start;
+      gap: 12px;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    .pros-cons-box.pros {
+      border-color: #4CAF50;
+    }
+    .pros-cons-box.pros h3 {
+      color: #4CAF50;
+    }
+    .pros-cons-box.pros li::before {
+      content: '✓';
+      color: #4CAF50;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .pros-cons-box.cons {
+      border-color: #FF6B6B;
+    }
+    .pros-cons-box.cons h3 {
+      color: #FF6B6B;
+    }
+    .pros-cons-box.cons li::before {
+      content: '✗';
+      color: #FF6B6B;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .info-section {
+      padding: 60px 0;
+      background: var(--bg-alt);
+    }
+    .info-block {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .info-block h2 {
+      font-size: 28px;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    .info-block p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+
+    .metadata {
+      display: flex;
+      gap: 24px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+    .metadata-item {
+      background: var(--secondary);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+    }
+    .metadata-item strong {
+      color: var(--primary);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .pros-cons {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div id="app-header"></div>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- Hero Section -->
+    <section class="detail-hero">
+      <div class="container">
+        <div class="detail-grid">
+          <!-- Content -->
+          <div class="detail-content animate-on-scroll">
+            ${badgeHTML}
+            <h1>${solution.titre}</h1>
+            <p>${solution.description_courte || ''}</p>
+            <p>${solution.description_longue || ''}</p>
+
+            <div class="metadata">
+              <div class="metadata-item">
+                <strong>Type</strong>
+                ${solution.type || 'N/A'}
+              </div>
+              <div class="metadata-item">
+                <strong>Marques</strong>
+                ${(solution.marques || []).join(', ')}
+              </div>
+              <div class="metadata-item">
+                <strong>Niveaux de perte</strong>
+                ${(solution.niveaux_perte || []).join(', ')}
+              </div>
+            </div>
+          </div>
+          <!-- Image -->
+          <div class="detail-image animate-on-scroll">
+            <img src="${solution.image || ''}" alt="${solution.titre}" onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <!-- Pros & Cons -->
+        <div class="pros-cons">
+          <div class="pros-cons-box pros animate-on-scroll">
+            <h3>✓ Points forts</h3>
+            <ul>
+${avantagesHTML}
+            </ul>
+          </div>
+          <div class="pros-cons-box cons animate-on-scroll">
+            <h3>✗ Points faibles</h3>
+            <ul>
+${inconvenientsHTML}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="info-section">
+      <div class="container">
+        <div class="info-block animate-on-scroll" style="text-align: center;">
+          <h2>Découvrez ${solution.titre} chez Audire</h2>
+          <p style="margin-bottom: 28px;">
+            Venez tester cette solution lors d'une démonstration personnalisée.
+          </p>
+          <button class="btn btn-primary btn-lg" data-open-modal>
+            <span>📅</span>
+            <span>Réserver un rendez-vous</span>
+          </button>
+          <p style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">
+            Test gratuit • Sans engagement • Conseils personnalisés
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="app-footer"></div>
+
+  <!-- Modal -->
+  <div id="app-modal"></div>
+
+  <!-- Scripts -->
+  <script src="/audire/js/config.js"></script>
+  <script src="/audire/js/design-loader.js"></script>
+  <script src="/audire/js/content-loader.js"></script>
+  <script src="/audire/js/components.js"></script>
+  <script src="/audire/js/main.js"></script>
+</body>
+</html>
+`;
+}
+
+async function generateAllPages() {
+  // Vérifier le token
+  if (!ghToken) {
+    showStatus('Vous devez d\'abord sauvegarder sur GitHub pour avoir un token d\'accès', 'err');
+    return;
+  }
+
+  // Collecter les données actuelles
+  collectSolutionsCanvas();
+
+  const solutions = sac.solutions || [];
+  if (solutions.length === 0) {
+    showStatus('⚠️ Aucune solution à générer', 'info');
+    return;
+  }
+
+  const btn = document.getElementById('generateBtn');
+  btn.innerHTML = '🚀 Génération... <span class="spin"></span>';
+  btn.disabled = true;
+
+  try {
+    showStatus(`🚀 Génération de ${solutions.length} page(s) en cours...`, 'info');
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    // Générer chaque page
+    for (const solution of solutions) {
+      if (!solution || !solution.id) {
+        errorCount++;
+        continue;
+      }
+
+      try {
+        const html = generateHTMLPage(solution);
+        const filePath = `solutions-auditives/${solution.id}/index.html`;
+
+        await createOrUpdateHTMLFile(
+          ghToken,
+          filePath,
+          html,
+          `Génération automatique de la page ${solution.titre}`
+        );
+
+        successCount++;
+        console.log(`✅ Généré: ${filePath}`);
+      } catch (error) {
+        errorCount++;
+        console.error(`❌ Erreur pour ${solution.id}:`, error);
+      }
+    }
+
+    if (errorCount === 0) {
+      showStatus(`✅ ${successCount} page(s) générée(s) avec succès !`, 'ok');
+    } else {
+      showStatus(`⚠️ ${successCount} page(s) générée(s), ${errorCount} erreur(s)`, 'info');
+    }
+
+  } catch (error) {
+    showStatus('❌ Erreur lors de la génération : ' + error.message, 'err');
+    console.error(error);
+  } finally {
+    btn.innerHTML = '🚀 Générer pages HTML';
+    btn.disabled = false;
+  }
 }
 
 // ===== STATUS =====
