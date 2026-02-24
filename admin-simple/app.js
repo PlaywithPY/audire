@@ -110,6 +110,67 @@ function showEditor() {
 
 // ========== API GITHUB ==========
 
+async function createOrUpdateHTMLFile(path, htmlContent, message) {
+  try {
+    // Essayer de récupérer le fichier existant
+    let sha = null;
+    try {
+      const response = await fetch(
+        `${CONFIG.baseUrl}/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}?ref=${CONFIG.branch}`,
+        {
+          headers: {
+            'Authorization': `token ${githubToken}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        sha = data.sha;
+      }
+    } catch (e) {
+      // Fichier n'existe pas, on va le créer
+    }
+
+    // Encoder le contenu HTML (pas JSON, juste le HTML brut)
+    const encodedContent = btoa(unescape(encodeURIComponent(htmlContent)));
+
+    // Créer ou mettre à jour le fichier
+    const body = {
+      message: message,
+      content: encodedContent,
+      branch: CONFIG.branch
+    };
+
+    if (sha) {
+      body.sha = sha;
+    }
+
+    const response = await fetch(
+      `${CONFIG.baseUrl}/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${githubToken}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Erreur lors de la création du fichier');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Erreur lors de la création/mise à jour de ${path}:`, error);
+    throw error;
+  }
+}
+
 async function getFile(path) {
   try {
     const response = await fetch(
@@ -325,7 +386,7 @@ function renderSolutions(solutions) {
   });
 
   // Event listeners pour la suppression
-  $all('[data-remove-solution]').forEach(btn => {
+  $$('[data-remove-solution]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const index = parseInt(e.target.getAttribute('data-remove-solution'));
       if (confirm('Supprimer cette solution ?')) {
@@ -496,7 +557,7 @@ function addSolution() {
 
 function getSolutionsFromEditor() {
   const solutions = [];
-  const inputs = $all('[data-sol]');
+  const inputs = $$('[data-sol]');
 
   // Grouper par index de solution
   const grouped = {};
@@ -543,11 +604,340 @@ async function saveSolutionsAuditives() {
 
     showStatus('✅ Solutions auditives sauvegardées !', 'success');
 
-    // Note: La génération des pages HTML se fera côté serveur ou manuellement
-    // car créer des fichiers via l'API GitHub nécessite de multiples appels
-
   } catch (error) {
     showStatus('Erreur lors de la sauvegarde des solutions', 'error');
+    console.error(error);
+  } finally {
+    btn.classList.remove('loading');
+  }
+}
+
+// ========== GÉNÉRATION DES PAGES HTML ==========
+
+function generateHTMLPage(solution) {
+  const badgeHTML = solution.badge
+    ? `<span class="badge">⭐ ${solution.badge}</span>`
+    : '';
+
+  const avantagesHTML = solution.avantages
+    .map(av => `              <li>${av}</li>`)
+    .join('\n');
+
+  const inconvenientsHTML = solution.inconvenients
+    .map(inc => `              <li>${inc}</li>`)
+    .join('\n');
+
+  return `<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>${solution.titre} - Appareil auditif | Audire</title>
+  <meta name="description" content="${solution.description_courte}">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/audire/css/styles.css">
+  <style>
+    .detail-hero {
+      padding: 60px 0;
+      background: var(--bg);
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    .detail-content h1 {
+      font-size: 36px;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+    .detail-content .badge {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .detail-content p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+    .detail-image {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: var(--radius-lg);
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .detail-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 16px;
+    }
+
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 60px;
+    }
+    .pros-cons-box {
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+    }
+    .pros-cons-box h3 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pros-cons-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .pros-cons-box li {
+      padding: 8px 0;
+      display: flex;
+      align-items: start;
+      gap: 12px;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    .pros-cons-box.pros {
+      border-color: #4CAF50;
+    }
+    .pros-cons-box.pros h3 {
+      color: #4CAF50;
+    }
+    .pros-cons-box.pros li::before {
+      content: '✓';
+      color: #4CAF50;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .pros-cons-box.cons {
+      border-color: #FF6B6B;
+    }
+    .pros-cons-box.cons h3 {
+      color: #FF6B6B;
+    }
+    .pros-cons-box.cons li::before {
+      content: '✗';
+      color: #FF6B6B;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .info-section {
+      padding: 60px 0;
+      background: var(--bg-alt);
+    }
+    .info-block {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .info-block h2 {
+      font-size: 28px;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    .info-block p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+
+    .metadata {
+      display: flex;
+      gap: 24px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+    .metadata-item {
+      background: var(--secondary);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+    }
+    .metadata-item strong {
+      color: var(--primary);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .pros-cons {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div id="app-header"></div>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- Hero Section -->
+    <section class="detail-hero">
+      <div class="container">
+        <div class="detail-grid">
+          <!-- Content -->
+          <div class="detail-content animate-on-scroll">
+            ${badgeHTML}
+            <h1>${solution.titre}</h1>
+            <p>${solution.description_courte}</p>
+            <p>${solution.description_longue}</p>
+
+            <div class="metadata">
+              <div class="metadata-item">
+                <strong>Type</strong>
+                ${solution.type}
+              </div>
+              <div class="metadata-item">
+                <strong>Marques</strong>
+                ${solution.marques.join(', ')}
+              </div>
+              <div class="metadata-item">
+                <strong>Niveaux de perte</strong>
+                ${solution.niveaux_perte.join(', ')}
+              </div>
+            </div>
+          </div>
+          <!-- Image -->
+          <div class="detail-image animate-on-scroll">
+            <img src="${solution.image}" alt="${solution.titre}" onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <!-- Pros & Cons -->
+        <div class="pros-cons">
+          <div class="pros-cons-box pros animate-on-scroll">
+            <h3>✓ Points forts</h3>
+            <ul>
+${avantagesHTML}
+            </ul>
+          </div>
+          <div class="pros-cons-box cons animate-on-scroll">
+            <h3>✗ Points faibles</h3>
+            <ul>
+${inconvenientsHTML}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="info-section">
+      <div class="container">
+        <div class="info-block animate-on-scroll" style="text-align: center;">
+          <h2>Découvrez ${solution.titre} chez Audire</h2>
+          <p style="margin-bottom: 28px;">
+            Venez tester cette solution lors d'une démonstration personnalisée.
+          </p>
+          <button class="btn btn-primary btn-lg" data-open-modal>
+            <span>📅</span>
+            <span>Réserver un rendez-vous</span>
+          </button>
+          <p style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">
+            Test gratuit • Sans engagement • Conseils personnalisés
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="app-footer"></div>
+
+  <!-- Modal -->
+  <div id="app-modal"></div>
+
+  <!-- Scripts -->
+  <script src="/audire/js/config.js"></script>
+  <script src="/audire/js/design-loader.js"></script>
+  <script src="/audire/js/content-loader.js"></script>
+  <script src="/audire/js/components.js"></script>
+  <script src="/audire/js/main.js"></script>
+</body>
+</html>
+`;
+}
+
+async function generateAllPages() {
+  const btn = $('#generatePages');
+  btn.classList.add('loading');
+
+  try {
+    // Recharger les solutions pour être sûr d'avoir les dernières
+    const { content } = await getFile('content/solutions-auditives.json');
+    const solutions = content.solutions || [];
+
+    if (solutions.length === 0) {
+      showStatus('⚠️ Aucune solution à générer', 'info');
+      return;
+    }
+
+    showStatus(`🚀 Génération de ${solutions.length} page(s) en cours...`, 'info');
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    // Générer chaque page
+    for (const solution of solutions) {
+      try {
+        const html = generateHTMLPage(solution);
+        const filePath = `solutions-auditives/${solution.id}/index.html`;
+
+        await createOrUpdateHTMLFile(
+          filePath,
+          html,
+          `Génération automatique de la page ${solution.titre}`
+        );
+
+        successCount++;
+        console.log(`✅ Généré: ${filePath}`);
+      } catch (error) {
+        errorCount++;
+        console.error(`❌ Erreur pour ${solution.id}:`, error);
+      }
+    }
+
+    if (errorCount === 0) {
+      showStatus(`✅ ${successCount} page(s) générée(s) avec succès !`, 'success');
+    } else {
+      showStatus(`⚠️ ${successCount} page(s) générée(s), ${errorCount} erreur(s)`, 'info');
+    }
+
+  } catch (error) {
+    showStatus('❌ Erreur lors de la génération : ' + error.message, 'error');
     console.error(error);
   } finally {
     btn.classList.remove('loading');
@@ -617,6 +1007,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#saveHomepage').addEventListener('click', saveHomepage);
   $('#saveNavigation').addEventListener('click', saveNavigation);
   $('#saveSolutions').addEventListener('click', saveSolutionsAuditives);
+  $('#generatePages').addEventListener('click', generateAllPages);
   $('#addMainLink').addEventListener('click', () => addLink('mainLinks'));
   $('#addTopLink').addEventListener('click', () => addLink('topLinks'));
   $('#addSolution').addEventListener('click', addSolution);
