@@ -311,6 +311,7 @@ header.scrolled {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  padding-left: 16px;
   transition: transform var(--transition-fast);
 }
 
