@@ -46,7 +46,8 @@
     .detail-image img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      padding: 16px;
       border-radius: var(--radius-lg);
     }
 
@@ -342,5 +343,23 @@
   <script src="/audire/js/content-loader.js"></script>
   <script src="/audire/js/components.js"></script>
   <script src="/audire/js/main.js"></script>
+  <script>
+    (async function() {
+      try {
+        const res = await fetch('/audire/content/solutions-auditives.json?t=' + Date.now());
+        const data = await res.json();
+        const sol = (data.solutions || []).find(s => s.id === 'contour-oreille');
+        if (!sol || !sol.image) return;
+
+        const imgContainer = document.querySelector('.detail-image');
+        if (imgContainer) {
+          imgContainer.classList.remove('animate-on-scroll'); // évite flash
+          imgContainer.style.opacity = '1';
+          imgContainer.style.fontSize = '0';
+          imgContainer.innerHTML = `<img src="${sol.image}" alt="${sol.titre}" onerror="this.parentElement.style.fontSize='120px';this.remove()">`;
+        }
+      } catch(e) { /* silencieux */ }
+    })();
+  </script>
 </body>
 </html>
