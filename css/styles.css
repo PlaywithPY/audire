@@ -292,7 +292,7 @@ header.scrolled {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 24px 12px 16px;
+  padding: 8px 24px 8px 16px;
   gap: 24px;
   min-width: 0;
 }
@@ -311,7 +311,7 @@ header.scrolled {
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  padding-left: 16px;
+  padding: 8px 12px 8px 16px;
   transition: transform var(--transition-fast);
 }
 
@@ -320,8 +320,8 @@ header.scrolled {
 }
 
 .logo {
-  width: calc(var(--logo-size, 64px) * 1.5);
-  height: calc(var(--logo-size, 64px) * 1.5);
+  width: calc(var(--logo-size, 64px) * 0.75);
+  height: calc(var(--logo-size, 64px) * 0.75);
   object-fit: contain;
   transition: all var(--transition-base);
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
