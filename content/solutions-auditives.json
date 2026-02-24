@@ -92,6 +92,23 @@
       "marques": [
         "Oticon"
       ]
+    },
+    {
+      "id": "solution-1771945888275",
+      "titre": "Nouvelle soltetutiontest",
+      "badge": "Recommandé",
+      "image": "",
+      "description_courte": "Courte description",
+      "description_longue": "longue",
+      "avantages": [
+        "teest"
+      ],
+      "inconvenients": [
+        "tset"
+      ],
+      "niveaux_perte": [],
+      "type": "Contour d'oreille",
+      "marques": []
     }
   ]
 }
