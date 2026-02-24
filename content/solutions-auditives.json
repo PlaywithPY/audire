@@ -92,6 +92,19 @@
       "marques": [
         "Oticon"
       ]
+    },
+    {
+      "id": "solution-1771930877095",
+      "titre": "Test",
+      "badge": "Populaire",
+      "image": "/audire/images/solutions/solution-1771930877095.jpeg",
+      "description_courte": "test desc courte",
+      "description_longue": "test desc longue",
+      "avantages": [],
+      "inconvenients": [],
+      "niveaux_perte": [],
+      "type": "À conduction osseuse",
+      "marques": []
     }
   ]
 }
