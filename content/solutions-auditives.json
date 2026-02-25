@@ -92,6 +92,19 @@
       "marques": [
         "Oticon"
       ]
+    },
+    {
+      "id": "solution-1772028108569",
+      "titre": "Nouveau teste",
+      "badge": "Populaire",
+      "image": "",
+      "description_courte": "",
+      "description_longue": "",
+      "avantages": [],
+      "inconvenients": [],
+      "niveaux_perte": [],
+      "type": "Contour d'oreille",
+      "marques": []
     }
   ]
 }
