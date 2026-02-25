@@ -3,210 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- SEO -->
   <title>L'intra-auriculaire - Appareil auditif | Audire</title>
   <meta name="description" content="Fabriqué sur mesure à partir d'une empreinte de votre conduit auditif, l'intra-auriculaire se glisse entièrement dans l'oreille. Sa discrétion en fait le choix préféré des personnes qui souhaitent un appareil quasi invisible.">
-
-  <!-- Stylesheets -->
   <link rel="stylesheet" href="/audire/css/styles.css">
   <style>
-    .detail-hero {
-      padding: 60px 0;
-      background: var(--bg);
-    }
-    .detail-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-      margin-bottom: 40px;
-    }
-    .detail-content h1 {
-      font-size: 36px;
-      margin-bottom: 12px;
-      color: var(--text);
-    }
-    .detail-content .badge {
-      display: inline-block;
-      background: var(--primary);
-      color: white;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-    .detail-content p {
-      font-size: 16px;
-      line-height: 1.8;
-      color: var(--text-light);
-      margin-bottom: 16px;
-    }
-    .detail-image {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      border-radius: var(--radius-lg);
-      height: 400px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    .detail-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      padding: 16px;
-    }
-
-    .pros-cons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      margin-bottom: 60px;
-    }
-    .pros-cons-box {
-      background: var(--panel);
-      border: 2px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 28px;
-    }
-    .pros-cons-box h3 {
-      font-size: 20px;
-      margin-bottom: 16px;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .pros-cons-box ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .pros-cons-box li {
-      padding: 8px 0;
-      display: flex;
-      align-items: start;
-      gap: 12px;
-      color: var(--text-light);
-      line-height: 1.6;
-    }
-    .pros-cons-box.pros {
-      border-color: #4CAF50;
-    }
-    .pros-cons-box.pros h3 {
-      color: #4CAF50;
-    }
-    .pros-cons-box.pros li::before {
-      content: '✓';
-      color: #4CAF50;
-      font-weight: 700;
-      font-size: 18px;
-    }
-    .pros-cons-box.cons {
-      border-color: #FF6B6B;
-    }
-    .pros-cons-box.cons h3 {
-      color: #FF6B6B;
-    }
-    .pros-cons-box.cons li::before {
-      content: '✗';
-      color: #FF6B6B;
-      font-weight: 700;
-      font-size: 18px;
-    }
-
-    .info-section {
-      padding: 60px 0;
-      background: var(--bg-alt);
-    }
-    .info-block {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .info-block h2 {
-      font-size: 28px;
-      margin-bottom: 16px;
-      color: var(--text);
-    }
-    .info-block p {
-      font-size: 16px;
-      line-height: 1.8;
-      color: var(--text-light);
-      margin-bottom: 16px;
-    }
-
-    .metadata {
-      display: flex;
-      gap: 24px;
-      margin: 24px 0;
-      flex-wrap: wrap;
-    }
-    .metadata-item {
-      background: var(--secondary);
-      padding: 12px 20px;
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-    }
-    .metadata-item strong {
-      color: var(--primary);
-      display: block;
-      margin-bottom: 4px;
-    }
-
+    .detail-hero { padding: 60px 0; background: var(--bg); }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin-bottom: 40px; }
+    .detail-content h1 { font-size: 36px; margin-bottom: 12px; color: var(--text); }
+    .detail-content .badge { display: inline-block; background: var(--primary); color: white; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; margin-bottom: 20px; }
+    .detail-content p { font-size: 16px; line-height: 1.8; color: var(--text-light); margin-bottom: 16px; }
+    .detail-image { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); border-radius: var(--radius-lg); height: 400px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .detail-image img { width: 100%; height: 100%; object-fit: contain; padding: 16px; }
+    .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 60px; }
+    .pros-cons-box { background: var(--panel); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 28px; }
+    .pros-cons-box h3 { font-size: 20px; margin-bottom: 16px; color: var(--text); }
+    .pros-cons-box ul { list-style: none; padding: 0; margin: 0; }
+    .pros-cons-box li { padding: 8px 0; display: flex; align-items: start; gap: 12px; color: var(--text-light); line-height: 1.6; }
+    .pros-cons-box.pros { border-color: #4CAF50; }
+    .pros-cons-box.pros h3 { color: #4CAF50; }
+    .pros-cons-box.pros li::before { content: "✓"; color: #4CAF50; font-weight: 700; font-size: 18px; }
+    .pros-cons-box.cons { border-color: #FF6B6B; }
+    .pros-cons-box.cons h3 { color: #FF6B6B; }
+    .pros-cons-box.cons li::before { content: "✗"; color: #FF6B6B; font-weight: 700; font-size: 18px; }
+    .info-section { padding: 60px 0; background: var(--bg-alt); }
+    .metadata { display: flex; gap: 24px; margin: 24px 0; flex-wrap: wrap; }
+    .metadata-item { background: var(--secondary); padding: 12px 20px; border-radius: var(--radius-sm); font-size: 14px; }
+    .metadata-item strong { color: var(--primary); display: block; margin-bottom: 4px; }
     @media (max-width: 768px) {
-      .detail-grid {
-        grid-template-columns: 1fr;
-        gap: 32px;
-      }
-      .pros-cons {
-        grid-template-columns: 1fr;
-      }
+      .detail-grid { grid-template-columns: 1fr; gap: 32px; }
+      .pros-cons { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-
-  <!-- Header -->
   <div id="app-header"></div>
-
-  <!-- Main Content -->
   <main>
-
-    <!-- Hero Section -->
     <section class="detail-hero">
       <div class="container">
         <div class="detail-grid">
-          <!-- Content -->
           <div class="detail-content animate-on-scroll">
             
             <h1>L'intra-auriculaire</h1>
             <p>Fabriqué sur mesure à partir d'une empreinte de votre conduit auditif, l'intra-auriculaire se glisse entièrement dans l'oreille. Sa discrétion en fait le choix préféré des personnes qui souhaitent un appareil quasi invisible.</p>
             <p>Positionné directement dans le conduit auditif, l'intra-auriculaire capte les sons de façon naturelle grâce à sa proximité avec le tympan. Il est particulièrement adapté aux personnes qui portent des lunettes, car son placement ne génère aucune interférence avec les branches. Sa conception sur mesure garantit un ajustement précis et un confort de port élevé.</p>
-
             <div class="metadata">
-              <div class="metadata-item">
-                <strong>Type</strong>
-                Intra-auriculaire
-              </div>
-              <div class="metadata-item">
-                <strong>Marques</strong>
-                Oticon, Bernafon
-              </div>
-              <div class="metadata-item">
-                <strong>Niveaux de perte</strong>
-                Légère, Modérée
-              </div>
+              <div class="metadata-item"><strong>Type</strong>Intra-auriculaire</div>
+              <div class="metadata-item"><strong>Marques</strong>Oticon, Bernafon</div>
+              <div class="metadata-item"><strong>Niveaux de perte</strong>Légère, Modérée</div>
             </div>
           </div>
-          <!-- Image -->
           <div class="detail-image animate-on-scroll">
             <img src="/audire/images/solutions/intra-auriculaire.jpg" alt="L'intra-auriculaire" onerror="this.style.display='none'">
           </div>
         </div>
-
-        <!-- Pros & Cons -->
         <div class="pros-cons">
           <div class="pros-cons-box pros animate-on-scroll">
             <h3>✓ Points forts</h3>
@@ -228,35 +77,21 @@
         </div>
       </div>
     </section>
-
-    <!-- Info Section -->
     <section class="info-section">
       <div class="container">
-        <div class="info-block animate-on-scroll" style="text-align: center;">
-          <h2>Découvrez L'intra-auriculaire chez Audire</h2>
-          <p style="margin-bottom: 28px;">
-            Venez tester cette solution lors d'une démonstration personnalisée.
-          </p>
+        <div style="max-width:900px;margin:0 auto;text-align:center;" class="animate-on-scroll">
+          <h2 style="font-size:28px;margin-bottom:16px;color:var(--text);">Découvrez L'intra-auriculaire chez Audire</h2>
+          <p style="font-size:16px;line-height:1.8;color:var(--text-light);margin-bottom:28px;">Venez tester cette solution lors d'une démonstration personnalisée.</p>
           <button class="btn btn-primary btn-lg" data-open-modal>
-            <span>📅</span>
-            <span>Réserver un rendez-vous</span>
+            <span>📅</span><span>Réserver un rendez-vous</span>
           </button>
-          <p style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">
-            Test gratuit • Sans engagement • Conseils personnalisés
-          </p>
+          <p style="margin-top:20px;font-size:14px;color:var(--text-muted);">Test gratuit • Sans engagement • Conseils personnalisés</p>
         </div>
       </div>
     </section>
-
   </main>
-
-  <!-- Footer -->
   <div id="app-footer"></div>
-
-  <!-- Modal -->
   <div id="app-modal"></div>
-
-  <!-- Scripts -->
   <script src="/audire/js/config.js"></script>
   <script src="/audire/js/design-loader.js"></script>
   <script src="/audire/js/content-loader.js"></script>
