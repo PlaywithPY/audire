@@ -94,17 +94,17 @@
       ]
     },
     {
-      "id": "solution-1771945888275",
-      "titre": "Nouvelle soltetutiontest",
-      "badge": "Recommandé",
+      "id": "solution-1772009311933",
+      "titre": "test",
+      "badge": "",
       "image": "",
-      "description_courte": "Courte description",
-      "description_longue": "longue",
+      "description_courte": "test courte",
+      "description_longue": "test loongue",
       "avantages": [
-        "teest"
+        "test"
       ],
       "inconvenients": [
-        "tset"
+        "test"
       ],
       "niveaux_perte": [],
       "type": "Contour d'oreille",
