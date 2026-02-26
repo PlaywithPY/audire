@@ -1562,13 +1562,44 @@ async function saveAllGitHub() {
     // Upload pending images first
     if (sac.solutions) {
       for (const sol of sac.solutions) {
+        // Image principale
         if (sol && sol._pendingImage) {
-          showStatus('Upload image ' + sol.titre + '…', 'info');
+          showStatus('Upload image principale ' + sol.titre + '…', 'info');
           const ext = sol._pendingImage.mimeType.split('/')[1] || 'jpg';
           const imgPath = `images/solutions/${sol.id}.${ext}`;
           await pushImage(ghToken, imgPath, sol._pendingImage.base64);
           sol.image = `/audire/${imgPath}`;
           delete sol._pendingImage;
+        }
+
+        // Image de fond Hero
+        if (sol && sol._pendingImage_hero_bg) {
+          showStatus('Upload image hero bg ' + sol.titre + '…', 'info');
+          const ext = sol._pendingImage_hero_bg.mimeType.split('/')[1] || 'jpg';
+          const imgPath = `images/solutions/${sol.id}-hero-bg.${ext}`;
+          await pushImage(ghToken, imgPath, sol._pendingImage_hero_bg.base64);
+          sol.image_hero_bg = `/audire/${imgPath}`;
+          delete sol._pendingImage_hero_bg;
+        }
+
+        // Image secondaire
+        if (sol && sol._pendingImage_secondaire) {
+          showStatus('Upload image secondaire ' + sol.titre + '…', 'info');
+          const ext = sol._pendingImage_secondaire.mimeType.split('/')[1] || 'jpg';
+          const imgPath = `images/solutions/${sol.id}-secondaire.${ext}`;
+          await pushImage(ghToken, imgPath, sol._pendingImage_secondaire.base64);
+          sol.image_secondaire = `/audire/${imgPath}`;
+          delete sol._pendingImage_secondaire;
+        }
+
+        // Image de fond CTA
+        if (sol && sol._pendingImage_cta_bg) {
+          showStatus('Upload image cta bg ' + sol.titre + '…', 'info');
+          const ext = sol._pendingImage_cta_bg.mimeType.split('/')[1] || 'jpg';
+          const imgPath = `images/solutions/${sol.id}-cta-bg.${ext}`;
+          await pushImage(ghToken, imgPath, sol._pendingImage_cta_bg.base64);
+          sol.image_cta_bg = `/audire/${imgPath}`;
+          delete sol._pendingImage_cta_bg;
         }
       }
     }
@@ -1663,7 +1694,7 @@ function renderCanvasForm() {
       </div>
 
       <div class="card">
-        <div class="card-head">Image</div>
+        <div class="card-head">Image principale</div>
         <div class="fg">
           ${sol.image ? `<img src="${sol.image}" style="width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px;" onerror="this.style.display='none'">
           <div class="hint">${sol.image}</div>` : '<div class="hint">Aucune image</div>'}
@@ -1671,7 +1702,7 @@ function renderCanvasForm() {
         <div class="fg">
           <label>Uploader une nouvelle image</label>
           <div class="img-upload-zone">
-            <input type="file" accept="image/*" onchange="handleCanvasImageUpload(event, ${currentCanvasPanel})">
+            <input type="file" accept="image/*" onchange="handleCanvasImageUpload(event, ${currentCanvasPanel}, 'main')">
             <div class="img-placeholder">
               <span>🖼️</span>
               Glissez une image ou cliquez
@@ -1679,8 +1710,61 @@ function renderCanvasForm() {
             <img class="img-preview" id="canvas-img-prev-${currentCanvasPanel}">
             <div class="img-filename" id="canvas-img-name-${currentCanvasPanel}"></div>
           </div>
-          <div class="hint">JPG, PNG, WebP — Sera uploadée sur GitHub</div>
+          <div class="hint">Image affichée au centre (appareil auditif)</div>
         </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">🎨 Images supplémentaires</div>
+
+        <!-- Image de fond Hero -->
+        <div class="fg">
+          <label>Image de fond Hero (derrière le contenu principal)</label>
+          ${sol.image_hero_bg ? `<img src="${sol.image_hero_bg}" style="width:100%;max-height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px;" onerror="this.style.display='none'">
+          <div class="hint">${sol.image_hero_bg}</div>` : '<div class="hint">Aucune image de fond</div>'}
+          <div class="img-upload-zone" style="margin-top:8px;">
+            <input type="file" accept="image/*" onchange="handleCanvasImageUpload(event, ${currentCanvasPanel}, 'hero_bg')">
+            <div class="img-placeholder">
+              <span>🌄</span>
+              Image de fond Hero
+            </div>
+            <img class="img-preview" id="canvas-img-hero-bg-${currentCanvasPanel}">
+            <div class="img-filename" id="canvas-img-hero-bg-name-${currentCanvasPanel}"></div>
+          </div>
+        </div>
+
+        <!-- Image secondaire -->
+        <div class="fg">
+          <label>Image secondaire (dans le contenu)</label>
+          ${sol.image_secondaire ? `<img src="${sol.image_secondaire}" style="width:100%;max-height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px;" onerror="this.style.display='none'">
+          <div class="hint">${sol.image_secondaire}</div>` : '<div class="hint">Aucune image secondaire</div>'}
+          <div class="img-upload-zone" style="margin-top:8px;">
+            <input type="file" accept="image/*" onchange="handleCanvasImageUpload(event, ${currentCanvasPanel}, 'secondaire')">
+            <div class="img-placeholder">
+              <span>📸</span>
+              Image secondaire
+            </div>
+            <img class="img-preview" id="canvas-img-secondaire-${currentCanvasPanel}">
+            <div class="img-filename" id="canvas-img-secondaire-name-${currentCanvasPanel}"></div>
+          </div>
+        </div>
+
+        <!-- Image de fond CTA -->
+        <div class="fg">
+          <label>Image de fond CTA (derrière "Réserver un rendez-vous")</label>
+          ${sol.image_cta_bg ? `<img src="${sol.image_cta_bg}" style="width:100%;max-height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px;" onerror="this.style.display='none'">
+          <div class="hint">${sol.image_cta_bg}</div>` : '<div class="hint">Aucune image de fond CTA</div>'}
+          <div class="img-upload-zone" style="margin-top:8px;">
+            <input type="file" accept="image/*" onchange="handleCanvasImageUpload(event, ${currentCanvasPanel}, 'cta_bg')">
+            <div class="img-placeholder">
+              <span>🎯</span>
+              Image de fond CTA
+            </div>
+            <img class="img-preview" id="canvas-img-cta-bg-${currentCanvasPanel}">
+            <div class="img-filename" id="canvas-img-cta-bg-name-${currentCanvasPanel}"></div>
+          </div>
+        </div>
+        <div class="hint">Ces images seront affichées en arrière-plan des différentes sections</div>
       </div>
 
       <div class="card">
@@ -1853,7 +1937,7 @@ function toggleCanvasCheck(label) {
   renderCanvasPreview();
 }
 
-function handleCanvasImageUpload(event, idx) {
+function handleCanvasImageUpload(event, idx, type = 'main') {
   const file = event.target.files[0];
   if (!file) return;
 
@@ -1862,14 +1946,26 @@ function handleCanvasImageUpload(event, idx) {
     if (!sac.solutions) sac.solutions = [];
     if (!sac.solutions[idx]) sac.solutions[idx] = {};
 
-    sac.solutions[idx]._pendingImage = {
+    // Stocker l'image selon le type
+    const pendingKey = type === 'main' ? '_pendingImage' : `_pendingImage_${type}`;
+    sac.solutions[idx][pendingKey] = {
       base64: e.target.result,
       name: file.name,
       mimeType: file.type
     };
 
-    const prev = document.getElementById(`canvas-img-prev-${idx}`);
-    const name = document.getElementById(`canvas-img-name-${idx}`);
+    // Mettre à jour l'aperçu selon le type
+    let prevId, nameId;
+    if (type === 'main') {
+      prevId = `canvas-img-prev-${idx}`;
+      nameId = `canvas-img-name-${idx}`;
+    } else {
+      prevId = `canvas-img-${type}-${idx}`;
+      nameId = `canvas-img-${type}-name-${idx}`;
+    }
+
+    const prev = document.getElementById(prevId);
+    const name = document.getElementById(nameId);
     if (prev) { prev.src = e.target.result; prev.style.display = 'block'; }
     if (name) name.textContent = `${file.name} (sera envoyé sur GitHub)`;
 
@@ -2027,6 +2123,22 @@ function generateHTMLPage(solution) {
     .map(inc => `              <li>${inc}</li>`)
     .join('\n');
 
+  // Préparer les styles pour les images de fond
+  const heroBgStyle = solution.image_hero_bg
+    ? `background: linear-gradient(135deg, rgba(255, 140, 66, 0.9), rgba(230, 122, 46, 0.9)), url('${solution.image_hero_bg}') center/cover;`
+    : 'background: var(--bg);';
+
+  const ctaBgStyle = solution.image_cta_bg
+    ? `background: linear-gradient(135deg, rgba(26, 26, 46, 0.92), rgba(26, 26, 46, 0.95)), url('${solution.image_cta_bg}') center/cover;`
+    : 'background: var(--bg-alt);';
+
+  // Image secondaire (optionnelle)
+  const imageSecondaireHTML = solution.image_secondaire
+    ? `<div class="image-secondaire" style="margin: 32px 0; border-radius: 12px; overflow: hidden;">
+         <img src="${solution.image_secondaire}" alt="${solution.titre} - Image" style="width: 100%; height: auto; display: block;">
+       </div>`
+    : '';
+
   return `<!DOCTYPE html>
 <html lang="fr-BE">
 <head>
@@ -2042,7 +2154,20 @@ function generateHTMLPage(solution) {
   <style>
     .detail-hero {
       padding: 60px 0;
-      background: var(--bg);
+      ${heroBgStyle}
+      position: relative;
+    }
+    .detail-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: inherit;
+      filter: blur(0);
+      z-index: 0;
+    }
+    .detail-hero > * {
+      position: relative;
+      z-index: 1;
     }
     .detail-grid {
       display: grid;
@@ -2054,12 +2179,12 @@ function generateHTMLPage(solution) {
     .detail-content h1 {
       font-size: 36px;
       margin-bottom: 12px;
-      color: var(--text);
+      color: ${solution.image_hero_bg ? '#fff' : 'var(--text)'};
     }
     .detail-content .badge {
       display: inline-block;
-      background: var(--primary);
-      color: white;
+      background: ${solution.image_hero_bg ? 'rgba(255,255,255,0.95)' : 'var(--primary)'};
+      color: ${solution.image_hero_bg ? 'var(--primary)' : 'white'};
       padding: 6px 16px;
       border-radius: 20px;
       font-size: 13px;
@@ -2069,7 +2194,7 @@ function generateHTMLPage(solution) {
     .detail-content p {
       font-size: 16px;
       line-height: 1.8;
-      color: var(--text-light);
+      color: ${solution.image_hero_bg ? 'rgba(255,255,255,0.95)' : 'var(--text-light)'};
       margin-bottom: 16px;
     }
     .detail-image {
@@ -2148,7 +2273,19 @@ function generateHTMLPage(solution) {
 
     .info-section {
       padding: 60px 0;
-      background: var(--bg-alt);
+      ${ctaBgStyle}
+      position: relative;
+    }
+    .info-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: inherit;
+      z-index: 0;
+    }
+    .info-section > * {
+      position: relative;
+      z-index: 1;
     }
     .info-block {
       max-width: 900px;
@@ -2157,12 +2294,12 @@ function generateHTMLPage(solution) {
     .info-block h2 {
       font-size: 28px;
       margin-bottom: 16px;
-      color: var(--text);
+      color: ${solution.image_cta_bg ? '#fff' : 'var(--text)'};
     }
     .info-block p {
       font-size: 16px;
       line-height: 1.8;
-      color: var(--text-light);
+      color: ${solution.image_cta_bg ? 'rgba(255,255,255,0.9)' : 'var(--text-light)'};
       margin-bottom: 16px;
     }
 
@@ -2173,15 +2310,18 @@ function generateHTMLPage(solution) {
       flex-wrap: wrap;
     }
     .metadata-item {
-      background: var(--secondary);
+      background: ${solution.image_hero_bg ? 'rgba(255,255,255,0.15)' : 'var(--secondary)'};
+      backdrop-filter: ${solution.image_hero_bg ? 'blur(10px)' : 'none'};
       padding: 12px 20px;
       border-radius: var(--radius-sm);
       font-size: 14px;
+      color: ${solution.image_hero_bg ? '#fff' : 'var(--text)'};
     }
     .metadata-item strong {
-      color: var(--primary);
+      color: ${solution.image_hero_bg ? '#fff' : 'var(--primary)'};
       display: block;
       margin-bottom: 4px;
+      font-weight: 700;
     }
 
     @media (max-width: 768px) {
@@ -2228,6 +2368,9 @@ function generateHTMLPage(solution) {
                 ${(solution.niveaux_perte || []).join(', ')}
               </div>
             </div>
+
+            <!-- Image secondaire -->
+            ${imageSecondaireHTML}
           </div>
           <!-- Image -->
           <div class="detail-image animate-on-scroll">
