@@ -24,5 +24,37 @@
   },
   "branding": {
     "logoSize": { "label": "Taille du logo", "value": "64px" }
+  },
+  "backgrounds": {
+    "home": {
+      "hero": "",
+      "whyAudire": "",
+      "process": "",
+      "solutions": "",
+      "remboursements": "",
+      "faq": ""
+    },
+    "accompagnement": {
+      "hero": "",
+      "processus": "",
+      "valeurs": ""
+    },
+    "remboursements": {
+      "hero": "",
+      "inami": "",
+      "mutuelle": ""
+    },
+    "contact": {
+      "hero": "",
+      "form": ""
+    },
+    "pharmaciens": {
+      "hero": "",
+      "avantages": ""
+    },
+    "faq": {
+      "hero": ""
+    }
   }
 }
+

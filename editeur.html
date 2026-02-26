@@ -704,6 +704,169 @@
 
     </div>
 
+    <!-- 🖼️ IMAGES DE FOND -->
+    <div class="tab-panel" id="panel-backgrounds">
+      <div class="card">
+        <div class="card-head">🖼️ Images de fond</div>
+        <p style="margin-bottom:20px; color:#777; line-height:1.6;">
+          Ajoutez des images de fond pour les différentes sections de votre site.<br>
+          Ces images s'affichent derrière le contenu avec un overlay pour garder la lisibilité.
+        </p>
+      </div>
+
+      <!-- Accueil -->
+      <div class="card">
+        <div class="card-head">🏠 Page Accueil</div>
+
+        <div class="fg">
+          <label>Hero (Section principale)</label>
+          <div id="bg-home-hero-preview"></div>
+          <div class="img-upload-zone">
+            <input type="file" accept="image/*" onchange="handleBackgroundUpload(event, 'home', 'hero')">
+            <div class="img-placeholder"><span>🌄</span>Image de fond Hero</div>
+            <img class="img-preview" id="bg-home-hero-prev">
+            <div class="img-filename" id="bg-home-hero-name"></div>
+          </div>
+        </div>
+
+        <div class="fg">
+          <label>Pourquoi Audire</label>
+          <div id="bg-home-whyAudire-preview"></div>
+          <div class="img-upload-zone">
+            <input type="file" accept="image/*" onchange="handleBackgroundUpload(event, 'home', 'whyAudire')">
+            <div class="img-placeholder"><span>🎯</span>Image de fond "Pourquoi Audire"</div>
+            <img class="img-preview" id="bg-home-whyAudire-prev">
+            <div class="img-filename" id="bg-home-whyAudire-name"></div>
+          </div>
+        </div>
+
+        <div class="fg">
+          <label>Processus</label>
+          <div id="bg-home-process-preview"></div>
+          <div class="img-upload-zone">
+            <input type="file" accept="image/*" onchange="handleBackgroundUpload(event, 'home', 'process')">
+            <div class="img-placeholder"><span>📋</span>Image de fond "Comment ça se passe"</div>
+            <img class="img-preview" id="bg-home-process-prev">
+            <div class="img-filename" id="bg-home-process-name"></div>
+          </div>
+        </div>
+
+        <div class="fg">
+          <label>Solutions</label>
+          <div id="bg-home-solutions-preview"></div>
+          <div class="img-upload-zone">
+            <input type="file" accept="image/*" onchange="handleBackgroundUpload(event, 'home', 'solutions')">
+            <div class="img-placeholder"><span>🎧</span>Image de fond "Solutions auditives"</div>
+            <img class="img-preview" id="bg-home-solutions-prev">
+            <div class="img-filename" id="bg-home-solutions-name"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accompagnement -->
+      <div class="card">
+        <div class="card-head">🤝 Notre Accompagnement</div>
+
+        <div class="fg">
+          <label>Hero</label>
+          <div id="bg-accompagnement-hero-preview"></div>
+          <div class="img-upload-zone">
+            <input type="file" accept="image/*" onchange="handleBackgroundUpload(event, 'accompagnement', 'hero')">
+            <div class="img-placeholder"><span>🌄</span>Image de fond Hero</div>
+            <img class="img-preview" id="bg-accompagnement-hero-prev">
+            <div class="img-filename" id="bg-accompagnement-hero-name"></div>
+          </div>
+        </div>
+
+        <div class="fg">
+          <label>Processus</label>
+          <div id="bg-accompagnement-processus-preview"></div>
+          <div class="img-upload-zone">
+            <input type="file" accept="image/*" onchange="handleBackgroundUpload(event, 'accompagnement', 'processus')">
+            <div class="img-placeholder"><span>📋</span>Image de fond Processus</div>
+            <img class="img-preview" id="bg-accompagnement-processus-prev">
+            <div class="img-filename" id="bg-accompagnement-processus-name"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Remboursements -->
+      <div class="card">
+        <div class="card-head">💰 Remboursements</div>
+
+        <div class="fg">
+          <label>Hero</label>
+          <div id="bg-remboursements-hero-preview"></div>
+          <div class="img-upload-zone">
+            <input type="file" accept="image/*" onchange="handleBackgroundUpload(event, 'remboursements', 'hero')">
+            <div class="img-placeholder"><span>🌄</span>Image de fond Hero</div>
+            <img class="img-preview" id="bg-remboursements-hero-prev">
+            <div class="img-filename" id="bg-remboursements-hero-name"></div>
+          </div>
+        </div>
+
+        <div class="fg">
+          <label>INAMI</label>
+          <div id="bg-remboursements-inami-preview"></div>
+          <div class="img-upload-zone">
+            <input type="file" accept="image/*" onchange="handleBackgroundUpload(event, 'remboursements', 'inami')">
+            <div class="img-placeholder"><span>🏥</span>Image de fond INAMI</div>
+            <img class="img-preview" id="bg-remboursements-inami-prev">
+            <div class="img-filename" id="bg-remboursements-inami-name"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="card">
+        <div class="card-head">📞 Contact</div>
+
+        <div class="fg">
+          <label>Hero</label>
+          <div id="bg-contact-hero-preview"></div>
+          <div class="img-upload-zone">
+            <input type="file" accept="image/*" onchange="handleBackgroundUpload(event, 'contact', 'hero')">
+            <div class="img-placeholder"><span>🌄</span>Image de fond Hero</div>
+            <img class="img-preview" id="bg-contact-hero-prev">
+            <div class="img-filename" id="bg-contact-hero-name"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pharmaciens -->
+      <div class="card">
+        <div class="card-head">🏪 Partenaires Pharmaciens</div>
+
+        <div class="fg">
+          <label>Hero</label>
+          <div id="bg-pharmaciens-hero-preview"></div>
+          <div class="img-upload-zone">
+            <input type="file" accept="image/*" onchange="handleBackgroundUpload(event, 'pharmaciens', 'hero')">
+            <div class="img-placeholder"><span>🌄</span>Image de fond Hero</div>
+            <img class="img-preview" id="bg-pharmaciens-hero-prev">
+            <div class="img-filename" id="bg-pharmaciens-hero-name"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="card">
+        <div class="card-head">❓ FAQ</div>
+
+        <div class="fg">
+          <label>Hero</label>
+          <div id="bg-faq-hero-preview"></div>
+          <div class="img-upload-zone">
+            <input type="file" accept="image/*" onchange="handleBackgroundUpload(event, 'faq', 'hero')">
+            <div class="img-placeholder"><span>🌄</span>Image de fond Hero</div>
+            <img class="img-preview" id="bg-faq-hero-prev">
+            <div class="img-filename" id="bg-faq-hero-name"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
 </div>
 </div>
 
@@ -770,6 +933,7 @@ function forgetToken() {
 const TABS = [
   { id: 'config',         label: '⚙️ Configuration' },
   { id: 'design',         label: '🎨 Design' },
+  { id: 'backgrounds',    label: '🖼️ Images de fond' },
   { id: 'home',           label: '🏠 Accueil' },
   { id: 'test',           label: '👂 Test auditif' },
   { id: 'accompagnement', label: '🤝 Accompagnement' },
@@ -836,6 +1000,7 @@ async function reloadAll() {
     fillConfig();
     fillTextes();
     fillDesign();
+    fillBackgrounds();
     fillProduits();
     fillSolutionsCanvas();
     showStatus('Données chargées ✓', 'ok');
@@ -1401,6 +1566,33 @@ function fillDesign() {
   }
 }
 
+function fillBackgrounds() {
+  const bg = dsn.backgrounds || {};
+
+  // Afficher les aperçus des images existantes
+  Object.keys(bg).forEach(page => {
+    Object.keys(bg[page]).forEach(section => {
+      const url = bg[page][section];
+      if (url) {
+        const prevId = `bg-${page}-${section}-prev`;
+        const prev = document.getElementById(prevId);
+        if (prev) {
+          prev.src = url;
+          prev.style.display = 'block';
+        }
+
+        // Afficher aussi dans la zone de prévisualisation
+        const previewId = `bg-${page}-${section}-preview`;
+        const previewEl = document.getElementById(previewId);
+        if (previewEl) {
+          previewEl.innerHTML = `<img src="${url}" style="width:100%;max-height:100px;object-fit:cover;border-radius:8px;margin-bottom:8px;">
+            <div class="hint" style="font-size:11px;color:#999;">${url}</div>`;
+        }
+      }
+    });
+  });
+}
+
 function syncColorFromHex(baseId) {
   const hex = document.getElementById(baseId + '-hex')?.value;
   if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
@@ -1602,6 +1794,23 @@ async function saveAllGitHub() {
           delete sol._pendingImage_cta_bg;
         }
       }
+    }
+
+    // Upload background images
+    if (window._pendingBackgrounds) {
+      for (const key in window._pendingBackgrounds) {
+        const bg = window._pendingBackgrounds[key];
+        showStatus(`Upload image de fond ${bg.page}/${bg.section}…`, 'info');
+        const ext = bg.mimeType.split('/')[1] || 'jpg';
+        const imgPath = `images/backgrounds/${bg.page}-${bg.section}.${ext}`;
+        await pushImage(ghToken, imgPath, bg.base64);
+
+        // Mettre à jour le design.json
+        if (!dsn.backgrounds) dsn.backgrounds = {};
+        if (!dsn.backgrounds[bg.page]) dsn.backgrounds[bg.page] = {};
+        dsn.backgrounds[bg.page][bg.section] = `/audire/${imgPath}`;
+      }
+      window._pendingBackgrounds = {};
     }
 
     await pushFile(ghToken, 'content/config.json',  cfg, 'Mise à jour config.json');
@@ -1970,6 +2179,45 @@ function handleCanvasImageUpload(event, idx, type = 'main') {
     if (name) name.textContent = `${file.name} (sera envoyé sur GitHub)`;
 
     renderCanvasPreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+// ===== BACKGROUND IMAGES =====
+function handleBackgroundUpload(event, page, section) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    if (!dsn.backgrounds) dsn.backgrounds = {};
+    if (!dsn.backgrounds[page]) dsn.backgrounds[page] = {};
+    if (!dsn.backgrounds[page][section]) dsn.backgrounds[page][section] = {};
+
+    // Stocker l'image pending
+    const key = `${page}_${section}`;
+    if (!window._pendingBackgrounds) window._pendingBackgrounds = {};
+    window._pendingBackgrounds[key] = {
+      base64: e.target.result,
+      name: file.name,
+      mimeType: file.type,
+      page,
+      section
+    };
+
+    // Mettre à jour l'aperçu
+    const prevId = `bg-${page}-${section}-prev`;
+    const nameId = `bg-${page}-${section}-name`;
+    const prev = document.getElementById(prevId);
+    const name = document.getElementById(nameId);
+
+    if (prev) {
+      prev.src = e.target.result;
+      prev.style.display = 'block';
+    }
+    if (name) {
+      name.textContent = `${file.name} (sera envoyé sur GitHub)`;
+    }
   };
   reader.readAsDataURL(file);
 }

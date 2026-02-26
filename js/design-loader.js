@@ -46,8 +46,105 @@
     // Branding
     if (b.logoSize) root.setProperty('--logo-size', b.logoSize.value);
 
+    // ===== BACKGROUNDS =====
+    // Appliquer les images de fond selon la page
+    const backgrounds = d.backgrounds || {};
+    const path = window.location.pathname;
+    let currentPage = '';
+
+    if (path.includes('/index.html') || path === '/audire/' || path === '/audire/index.html' || path === '/audire') {
+      currentPage = 'home';
+    } else if (path.includes('/accompagnement/')) {
+      currentPage = 'accompagnement';
+    } else if (path.includes('/remboursements/')) {
+      currentPage = 'remboursements';
+    } else if (path.includes('/contact/')) {
+      currentPage = 'contact';
+    } else if (path.includes('/pharmaciens/') || path.includes('/partenaires-pharmaciens/')) {
+      currentPage = 'pharmaciens';
+    } else if (path.includes('/faq/')) {
+      currentPage = 'faq';
+    }
+
+    if (currentPage && backgrounds[currentPage]) {
+      const pageBackgrounds = backgrounds[currentPage];
+
+      // Attendre que le DOM soit chargé
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => applyBackgrounds(pageBackgrounds, currentPage));
+      } else {
+        applyBackgrounds(pageBackgrounds, currentPage);
+      }
+    }
+
     document.dispatchEvent(new CustomEvent('designLoaded', { detail: d }));
   } catch (e) {
     // En cas d'erreur, les valeurs par défaut du CSS restent actives
   }
 })();
+
+function applyBackgrounds(pageBackgrounds, currentPage) {
+  // Mapping des sections par index (plus simple et fiable)
+  const sectionMappings = {
+    'home': {
+      'hero': () => document.querySelector('.hero'),
+      'whyAudire': () => document.querySelectorAll('.section')[0],
+      'process': () => document.querySelectorAll('.section')[1],
+      'solutions': () => document.querySelectorAll('.section')[2]
+    },
+    'accompagnement': {
+      'hero': () => document.querySelector('.hero'),
+      'processus': () => document.querySelectorAll('.section')[0]
+    },
+    'remboursements': {
+      'hero': () => document.querySelector('.hero'),
+      'inami': () => document.querySelectorAll('.section')[0]
+    },
+    'contact': {
+      'hero': () => document.querySelector('.hero')
+    },
+    'pharmaciens': {
+      'hero': () => document.querySelector('.hero')
+    },
+    'faq': {
+      'hero': () => document.querySelector('.hero')
+    }
+  };
+
+  const mappings = sectionMappings[currentPage] || {};
+
+  Object.keys(pageBackgrounds).forEach(sectionKey => {
+    const bgUrl = pageBackgrounds[sectionKey];
+    if (!bgUrl) return;
+
+    const elementGetter = mappings[sectionKey];
+    if (!elementGetter) return;
+
+    const element = elementGetter();
+    if (!element) return;
+
+    // Appliquer l'image de fond avec un overlay pour la lisibilité
+    element.style.backgroundImage = `linear-gradient(135deg, rgba(255, 140, 66, 0.88), rgba(230, 122, 46, 0.91)), url('${bgUrl}')`;
+    element.style.backgroundSize = 'cover';
+    element.style.backgroundPosition = 'center';
+    element.style.backgroundRepeat = 'no-repeat';
+
+    // Ajuster les couleurs du texte pour la lisibilité
+    element.style.color = 'white';
+
+    // Ajuster les titres, paragraphes, et autres éléments
+    const textElements = element.querySelectorAll('h1, h2, h3, h4, h5, h6, p, .lead, .section-tag, .section-title, .section-subtitle, .kicker');
+    textElements.forEach(el => {
+      el.style.color = 'white';
+      el.style.textShadow = '0 2px 8px rgba(0,0,0,0.3)';
+    });
+
+    // Ajuster les chips et boutons
+    const chips = element.querySelectorAll('.chip');
+    chips.forEach(chip => {
+      chip.style.background = 'rgba(255,255,255,0.2)';
+      chip.style.color = 'white';
+      chip.style.backdropFilter = 'blur(10px)';
+    });
+  });
+}
