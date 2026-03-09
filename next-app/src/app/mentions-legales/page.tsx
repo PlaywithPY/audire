@@ -28,7 +28,7 @@ export default function MentionsLegales() {
                 </p>
                 <p className="text-text-light leading-relaxed mt-4">
                   <strong>Téléphone :</strong> <a href="tel:+3242750666" className="text-primary hover:underline">042 75 06 66</a><br />
-                  <strong>Email :</strong> <a href="mailto:info@audire.be" className="text-primary hover:underline">info@audire.be</a>
+                  <strong>Email :</strong> <a href="mailto:centre.audire@gmail.com" className="text-primary hover:underline">centre.audire@gmail.com</a>
                 </p>
                 <p className="text-text-light leading-relaxed mt-4">
                   <strong>Numéro d'entreprise :</strong> BE 0XXX.XXX.XXX<br />
@@ -101,7 +101,7 @@ export default function MentionsLegales() {
                 </p>
                 <ul className="list-disc list-inside text-text-light leading-relaxed mt-4 space-y-2">
                   <li>Par téléphone : <a href="tel:+3242750666" className="text-primary hover:underline">042 75 06 66</a></li>
-                  <li>Par email : <a href="mailto:info@audire.be" className="text-primary hover:underline">info@audire.be</a></li>
+                  <li>Par email : <a href="mailto:centre.audire@gmail.com" className="text-primary hover:underline">centre.audire@gmail.com</a></li>
                   <li>Par courrier : Rue de l'Yser 106-108, 4101 Jemeppe-sur-Meuse</li>
                 </ul>
               </section>

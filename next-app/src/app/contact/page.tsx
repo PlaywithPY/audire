@@ -51,8 +51,8 @@ export default function Contact() {
                   ✉️
                 </div>
                 <h3 className="text-xl font-bold mb-2">Email</h3>
-                <a href="mailto:info@audire.be" className="text-primary text-lg font-semibold hover:underline break-all">
-                  info@audire.be
+                <a href="mailto:centre.audire@gmail.com" className="text-primary text-lg font-semibold hover:underline break-all">
+                  centre.audire@gmail.com
                 </a>
                 <p className="text-text-muted text-sm mt-2">Réponse sous 24h</p>
               </div>

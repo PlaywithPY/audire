@@ -33,7 +33,7 @@ export default function Confidentialite() {
                   Rue de l'Yser 106-108<br />
                   4101 Jemeppe-sur-Meuse<br />
                   Belgique<br />
-                  Email : <a href="mailto:info@audire.be" className="text-primary hover:underline">info@audire.be</a><br />
+                  Email : <a href="mailto:centre.audire@gmail.com" className="text-primary hover:underline">centre.audire@gmail.com</a><br />
                   Téléphone : <a href="tel:+3242750666" className="text-primary hover:underline">042 75 06 66</a>
                 </p>
               </section>
@@ -122,8 +122,8 @@ export default function Confidentialite() {
                 </ul>
                 <p className="text-text-light leading-relaxed mt-4">
                   Pour exercer ces droits, contactez-nous par email à{' '}
-                  <a href="mailto:info@audire.be" className="text-primary hover:underline font-semibold">
-                    info@audire.be
+                  <a href="mailto:centre.audire@gmail.com" className="text-primary hover:underline font-semibold">
+                    centre.audire@gmail.com
                   </a>{' '}
                   ou par courrier à notre adresse.
                 </p>
@@ -185,7 +185,7 @@ export default function Confidentialite() {
                   données personnelles, contactez-nous :
                 </p>
                 <ul className="list-disc list-inside text-text-light leading-relaxed mt-4 space-y-2">
-                  <li>Email : <a href="mailto:info@audire.be" className="text-primary hover:underline">info@audire.be</a></li>
+                  <li>Email : <a href="mailto:centre.audire@gmail.com" className="text-primary hover:underline">centre.audire@gmail.com</a></li>
                   <li>Téléphone : <a href="tel:+3242750666" className="text-primary hover:underline">042 75 06 66</a></li>
                   <li>Courrier : Rue de l'Yser 106-108, 4101 Jemeppe-sur-Meuse</li>
                 </ul>

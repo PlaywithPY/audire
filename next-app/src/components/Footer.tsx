@@ -31,7 +31,7 @@ export default function Footer() {
               <li>📍 Rue de l'Yser 106-108</li>
               <li>4101 Jemeppe-sur-Meuse</li>
               <li>📞 <a href="tel:+3242750666" className="hover:text-primary transition-colors">042 75 06 66</a></li>
-              <li>✉️ <a href="mailto:info@audire.be" className="hover:text-primary transition-colors">info@audire.be</a></li>
+              <li>✉️ <a href="mailto:centre.audire@gmail.com" className="hover:text-primary transition-colors">centre.audire@gmail.com</a></li>
             </ul>
           </div>
 

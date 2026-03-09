@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import TopBanner from './TopBanner';
+import Logo from './Logo';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -17,13 +19,17 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border">
-      <nav className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-primary">
-            Audire
-          </Link>
+    <>
+      <TopBanner />
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm">
+        {/* Logo en dehors du menu */}
+        <div className="container mx-auto px-4 pt-6 pb-3">
+          <Logo />
+        </div>
+
+        {/* Navigation */}
+        <nav className="container mx-auto px-4 py-3 border-t border-border/50">
+          <div className="flex items-center justify-between">
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
@@ -59,29 +65,30 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-border pt-4">
-            {navigation.map((item) => (
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="lg:hidden mt-4 pb-4 border-t border-border pt-4">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="block py-2 text-text-light hover:text-primary transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
               <Link
-                key={item.name}
-                href={item.href}
-                className="block py-2 text-text-light hover:text-primary transition-colors"
+                href="/test-auditif-gratuit"
+                className="block mt-4 bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-all font-semibold text-center"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {item.name}
+                Test gratuit
               </Link>
-            ))}
-            <Link
-              href="/test-auditif-gratuit"
-              className="block mt-4 bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-all font-semibold text-center"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Test gratuit
-            </Link>
-          </div>
-        )}
-      </nav>
-    </header>
+            </div>
+          )}
+        </nav>
+      </header>
+    </>
   );
 }
