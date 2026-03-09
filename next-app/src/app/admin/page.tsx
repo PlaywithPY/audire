@@ -44,6 +44,14 @@ type Testimonial = {
   updatedAt: string;
 };
 
+type CardImage = {
+  id: number;
+  cardKey: string;
+  imageUrl: string;
+  fallbackEmoji: string;
+  updatedAt: string;
+};
+
 const daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 
 const blockTypes = [
@@ -66,7 +74,7 @@ const pages = [
 ];
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'settings' | 'content' | 'testimonials'>('settings');
+  const [activeTab, setActiveTab] = useState<'settings' | 'content' | 'testimonials' | 'card-images'>('settings');
   const [colors, setColors] = useState<ThemeColors>({
     primary: '#42a4ff',
     primaryLight: '#5ab3ff',
@@ -102,6 +110,14 @@ export default function AdminDashboard() {
     location: '',
     isVisible: true,
     isFeatured: false,
+  });
+  const [cardImages, setCardImages] = useState<CardImage[]>([]);
+  const [editingCardImage, setEditingCardImage] = useState<CardImage | null>(null);
+  const [showNewCardImageForm, setShowNewCardImageForm] = useState(false);
+  const [newCardImage, setNewCardImage] = useState({
+    cardKey: '',
+    imageUrl: '',
+    fallbackEmoji: '📷',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -302,6 +318,86 @@ export default function AdminDashboard() {
     }
   }
 
+  // Fonctions pour gérer les images de cards
+  async function fetchCardImages() {
+    try {
+      const res = await fetch('/api/admin/card-images');
+      const data = await res.json();
+      setCardImages(data);
+    } catch (error) {
+      console.error('Error fetching card images:', error);
+    }
+  }
+
+  useEffect(() => {
+    if (activeTab === 'card-images') {
+      fetchCardImages();
+    }
+  }, [activeTab]);
+
+  async function createCardImage() {
+    if (!newCardImage.cardKey || !newCardImage.imageUrl) {
+      alert('⚠️ Le cardKey et l\'URL de l\'image sont obligatoires !');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await fetch('/api/admin/card-images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCardImage),
+      });
+      alert('✅ Image créée !');
+      setShowNewCardImageForm(false);
+      setNewCardImage({
+        cardKey: '',
+        imageUrl: '',
+        fallbackEmoji: '📷',
+      });
+      fetchCardImages();
+    } catch (error) {
+      console.error('Error creating card image:', error);
+      alert('❌ Erreur lors de la création');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function saveCardImage(cardImage: CardImage) {
+    setSaving(true);
+    try {
+      await fetch('/api/admin/card-images', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cardImage),
+      });
+      alert('✅ Image sauvegardée !');
+      setEditingCardImage(null);
+      fetchCardImages();
+    } catch (error) {
+      console.error('Error saving card image:', error);
+      alert('❌ Erreur lors de la sauvegarde');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function deleteCardImage(id: number) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette image ?')) return;
+
+    try {
+      await fetch(`/api/admin/card-images?id=${id}`, {
+        method: 'DELETE',
+      });
+      alert('✅ Image supprimée !');
+      fetchCardImages();
+    } catch (error) {
+      console.error('Error deleting card image:', error);
+      alert('❌ Erreur lors de la suppression');
+    }
+  }
+
   async function saveColors() {
     setSaving(true);
     try {
@@ -441,6 +537,16 @@ export default function AdminDashboard() {
               }`}
             >
               ⭐ Avis clients
+            </button>
+            <button
+              onClick={() => setActiveTab('card-images')}
+              className={`flex-1 px-6 py-4 font-semibold transition ${
+                activeTab === 'card-images'
+                  ? 'border-b-2 border-primary text-primary'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              🖼️ Images de cards
             </button>
           </div>
         </div>
@@ -1213,6 +1319,183 @@ export default function AdminDashboard() {
                           </div>
                           <div className="bg-gray-50 p-3 rounded border border-gray-200">
                             <p className="text-sm italic">"{testimonial.text}"</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          </>
+        )}
+
+        {/* Onglet Images de cards */}
+        {activeTab === 'card-images' && (
+          <>
+            <section className="bg-white rounded-lg shadow-md p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">🖼️ Images de cards</h2>
+                <button
+                  onClick={() => setShowNewCardImageForm(!showNewCardImageForm)}
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+                >
+                  + Nouvelle image
+                </button>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <p className="text-sm text-gray-700">
+                  <strong>💡 Comment ça marche :</strong><br />
+                  Les images de cards permettent de personnaliser l'apparence des cartes sur votre site.
+                  Chaque card a un identifiant unique (cardKey) et peut avoir une image ou un emoji de fallback.
+                </p>
+                <p className="text-xs text-gray-600 mt-2">
+                  Exemples de cardKey : "hero-features-test", "solutions-oticon", "approach-personal"
+                </p>
+              </div>
+
+              {/* Formulaire nouvelle image */}
+              {showNewCardImageForm && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                  <h3 className="font-bold mb-3">Créer une nouvelle image de card</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">Identifiant de la card (cardKey)</label>
+                      <input
+                        type="text"
+                        value={newCardImage.cardKey}
+                        onChange={(e) => setNewCardImage({ ...newCardImage, cardKey: e.target.value })}
+                        placeholder="ex: hero-features-test"
+                        className="w-full px-3 py-2 border border-gray-300 rounded font-mono text-sm"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Utilisez des tirets pour séparer les mots</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">Emoji de fallback</label>
+                      <input
+                        type="text"
+                        value={newCardImage.fallbackEmoji}
+                        onChange={(e) => setNewCardImage({ ...newCardImage, fallbackEmoji: e.target.value })}
+                        placeholder="📷"
+                        maxLength={2}
+                        className="w-full px-3 py-2 border border-gray-300 rounded text-2xl text-center"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Affiché si l'image ne charge pas</p>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold mb-2">URL de l'image</label>
+                      <input
+                        type="url"
+                        value={newCardImage.imageUrl}
+                        onChange={(e) => setNewCardImage({ ...newCardImage, imageUrl: e.target.value })}
+                        placeholder="https://example.com/image.png ou /images/card-icon.png"
+                        className="w-full px-3 py-2 border border-gray-300 rounded font-mono text-sm"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">URL complète ou chemin relatif</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 mt-4">
+                    <button
+                      onClick={createCardImage}
+                      disabled={saving}
+                      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:opacity-50"
+                    >
+                      ✅ Créer
+                    </button>
+                    <button
+                      onClick={() => setShowNewCardImageForm(false)}
+                      className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Liste des images */}
+              {cardImages.length === 0 ? (
+                <p className="text-gray-500 text-center py-8">
+                  Aucune image configurée. Créez-en une !
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {cardImages.map((cardImage) => (
+                    <div key={cardImage.id} className="border border-gray-200 rounded-lg p-4">
+                      {editingCardImage?.id === cardImage.id ? (
+                        // Mode édition
+                        <div>
+                          <div className="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                              <label className="block text-sm font-semibold mb-2">Identifiant (lecture seule)</label>
+                              <input
+                                type="text"
+                                value={editingCardImage.cardKey}
+                                disabled
+                                className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100 font-mono text-sm"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-semibold mb-2">Emoji de fallback</label>
+                              <input
+                                type="text"
+                                value={editingCardImage.fallbackEmoji}
+                                onChange={(e) => setEditingCardImage({ ...editingCardImage, fallbackEmoji: e.target.value })}
+                                maxLength={2}
+                                className="w-full px-3 py-2 border border-gray-300 rounded text-2xl text-center"
+                              />
+                            </div>
+                          </div>
+                          <div className="mb-4">
+                            <label className="block text-sm font-semibold mb-2">URL de l'image</label>
+                            <input
+                              type="url"
+                              value={editingCardImage.imageUrl}
+                              onChange={(e) => setEditingCardImage({ ...editingCardImage, imageUrl: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded font-mono text-sm"
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => saveCardImage(editingCardImage)}
+                              disabled={saving}
+                              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+                            >
+                              💾 Sauvegarder
+                            </button>
+                            <button
+                              onClick={() => setEditingCardImage(null)}
+                              className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                            >
+                              Annuler
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        // Mode affichage
+                        <div>
+                          <div className="flex justify-between items-start mb-2">
+                            <div className="flex items-center gap-4">
+                              <div className="text-4xl">{cardImage.fallbackEmoji}</div>
+                              <div>
+                                <h3 className="font-bold text-lg font-mono">{cardImage.cardKey}</h3>
+                                <p className="text-xs text-gray-500 break-all">{cardImage.imageUrl}</p>
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => setEditingCardImage(cardImage)}
+                                className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                              >
+                                ✏️ Modifier
+                              </button>
+                              <button
+                                onClick={() => deleteCardImage(cardImage.id)}
+                                className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                              >
+                                🗑️
+                              </button>
+                            </div>
                           </div>
                         </div>
                       )}
