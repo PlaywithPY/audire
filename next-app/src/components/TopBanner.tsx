@@ -7,18 +7,20 @@ export default function TopBanner() {
   const [phones, setPhones] = useState({
     phone_fixe: '042 75 06 66',
     phone_mobile: '',
+    email: 'centre.audire@gmail.com',
   });
   const [todayHours, setTodayHours] = useState<string>('');
 
   // Charger les téléphones et horaires
   useEffect(() => {
-    // Charger téléphones
+    // Charger téléphones et email
     fetch('/api/admin/settings')
       .then((res) => res.json())
       .then((data) => {
         setPhones({
           phone_fixe: data.phone_fixe || '042 75 06 66',
           phone_mobile: data.phone_mobile || '',
+          email: data.email || 'centre.audire@gmail.com',
         });
       })
       .catch(console.error);
@@ -134,10 +136,10 @@ export default function TopBanner() {
               </>
             )}
             <a
-              href="mailto:centre.audire@gmail.com"
+              href={`mailto:${phones.email}`}
               className="hover:text-white/80 transition-colors flex items-center gap-1"
             >
-              ✉️ centre.audire@gmail.com
+              ✉️ {phones.email}
             </a>
           </div>
         </div>

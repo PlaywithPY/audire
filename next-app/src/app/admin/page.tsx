@@ -77,6 +77,8 @@ export default function AdminDashboard() {
   const [phones, setPhones] = useState({
     phone_fixe: '+32 4 123 45 67',
     phone_mobile: '+32 476 12 34 56',
+    email: 'centre.audire@gmail.com',
+    address: 'Rue de la Station, 4\n4101 Jemeppe-sur-Meuse',
   });
   const [blocks, setBlocks] = useState<ContentBlock[]>([]);
   const [selectedPage, setSelectedPage] = useState('home');
@@ -125,6 +127,8 @@ export default function AdminDashboard() {
       setPhones({
         phone_fixe: settingsData.phone_fixe || '+32 4 123 45 67',
         phone_mobile: settingsData.phone_mobile || '+32 476 12 34 56',
+        email: settingsData.email || 'centre.audire@gmail.com',
+        address: settingsData.address || 'Rue de la Station, 4\n4101 Jemeppe-sur-Meuse',
       });
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -364,7 +368,7 @@ export default function AdminDashboard() {
     );
   }
 
-  async function savePhone(key: 'phone_fixe' | 'phone_mobile') {
+  async function saveSetting(key: 'phone_fixe' | 'phone_mobile' | 'email' | 'address') {
     setSaving(true);
     try {
       await fetch('/api/admin/settings', {
@@ -372,9 +376,9 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key, value: phones[key] }),
       });
-      alert('✅ Numéro sauvegardé !');
+      alert('✅ Sauvegardé !');
     } catch (error) {
-      console.error('Error saving phone:', error);
+      console.error('Error saving setting:', error);
       alert('❌ Erreur lors de la sauvegarde');
     } finally {
       setSaving(false);
@@ -530,9 +534,9 @@ export default function AdminDashboard() {
           </button>
         </section>
 
-        {/* Numéros de téléphone */}
+        {/* Coordonnées */}
         <section className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4">📞 Numéros de téléphone</h2>
+          <h2 className="text-2xl font-bold mb-4">📍 Coordonnées du centre</h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-semibold mb-2">Téléphone fixe</label>
@@ -544,7 +548,7 @@ export default function AdminDashboard() {
                 className="w-full px-3 py-2 border border-gray-300 rounded"
               />
               <button
-                onClick={() => savePhone('phone_fixe')}
+                onClick={() => saveSetting('phone_fixe')}
                 disabled={saving}
                 className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition disabled:opacity-50 text-sm"
               >
@@ -562,7 +566,43 @@ export default function AdminDashboard() {
                 className="w-full px-3 py-2 border border-gray-300 rounded"
               />
               <button
-                onClick={() => savePhone('phone_mobile')}
+                onClick={() => saveSetting('phone_mobile')}
+                disabled={saving}
+                className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition disabled:opacity-50 text-sm"
+              >
+                💾 Sauvegarder
+              </button>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-2">Email</label>
+              <input
+                type="email"
+                value={phones.email}
+                onChange={(e) => setPhones({ ...phones, email: e.target.value })}
+                placeholder="centre.audire@gmail.com"
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              />
+              <button
+                onClick={() => saveSetting('email')}
+                disabled={saving}
+                className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition disabled:opacity-50 text-sm"
+              >
+                💾 Sauvegarder
+              </button>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-2">Adresse physique</label>
+              <textarea
+                value={phones.address}
+                onChange={(e) => setPhones({ ...phones, address: e.target.value })}
+                placeholder="Rue de la Station, 4&#10;4101 Jemeppe-sur-Meuse"
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              />
+              <button
+                onClick={() => saveSetting('address')}
                 disabled={saving}
                 className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition disabled:opacity-50 text-sm"
               >

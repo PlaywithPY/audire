@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ContactInfo from "@/components/ContactInfo";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -32,51 +33,7 @@ export default function Contact() {
         {/* Informations de contact */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {/* Téléphone */}
-              <div className="bg-bg p-8 rounded-2xl text-center hover:shadow-lg transition-all">
-                <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-                  📞
-                </div>
-                <h3 className="text-xl font-bold mb-2">Téléphone</h3>
-                <a href="tel:+3242750666" className="text-primary text-lg font-semibold hover:underline">
-                  042 75 06 66
-                </a>
-                <p className="text-text-muted text-sm mt-2">Lun - Ven : 9h-17h</p>
-              </div>
-
-              {/* Email */}
-              <div className="bg-bg p-8 rounded-2xl text-center hover:shadow-lg transition-all">
-                <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-                  ✉️
-                </div>
-                <h3 className="text-xl font-bold mb-2">Email</h3>
-                <a href="mailto:centre.audire@gmail.com" className="text-primary text-lg font-semibold hover:underline break-all">
-                  centre.audire@gmail.com
-                </a>
-                <p className="text-text-muted text-sm mt-2">Réponse sous 24h</p>
-              </div>
-
-              {/* Adresse */}
-              <div className="bg-bg p-8 rounded-2xl text-center hover:shadow-lg transition-all">
-                <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-                  📍
-                </div>
-                <h3 className="text-xl font-bold mb-2">Adresse</h3>
-                <p className="text-text-light">
-                  Rue de l'Yser 106-108<br />
-                  4101 Jemeppe-sur-Meuse
-                </p>
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=Rue+de+l'Yser+106-108+4101+Jemeppe-sur-Meuse"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary text-sm hover:underline mt-2 inline-block"
-                >
-                  Voir sur Google Maps →
-                </a>
-              </div>
-            </div>
+            <ContactInfo />
           </div>
         </section>
 
