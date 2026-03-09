@@ -10,11 +10,11 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#42a4ff',
-          light: '#5ab3ff',
-          dark: '#2d87e6',
+          DEFAULT: 'var(--color-primary)',
+          light: 'var(--color-primary-light)',
+          dark: 'var(--color-primary-dark)',
         },
-        secondary: '#EBF5FF',
+        secondary: 'var(--color-secondary)',
       },
     },
   },

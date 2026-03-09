@@ -19,6 +19,25 @@ async function main() {
     },
   });
 
+  // Numéros de téléphone par défaut
+  await prisma.siteSettings.upsert({
+    where: { key: 'phone_fixe' },
+    update: {},
+    create: {
+      key: 'phone_fixe',
+      value: '+32 4 123 45 67',
+    },
+  });
+
+  await prisma.siteSettings.upsert({
+    where: { key: 'phone_mobile' },
+    update: {},
+    create: {
+      key: 'phone_mobile',
+      value: '+32 476 12 34 56',
+    },
+  });
+
   // Horaires par défaut
   const defaultHours = [
     { dayOfWeek: 0, isOpen: false }, // Dimanche - Fermé
