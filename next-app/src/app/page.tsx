@@ -66,7 +66,7 @@ export default function Home() {
               { icon: '💬', title: 'Accompagnement humain', desc: 'Pas de jargon technique, pas de pression commerciale.' },
               { icon: '🔧', title: 'Suivi personnalisé', desc: 'Réglages progressifs, adaptations, suivi régulier.' },
               { icon: '🏆', title: 'Solutions de qualité', desc: 'Oticon et Bernafon, deux marques reconnues.' },
-              { icon: '🎯', title: 'Centre indépendant', desc: 'Pas d'objectifs de vente, pas de réseau à satisfaire.' },
+              { icon: '🎯', title: 'Centre indépendant', desc: "Pas d'objectifs de vente, pas de réseau à satisfaire." },
               { icon: '💰', title: 'Transparence des prix', desc: 'Prix clairs, remboursements expliqués.' },
             ].map((feature) => (
               <div key={feature.title} className="bg-bg p-6 rounded-2xl hover:shadow-lg transition-all">
