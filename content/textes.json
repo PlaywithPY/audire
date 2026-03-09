@@ -495,40 +495,35 @@
   },
   "solutions-auditives": {
     "hero": {
-      "kicker": "Oticon • Bernafon",
-      "title": "Nos solutions auditives",
-      "subtitle": "Nous travaillons avec Oticon et Bernafon, deux marques reconnues mondialement pour leur qualité, leur innovation et leur fiabilité. Des solutions adaptées à vos besoins et votre budget.",
-      "chips": [
-        "Technologies de pointe",
-        "Design discret",
-        "Connectivité Bluetooth",
-        "Recharge lithium-ion"
-      ]
+      "kicker": "",
+      "title": "",
+      "subtitle": "",
+      "chips": []
     },
     "marques": {
-      "tag": "Nos partenaires",
-      "title": "Oticon et Bernafon",
-      "subtitle": "Deux marques de référence mondiale pour des solutions auditives de qualité."
+      "tag": "",
+      "title": "",
+      "subtitle": ""
     },
     "types": {
-      "tag": "Types d'appareils",
-      "title": "Quel type d'appareil choisir ?",
-      "subtitle": "Il existe plusieurs formats d'appareils auditifs. Le choix dépend de votre perte auditive, de votre morphologie et de vos préférences.",
-      "note": "Important : La discrétion n'est pas toujours synonyme de performance. Nous vous aidons à choisir l'appareil qui vous correspond vraiment, pas celui qui se voit le moins."
+      "tag": "",
+      "title": "",
+      "subtitle": "",
+      "note": ""
     },
     "innovation": {
-      "tag": "Innovation",
-      "title": "Fonctionnalités modernes",
-      "subtitle": "Les appareils auditifs modernes sont bien plus que de simples amplificateurs. Voici les technologies disponibles."
+      "tag": "",
+      "title": "",
+      "subtitle": ""
     },
     "prix": {
-      "title": "Combien ça coûte ?",
-      "description": "Les appareils auditifs coûtent entre 1 200 € et 3 500 € par oreille, selon le modèle et les fonctionnalités. Grâce à l'INAMI et aux mutuelles, vous pouvez récupérer jusqu'à 840 € par oreille.",
-      "note": "Le prix comprend : l'appareil, les réglages, le suivi à vie, l'entretien, les consommables (embouts, filtres...)."
+      "title": "",
+      "description": "",
+      "note": ""
     },
     "cta": {
-      "title": "Quelle solution pour vous ?",
-      "description": "Prenez rendez-vous pour un test auditif gratuit. Nous analyserons votre situation et vous conseillerons la solution la plus adaptée."
+      "title": "",
+      "description": ""
     }
   },
   "remboursements": {

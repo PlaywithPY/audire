@@ -10,7 +10,7 @@
       "id": "contour-oreille",
       "titre": "Le contour d'oreille",
       "badge": "",
-      "image": "/audire/images/solutions/contour-oreille.jpg",
+      "image": "/audire/images/solutions/contour-oreille.png",
       "description_courte": "Modèle polyvalent et simple d'utilisation, le contour d'oreille se porte derrière le pavillon. Un tube fin relie l'appareil à un embout dans le conduit auditif. Il convient à la grande majorité des pertes auditives.",
       "description_longue": "Grâce à son boîtier positionné derrière l'oreille, le contour d'oreille est facile à manipuler et à entretenir au quotidien. Il peut intégrer une batterie rechargeable et une connexion Bluetooth pour s'associer à votre téléphone, votre télévision ou d'autres accessoires. Disponible dans différentes teintes pour se fondre dans la couleur de vos cheveux ou de votre peau, il reste très discret malgré son placement externe.",
       "avantages": [
@@ -24,9 +24,17 @@
         "Visible derrière l'oreille",
         "Peut parfois gêner le port de lunettes"
       ],
-      "niveaux_perte": ["Légère", "Modérée", "Sévère", "Profonde"],
+      "niveaux_perte": [
+        "Légère",
+        "Modérée",
+        "Sévère",
+        "Profonde"
+      ],
       "type": "Contour d'oreille",
-      "marques": ["Oticon", "Bernafon"]
+      "marques": [
+        "Oticon",
+        "Bernafon"
+      ]
     },
     {
       "id": "intra-auriculaire",
@@ -46,15 +54,21 @@
         "Manipulation plus délicate",
         "Entretien fréquent (cérumen)"
       ],
-      "niveaux_perte": ["Légère", "Modérée"],
+      "niveaux_perte": [
+        "Légère",
+        "Modérée"
+      ],
       "type": "Intra-auriculaire",
-      "marques": ["Oticon", "Bernafon"]
+      "marques": [
+        "Oticon",
+        "Bernafon"
+      ]
     },
     {
       "id": "oticon-intent",
       "titre": "Oticon Intent",
       "badge": "Nouveauté",
-      "image": "/audire/images/solutions/oticon-intent.jpg",
+      "image": "/audire/images/solutions/oticon-intent.png",
       "description_courte": "L'Oticon Intent est une aide auditive haut de gamme équipée de capteurs de mouvement. Elle analyse vos gestes et vos déplacements pour adapter l'amplification à chaque situation, sans aucune intervention de votre part.",
       "description_longue": "Doté d'une puce de traitement performante et de quatre capteurs intégrés, l'Oticon Intent détecte en temps réel ce que vous faites et s'ajuste automatiquement pour vous offrir le son le plus clair possible dans chaque contexte. Sa connectivité Bluetooth vous permet de le coupler à votre smartphone ou à votre télévision. La batterie rechargeable tient toute la journée, et son boîtier est certifié résistant à l'eau et à la poussière (IP68).",
       "avantages": [
@@ -69,9 +83,28 @@
         "Tarif haut de gamme",
         "Nécessite un temps d'adaptation"
       ],
-      "niveaux_perte": ["Légère", "Modérée", "Sévère"],
+      "niveaux_perte": [
+        "Légère",
+        "Modérée",
+        "Sévère"
+      ],
       "type": "Contour d'oreille",
-      "marques": ["Oticon"]
+      "marques": [
+        "Oticon"
+      ]
+    },
+    {
+      "id": "solution-1772028108569",
+      "titre": "Nouveau teste",
+      "badge": "Populaire",
+      "image": "",
+      "description_courte": "",
+      "description_longue": "",
+      "avantages": [],
+      "inconvenients": [],
+      "niveaux_perte": [],
+      "type": "Contour d'oreille",
+      "marques": []
     }
   ]
 }

@@ -108,9 +108,23 @@
     }
   ],
   "filtres": {
-    "marques": ["Toutes", "Oticon", "Bernafon"],
-    "gammes": ["Toutes", "Premium", "Confort", "Essentiel"],
-    "types": ["Tous", "Contour d'oreille", "Intra-auriculaire", "Intra-auriculaire sur mesure"]
+    "marques": [
+      "Toutes",
+      "Oticon",
+      "Bernafon"
+    ],
+    "gammes": [
+      "Toutes",
+      "Premium",
+      "Confort",
+      "Essentiel"
+    ],
+    "types": [
+      "Tous",
+      "Contour d'oreille",
+      "Intra-auriculaire",
+      "Intra-auriculaire sur mesure"
+    ]
   },
   "cta": {
     "title": "Quel appareil vous convient ?",
