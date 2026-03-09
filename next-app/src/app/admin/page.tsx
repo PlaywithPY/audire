@@ -20,9 +20,41 @@ type OpeningHour = {
   afternoonClose: string | null;
 };
 
+type ContentBlock = {
+  id: number;
+  pageKey: string;
+  blockKey: string;
+  blockType: string;
+  content: string;
+  metadata: string | null;
+  order: number;
+  isVisible: boolean;
+  updatedAt: string;
+};
+
 const daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 
+const blockTypes = [
+  { value: 'title', label: '📝 Titre', icon: 'H1' },
+  { value: 'text', label: '📄 Texte', icon: 'T' },
+  { value: 'html', label: '🔧 HTML', icon: '</>' },
+  { value: 'image', label: '🖼️ Image', icon: '🖼️' },
+  { value: 'button', label: '🔘 Bouton', icon: 'BTN' },
+];
+
+const pages = [
+  { key: 'home', label: '🏠 Accueil' },
+  { key: 'contact', label: '📞 Contact' },
+  { key: 'faq', label: '❓ FAQ' },
+  { key: 'solutions-auditives', label: '👂 Solutions auditives' },
+  { key: 'test-auditif-gratuit', label: '🔊 Test auditif gratuit' },
+  { key: 'notre-accompagnement', label: '🤝 Notre accompagnement' },
+  { key: 'remboursements', label: '💶 Remboursements' },
+  { key: 'partenaires-pharmaciens', label: '💊 Partenaires pharmaciens' },
+];
+
 export default function AdminDashboard() {
+  const [activeTab, setActiveTab] = useState<'settings' | 'content'>('settings');
   const [colors, setColors] = useState<ThemeColors>({
     primary: '#42a4ff',
     primaryLight: '#5ab3ff',
@@ -33,6 +65,18 @@ export default function AdminDashboard() {
   const [phones, setPhones] = useState({
     phone_fixe: '+32 4 123 45 67',
     phone_mobile: '+32 476 12 34 56',
+  });
+  const [blocks, setBlocks] = useState<ContentBlock[]>([]);
+  const [selectedPage, setSelectedPage] = useState('home');
+  const [editingBlock, setEditingBlock] = useState<ContentBlock | null>(null);
+  const [showNewBlockForm, setShowNewBlockForm] = useState(false);
+  const [newBlock, setNewBlock] = useState({
+    pageKey: 'home',
+    blockKey: '',
+    blockType: 'text',
+    content: '',
+    order: 0,
+    isVisible: true,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -63,6 +107,88 @@ export default function AdminDashboard() {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function fetchBlocks() {
+    try {
+      const res = await fetch(`/api/admin/blocks?pageKey=${selectedPage}`);
+      const data = await res.json();
+      setBlocks(data);
+    } catch (error) {
+      console.error('Error fetching blocks:', error);
+    }
+  }
+
+  useEffect(() => {
+    if (activeTab === 'content') {
+      fetchBlocks();
+    }
+  }, [selectedPage, activeTab]);
+
+  async function saveBlock(block: ContentBlock) {
+    setSaving(true);
+    try {
+      await fetch('/api/admin/blocks', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(block),
+      });
+      alert('✅ Bloc sauvegardé !');
+      setEditingBlock(null);
+      fetchBlocks();
+    } catch (error) {
+      console.error('Error saving block:', error);
+      alert('❌ Erreur lors de la sauvegarde');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function createBlock() {
+    if (!newBlock.blockKey) {
+      alert('⚠️ Le blockKey est obligatoire !');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await fetch('/api/admin/blocks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...newBlock, pageKey: selectedPage }),
+      });
+      alert('✅ Bloc créé !');
+      setShowNewBlockForm(false);
+      setNewBlock({
+        pageKey: selectedPage,
+        blockKey: '',
+        blockType: 'text',
+        content: '',
+        order: 0,
+        isVisible: true,
+      });
+      fetchBlocks();
+    } catch (error) {
+      console.error('Error creating block:', error);
+      alert('❌ Erreur lors de la création');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function deleteBlock(id: number) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce bloc ?')) return;
+
+    try {
+      await fetch(`/api/admin/blocks?id=${id}`, {
+        method: 'DELETE',
+      });
+      alert('✅ Bloc supprimé !');
+      fetchBlocks();
+    } catch (error) {
+      console.error('Error deleting block:', error);
+      alert('❌ Erreur lors de la suppression');
     }
   }
 
@@ -151,33 +277,37 @@ export default function AdminDashboard() {
       </header>
 
       <div className="container mx-auto px-6 py-8">
-        {/* Navigation rapide */}
-        <section className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-md p-6 mb-8 text-white">
-          <h2 className="text-xl font-bold mb-4">🚀 Actions rapides</h2>
-          <div className="grid md:grid-cols-3 gap-4">
-            <Link
-              href="/admin/content"
-              className="bg-white/10 hover:bg-white/20 backdrop-blur rounded-lg p-4 transition text-center"
+        {/* Onglets */}
+        <div className="bg-white rounded-lg shadow-md mb-8">
+          <div className="flex border-b border-gray-200">
+            <button
+              onClick={() => setActiveTab('settings')}
+              className={`flex-1 px-6 py-4 font-semibold transition ${
+                activeTab === 'settings'
+                  ? 'border-b-2 border-primary text-primary'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
             >
-              <div className="text-3xl mb-2">🖊️</div>
-              <div className="font-semibold">Éditeur de contenu</div>
-              <div className="text-sm text-white/80">Modifier textes et blocs</div>
-            </Link>
-            <div className="bg-white/10 rounded-lg p-4 text-center opacity-50">
-              <div className="text-3xl mb-2">🎨</div>
-              <div className="font-semibold">Builder visuel</div>
-              <div className="text-sm text-white/80">Bientôt disponible</div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4 text-center opacity-50">
-              <div className="text-3xl mb-2">📊</div>
-              <div className="font-semibold">Analytics</div>
-              <div className="text-sm text-white/80">Bientôt disponible</div>
-            </div>
+              ⚙️ Paramètres (Couleurs, Horaires, Téléphones)
+            </button>
+            <button
+              onClick={() => setActiveTab('content')}
+              className={`flex-1 px-6 py-4 font-semibold transition ${
+                activeTab === 'content'
+                  ? 'border-b-2 border-primary text-primary'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              🖊️ Éditeur de contenu (WYSIWYG)
+            </button>
           </div>
-        </section>
+        </div>
 
-        {/* Couleurs du thème */}
-        <section className="bg-white rounded-lg shadow-md p-6 mb-8">
+        {/* Contenu des onglets */}
+        {activeTab === 'settings' && (
+          <>
+            {/* Couleurs du thème */}
+            <section className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-2xl font-bold mb-4">🎨 Couleurs du thème</h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
@@ -423,16 +553,218 @@ export default function AdminDashboard() {
             ))}
           </div>
         </section>
+          </>
+        )}
 
-        {/* Informations */}
-        <section className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="font-bold mb-2">📌 Notes importantes</h3>
-          <ul className="text-sm space-y-2 text-gray-700">
-            <li>• Les couleurs seront appliquées sur tout le site après sauvegarde</li>
-            <li>• Les horaires modifient le bandeau en haut et le badge ouvert/fermé</li>
-            <li>• Le système d'images pour les cards sera disponible prochainement</li>
-          </ul>
-        </section>
+        {/* Onglet Contenu */}
+        {activeTab === 'content' && (
+          <>
+            {/* Sélecteur de page */}
+            <section className="bg-white rounded-lg shadow-md p-6 mb-8">
+              <h2 className="text-xl font-bold mb-4">📄 Sélectionnez une page</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {pages.map((page) => (
+                  <button
+                    key={page.key}
+                    onClick={() => setSelectedPage(page.key)}
+                    className={`px-4 py-3 rounded font-semibold transition ${
+                      selectedPage === page.key
+                        ? 'bg-primary text-white'
+                        : 'bg-gray-100 hover:bg-gray-200'
+                    }`}
+                  >
+                    {page.label}
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            {/* Liste des blocs */}
+            <section className="bg-white rounded-lg shadow-md p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">
+                  🧱 Blocs - {pages.find((p) => p.key === selectedPage)?.label}
+                </h2>
+                <button
+                  onClick={() => setShowNewBlockForm(!showNewBlockForm)}
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+                >
+                  + Nouveau bloc
+                </button>
+              </div>
+
+              {/* Formulaire nouveau bloc */}
+              {showNewBlockForm && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                  <h3 className="font-bold mb-3">Créer un nouveau bloc</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">Identifiant (blockKey)</label>
+                      <input
+                        type="text"
+                        value={newBlock.blockKey}
+                        onChange={(e) => setNewBlock({ ...newBlock, blockKey: e.target.value })}
+                        placeholder="ex: hero-title"
+                        className="w-full px-3 py-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">Type de bloc</label>
+                      <select
+                        value={newBlock.blockType}
+                        onChange={(e) => setNewBlock({ ...newBlock, blockType: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded"
+                      >
+                        {blockTypes.map((type) => (
+                          <option key={type.value} value={type.value}>
+                            {type.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold mb-2">Contenu</label>
+                      <textarea
+                        value={newBlock.content}
+                        onChange={(e) => setNewBlock({ ...newBlock, content: e.target.value })}
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-2 mt-4">
+                    <button
+                      onClick={createBlock}
+                      disabled={saving}
+                      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:opacity-50"
+                    >
+                      ✅ Créer
+                    </button>
+                    <button
+                      onClick={() => setShowNewBlockForm(false)}
+                      className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Liste des blocs */}
+              {blocks.length === 0 ? (
+                <p className="text-gray-500 text-center py-8">
+                  Aucun bloc sur cette page. Créez-en un !
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {blocks.map((block) => (
+                    <div key={block.id} className="border border-gray-200 rounded-lg p-4">
+                      {editingBlock?.id === block.id ? (
+                        // Mode édition
+                        <div>
+                          <div className="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                              <label className="block text-sm font-semibold mb-2">Type</label>
+                              <select
+                                value={editingBlock.blockType}
+                                onChange={(e) =>
+                                  setEditingBlock({ ...editingBlock, blockType: e.target.value })
+                                }
+                                className="w-full px-3 py-2 border border-gray-300 rounded"
+                              >
+                                {blockTypes.map((type) => (
+                                  <option key={type.value} value={type.value}>
+                                    {type.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <label className="flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  checked={editingBlock.isVisible}
+                                  onChange={(e) =>
+                                    setEditingBlock({ ...editingBlock, isVisible: e.target.checked })
+                                  }
+                                  className="w-5 h-5"
+                                />
+                                <span>Visible</span>
+                              </label>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-semibold mb-2">Contenu</label>
+                            <textarea
+                              value={editingBlock.content}
+                              onChange={(e) =>
+                                setEditingBlock({ ...editingBlock, content: e.target.value })
+                              }
+                              rows={5}
+                              className="w-full px-3 py-2 border border-gray-300 rounded font-mono"
+                            />
+                          </div>
+                          <div className="flex gap-2 mt-4">
+                            <button
+                              onClick={() => saveBlock(editingBlock)}
+                              disabled={saving}
+                              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+                            >
+                              💾 Sauvegarder
+                            </button>
+                            <button
+                              onClick={() => setEditingBlock(null)}
+                              className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                            >
+                              Annuler
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        // Mode affichage
+                        <div>
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <h3 className="font-bold text-lg">
+                                {blockTypes.find((t) => t.value === block.blockType)?.icon}{' '}
+                                {block.blockKey}
+                              </h3>
+                              <p className="text-sm text-gray-500">
+                                Type: {blockTypes.find((t) => t.value === block.blockType)?.label} •
+                                {block.isVisible ? ' Visible' : ' Masqué'}
+                              </p>
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => setEditingBlock(block)}
+                                className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                              >
+                                ✏️ Modifier
+                              </button>
+                              <button
+                                onClick={() => deleteBlock(block.id)}
+                                className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                          </div>
+                          <div className="bg-gray-50 p-3 rounded border border-gray-200">
+                            <p className="text-sm whitespace-pre-wrap break-words">
+                              {block.content.length > 200
+                                ? block.content.substring(0, 200) + '...'
+                                : block.content}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          </>
+        )}
       </div>
     </div>
   );
