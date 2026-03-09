@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CardIcon from "@/components/CardIcon";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -47,36 +48,42 @@ export default function NotreAccompagnement() {
             <div className="max-w-5xl mx-auto space-y-8">
               {[
                 {
+                  cardKey: 'approach-step-contact',
                   step: '1',
                   title: 'Premier contact',
                   desc: 'Vous nous appelez ou vous venez nous voir. On discute de votre situation, sans engagement. Parfois la meilleure réponse est "pas maintenant" — et on vous le dira.',
                   icon: '👋'
                 },
                 {
+                  cardKey: 'approach-step-test',
                   step: '2',
                   title: 'Test auditif gratuit',
                   desc: 'Un test complet de 30 minutes pour comprendre votre audition. On vous explique les résultats avec des mots simples, pas du jargon médical.',
                   icon: '🎧'
                 },
                 {
+                  cardKey: 'approach-step-conseil',
                   step: '3',
                   title: 'Conseil personnalisé',
                   desc: 'On vous propose une ou plusieurs solutions adaptées à votre situation et à votre budget. Pas de vente forcée, juste des conseils honnêtes.',
                   icon: '💬'
                 },
                 {
+                  cardKey: 'approach-step-essai',
                   step: '4',
                   title: 'Essai sans engagement',
                   desc: 'Vous testez les appareils dans votre quotidien. Au travail, en famille, dans le bruit... C\'est comme ça qu\'on sait si ça marche vraiment.',
                   icon: '🔍'
                 },
                 {
+                  cardKey: 'approach-step-reglages',
                   step: '5',
                   title: 'Réglages progressifs',
                   desc: 'L\'adaptation prend du temps. On se voit régulièrement pour affiner les réglages jusqu\'à ce que ce soit parfait pour vous.',
                   icon: '🔧'
                 },
                 {
+                  cardKey: 'approach-step-suivi',
                   step: '6',
                   title: 'Suivi dans la durée',
                   desc: 'Même après l\'achat, on reste là. Entretien, nettoyage, petits réglages... On vous accompagne aussi longtemps que nécessaire.',
@@ -91,7 +98,7 @@ export default function NotreAccompagnement() {
                   </div>
                   <div className="flex-grow">
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="text-4xl">{item.icon}</span>
+                      <CardIcon cardKey={item.cardKey} defaultEmoji={item.icon} size={48} />
                       <h3 className="text-2xl font-bold">{item.title}</h3>
                     </div>
                     <p className="text-text-light text-lg leading-relaxed">{item.desc}</p>
@@ -115,28 +122,34 @@ export default function NotreAccompagnement() {
             <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               {[
                 {
+                  cardKey: 'approach-independance',
                   title: 'Indépendance',
                   desc: 'Nous sommes un centre indépendant, sans objectifs de vente imposés. Notre seul but : vous aider à mieux entendre.',
                   icon: '🎯'
                 },
                 {
+                  cardKey: 'approach-transparence',
                   title: 'Transparence',
                   desc: 'Prix clairs, remboursements expliqués, pas de frais cachés. Vous savez exactement ce que vous payez.',
                   icon: '💎'
                 },
                 {
+                  cardKey: 'approach-disponibilite',
                   title: 'Disponibilité',
                   desc: 'Un problème ? Une question ? On est là. Pas besoin d\'attendre 3 semaines pour un rendez-vous.',
                   icon: '⚡'
                 },
                 {
+                  cardKey: 'approach-proximite',
                   title: 'Proximité',
                   desc: 'On prend le temps de vous écouter, de comprendre vos besoins et de vous accompagner vraiment.',
                   icon: '💙'
                 },
               ].map((item) => (
                 <div key={item.title} className="bg-white p-8 rounded-2xl hover:shadow-lg transition-all">
-                  <div className="text-5xl mb-4">{item.icon}</div>
+                  <div className="mb-4">
+                    <CardIcon cardKey={item.cardKey} defaultEmoji={item.icon} size={48} />
+                  </div>
                   <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
                   <p className="text-text-light leading-relaxed">{item.desc}</p>
                 </div>
