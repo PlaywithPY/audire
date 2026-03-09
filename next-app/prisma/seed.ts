@@ -57,6 +57,46 @@ async function main() {
     });
   }
 
+  // Avis clients par défaut
+  await prisma.testimonial.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      name: 'Marie D.',
+      text: 'Excellent accueil et professionnalisme. On prend vraiment le temps d\'expliquer et de répondre aux questions. Je recommande vivement !',
+      rating: 5,
+      location: 'Liège',
+      isVisible: true,
+      isFeatured: true,
+    },
+  });
+
+  await prisma.testimonial.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      name: 'Jean-Pierre L.',
+      text: 'Très satisfait de mon appareil auditif. Le suivi est impeccable, toujours disponible pour les réglages.',
+      rating: 5,
+      location: 'Seraing',
+      isVisible: true,
+      isFeatured: true,
+    },
+  });
+
+  await prisma.testimonial.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      name: 'Sophie M.',
+      text: 'Merci pour la patience et les explications claires. Enfin un centre qui écoute vraiment !',
+      rating: 5,
+      location: 'Herstal',
+      isVisible: true,
+      isFeatured: false,
+    },
+  });
+
   console.log('✅ Database seeded!');
 }
 
