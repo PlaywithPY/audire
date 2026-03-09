@@ -58,3 +58,20 @@ model SectionBackground {
   imageUrl    String?  // URL de l'image de fond (null = utiliser le gradient par défaut)
   updatedAt   DateTime @updatedAt
 }
+
+// Blocs de contenu éditables (WYSIWYG)
+model ContentBlock {
+  id          Int      @id @default(autoincrement())
+  pageKey     String   // Page où se trouve le bloc (ex: "home", "contact")
+  blockKey    String   // Identifiant unique du bloc (ex: "hero-title", "about-text")
+  blockType   String   // Type de bloc: "title", "text", "image", "button", "html"
+  content     String   @db.Text // Contenu du bloc (texte, URL, HTML, etc.)
+  metadata    String?  @db.Text // Métadonnées JSON (style, position, etc.)
+  order       Int      @default(0) // Ordre d'affichage
+  isVisible   Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  @@unique([pageKey, blockKey])
+  @@index([pageKey, order])
+}
