@@ -332,6 +332,28 @@ export default function AdminDashboard() {
     }
   }
 
+  async function saveAllHours() {
+    setSaving(true);
+    try {
+      // Sauvegarder tous les jours en parallèle
+      await Promise.all(
+        hours.map((hour) =>
+          fetch('/api/admin/hours', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(hour),
+          })
+        )
+      );
+      alert('✅ Tous les horaires ont été sauvegardés !');
+    } catch (error) {
+      console.error('Error saving all hours:', error);
+      alert('❌ Erreur lors de la sauvegarde');
+    } finally {
+      setSaving(false);
+    }
+  }
+
   function updateHour(dayOfWeek: number, field: keyof OpeningHour, value: any) {
     setHours((prev) =>
       prev.map((h) =>
@@ -552,7 +574,16 @@ export default function AdminDashboard() {
 
         {/* Horaires d'ouverture */}
         <section className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold mb-4">🕐 Horaires d'ouverture</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold">🕐 Horaires d'ouverture</h2>
+            <button
+              onClick={saveAllHours}
+              disabled={saving}
+              className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition disabled:opacity-50"
+            >
+              {saving ? 'Sauvegarde...' : '💾 Sauvegarder tous les horaires'}
+            </button>
+          </div>
           <div className="space-y-4">
             {hours.map((hour) => (
               <div key={hour.dayOfWeek} className="border border-gray-200 rounded-lg p-4">
@@ -694,6 +725,37 @@ export default function AdminDashboard() {
                 ))}
               </div>
             </section>
+
+            {/* Import automatique */}
+            {blocks.length === 0 && (
+              <section className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                <h3 className="font-bold text-lg mb-2">📥 Importer le contenu existant</h3>
+                <p className="text-sm text-gray-700 mb-4">
+                  Le WYSIWYG est vide ? Cliquez ci-dessous pour importer automatiquement le contenu actuel des pages (titres, textes principaux, etc.)
+                </p>
+                <button
+                  onClick={async () => {
+                    if (!confirm('Importer le contenu existant des pages dans le WYSIWYG ?')) return;
+                    setSaving(true);
+                    try {
+                      const res = await fetch('/api/admin/import-content', { method: 'POST' });
+                      const data = await res.json();
+                      alert(`✅ Importation terminée !\n\n• ${data.created} blocs créés\n• ${data.updated} blocs mis à jour\n• ${data.errors} erreurs`);
+                      fetchBlocks();
+                    } catch (error) {
+                      console.error('Error importing content:', error);
+                      alert('❌ Erreur lors de l\'importation');
+                    } finally {
+                      setSaving(false);
+                    }
+                  }}
+                  disabled={saving}
+                  className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition disabled:opacity-50 font-semibold"
+                >
+                  {saving ? 'Importation...' : '📥 Importer le contenu maintenant'}
+                </button>
+              </section>
+            )}
 
             {/* Liste des blocs */}
             <section className="bg-white rounded-lg shadow-md p-6">
