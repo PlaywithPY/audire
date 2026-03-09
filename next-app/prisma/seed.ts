@@ -38,6 +38,26 @@ async function main() {
     },
   });
 
+  // Email par défaut
+  await prisma.siteSettings.upsert({
+    where: { key: 'email' },
+    update: {},
+    create: {
+      key: 'email',
+      value: 'centre.audire@gmail.com',
+    },
+  });
+
+  // Adresse physique par défaut
+  await prisma.siteSettings.upsert({
+    where: { key: 'address' },
+    update: {},
+    create: {
+      key: 'address',
+      value: 'Rue de la Station, 4\n4101 Jemeppe-sur-Meuse',
+    },
+  });
+
   // Horaires par défaut
   const defaultHours = [
     { dayOfWeek: 0, isOpen: false }, // Dimanche - Fermé

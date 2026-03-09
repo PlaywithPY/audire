@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CardIcon from "@/components/CardIcon";
 
 export default function Home() {
   return (
@@ -65,15 +66,17 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[
-              { icon: '👂', title: 'Test auditif gratuit', desc: 'Un test complet et sans engagement pour comprendre votre audition.' },
-              { icon: '💬', title: 'Accompagnement humain', desc: 'Pas de jargon technique, pas de pression commerciale.' },
-              { icon: '🔧', title: 'Suivi personnalisé', desc: 'Réglages progressifs, adaptations, suivi régulier.' },
-              { icon: '🏆', title: 'Solutions de qualité', desc: 'Oticon et Bernafon, deux marques reconnues.' },
-              { icon: '🎯', title: 'Centre indépendant', desc: "Pas d'objectifs de vente, pas de réseau à satisfaire." },
-              { icon: '💰', title: 'Transparence des prix', desc: 'Prix clairs, remboursements expliqués.' },
+              { cardKey: 'hero-features-test', icon: '👂', title: 'Test auditif gratuit', desc: 'Un test complet et sans engagement pour comprendre votre audition.' },
+              { cardKey: 'hero-features-accompagnement', icon: '💬', title: 'Accompagnement humain', desc: 'Pas de jargon technique, pas de pression commerciale.' },
+              { cardKey: 'hero-features-suivi', icon: '🔧', title: 'Suivi personnalisé', desc: 'Réglages progressifs, adaptations, suivi régulier.' },
+              { cardKey: 'hero-features-qualite', icon: '🏆', title: 'Solutions de qualité', desc: 'Oticon et Bernafon, deux marques reconnues.' },
+              { cardKey: 'hero-features-independant', icon: '🎯', title: 'Centre indépendant', desc: "Pas d'objectifs de vente, pas de réseau à satisfaire." },
+              { cardKey: 'hero-features-transparence', icon: '💰', title: 'Transparence des prix', desc: 'Prix clairs, remboursements expliqués.' },
             ].map((feature) => (
               <div key={feature.title} className="bg-bg p-6 rounded-2xl hover:shadow-lg transition-all">
-                <div className="text-4xl mb-4">{feature.icon}</div>
+                <div className="mb-4">
+                  <CardIcon cardKey={feature.cardKey} defaultEmoji={feature.icon} size={48} />
+                </div>
                 <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
                 <p className="text-text-light">{feature.desc}</p>
               </div>
