@@ -19,65 +19,104 @@ async function main() {
     },
   });
 
-  // Numéros de téléphone par défaut
-  await prisma.siteSettings.upsert({
-    where: { key: 'phone_fixe' },
+  // ==========================================
+  // CENTRES AUDIRE (MULTI-CENTRES)
+  // ==========================================
+
+  // Centre 1: Audire Jemeppe (centre principal existant)
+  const centreJemeppe = await prisma.centre.upsert({
+    where: { slug: 'jemeppe' },
     update: {},
     create: {
-      key: 'phone_fixe',
-      value: '+32 4 123 45 67',
+      name: 'Audire Jemeppe',
+      slug: 'jemeppe',
+      phoneFixe: '+32 4 234 56 78',
+      phoneMobile: '+32 476 12 34 56',
+      email: 'jemeppe@audire.be',
+      address: 'Rue de la Station, 4\n4101 Jemeppe-sur-Meuse',
+      postalCode: '4101',
+      city: 'Jemeppe-sur-Meuse',
+      isActive: true,
+      isDefault: true,
+      latitude: 50.6197,
+      longitude: 5.4981,
     },
   });
 
-  await prisma.siteSettings.upsert({
-    where: { key: 'phone_mobile' },
+  // Centre 2: Audire Liège (centre fictif pour l'exemple)
+  const centreLiege = await prisma.centre.upsert({
+    where: { slug: 'liege' },
     update: {},
     create: {
-      key: 'phone_mobile',
-      value: '+32 476 12 34 56',
+      name: 'Audire Liège Centre',
+      slug: 'liege',
+      phoneFixe: '+32 4 222 33 44',
+      phoneMobile: '+32 477 55 66 77',
+      email: 'liege@audire.be',
+      address: 'Place du Marché, 15\n4000 Liège',
+      postalCode: '4000',
+      city: 'Liège',
+      isActive: true,
+      isDefault: false,
+      latitude: 50.6412,
+      longitude: 5.5719,
     },
   });
 
-  // Email par défaut
-  await prisma.siteSettings.upsert({
-    where: { key: 'email' },
-    update: {},
-    create: {
-      key: 'email',
-      value: 'centre.audire@gmail.com',
-    },
-  });
-
-  // Adresse physique par défaut
-  await prisma.siteSettings.upsert({
-    where: { key: 'address' },
-    update: {},
-    create: {
-      key: 'address',
-      value: 'Rue de la Station, 4\n4101 Jemeppe-sur-Meuse',
-    },
-  });
-
-  // Horaires par défaut
-  const defaultHours = [
-    { dayOfWeek: 0, isOpen: false }, // Dimanche - Fermé
-    { dayOfWeek: 1, isOpen: true, morningOpen: '09:00', morningClose: '12:00', afternoonOpen: '13:00', afternoonClose: '17:00' }, // Lundi
-    { dayOfWeek: 2, isOpen: true, morningOpen: '09:00', morningClose: '12:00', afternoonOpen: '13:00', afternoonClose: '17:00' }, // Mardi
-    { dayOfWeek: 3, isOpen: true, morningOpen: '09:00', morningClose: '12:00', afternoonOpen: '13:00', afternoonClose: '17:00' }, // Mercredi
-    { dayOfWeek: 4, isOpen: true, morningOpen: '09:00', morningClose: '12:00', afternoonOpen: '13:00', afternoonClose: '17:00' }, // Jeudi
-    { dayOfWeek: 5, isOpen: true, morningOpen: '09:00', morningClose: '12:00', afternoonOpen: '13:00', afternoonClose: '17:00' }, // Vendredi
-    { dayOfWeek: 6, isOpen: false }, // Samedi - Sur rendez-vous (fermé par défaut)
+  // Horaires pour le centre de Jemeppe
+  const jemeppeHours = [
+    { centreId: centreJemeppe.id, dayOfWeek: 0, isOpen: false }, // Dimanche - Fermé
+    { centreId: centreJemeppe.id, dayOfWeek: 1, isOpen: true, morningOpen: '09:00', morningClose: '12:00', afternoonOpen: '13:00', afternoonClose: '17:00' }, // Lundi
+    { centreId: centreJemeppe.id, dayOfWeek: 2, isOpen: true, morningOpen: '09:00', morningClose: '12:00', afternoonOpen: '13:00', afternoonClose: '17:00' }, // Mardi
+    { centreId: centreJemeppe.id, dayOfWeek: 3, isOpen: true, morningOpen: '09:00', morningClose: '12:00', afternoonOpen: '13:00', afternoonClose: '17:00' }, // Mercredi
+    { centreId: centreJemeppe.id, dayOfWeek: 4, isOpen: true, morningOpen: '09:00', morningClose: '12:00', afternoonOpen: '13:00', afternoonClose: '17:00' }, // Jeudi
+    { centreId: centreJemeppe.id, dayOfWeek: 5, isOpen: true, morningOpen: '09:00', morningClose: '12:00', afternoonOpen: '13:00', afternoonClose: '17:00' }, // Vendredi
+    { centreId: centreJemeppe.id, dayOfWeek: 6, isOpen: true, morningOpen: '09:00', morningClose: '12:30', afternoonOpen: null, afternoonClose: null }, // Samedi matin uniquement
   ];
 
-  for (const hours of defaultHours) {
+  // Horaires pour le centre de Liège
+  const liegeHours = [
+    { centreId: centreLiege.id, dayOfWeek: 0, isOpen: false }, // Dimanche - Fermé
+    { centreId: centreLiege.id, dayOfWeek: 1, isOpen: true, morningOpen: '08:30', morningClose: '12:00', afternoonOpen: '13:30', afternoonClose: '18:00' }, // Lundi
+    { centreId: centreLiege.id, dayOfWeek: 2, isOpen: true, morningOpen: '08:30', morningClose: '12:00', afternoonOpen: '13:30', afternoonClose: '18:00' }, // Mardi
+    { centreId: centreLiege.id, dayOfWeek: 3, isOpen: true, morningOpen: '08:30', morningClose: '12:00', afternoonOpen: '13:30', afternoonClose: '18:00' }, // Mercredi
+    { centreId: centreLiege.id, dayOfWeek: 4, isOpen: true, morningOpen: '08:30', morningClose: '12:00', afternoonOpen: '13:30', afternoonClose: '18:00' }, // Jeudi
+    { centreId: centreLiege.id, dayOfWeek: 5, isOpen: true, morningOpen: '08:30', morningClose: '12:00', afternoonOpen: '13:30', afternoonClose: '18:00' }, // Vendredi
+    { centreId: centreLiege.id, dayOfWeek: 6, isOpen: false }, // Samedi - Fermé
+  ];
+
+  // Créer les horaires pour Jemeppe
+  for (const hours of jemeppeHours) {
     await prisma.openingHours.upsert({
-      where: { dayOfWeek: hours.dayOfWeek },
+      where: {
+        centreId_dayOfWeek: {
+          centreId: hours.centreId,
+          dayOfWeek: hours.dayOfWeek,
+        },
+      },
       update: {},
       create: hours,
     });
   }
 
-  // Avis clients par défaut
+  // Créer les horaires pour Liège
+  for (const hours of liegeHours) {
+    await prisma.openingHours.upsert({
+      where: {
+        centreId_dayOfWeek: {
+          centreId: hours.centreId,
+          dayOfWeek: hours.dayOfWeek,
+        },
+      },
+      update: {},
+      create: hours,
+    });
+  }
+
+  // ==========================================
+  // AVIS CLIENTS
+  // ==========================================
+
   await prisma.testimonial.upsert({
     where: { id: 1 },
     update: {},
@@ -118,6 +157,8 @@ async function main() {
   });
 
   console.log('✅ Database seeded!');
+  console.log(`   - ${jemeppeHours.length} horaires créés pour ${centreJemeppe.name}`);
+  console.log(`   - ${liegeHours.length} horaires créés pour ${centreLiege.name}`);
 }
 
 main()

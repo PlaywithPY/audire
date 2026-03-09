@@ -1,35 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCentre } from '@/contexts/CentreContext';
 
 export default function ContactInfo() {
-  const [settings, setSettings] = useState({
-    phone_fixe: '042 75 06 66',
-    phone_mobile: '',
-    email: 'centre.audire@gmail.com',
-    address: 'Rue de la Station, 4\n4101 Jemeppe-sur-Meuse',
-  });
-  const [loading, setLoading] = useState(true);
+  const { currentCentre, loading } = useCentre();
 
-  useEffect(() => {
-    fetch('/api/admin/settings')
-      .then((res) => res.json())
-      .then((data) => {
-        setSettings({
-          phone_fixe: data.phone_fixe || '042 75 06 66',
-          phone_mobile: data.phone_mobile || '',
-          email: data.email || 'centre.audire@gmail.com',
-          address: data.address || 'Rue de la Station, 4\n4101 Jemeppe-sur-Meuse',
-        });
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error loading settings:', error);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
+  if (loading || !currentCentre) {
     return (
       <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         <div className="bg-gray-100 animate-pulse p-8 rounded-2xl h-48"></div>
@@ -39,8 +15,8 @@ export default function ContactInfo() {
     );
   }
 
-  const addressLines = settings.address.split('\n');
-  const addressForMaps = settings.address.replace(/\n/g, ' ');
+  const addressLines = currentCentre.address.split('\n');
+  const addressForMaps = currentCentre.address.replace(/\n/g, ' ');
 
   return (
     <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -50,23 +26,21 @@ export default function ContactInfo() {
           📞
         </div>
         <h3 className="text-xl font-bold mb-2">Téléphone</h3>
-        {settings.phone_fixe && (
+        <a
+          href={`tel:${currentCentre.phoneFixe.replace(/\s/g, '')}`}
+          className="text-primary text-lg font-semibold hover:underline block"
+        >
+          {currentCentre.phoneFixe}
+        </a>
+        {currentCentre.phoneMobile && (
           <a
-            href={`tel:${settings.phone_fixe.replace(/\s/g, '')}`}
-            className="text-primary text-lg font-semibold hover:underline block"
-          >
-            {settings.phone_fixe}
-          </a>
-        )}
-        {settings.phone_mobile && (
-          <a
-            href={`tel:${settings.phone_mobile.replace(/\s/g, '')}`}
+            href={`tel:${currentCentre.phoneMobile.replace(/\s/g, '')}`}
             className="text-primary text-sm hover:underline block mt-1"
           >
-            {settings.phone_mobile}
+            {currentCentre.phoneMobile}
           </a>
         )}
-        <p className="text-text-muted text-sm mt-2">Lun - Ven : 9h-17h</p>
+        <p className="text-text-muted text-sm mt-2">Voir nos horaires d'ouverture</p>
       </div>
 
       {/* Email */}
@@ -76,10 +50,10 @@ export default function ContactInfo() {
         </div>
         <h3 className="text-xl font-bold mb-2">Email</h3>
         <a
-          href={`mailto:${settings.email}`}
+          href={`mailto:${currentCentre.email}`}
           className="text-primary text-lg font-semibold hover:underline break-all"
         >
-          {settings.email}
+          {currentCentre.email}
         </a>
         <p className="text-text-muted text-sm mt-2">Réponse sous 24h</p>
       </div>
