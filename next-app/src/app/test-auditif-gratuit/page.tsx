@@ -273,10 +273,10 @@ export default function TestAuditifGratuit() {
                 📞 042 75 06 66
               </a>
               <a
-                href="mailto:info@audire.be"
+                href="mailto:centre.audire@gmail.com"
                 className="bg-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition-all inline-flex items-center gap-2"
               >
-                ✉️ info@audire.be
+                ✉️ centre.audire@gmail.com
               </a>
             </div>
           </div>

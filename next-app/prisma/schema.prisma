@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Settings généraux du site
+model SiteSettings {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+// Horaires d'ouverture par jour
+model OpeningHours {
+  id            Int     @id @default(autoincrement())
+  dayOfWeek     Int     // 0 = dimanche, 1 = lundi, ..., 6 = samedi
+  isOpen        Boolean @default(true)
+  morningOpen   String? // Format "HH:MM"
+  morningClose  String? // Format "HH:MM"
+  afternoonOpen String? // Format "HH:MM"
+  afternoonClose String? // Format "HH:MM"
+  updatedAt     DateTime @updatedAt
+
+  @@unique([dayOfWeek])
+}
+
+// Thème/Couleurs du site
+model ThemeColors {
+  id           Int      @id @default(autoincrement())
+  primary      String   @default("#42a4ff")
+  primaryLight String   @default("#5ab3ff")
+  primaryDark  String   @default("#2d87e6")
+  secondary    String   @default("#EBF5FF")
+  updatedAt    DateTime @updatedAt
+}
+
+// Images pour les cards (remplace les émojis)
+model CardImage {
+  id          Int      @id @default(autoincrement())
+  cardKey     String   @unique // Identifiant unique de la card (ex: "solutions-oticon")
+  imageUrl    String   // URL de l'image
+  fallbackEmoji String @default("📷") // Emoji de fallback
+  updatedAt   DateTime @updatedAt
+}
+
+// Sections avec images de fond
+model SectionBackground {
+  id          Int      @id @default(autoincrement())
+  sectionKey  String   @unique // Identifiant de la section (ex: "hero-home")
+  imageUrl    String?  // URL de l'image de fond (null = utiliser le gradient par défaut)
+  updatedAt   DateTime @updatedAt
+}
