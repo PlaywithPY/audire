@@ -18,9 +18,35 @@ model SiteSettings {
   updatedAt DateTime @updatedAt
 }
 
-// Horaires d'ouverture par jour
+// Centres Audire (multi-centres)
+model Centre {
+  id           Int      @id @default(autoincrement())
+  name         String   // Nom du centre (ex: "Audire Jemeppe")
+  slug         String   @unique // Identifiant unique (ex: "jemeppe", "liege")
+  phoneFixe    String   // Téléphone fixe
+  phoneMobile  String?  // Téléphone mobile (GSM)
+  email        String   // Email du centre
+  address      String   @db.Text // Adresse complète
+  postalCode   String   // Code postal
+  city         String   // Ville
+  isActive     Boolean  @default(true) // Centre actif ou non
+  isDefault    Boolean  @default(false) // Centre par défaut
+  latitude     Float?   // Latitude pour la recherche géographique (future fonctionnalité)
+  longitude    Float?   // Longitude pour la recherche géographique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  openingHours OpeningHours[]
+
+  @@index([postalCode])
+  @@index([isActive])
+}
+
+// Horaires d'ouverture par jour (liés à un centre)
 model OpeningHours {
   id            Int     @id @default(autoincrement())
+  centreId      Int     // Lien vers le centre
+  centre        Centre  @relation(fields: [centreId], references: [id], onDelete: Cascade)
   dayOfWeek     Int     // 0 = dimanche, 1 = lundi, ..., 6 = samedi
   isOpen        Boolean @default(true)
   morningOpen   String? // Format "HH:MM"
@@ -29,7 +55,8 @@ model OpeningHours {
   afternoonClose String? // Format "HH:MM"
   updatedAt     DateTime @updatedAt
 
-  @@unique([dayOfWeek])
+  @@unique([centreId, dayOfWeek])
+  @@index([centreId])
 }
 
 // Thème/Couleurs du site
