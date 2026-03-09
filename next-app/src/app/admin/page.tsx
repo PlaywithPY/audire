@@ -82,11 +82,13 @@ export default function AdminDashboard() {
     secondary: '#EBF5FF',
   });
   const [hours, setHours] = useState<OpeningHour[]>([]);
-  const [phones, setPhones] = useState({
-    phone_fixe: '+32 4 123 45 67',
-    phone_mobile: '+32 476 12 34 56',
+  const [centre, setCentre] = useState({
+    phoneFixe: '+32 4 123 45 67',
+    phoneMobile: '+32 476 12 34 56',
     email: 'centre.audire@gmail.com',
     address: 'Rue de la Station, 4\n4101 Jemeppe-sur-Meuse',
+    postalCode: '4101',
+    city: 'Jemeppe-sur-Meuse',
   });
   const [blocks, setBlocks] = useState<ContentBlock[]>([]);
   const [selectedPage, setSelectedPage] = useState('home');
@@ -128,23 +130,25 @@ export default function AdminDashboard() {
 
   async function fetchData() {
     try {
-      const [colorsRes, hoursRes, settingsRes] = await Promise.all([
+      const [colorsRes, hoursRes, centreRes] = await Promise.all([
         fetch('/api/admin/colors'),
         fetch('/api/admin/hours'),
-        fetch('/api/admin/settings'),
+        fetch('/api/admin/centre'),
       ]);
 
       const colorsData = await colorsRes.json();
       const hoursData = await hoursRes.json();
-      const settingsData = await settingsRes.json();
+      const centreData = await centreRes.json();
 
       setColors(colorsData);
       setHours(hoursData);
-      setPhones({
-        phone_fixe: settingsData.phone_fixe || '+32 4 123 45 67',
-        phone_mobile: settingsData.phone_mobile || '+32 476 12 34 56',
-        email: settingsData.email || 'centre.audire@gmail.com',
-        address: settingsData.address || 'Rue de la Station, 4\n4101 Jemeppe-sur-Meuse',
+      setCentre({
+        phoneFixe: centreData.phoneFixe || '+32 4 123 45 67',
+        phoneMobile: centreData.phoneMobile || '+32 476 12 34 56',
+        email: centreData.email || 'centre.audire@gmail.com',
+        address: centreData.address || 'Rue de la Station, 4\n4101 Jemeppe-sur-Meuse',
+        postalCode: centreData.postalCode || '4101',
+        city: centreData.city || 'Jemeppe-sur-Meuse',
       });
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -464,17 +468,17 @@ export default function AdminDashboard() {
     );
   }
 
-  async function saveSetting(key: 'phone_fixe' | 'phone_mobile' | 'email' | 'address') {
+  async function saveCentre() {
     setSaving(true);
     try {
-      await fetch('/api/admin/settings', {
+      await fetch('/api/admin/centre', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key, value: phones[key] }),
+        body: JSON.stringify(centre),
       });
       alert('✅ Sauvegardé !');
     } catch (error) {
-      console.error('Error saving setting:', error);
+      console.error('Error saving centre:', error);
       alert('❌ Erreur lors de la sauvegarde');
     } finally {
       setSaving(false);
@@ -648,74 +652,76 @@ export default function AdminDashboard() {
               <label className="block text-sm font-semibold mb-2">Téléphone fixe</label>
               <input
                 type="tel"
-                value={phones.phone_fixe}
-                onChange={(e) => setPhones({ ...phones, phone_fixe: e.target.value })}
+                value={centre.phoneFixe}
+                onChange={(e) => setCentre({ ...centre, phoneFixe: e.target.value })}
                 placeholder="+32 4 123 45 67"
                 className="w-full px-3 py-2 border border-gray-300 rounded"
               />
-              <button
-                onClick={() => saveSetting('phone_fixe')}
-                disabled={saving}
-                className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition disabled:opacity-50 text-sm"
-              >
-                💾 Sauvegarder
-              </button>
             </div>
 
             <div>
               <label className="block text-sm font-semibold mb-2">Téléphone mobile (GSM)</label>
               <input
                 type="tel"
-                value={phones.phone_mobile}
-                onChange={(e) => setPhones({ ...phones, phone_mobile: e.target.value })}
+                value={centre.phoneMobile}
+                onChange={(e) => setCentre({ ...centre, phoneMobile: e.target.value })}
                 placeholder="+32 476 12 34 56"
                 className="w-full px-3 py-2 border border-gray-300 rounded"
               />
-              <button
-                onClick={() => saveSetting('phone_mobile')}
-                disabled={saving}
-                className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition disabled:opacity-50 text-sm"
-              >
-                💾 Sauvegarder
-              </button>
             </div>
 
             <div>
               <label className="block text-sm font-semibold mb-2">Email</label>
               <input
                 type="email"
-                value={phones.email}
-                onChange={(e) => setPhones({ ...phones, email: e.target.value })}
+                value={centre.email}
+                onChange={(e) => setCentre({ ...centre, email: e.target.value })}
                 placeholder="centre.audire@gmail.com"
                 className="w-full px-3 py-2 border border-gray-300 rounded"
               />
-              <button
-                onClick={() => saveSetting('email')}
-                disabled={saving}
-                className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition disabled:opacity-50 text-sm"
-              >
-                💾 Sauvegarder
-              </button>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">Adresse physique</label>
+              <label className="block text-sm font-semibold mb-2">Adresse</label>
               <textarea
-                value={phones.address}
-                onChange={(e) => setPhones({ ...phones, address: e.target.value })}
-                placeholder="Rue de la Station, 4&#10;4101 Jemeppe-sur-Meuse"
-                rows={3}
+                value={centre.address}
+                onChange={(e) => setCentre({ ...centre, address: e.target.value })}
+                placeholder="Rue de la Station, 4"
+                rows={2}
                 className="w-full px-3 py-2 border border-gray-300 rounded"
               />
-              <button
-                onClick={() => saveSetting('address')}
-                disabled={saving}
-                className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition disabled:opacity-50 text-sm"
-              >
-                💾 Sauvegarder
-              </button>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-2">Code postal</label>
+              <input
+                type="text"
+                value={centre.postalCode}
+                onChange={(e) => setCentre({ ...centre, postalCode: e.target.value })}
+                placeholder="4101"
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-2">Ville</label>
+              <input
+                type="text"
+                value={centre.city}
+                onChange={(e) => setCentre({ ...centre, city: e.target.value })}
+                placeholder="Jemeppe-sur-Meuse"
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              />
             </div>
           </div>
+
+          <button
+            onClick={saveCentre}
+            disabled={saving}
+            className="mt-6 bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition disabled:opacity-50"
+          >
+            {saving ? 'Sauvegarde...' : '💾 Sauvegarder les coordonnées'}
+          </button>
         </section>
 
         {/* Horaires d'ouverture */}
