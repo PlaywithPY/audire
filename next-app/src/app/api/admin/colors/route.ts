@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 
 export async function GET() {
@@ -46,6 +47,9 @@ export async function PUT(request: Request) {
         secondary,
       },
     });
+
+    // Invalider le cache de toutes les pages pour appliquer les nouvelles couleurs
+    revalidatePath('/', 'layout');
 
     return NextResponse.json(colors);
   } catch (error) {

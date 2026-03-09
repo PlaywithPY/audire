@@ -151,6 +151,31 @@ export default function AdminDashboard() {
       </header>
 
       <div className="container mx-auto px-6 py-8">
+        {/* Navigation rapide */}
+        <section className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-md p-6 mb-8 text-white">
+          <h2 className="text-xl font-bold mb-4">🚀 Actions rapides</h2>
+          <div className="grid md:grid-cols-3 gap-4">
+            <Link
+              href="/admin/content"
+              className="bg-white/10 hover:bg-white/20 backdrop-blur rounded-lg p-4 transition text-center"
+            >
+              <div className="text-3xl mb-2">🖊️</div>
+              <div className="font-semibold">Éditeur de contenu</div>
+              <div className="text-sm text-white/80">Modifier textes et blocs</div>
+            </Link>
+            <div className="bg-white/10 rounded-lg p-4 text-center opacity-50">
+              <div className="text-3xl mb-2">🎨</div>
+              <div className="font-semibold">Builder visuel</div>
+              <div className="text-sm text-white/80">Bientôt disponible</div>
+            </div>
+            <div className="bg-white/10 rounded-lg p-4 text-center opacity-50">
+              <div className="text-3xl mb-2">📊</div>
+              <div className="font-semibold">Analytics</div>
+              <div className="text-sm text-white/80">Bientôt disponible</div>
+            </div>
+          </div>
+        </section>
+
         {/* Couleurs du thème */}
         <section className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-2xl font-bold mb-4">🎨 Couleurs du thème</h2>
