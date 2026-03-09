@@ -134,7 +134,6 @@ const contentBlocks = [
     blockKey: 'bernafon-title',
     blockType: 'text',
     content: 'Bernafon',
-    blockType: 'text',
     order: 5,
   },
   {
