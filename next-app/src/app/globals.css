@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #FF8C42;
+  --primary-light: #FFA059;
+  --primary-dark: #E67A2E;
+  --secondary: #FFF5ED;
+  --bg: #FFFCF8;
+  --bg-alt: #FFF8F0;
+  --text: #1a1a1a;
+  --text-light: #3a3a3a;
+  --text-muted: #666666;
+  --border: #E8D5C4;
+
+  --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: var(--font-playfair), Georgia, serif;
+
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
