@@ -30,6 +30,10 @@ export default function AdminDashboard() {
     secondary: '#EBF5FF',
   });
   const [hours, setHours] = useState<OpeningHour[]>([]);
+  const [phones, setPhones] = useState({
+    phone_fixe: '+32 4 123 45 67',
+    phone_mobile: '+32 476 12 34 56',
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -39,16 +43,22 @@ export default function AdminDashboard() {
 
   async function fetchData() {
     try {
-      const [colorsRes, hoursRes] = await Promise.all([
+      const [colorsRes, hoursRes, settingsRes] = await Promise.all([
         fetch('/api/admin/colors'),
         fetch('/api/admin/hours'),
+        fetch('/api/admin/settings'),
       ]);
 
       const colorsData = await colorsRes.json();
       const hoursData = await hoursRes.json();
+      const settingsData = await settingsRes.json();
 
       setColors(colorsData);
       setHours(hoursData);
+      setPhones({
+        phone_fixe: settingsData.phone_fixe || '+32 4 123 45 67',
+        phone_mobile: settingsData.phone_mobile || '+32 476 12 34 56',
+      });
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -98,6 +108,23 @@ export default function AdminDashboard() {
           : h
       )
     );
+  }
+
+  async function savePhone(key: 'phone_fixe' | 'phone_mobile') {
+    setSaving(true);
+    try {
+      await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value: phones[key] }),
+      });
+      alert('✅ Numéro sauvegardé !');
+    } catch (error) {
+      console.error('Error saving phone:', error);
+      alert('❌ Erreur lors de la sauvegarde');
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (loading) {
@@ -210,6 +237,48 @@ export default function AdminDashboard() {
           </button>
         </section>
 
+        {/* Numéros de téléphone */}
+        <section className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h2 className="text-2xl font-bold mb-4">📞 Numéros de téléphone</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold mb-2">Téléphone fixe</label>
+              <input
+                type="tel"
+                value={phones.phone_fixe}
+                onChange={(e) => setPhones({ ...phones, phone_fixe: e.target.value })}
+                placeholder="+32 4 123 45 67"
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              />
+              <button
+                onClick={() => savePhone('phone_fixe')}
+                disabled={saving}
+                className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition disabled:opacity-50 text-sm"
+              >
+                💾 Sauvegarder
+              </button>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-2">Téléphone mobile (GSM)</label>
+              <input
+                type="tel"
+                value={phones.phone_mobile}
+                onChange={(e) => setPhones({ ...phones, phone_mobile: e.target.value })}
+                placeholder="+32 476 12 34 56"
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              />
+              <button
+                onClick={() => savePhone('phone_mobile')}
+                disabled={saving}
+                className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition disabled:opacity-50 text-sm"
+              >
+                💾 Sauvegarder
+              </button>
+            </div>
+          </div>
+        </section>
+
         {/* Horaires d'ouverture */}
         <section className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-2xl font-bold mb-4">🕐 Horaires d'ouverture</h2>
@@ -232,41 +301,89 @@ export default function AdminDashboard() {
                 {hour.isOpen && (
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm font-semibold mb-2">Matin</p>
-                      <div className="flex gap-2">
-                        <input
-                          type="time"
-                          value={hour.morningOpen || '09:00'}
-                          onChange={(e) => updateHour(hour.dayOfWeek, 'morningOpen', e.target.value)}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded"
-                        />
-                        <span className="self-center">-</span>
-                        <input
-                          type="time"
-                          value={hour.morningClose || '12:00'}
-                          onChange={(e) => updateHour(hour.dayOfWeek, 'morningClose', e.target.value)}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded"
-                        />
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-semibold">Matin</p>
+                        <label className="flex items-center gap-2 text-sm">
+                          <input
+                            type="checkbox"
+                            checked={!hour.morningOpen}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                updateHour(hour.dayOfWeek, 'morningOpen', null);
+                                updateHour(hour.dayOfWeek, 'morningClose', null);
+                              } else {
+                                updateHour(hour.dayOfWeek, 'morningOpen', '09:00');
+                                updateHour(hour.dayOfWeek, 'morningClose', '12:00');
+                              }
+                            }}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-gray-600">Fermé</span>
+                        </label>
                       </div>
+                      {hour.morningOpen && (
+                        <div className="flex gap-2">
+                          <input
+                            type="time"
+                            value={hour.morningOpen}
+                            onChange={(e) => updateHour(hour.dayOfWeek, 'morningOpen', e.target.value)}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded"
+                          />
+                          <span className="self-center">-</span>
+                          <input
+                            type="time"
+                            value={hour.morningClose || '12:00'}
+                            onChange={(e) => updateHour(hour.dayOfWeek, 'morningClose', e.target.value)}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                      )}
+                      {!hour.morningOpen && (
+                        <p className="text-sm text-gray-500 italic">Fermé le matin</p>
+                      )}
                     </div>
 
                     <div>
-                      <p className="text-sm font-semibold mb-2">Après-midi</p>
-                      <div className="flex gap-2">
-                        <input
-                          type="time"
-                          value={hour.afternoonOpen || '13:00'}
-                          onChange={(e) => updateHour(hour.dayOfWeek, 'afternoonOpen', e.target.value)}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded"
-                        />
-                        <span className="self-center">-</span>
-                        <input
-                          type="time"
-                          value={hour.afternoonClose || '17:00'}
-                          onChange={(e) => updateHour(hour.dayOfWeek, 'afternoonClose', e.target.value)}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded"
-                        />
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-semibold">Après-midi</p>
+                        <label className="flex items-center gap-2 text-sm">
+                          <input
+                            type="checkbox"
+                            checked={!hour.afternoonOpen}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                updateHour(hour.dayOfWeek, 'afternoonOpen', null);
+                                updateHour(hour.dayOfWeek, 'afternoonClose', null);
+                              } else {
+                                updateHour(hour.dayOfWeek, 'afternoonOpen', '13:00');
+                                updateHour(hour.dayOfWeek, 'afternoonClose', '17:00');
+                              }
+                            }}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-gray-600">Fermé</span>
+                        </label>
                       </div>
+                      {hour.afternoonOpen && (
+                        <div className="flex gap-2">
+                          <input
+                            type="time"
+                            value={hour.afternoonOpen}
+                            onChange={(e) => updateHour(hour.dayOfWeek, 'afternoonOpen', e.target.value)}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded"
+                          />
+                          <span className="self-center">-</span>
+                          <input
+                            type="time"
+                            value={hour.afternoonClose || '17:00'}
+                            onChange={(e) => updateHour(hour.dayOfWeek, 'afternoonClose', e.target.value)}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                      )}
+                      {!hour.afternoonOpen && (
+                        <p className="text-sm text-gray-500 italic">Fermé l'après-midi</p>
+                      )}
                     </div>
                   </div>
                 )}

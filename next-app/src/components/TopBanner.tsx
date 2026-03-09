@@ -4,6 +4,23 @@ import { useEffect, useState } from 'react';
 
 export default function TopBanner() {
   const [isOpen, setIsOpen] = useState(false);
+  const [phones, setPhones] = useState({
+    phone_fixe: '042 75 06 66',
+    phone_mobile: '',
+  });
+
+  // Charger les téléphones
+  useEffect(() => {
+    fetch('/api/admin/settings')
+      .then((res) => res.json())
+      .then((data) => {
+        setPhones({
+          phone_fixe: data.phone_fixe || '042 75 06 66',
+          phone_mobile: data.phone_mobile || '',
+        });
+      })
+      .catch(console.error);
+  }, []);
 
   useEffect(() => {
     const checkIfOpen = () => {
@@ -64,13 +81,28 @@ export default function TopBanner() {
 
           {/* Contact */}
           <div className="flex items-center gap-4">
-            <a
-              href="tel:+3242750666"
-              className="hover:text-white/80 transition-colors flex items-center gap-1"
-            >
-              📞 042 75 06 66
-            </a>
-            <span className="hidden md:inline text-white/80">•</span>
+            {phones.phone_fixe && (
+              <>
+                <a
+                  href={`tel:${phones.phone_fixe.replace(/\s/g, '')}`}
+                  className="hover:text-white/80 transition-colors flex items-center gap-1"
+                >
+                  📞 {phones.phone_fixe}
+                </a>
+                <span className="hidden md:inline text-white/80">•</span>
+              </>
+            )}
+            {phones.phone_mobile && (
+              <>
+                <a
+                  href={`tel:${phones.phone_mobile.replace(/\s/g, '')}`}
+                  className="hover:text-white/80 transition-colors flex items-center gap-1"
+                >
+                  📱 {phones.phone_mobile}
+                </a>
+                <span className="hidden md:inline text-white/80">•</span>
+              </>
+            )}
             <a
               href="mailto:centre.audire@gmail.com"
               className="hover:text-white/80 transition-colors flex items-center gap-1"
