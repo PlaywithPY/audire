@@ -1,8 +1,11 @@
-import Image from "next/image";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <>
+      <Header />
+      <main className="min-h-screen">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary to-primary-dark text-white py-20">
         <div className="container mx-auto px-4">
@@ -95,12 +98,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Info Bar */}
-      <div className="bg-primary text-white py-4 text-center">
-        <p className="text-sm">
-          🚀 <strong>Nouveau site développé avec Next.js</strong> - Dashboard admin moderne à venir !
-        </p>
-      </div>
     </main>
+      <Footer />
+    </>
   );
 }

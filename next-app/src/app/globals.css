@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --primary: #FF8C42;
-  --primary-light: #FFA059;
-  --primary-dark: #E67A2E;
-  --secondary: #FFF5ED;
-  --bg: #FFFCF8;
-  --bg-alt: #FFF8F0;
+  --primary: #42a4ff;
+  --primary-light: #5ab3ff;
+  --primary-dark: #2d87e6;
+  --secondary: #EBF5FF;
+  --bg: #F8FBFF;
+  --bg-alt: #F0F7FF;
   --text: #1a1a1a;
   --text-light: #3a3a3a;
   --text-muted: #666666;
-  --border: #E8D5C4;
+  --border: #C4DDF8;
 
   --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-heading: var(--font-playfair), Georgia, serif;

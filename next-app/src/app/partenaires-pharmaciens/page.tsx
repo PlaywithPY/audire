@@ -1,0 +1,189 @@
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Partenaires pharmaciens — Audire",
+  description: "Vous êtes pharmacien ? Découvrez notre partenariat et comment orienter vos patients vers Audire.",
+};
+
+export default function PartenairesPharmaciens() {
+  return (
+    <>
+      <Header />
+      <main className="min-h-screen">
+        {/* Hero Section */}
+        <section className="relative bg-gradient-to-br from-primary to-primary-dark text-white py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <span className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
+                Professionnels de santé
+              </span>
+              <h1 className="text-5xl md:text-6xl font-bold mb-6">
+                Partenaires pharmaciens
+              </h1>
+              <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
+                Vous êtes pharmacien en province de Liège ? Orientez vos patients vers
+                <strong> un accompagnement de qualité</strong> pour leurs besoins auditifs.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Pourquoi nous recommander */}
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <span className="inline-block bg-secondary text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                Notre engagement
+              </span>
+              <h2 className="text-4xl font-bold mb-4">Pourquoi nous recommander ?</h2>
+              <p className="text-xl text-text-light max-w-3xl mx-auto">
+                Un partenariat basé sur la confiance et l'excellence du service.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {[
+                {
+                  icon: '🏆',
+                  title: 'Expertise reconnue',
+                  desc: 'Solutions Oticon et Bernafon, deux marques de référence mondiale en audiologie.'
+                },
+                {
+                  icon: '💙',
+                  title: 'Accompagnement humain',
+                  desc: 'Prise en charge personnalisée et suivi régulier de vos patients.'
+                },
+                {
+                  icon: '⚡',
+                  title: 'Réactivité',
+                  desc: 'Prise de rendez-vous rapide et disponibilité pour les urgences.'
+                },
+                {
+                  icon: '💎',
+                  title: 'Transparence',
+                  desc: 'Prix clairs et explications détaillées des remboursements INAMI.'
+                },
+                {
+                  icon: '🎯',
+                  title: 'Indépendance',
+                  desc: 'Centre indépendant sans objectifs de vente, focus sur le bien-être du patient.'
+                },
+                {
+                  icon: '🤝',
+                  title: 'Retour d\'information',
+                  desc: 'Nous vous tenons informé du suivi de vos patients (avec leur accord).'
+                },
+              ].map((item) => (
+                <div key={item.title} className="bg-bg p-6 rounded-2xl hover:shadow-lg transition-all">
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                  <p className="text-text-light">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Comment ça marche */}
+        <section className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold mb-4">Comment orienter vos patients ?</h2>
+              <p className="text-xl text-text-light max-w-3xl mx-auto">
+                Un processus simple et efficace pour vos patients.
+              </p>
+            </div>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="space-y-6">
+                {[
+                  {
+                    step: '1',
+                    title: 'Détection du besoin',
+                    desc: 'Votre patient vous fait part de difficultés auditives ou vous détectez des signes.'
+                  },
+                  {
+                    step: '2',
+                    title: 'Orientation vers Audire',
+                    desc: 'Vous recommandez Audire et nous transmettez les coordonnées du patient (avec son accord).'
+                  },
+                  {
+                    step: '3',
+                    title: 'Prise en charge rapide',
+                    desc: 'Nous contactons votre patient rapidement pour planifier un test auditif gratuit.'
+                  },
+                  {
+                    step: '4',
+                    title: 'Accompagnement personnalisé',
+                    desc: 'Nous prenons en charge votre patient avec notre méthode d\'accompagnement sur-mesure.'
+                  },
+                  {
+                    step: '5',
+                    title: 'Retour d\'information',
+                    desc: 'Nous vous tenons informé de l\'évolution (avec l\'accord du patient).'
+                  },
+                ].map((item) => (
+                  <div key={item.step} className="flex gap-6 items-start bg-white p-6 rounded-xl hover:shadow-lg transition-all">
+                    <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold flex-shrink-0">
+                      {item.step}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                      <p className="text-text-light">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Matériel de communication */}
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-4xl font-bold mb-4">Matériel de communication</h2>
+              <p className="text-xl text-text-light mb-8">
+                Nous mettons à votre disposition du matériel pour informer vos patients.
+              </p>
+
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  { icon: '📋', title: 'Dépliants', desc: 'À disposer dans votre pharmacie' },
+                  { icon: '🎯', title: 'Affiches', desc: 'Pour votre vitrine ou espace conseil' },
+                  { icon: '📱', title: 'Cartes de visite', desc: 'À remettre à vos patients' },
+                ].map((item) => (
+                  <div key={item.title} className="bg-bg p-6 rounded-xl">
+                    <div className="text-4xl mb-3">{item.icon}</div>
+                    <h3 className="font-bold mb-2">{item.title}</h3>
+                    <p className="text-sm text-text-muted">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-4xl font-bold mb-4">Devenons partenaires</h2>
+            <p className="text-xl text-text-light mb-8 max-w-2xl mx-auto">
+              Vous souhaitez devenir partenaire ou obtenir plus d'informations ?
+              Contactez-nous dès maintenant.
+            </p>
+            <a
+              href="/contact"
+              className="inline-block bg-primary text-white px-8 py-4 rounded-xl font-semibold hover:bg-primary-dark transition-all shadow-lg"
+            >
+              📞 Nous contacter
+            </a>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
+}
