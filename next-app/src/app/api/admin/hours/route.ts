@@ -1,9 +1,20 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+// Récupérer les horaires du centre par défaut (utilisé par l'admin)
 export async function GET() {
   try {
+    // Trouver le centre par défaut
+    const defaultCentre = await prisma.centre.findFirst({
+      where: { isDefault: true },
+    });
+
+    if (!defaultCentre) {
+      return NextResponse.json({ error: 'No default centre found' }, { status: 404 });
+    }
+
     const hours = await prisma.openingHours.findMany({
+      where: { centreId: defaultCentre.id },
       orderBy: { dayOfWeek: 'asc' },
     });
 
@@ -14,13 +25,28 @@ export async function GET() {
   }
 }
 
+// Mettre à jour les horaires du centre par défaut (utilisé par l'admin)
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
     const { dayOfWeek, isOpen, morningOpen, morningClose, afternoonOpen, afternoonClose } = body;
 
+    // Trouver le centre par défaut
+    const defaultCentre = await prisma.centre.findFirst({
+      where: { isDefault: true },
+    });
+
+    if (!defaultCentre) {
+      return NextResponse.json({ error: 'No default centre found' }, { status: 404 });
+    }
+
     const hours = await prisma.openingHours.upsert({
-      where: { dayOfWeek },
+      where: {
+        centreId_dayOfWeek: {
+          centreId: defaultCentre.id,
+          dayOfWeek,
+        },
+      },
       update: {
         isOpen,
         morningOpen: isOpen ? morningOpen : null,
@@ -29,6 +55,7 @@ export async function PUT(request: Request) {
         afternoonClose: isOpen ? afternoonClose : null,
       },
       create: {
+        centreId: defaultCentre.id,
         dayOfWeek,
         isOpen,
         morningOpen: isOpen ? morningOpen : null,
