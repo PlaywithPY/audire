@@ -1118,15 +1118,46 @@ export default function AdminDashboard() {
                             </div>
                           </div>
                           <div>
-                            <label className="block text-sm font-semibold mb-2">Contenu</label>
+                            <div className="flex justify-between items-center mb-2">
+                              <label className="block text-sm font-semibold">Contenu</label>
+                              <div className="text-xs text-gray-500 space-x-2">
+                                <span>Format: Texte simple</span>
+                                {editingBlock.blockType === 'button' && (
+                                  <span className="text-blue-600">• Format bouton: Texte|/lien</span>
+                                )}
+                              </div>
+                            </div>
                             <textarea
                               value={editingBlock.content}
                               onChange={(e) =>
                                 setEditingBlock({ ...editingBlock, content: e.target.value })
                               }
-                              rows={5}
-                              className="w-full px-3 py-2 border border-gray-300 rounded font-mono"
+                              rows={editingBlock.blockType === 'text' ? 8 : 4}
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg font-sans text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              placeholder={
+                                editingBlock.blockType === 'button'
+                                  ? 'Exemple: Prendre rendez-vous|/contact'
+                                  : editingBlock.blockType === 'title'
+                                  ? 'Titre de la section...'
+                                  : 'Contenu du bloc...'
+                              }
                             />
+                            {editingBlock.content && (
+                              <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <p className="text-xs text-gray-600 mb-2 font-semibold">📋 Aperçu :</p>
+                                <div className="prose prose-sm max-w-none">
+                                  {editingBlock.blockType === 'title' ? (
+                                    <h2 className="text-2xl font-bold text-gray-800">{editingBlock.content}</h2>
+                                  ) : editingBlock.blockType === 'button' ? (
+                                    <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold">
+                                      {editingBlock.content.split('|')[0] || editingBlock.content}
+                                    </button>
+                                  ) : (
+                                    <p className="text-gray-700 whitespace-pre-wrap">{editingBlock.content}</p>
+                                  )}
+                                </div>
+                              </div>
+                            )}
                           </div>
                           <div className="flex gap-2 mt-4">
                             <button

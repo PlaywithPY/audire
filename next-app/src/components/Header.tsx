@@ -23,7 +23,7 @@ export default function Header() {
       <TopBanner />
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm">
         {/* Navigation avec Logo */}
-        <nav className="container mx-auto px-4 py-4">
+        <nav className="container mx-auto px-4 py-5">
           <div className="flex items-center justify-between gap-8">
             {/* Logo à gauche */}
             <div className="flex-shrink-0">
