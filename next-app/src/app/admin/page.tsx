@@ -460,6 +460,48 @@ export default function AdminDashboard() {
     }
   }
 
+  async function syncMissingData() {
+    if (!confirm('Synchroniser les données manquantes ?\n\nCela ajoutera uniquement ce qui manque (cards, témoignages, etc.) sans modifier les données existantes.')) return;
+
+    setSaving(true);
+    try {
+      const res = await fetch('/api/admin/sync-missing-data', {
+        method: 'POST',
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        let message = '✅ Synchronisation terminée !\n\n';
+        message += `📸 Images de cards :\n`;
+        message += `  • ${data.results.cardImages.created} créées\n`;
+        message += `  • ${data.results.cardImages.skipped} déjà existantes\n\n`;
+
+        if (data.results.testimonials.created > 0) {
+          message += `⭐ Témoignages : ${data.results.testimonials.created} créés\n`;
+        }
+
+        if (data.results.centres.created > 0) {
+          message += `📍 Centres : ${data.results.centres.created} créés\n`;
+        }
+
+        if (data.results.errors.length > 0) {
+          message += `\n⚠️ ${data.results.errors.length} erreurs :\n`;
+          message += data.results.errors.slice(0, 3).join('\n');
+        }
+
+        alert(message);
+        fetchCardImages();
+      } else {
+        alert('❌ Erreur : ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error syncing data:', error);
+      alert('❌ Erreur lors de la synchronisation');
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function saveColors() {
     setSaving(true);
     try {
@@ -1458,12 +1500,21 @@ export default function AdminDashboard() {
             <section className="bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">🖼️ Images de cards</h2>
-                <button
-                  onClick={() => setShowNewCardImageForm(!showNewCardImageForm)}
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
-                >
-                  + Nouvelle image
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={syncMissingData}
+                    disabled={saving}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition disabled:opacity-50"
+                  >
+                    {saving ? '🔄 Synchronisation...' : '🔄 Synchroniser les données manquantes'}
+                  </button>
+                  <button
+                    onClick={() => setShowNewCardImageForm(!showNewCardImageForm)}
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+                  >
+                    + Nouvelle image
+                  </button>
+                </div>
               </div>
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
@@ -1476,6 +1527,20 @@ export default function AdminDashboard() {
                   Exemples de cardKey : "hero-features-test", "solutions-oticon", "approach-personal"
                 </p>
               </div>
+
+              {/* Bouton de synchronisation des données manquantes */}
+              {cardImages.length === 0 && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                  <h3 className="font-bold text-lg mb-2">📥 Aucune donnée trouvée</h3>
+                  <p className="text-sm text-gray-700 mb-3">
+                    Votre base de données ne contient aucune image de card. Cliquez sur le bouton ci-dessus pour
+                    synchroniser automatiquement toutes les cards utilisées sur le site (avec leurs emojis par défaut).
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    Cette action est sûre : elle n'ajoutera que ce qui manque, sans modifier les données existantes.
+                  </p>
+                </div>
+              )}
 
               {/* Formulaire nouvelle image */}
               {showNewCardImageForm && (
