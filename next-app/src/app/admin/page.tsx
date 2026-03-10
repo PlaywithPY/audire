@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 type ThemeColors = {
@@ -90,6 +92,16 @@ const pages = [
 ];
 
 export default function AdminDashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Protection: rediriger vers login si non authentifié
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/admin/login');
+    }
+  }, [status, router]);
+
   const [activeTab, setActiveTab] = useState<'settings' | 'content' | 'testimonials' | 'card-images'>('settings');
   const [colors, setColors] = useState<ThemeColors>({
     primary: '#42a4ff',
@@ -542,12 +554,21 @@ export default function AdminDashboard() {
     }
   }
 
-  if (loading) {
+  // Afficher le chargement pendant la vérification de session
+  if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Chargement...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement...</p>
+        </div>
       </div>
     );
+  }
+
+  // Si non authentifié, ne rien afficher (redirection en cours)
+  if (status === 'unauthenticated') {
+    return null;
   }
 
   return (

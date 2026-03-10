@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { CentreProvider } from "@/contexts/CentreContext";
+import Providers from "@/components/Providers";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({
@@ -28,9 +29,11 @@ export default function RootLayout({
         <ThemeProvider />
       </head>
       <body className={`${inter.variable} ${playfair.variable} antialiased`}>
-        <CentreProvider>
-          {children}
-        </CentreProvider>
+        <Providers>
+          <CentreProvider>
+            {children}
+          </CentreProvider>
+        </Providers>
       </body>
     </html>
   );
