@@ -8,9 +8,9 @@ export default function Logo() {
         <Image
           src="/images/logo.png"
           alt="Audire - Centre auditif indépendant"
-          width={180}
-          height={60}
-          className="h-14 w-auto group-hover:opacity-80 transition-opacity"
+          width={420}
+          height={140}
+          className="h-32 w-auto group-hover:opacity-80 transition-opacity"
           priority
         />
       </div>

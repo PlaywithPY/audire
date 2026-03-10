@@ -1,13 +1,80 @@
 import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
 
-export default function Footer() {
+const daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+const daysOfWeekShort = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+
+export default async function Footer() {
+  // Récupérer le centre par défaut avec ses horaires
+  const centre = await prisma.centre.findFirst({
+    where: { isDefault: true },
+    include: {
+      openingHours: {
+        orderBy: { dayOfWeek: 'asc' },
+      },
+    },
+  });
+
+  // Formater le téléphone pour le lien tel:
+  const phoneLink = centre?.phoneFixe?.replace(/\s/g, '') || '+3242750666';
+
+  // Grouper les horaires par jours consécutifs avec les mêmes horaires
+  const formatHours = () => {
+    if (!centre?.openingHours || centre.openingHours.length === 0) {
+      return <li><strong>Lun - Ven:</strong> 9h-12h, 13h-17h</li>;
+    }
+
+    const formatted: JSX.Element[] = [];
+    let currentGroup: number[] = [];
+    let currentHours: string | null = null;
+
+    centre.openingHours.forEach((hour, index) => {
+      const hourStr = hour.isOpen
+        ? `${hour.morningOpen || ''}-${hour.morningClose || ''}, ${hour.afternoonOpen || ''}-${hour.afternoonClose || ''}`
+        : 'Fermé';
+
+      if (hourStr === currentHours) {
+        currentGroup.push(hour.dayOfWeek);
+      } else {
+        if (currentGroup.length > 0) {
+          const days =
+            currentGroup.length === 1
+              ? daysOfWeekShort[currentGroup[0]]
+              : `${daysOfWeekShort[currentGroup[0]]} - ${daysOfWeekShort[currentGroup[currentGroup.length - 1]]}`;
+          formatted.push(
+            <li key={currentGroup[0]}>
+              <strong>{days}:</strong> {currentHours}
+            </li>
+          );
+        }
+        currentGroup = [hour.dayOfWeek];
+        currentHours = hourStr;
+      }
+
+      // Dernier élément
+      if (index === centre.openingHours.length - 1 && currentGroup.length > 0) {
+        const days =
+          currentGroup.length === 1
+            ? daysOfWeekShort[currentGroup[0]]
+            : `${daysOfWeekShort[currentGroup[0]]} - ${daysOfWeekShort[currentGroup[currentGroup.length - 1]]}`;
+        formatted.push(
+          <li key={currentGroup[0]}>
+            <strong>{days}:</strong> {currentHours}
+          </li>
+        );
+      }
+    });
+
+    return formatted.length > 0 ? formatted : <li><strong>Lun - Ven:</strong> 9h-12h, 13h-17h</li>;
+  };
+
   return (
     <footer className="bg-gradient-to-br from-primary/5 to-primary-light/5 border-t border-border">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           {/* À propos */}
           <div>
-            <h3 className="font-bold text-lg mb-4">Audire</h3>
+            <h3 className="font-bold text-lg mb-4">{centre?.name || 'Audire'}</h3>
             <p className="text-text-light text-sm mb-4">
               Centre auditif indépendant en province de Liège. Accompagnement humain et solutions de qualité.
             </p>
@@ -17,10 +84,26 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-lg mb-4">Liens rapides</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/solutions-auditives" className="text-text-light hover:text-primary transition-colors">Solutions auditives</Link></li>
-              <li><Link href="/remboursements" className="text-text-light hover:text-primary transition-colors">Remboursements</Link></li>
-              <li><Link href="/notre-accompagnement" className="text-text-light hover:text-primary transition-colors">Notre accompagnement</Link></li>
-              <li><Link href="/faq" className="text-text-light hover:text-primary transition-colors">FAQ</Link></li>
+              <li>
+                <Link href="/solutions-auditives" className="text-text-light hover:text-primary transition-colors">
+                  Solutions auditives
+                </Link>
+              </li>
+              <li>
+                <Link href="/remboursements" className="text-text-light hover:text-primary transition-colors">
+                  Remboursements
+                </Link>
+              </li>
+              <li>
+                <Link href="/notre-accompagnement" className="text-text-light hover:text-primary transition-colors">
+                  Notre accompagnement
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq" className="text-text-light hover:text-primary transition-colors">
+                  FAQ
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -28,21 +111,43 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-lg mb-4">Contact</h3>
             <ul className="space-y-2 text-sm text-text-light">
-              <li>📍 Rue de l'Yser 106-108</li>
-              <li>4101 Jemeppe-sur-Meuse</li>
-              <li>📞 <a href="tel:+3242750666" className="hover:text-primary transition-colors">042 75 06 66</a></li>
-              <li>✉️ <a href="mailto:centre.audire@gmail.com" className="hover:text-primary transition-colors">centre.audire@gmail.com</a></li>
+              <li>📍 {centre?.address || 'Rue de l\'Yser 106-108'}</li>
+              <li>
+                {centre?.postalCode || '4101'} {centre?.city || 'Jemeppe-sur-Meuse'}
+              </li>
+              <li>
+                📞{' '}
+                <a href={`tel:${phoneLink}`} className="hover:text-primary transition-colors">
+                  {centre?.phoneFixe || '042 75 06 66'}
+                </a>
+              </li>
+              {centre?.phoneMobile && (
+                <li>
+                  📱{' '}
+                  <a
+                    href={`tel:${centre.phoneMobile.replace(/\s/g, '')}`}
+                    className="hover:text-primary transition-colors"
+                  >
+                    {centre.phoneMobile}
+                  </a>
+                </li>
+              )}
+              <li>
+                ✉️{' '}
+                <a
+                  href={`mailto:${centre?.email || 'centre.audire@gmail.com'}`}
+                  className="hover:text-primary transition-colors"
+                >
+                  {centre?.email || 'centre.audire@gmail.com'}
+                </a>
+              </li>
             </ul>
           </div>
 
           {/* Horaires */}
           <div>
             <h3 className="font-bold text-lg mb-4">Horaires</h3>
-            <ul className="space-y-2 text-sm text-text-light">
-              <li><strong>Lun - Ven:</strong> 9h-12h, 13h-17h</li>
-              <li><strong>Sam:</strong> Sur rendez-vous</li>
-              <li><strong>Dim:</strong> Fermé</li>
-            </ul>
+            <ul className="space-y-2 text-sm text-text-light">{formatHours()}</ul>
           </div>
         </div>
 
@@ -50,8 +155,12 @@ export default function Footer() {
         <div className="border-t border-border mt-8 pt-8 flex flex-wrap justify-between items-center gap-4 text-sm text-text-muted">
           <p>&copy; {new Date().getFullYear()} Audire. Tous droits réservés.</p>
           <div className="flex gap-4">
-            <Link href="/mentions-legales" className="hover:text-primary transition-colors">Mentions légales</Link>
-            <Link href="/confidentialite" className="hover:text-primary transition-colors">Politique de confidentialité</Link>
+            <Link href="/mentions-legales" className="hover:text-primary transition-colors">
+              Mentions légales
+            </Link>
+            <Link href="/confidentialite" className="hover:text-primary transition-colors">
+              Politique de confidentialité
+            </Link>
           </div>
         </div>
       </div>

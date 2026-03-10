@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { requireAuth } from '@/lib/auth-helpers';
 
 // GET - Récupérer toutes les images de cards
 export async function GET() {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const cardImages = await prisma.cardImage.findMany({
       orderBy: { cardKey: 'asc' },
@@ -17,6 +21,9 @@ export async function GET() {
 
 // POST - Créer une nouvelle image de card
 export async function POST(request: NextRequest) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { cardKey, imageUrl, fallbackEmoji } = body;
@@ -46,6 +53,9 @@ export async function POST(request: NextRequest) {
 
 // PUT - Mettre à jour une image de card
 export async function PUT(request: NextRequest) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { id, imageUrl, fallbackEmoji } = body;
@@ -72,6 +82,9 @@ export async function PUT(request: NextRequest) {
 
 // DELETE - Supprimer une image de card
 export async function DELETE(request: NextRequest) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');

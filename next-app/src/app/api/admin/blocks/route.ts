@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
+import { requireAuth } from '@/lib/auth-helpers';
 
 // GET - Récupérer tous les blocs d'une page
 export async function GET(request: Request) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const { searchParams } = new URL(request.url);
     const pageKey = searchParams.get('pageKey');
@@ -29,6 +33,9 @@ export async function GET(request: Request) {
 
 // POST - Créer un nouveau bloc
 export async function POST(request: Request) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { pageKey, blockKey, blockType, content, metadata, order, isVisible } = body;
@@ -57,6 +64,9 @@ export async function POST(request: Request) {
 
 // PUT - Mettre à jour un bloc existant
 export async function PUT(request: Request) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { id, pageKey, blockKey, content, metadata, order, isVisible } = body;
@@ -112,6 +122,9 @@ export async function PUT(request: Request) {
 
 // DELETE - Supprimer un bloc
 export async function DELETE(request: Request) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');

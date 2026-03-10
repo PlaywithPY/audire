@@ -52,6 +52,22 @@ type CardImage = {
   updatedAt: string;
 };
 
+type Centre = {
+  id: number;
+  name: string;
+  slug: string;
+  phoneFixe: string;
+  phoneMobile: string | null;
+  email: string;
+  address: string;
+  postalCode: string;
+  city: string;
+  isActive: boolean;
+  isDefault: boolean;
+  latitude: number | null;
+  longitude: number | null;
+};
+
 const daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 
 const blockTypes = [
@@ -82,6 +98,8 @@ export default function AdminDashboard() {
     secondary: '#EBF5FF',
   });
   const [hours, setHours] = useState<OpeningHour[]>([]);
+  const [centres, setCentres] = useState<Centre[]>([]);
+  const [selectedCentreId, setSelectedCentreId] = useState<number | null>(null);
   const [centre, setCentre] = useState({
     phoneFixe: '+32 4 123 45 67',
     phoneMobile: '+32 476 12 34 56',
@@ -130,18 +148,35 @@ export default function AdminDashboard() {
 
   async function fetchData() {
     try {
-      const [colorsRes, hoursRes, centreRes] = await Promise.all([
+      const [colorsRes, centresRes] = await Promise.all([
         fetch('/api/admin/colors'),
-        fetch('/api/admin/hours'),
-        fetch('/api/admin/centre'),
+        fetch('/api/admin/centres'),
       ]);
 
       const colorsData = await colorsRes.json();
-      const hoursData = await hoursRes.json();
-      const centreData = await centreRes.json();
+      const centresData = await centresRes.json();
 
       setColors(colorsData);
-      setHours(hoursData);
+      setCentres(centresData);
+
+      // Sélectionner le centre par défaut au démarrage
+      const defaultCentre = centresData.find((c: Centre) => c.isDefault);
+      if (defaultCentre) {
+        setSelectedCentreId(defaultCentre.id);
+        await loadCentreData(defaultCentre.id);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function loadCentreData(centreId: number) {
+    try {
+      const centreRes = await fetch(`/api/admin/centres?id=${centreId}`);
+      const centreData = await centreRes.json();
+
       setCentre({
         phoneFixe: centreData.phoneFixe || '+32 4 123 45 67',
         phoneMobile: centreData.phoneMobile || '+32 476 12 34 56',
@@ -150,12 +185,22 @@ export default function AdminDashboard() {
         postalCode: centreData.postalCode || '4101',
         city: centreData.city || 'Jemeppe-sur-Meuse',
       });
+
+      // Charger les horaires du centre sélectionné
+      // TODO: Adapter l'API pour supporter la sélection par centre
+      const hoursRes = await fetch('/api/admin/hours');
+      const hoursData = await hoursRes.json();
+      setHours(hoursData);
     } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setLoading(false);
+      console.error('Error loading centre data:', error);
     }
   }
+
+  useEffect(() => {
+    if (selectedCentreId) {
+      loadCentreData(selectedCentreId);
+    }
+  }, [selectedCentreId]);
 
   async function fetchBlocks() {
     try {
@@ -469,14 +514,26 @@ export default function AdminDashboard() {
   }
 
   async function saveCentre() {
+    if (!selectedCentreId) {
+      alert('⚠️ Aucun centre sélectionné');
+      return;
+    }
+
     setSaving(true);
     try {
-      await fetch('/api/admin/centre', {
+      await fetch('/api/admin/centres', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(centre),
+        body: JSON.stringify({
+          id: selectedCentreId,
+          ...centre,
+        }),
       });
-      alert('✅ Sauvegardé !');
+      alert('✅ Centre sauvegardé !');
+      // Recharger la liste des centres
+      const res = await fetch('/api/admin/centres');
+      const data = await res.json();
+      setCentres(data);
     } catch (error) {
       console.error('Error saving centre:', error);
       alert('❌ Erreur lors de la sauvegarde');
@@ -646,7 +703,23 @@ export default function AdminDashboard() {
 
         {/* Coordonnées */}
         <section className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4">📍 Coordonnées du centre</h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">📍 Coordonnées du centre</h2>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-semibold">Centre :</label>
+              <select
+                value={selectedCentreId || ''}
+                onChange={(e) => setSelectedCentreId(Number(e.target.value))}
+                className="px-4 py-2 border border-gray-300 rounded bg-white"
+              >
+                {centres.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name} {c.isDefault && '⭐'}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-semibold mb-2">Téléphone fixe</label>

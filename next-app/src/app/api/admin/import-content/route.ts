@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
+import { requireAuth } from '@/lib/auth-helpers';
 
 /**
  * Route API pour importer le contenu existant des pages
@@ -264,6 +265,9 @@ const contentBlocks = [
 ];
 
 export async function POST() {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     let created = 0;
     let updated = 0;

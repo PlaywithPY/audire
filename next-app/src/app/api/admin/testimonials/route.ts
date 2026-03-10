@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
+import { requireAuth } from '@/lib/auth-helpers';
 
 // GET - Récupérer tous les avis
 export async function GET() {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const testimonials = await prisma.testimonial.findMany({
       orderBy: { createdAt: 'desc' },
@@ -18,6 +22,9 @@ export async function GET() {
 
 // POST - Créer un nouvel avis
 export async function POST(request: Request) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { name, text, rating, location, isVisible, isFeatured } = body;
@@ -45,6 +52,9 @@ export async function POST(request: Request) {
 
 // PUT - Mettre à jour un avis
 export async function PUT(request: Request) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { id, name, text, rating, location, isVisible, isFeatured } = body;
@@ -77,6 +87,9 @@ export async function PUT(request: Request) {
 
 // DELETE - Supprimer un avis
 export async function DELETE(request: Request) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
