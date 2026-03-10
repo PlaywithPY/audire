@@ -1,8 +1,6 @@
-'use client';
-
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useState } from "react";
+import FAQAccordion from "@/components/FAQAccordion";
 
 const faqs = [
   {
@@ -48,8 +46,6 @@ const faqs = [
 ];
 
 export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
   return (
     <>
       <Header />
@@ -75,33 +71,7 @@ export default function FAQ() {
         {/* FAQ Accordion */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              {faqs.map((faq, index) => (
-                <div key={index} className="mb-4">
-                  <button
-                    onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                    className="w-full bg-bg hover:bg-bg-alt p-6 rounded-xl text-left transition-all flex justify-between items-center gap-4"
-                  >
-                    <span className="font-semibold text-lg">{faq.question}</span>
-                    <svg
-                      className={`w-6 h-6 text-primary transition-transform ${
-                        openIndex === index ? 'rotate-180' : ''
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {openIndex === index && (
-                    <div className="bg-secondary p-6 rounded-b-xl -mt-2 border-t-2 border-primary">
-                      <p className="text-text-light leading-relaxed">{faq.answer}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            <FAQAccordion faqs={faqs} />
           </div>
         </section>
 

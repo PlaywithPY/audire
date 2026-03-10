@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContactInfo from "@/components/ContactInfo";
+import ContactHours from "@/components/ContactHours";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -47,31 +48,7 @@ export default function Contact() {
               </p>
             </div>
 
-            <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
-              <div className="divide-y divide-border">
-                {[
-                  { jour: 'Lundi', horaires: '9h-12h, 13h-17h' },
-                  { jour: 'Mardi', horaires: '9h-12h, 13h-17h' },
-                  { jour: 'Mercredi', horaires: '9h-12h, 13h-17h' },
-                  { jour: 'Jeudi', horaires: '9h-12h, 13h-17h' },
-                  { jour: 'Vendredi', horaires: '9h-12h, 13h-17h' },
-                  { jour: 'Samedi', horaires: 'Sur rendez-vous', highlight: true },
-                  { jour: 'Dimanche', horaires: 'Fermé', closed: true },
-                ].map((item) => (
-                  <div
-                    key={item.jour}
-                    className={`flex justify-between items-center px-8 py-4 ${
-                      item.closed ? 'bg-gray-50' : item.highlight ? 'bg-secondary' : 'hover:bg-bg'
-                    } transition-colors`}
-                  >
-                    <span className="font-semibold">{item.jour}</span>
-                    <span className={item.closed ? 'text-text-muted' : 'text-primary font-medium'}>
-                      {item.horaires}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <ContactHours />
           </div>
         </section>
 
