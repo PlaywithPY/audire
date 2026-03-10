@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import BlocksBuilder from '@/components/BlocksBuilder';
 
 type ThemeColors = {
   primary: string;
@@ -1074,12 +1075,151 @@ export default function AdminDashboard() {
                 </div>
               )}
 
-              {/* Liste des blocs */}
-              {blocks.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">
-                  Aucun bloc sur cette page. Créez-en un !
-                </p>
+              {/* Liste des blocs avec Drag & Drop */}
+              {editingBlock ? (
+                /* Mode édition d'un bloc spécifique */
+                <div key={editingBlock.id} className="border-2 border-blue-300 rounded-lg p-6 bg-blue-50/50">
+                  <h3 className="text-lg font-bold mb-4 text-blue-900">✏️ Édition du bloc</h3>
+                  <div>
+                    <div className="grid md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">Type</label>
+                        <select
+                          value={editingBlock.blockType}
+                          onChange={(e) =>
+                            setEditingBlock({ ...editingBlock, blockType: e.target.value })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded"
+                        >
+                          {blockTypes.map((type) => (
+                            <option key={type.value} value={type.value}>
+                              {type.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={editingBlock.isVisible}
+                            onChange={(e) =>
+                              setEditingBlock({ ...editingBlock, isVisible: e.target.checked })
+                            }
+                            className="w-5 h-5"
+                          />
+                          <span>Visible</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="block text-sm font-semibold">Contenu</label>
+                        <div className="text-xs text-gray-500 space-x-2">
+                          <span>Format: Texte simple</span>
+                          {editingBlock.blockType === 'button' && (
+                            <span className="text-blue-600">• Format bouton: Texte|/lien</span>
+                          )}
+                        </div>
+                      </div>
+                      <textarea
+                        value={editingBlock.content}
+                        onChange={(e) =>
+                          setEditingBlock({ ...editingBlock, content: e.target.value })
+                        }
+                        rows={editingBlock.blockType === 'text' ? 8 : 4}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg font-sans text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder={
+                          editingBlock.blockType === 'button'
+                            ? 'Exemple: Prendre rendez-vous|/contact'
+                            : editingBlock.blockType === 'title'
+                            ? 'Titre de la section...'
+                            : 'Contenu du bloc...'
+                        }
+                      />
+                      {editingBlock.content && (
+                        <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                          <p className="text-xs text-gray-600 mb-2 font-semibold">📋 Aperçu :</p>
+                          <div className="prose prose-sm max-w-none">
+                            {editingBlock.blockType === 'title' ? (
+                              <h2 className="text-2xl font-bold text-gray-800">{editingBlock.content}</h2>
+                            ) : editingBlock.blockType === 'button' ? (
+                              <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold">
+                                {editingBlock.content.split('|')[0] || editingBlock.content}
+                              </button>
+                            ) : (
+                              <p className="text-gray-700 whitespace-pre-wrap">{editingBlock.content}</p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex gap-2 mt-4">
+                      <button
+                        onClick={() => saveBlock(editingBlock)}
+                        disabled={saving}
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+                      >
+                        💾 Sauvegarder
+                      </button>
+                      <button
+                        onClick={() => setEditingBlock(null)}
+                        className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  </div>
+                </div>
               ) : (
+                /* Mode affichage avec Builder Drag & Drop */
+                <BlocksBuilder
+                  blocks={blocks}
+                  onReorder={async (reorderedBlocks) => {
+                    setBlocks(reorderedBlocks);
+                    // Sauvegarder l'ordre
+                    try {
+                      await Promise.all(
+                        reorderedBlocks.map((block) =>
+                          fetch('/api/admin/blocks', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: block.id, order: block.order }),
+                          })
+                        )
+                      );
+                    } catch (error) {
+                      console.error('Error saving order:', error);
+                      alert('❌ Erreur lors de la sauvegarde de l\'ordre');
+                    }
+                  }}
+                  onEdit={(block) => setEditingBlock(block)}
+                  onDelete={deleteBlock}
+                  onToggleVisibility={async (blockId) => {
+                    const block = blocks.find((b) => b.id === blockId);
+                    if (block) {
+                      await fetch('/api/admin/blocks', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: blockId, isVisible: !block.isVisible }),
+                      });
+                      fetchBlocks();
+                    }
+                  }}
+                />
+              )}
+            </section>
+          </>
+        )}
+
+        {/* Testimonials Section */}
+        {activeTab === 'testimonials' && (
+          <>
+            {/* Le reste du code testimonials */}
+            {blocks.length === 0 ? (
+              <p></p>
+            ) : (
+              <div className="hidden">
                 <div className="space-y-4">
                   {blocks.map((block) => (
                     <div key={block.id} className="border border-gray-200 rounded-lg p-4">
