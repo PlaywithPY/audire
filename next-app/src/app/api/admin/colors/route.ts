@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
+import { requireAuth } from '@/lib/auth-helpers';
 
 export async function GET() {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     let colors = await prisma.themeColors.findFirst({
       where: { id: 1 },
@@ -28,6 +32,9 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { primary, primaryLight, primaryDark, secondary } = body;

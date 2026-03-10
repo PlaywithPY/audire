@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAuth } from '@/lib/auth-helpers';
 
 // GET - Récupérer le centre par défaut
 export async function GET() {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const centre = await prisma.centre.findFirst({
       where: { isDefault: true },
@@ -21,6 +25,9 @@ export async function GET() {
 
 // PUT - Mettre à jour le centre par défaut
 export async function PUT(request: Request) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { phoneFixe, phoneMobile, email, address, postalCode, city } = body;

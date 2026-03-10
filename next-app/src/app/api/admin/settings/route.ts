@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAuth } from '@/lib/auth-helpers';
 
 // GET - Récupérer tous les settings
 export async function GET() {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const settings = await prisma.siteSettings.findMany();
 
@@ -21,6 +25,9 @@ export async function GET() {
 
 // PUT - Mettre à jour un setting
 export async function PUT(request: Request) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { key, value } = body;

@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAuth } from '@/lib/auth-helpers';
 
 // Récupérer les horaires du centre par défaut (utilisé par l'admin)
 export async function GET() {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     // Trouver le centre par défaut
     const defaultCentre = await prisma.centre.findFirst({
@@ -27,6 +31,9 @@ export async function GET() {
 
 // Mettre à jour les horaires du centre par défaut (utilisé par l'admin)
 export async function PUT(request: Request) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { dayOfWeek, isOpen, morningOpen, morningClose, afternoonOpen, afternoonClose } = body;
