@@ -1,26 +1,23 @@
-import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
+'use client';
 
-const daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+import Link from 'next/link';
+import { useCentre } from '@/contexts/CentreContext';
+
 const daysOfWeekShort = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
-export default async function Footer() {
-  // Récupérer le centre par défaut avec ses horaires
-  const centre = await prisma.centre.findFirst({
-    where: { isDefault: true },
-    include: {
-      openingHours: {
-        orderBy: { dayOfWeek: 'asc' },
-      },
-    },
-  });
+export default function Footer() {
+  const { currentCentre, loading } = useCentre();
 
-  // Formater le téléphone pour le lien tel:
-  const phoneLink = centre?.phoneFixe?.replace(/\s/g, '') || '+3242750666';
+  // Valeurs par défaut pendant le chargement
+  const phoneLink = currentCentre?.phoneFixe?.replace(/\s/g, '') || '+3242750666';
+  const phoneDisplay = currentCentre?.phoneFixe || '042 75 06 66';
+  const email = currentCentre?.email || 'centre.audire@gmail.com';
+  const address = currentCentre?.address || 'Rue de la Station, 4\n4101 Jemeppe-sur-Meuse';
+  const addressLines = address.split('\n');
 
   // Grouper les horaires par jours consécutifs avec les mêmes horaires
   const formatHours = () => {
-    if (!centre?.openingHours || centre.openingHours.length === 0) {
+    if (loading || !currentCentre?.openingHours || currentCentre.openingHours.length === 0) {
       return <li><strong>Lun - Ven:</strong> 9h-12h, 13h-17h</li>;
     }
 
@@ -28,7 +25,9 @@ export default async function Footer() {
     let currentGroup: number[] = [];
     let currentHours: string | null = null;
 
-    centre.openingHours.forEach((hour, index) => {
+    const sortedHours = [...currentCentre.openingHours].sort((a, b) => a.dayOfWeek - b.dayOfWeek);
+
+    sortedHours.forEach((hour, index) => {
       const hourStr = hour.isOpen
         ? `${hour.morningOpen || ''}-${hour.morningClose || ''}, ${hour.afternoonOpen || ''}-${hour.afternoonClose || ''}`
         : 'Fermé';
@@ -52,7 +51,7 @@ export default async function Footer() {
       }
 
       // Dernier élément
-      if (index === centre.openingHours.length - 1 && currentGroup.length > 0) {
+      if (index === sortedHours.length - 1 && currentGroup.length > 0) {
         const days =
           currentGroup.length === 1
             ? daysOfWeekShort[currentGroup[0]]
@@ -74,7 +73,7 @@ export default async function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           {/* À propos */}
           <div>
-            <h3 className="font-bold text-lg mb-4">{centre?.name || 'Audire'}</h3>
+            <h3 className="font-bold text-lg mb-4">{currentCentre?.name || 'Audire'}</h3>
             <p className="text-text-light text-sm mb-4">
               Centre auditif indépendant en province de Liège. Accompagnement humain et solutions de qualité.
             </p>
@@ -111,34 +110,34 @@ export default async function Footer() {
           <div>
             <h3 className="font-bold text-lg mb-4">Contact</h3>
             <ul className="space-y-2 text-sm text-text-light">
-              <li>📍 {centre?.address || 'Rue de l\'Yser 106-108'}</li>
+              <li>📍 {addressLines[0]}</li>
               <li>
-                {centre?.postalCode || '4101'} {centre?.city || 'Jemeppe-sur-Meuse'}
+                {currentCentre?.postalCode || '4101'} {currentCentre?.city || 'Jemeppe-sur-Meuse'}
               </li>
               <li>
                 📞{' '}
                 <a href={`tel:${phoneLink}`} className="hover:text-primary transition-colors">
-                  {centre?.phoneFixe || '042 75 06 66'}
+                  {phoneDisplay}
                 </a>
               </li>
-              {centre?.phoneMobile && (
+              {currentCentre?.phoneMobile && (
                 <li>
                   📱{' '}
                   <a
-                    href={`tel:${centre.phoneMobile.replace(/\s/g, '')}`}
+                    href={`tel:${currentCentre.phoneMobile.replace(/\s/g, '')}`}
                     className="hover:text-primary transition-colors"
                   >
-                    {centre.phoneMobile}
+                    {currentCentre.phoneMobile}
                   </a>
                 </li>
               )}
               <li>
                 ✉️{' '}
                 <a
-                  href={`mailto:${centre?.email || 'centre.audire@gmail.com'}`}
+                  href={`mailto:${email}`}
                   className="hover:text-primary transition-colors"
                 >
-                  {centre?.email || 'centre.audire@gmail.com'}
+                  {email}
                 </a>
               </li>
             </ul>
