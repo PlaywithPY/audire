@@ -26,8 +26,10 @@ type ContentBlock = {
   blockKey: string;
   blockType: string;
   content: string;
+  metadata: string | null;
   order: number;
   isVisible: boolean;
+  updatedAt: string;
 };
 
 type BlocksBuilderProps = {
