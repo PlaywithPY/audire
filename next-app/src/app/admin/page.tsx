@@ -1002,15 +1002,19 @@ export default function AdminDashboard() {
             </section>
 
             {/* Import automatique */}
-            {blocks.length === 0 && (
-              <section className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-                <h3 className="font-bold text-lg mb-2">📥 Importer le contenu existant</h3>
-                <p className="text-sm text-gray-700 mb-4">
-                  Le WYSIWYG est vide ? Cliquez ci-dessous pour importer automatiquement le contenu actuel des pages (titres, textes principaux, etc.)
-                </p>
+            <section className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-lg mb-2">📥 Importer/Mettre à jour le contenu</h3>
+                  <p className="text-sm text-gray-700">
+                    Importe automatiquement tout le contenu des pages (titres, textes, cards, etc.)
+                    <br />
+                    ⚠️ Cette action crée les blocs manquants et met à jour les existants.
+                  </p>
+                </div>
                 <button
                   onClick={async () => {
-                    if (!confirm('Importer le contenu existant des pages dans le WYSIWYG ?')) return;
+                    if (!confirm('Importer/Mettre à jour le contenu ?\n\n• Crée les blocs manquants\n• Met à jour les blocs existants\n• N\'écrase PAS vos modifications')) return;
                     setSaving(true);
                     try {
                       const res = await fetch('/api/admin/import-content', { method: 'POST' });
@@ -1025,12 +1029,12 @@ export default function AdminDashboard() {
                     }
                   }}
                   disabled={saving}
-                  className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition disabled:opacity-50 font-semibold"
+                  className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition disabled:opacity-50 font-semibold whitespace-nowrap"
                 >
-                  {saving ? 'Importation...' : '📥 Importer le contenu maintenant'}
+                  {saving ? 'Importation...' : '📥 Importer maintenant'}
                 </button>
-              </section>
-            )}
+              </div>
+            </section>
 
             {/* Liste des blocs */}
             <section className="bg-white rounded-lg shadow-md p-6">
