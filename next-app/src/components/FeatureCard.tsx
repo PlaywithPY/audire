@@ -1,77 +1,44 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import CardIcon from './CardIcon';
+import { useState } from 'react';
 
 interface FeatureCardProps {
-  cardKey: string;
-  defaultIcon?: string;
-  defaultTitle?: string;
-  defaultDescription?: string;
+  icon: string;
+  title: string;
+  description: string;
 }
 
-export default function FeatureCard({
-  cardKey,
-  defaultIcon = '📷',
-  defaultTitle = '',
-  defaultDescription = ''
-}: FeatureCardProps) {
-  const [cardData, setCardData] = useState<{
-    title: string;
-    description: string;
-    icon: string;
-  } | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchCardData() {
-      try {
-        const res = await fetch(`/api/cards?cardKey=${cardKey}`, {
-          cache: 'no-store',
-        });
-        const data = await res.json();
-        if (data) {
-          setCardData({
-            title: data.title || defaultTitle,
-            description: data.description || defaultDescription,
-            icon: data.icon || defaultIcon,
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching card data:', error);
-        setCardData({
-          title: defaultTitle,
-          description: defaultDescription,
-          icon: defaultIcon,
-        });
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchCardData();
-  }, [cardKey, defaultIcon, defaultTitle, defaultDescription]);
-
-  // Afficher les valeurs par défaut pendant le chargement
-  if (loading || !cardData) {
-    return (
-      <div className="bg-bg p-6 rounded-2xl hover:shadow-lg transition-all">
-        <div className="mb-4">
-          <CardIcon cardKey={cardKey} defaultEmoji={defaultIcon} size={48} />
-        </div>
-        <h3 className="text-xl font-bold mb-2">{defaultTitle}</h3>
-        <p className="text-text-light">{defaultDescription}</p>
-      </div>
-    );
-  }
+export default function FeatureCard({ icon, title, description }: FeatureCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div className="bg-bg p-6 rounded-2xl hover:shadow-lg transition-all">
-      <div className="mb-4">
-        <CardIcon cardKey={cardKey} defaultEmoji={cardData.icon} size={48} />
+    <div
+      className="group relative bg-bg p-6 rounded-2xl transition-all duration-300 ease-out hover:shadow-2xl hover:-translate-y-2"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Effet de bordure animée au hover */}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+      {/* Contenu */}
+      <div className="relative z-10">
+        <div className="mb-4 transform transition-transform duration-300 group-hover:scale-110">
+          <span className="text-5xl">{icon}</span>
+        </div>
+        <h3 className="text-xl font-bold mb-2 transition-colors duration-300 group-hover:text-primary">
+          {title}
+        </h3>
+        <p className="text-text-light transition-colors duration-300">
+          {description}
+        </p>
       </div>
-      <h3 className="text-xl font-bold mb-2">{cardData.title}</h3>
-      <p className="text-text-light">{cardData.description}</p>
+
+      {/* Point décoratif qui apparaît au hover */}
+      <div
+        className={`absolute top-4 right-4 w-2 h-2 rounded-full bg-primary transition-all duration-300 ${
+          isHovered ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
+        }`}
+      />
     </div>
   );
 }

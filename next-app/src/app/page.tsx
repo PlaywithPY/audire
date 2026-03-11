@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import CardIcon from "@/components/CardIcon";
 import FeatureCard from "@/components/FeatureCard";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
@@ -75,22 +74,48 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {[
-              { cardKey: 'hero-features-test', icon: '👂', title: 'Test auditif gratuit', desc: 'Un test complet et sans engagement pour comprendre votre audition.' },
-              { cardKey: 'hero-features-accompagnement', icon: '💬', title: 'Accompagnement humain', desc: 'Pas de jargon technique, pas de pression commerciale.' },
-              { cardKey: 'hero-features-suivi', icon: '🔧', title: 'Suivi personnalisé', desc: 'Réglages progressifs, adaptations, suivi régulier.' },
-              { cardKey: 'hero-features-qualite', icon: '🏆', title: 'Solutions de qualité', desc: 'Oticon et Bernafon, deux marques reconnues.' },
-              { cardKey: 'hero-features-independant', icon: '🎯', title: 'Centre indépendant', desc: "Pas d'objectifs de vente, pas de réseau à satisfaire." },
-              { cardKey: 'hero-features-transparence', icon: '💰', title: 'Transparence des prix', desc: 'Prix clairs, remboursements expliqués.' },
-            ].map((feature) => (
+            <div className="animate-fadeInUp" style={{ animationDelay: '0.1s' }}>
               <FeatureCard
-                key={feature.cardKey}
-                cardKey={feature.cardKey}
-                defaultIcon={feature.icon}
-                defaultTitle={feature.title}
-                defaultDescription={feature.desc}
+                icon="👂"
+                title="Test auditif gratuit"
+                description="Un test complet et sans engagement pour comprendre votre audition."
               />
-            ))}
+            </div>
+            <div className="animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
+              <FeatureCard
+                icon="💬"
+                title="Accompagnement humain"
+                description="Pas de jargon technique, pas de pression commerciale."
+              />
+            </div>
+            <div className="animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
+              <FeatureCard
+                icon="🔧"
+                title="Suivi personnalisé"
+                description="Réglages progressifs, adaptations, suivi régulier."
+              />
+            </div>
+            <div className="animate-fadeInUp" style={{ animationDelay: '0.4s' }}>
+              <FeatureCard
+                icon="🏆"
+                title="Solutions de qualité"
+                description="Oticon et Bernafon, deux marques reconnues."
+              />
+            </div>
+            <div className="animate-fadeInUp" style={{ animationDelay: '0.5s' }}>
+              <FeatureCard
+                icon="🎯"
+                title="Centre indépendant"
+                description="Pas d'objectifs de vente, pas de réseau à satisfaire."
+              />
+            </div>
+            <div className="animate-fadeInUp" style={{ animationDelay: '0.6s' }}>
+              <FeatureCard
+                icon="💰"
+                title="Transparence des prix"
+                description="Prix clairs, remboursements expliqués."
+              />
+            </div>
           </div>
         </div>
       </section>
