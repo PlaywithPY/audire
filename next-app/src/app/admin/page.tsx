@@ -1566,7 +1566,7 @@ export default function AdminDashboard() {
                                 <label className="flex items-center gap-2">
                                   <input
                                     type="radio"
-                                    checked={editingBlock.metadata && JSON.parse(editingBlock.metadata || '{}').position?.type === 'absolute'}
+                                    checked={!!(editingBlock.metadata && JSON.parse(editingBlock.metadata || '{}').position?.type === 'absolute')}
                                     onChange={() => {
                                       const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}') : {};
                                       meta.position = {
