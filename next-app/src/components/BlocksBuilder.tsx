@@ -64,6 +64,7 @@ function SortableBlock({
   const blockTypeIcons: Record<string, string> = {
     title: '📝',
     text: '📄',
+    card: '🎴',
     html: '🔧',
     image: '🖼️',
     button: '🔘',
@@ -72,6 +73,7 @@ function SortableBlock({
   const blockTypeLabels: Record<string, string> = {
     title: 'Titre',
     text: 'Texte',
+    card: 'Card',
     html: 'HTML',
     image: 'Image',
     button: 'Bouton',
