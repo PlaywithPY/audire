@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CardIcon from "@/components/CardIcon";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
+import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 
 export default function Home() {
   return (
@@ -102,6 +103,13 @@ export default function Home() {
           <p className="mt-4 text-sm text-text-muted">
             Test gratuit • Sans engagement • Conseils personnalisés
           </p>
+        </div>
+      </section>
+
+      {/* Dynamic Content from Admin */}
+      <section className="relative py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <DynamicBlockRenderer pageKey="home" className="space-y-6" />
         </div>
       </section>
 

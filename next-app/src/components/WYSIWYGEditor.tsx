@@ -141,20 +141,51 @@ function EditableBlock({
           />
         );
 
-      case 'image':
+        case 'image':
         let imgMetadata;
         try {
           imgMetadata = block.metadata ? JSON.parse(block.metadata) : {};
         } catch {
           imgMetadata = {};
         }
+
+        // Gestion du positionnement absolu
+        const hasAbsolutePosition = imgMetadata.position?.type === 'absolute';
+        const imageStyle: React.CSSProperties = hasAbsolutePosition
+          ? {
+              position: 'absolute',
+              left: imgMetadata.position.x || 0,
+              top: imgMetadata.position.y || 0,
+              zIndex: imgMetadata.position.zIndex || 1,
+              width: imgMetadata.size?.width || 'auto',
+              height: imgMetadata.size?.height || 'auto',
+            }
+          : {
+              width: imgMetadata.size?.width || 'auto',
+              height: imgMetadata.size?.height || 'auto',
+            };
+
         return (
-          <div className="py-6">
-            <img
-              src={imgMetadata.imageUrl || block.content}
-              alt={imgMetadata.alt || 'Image'}
-              className="max-w-full h-auto rounded-2xl shadow-lg mx-auto"
-            />
+          <div className={hasAbsolutePosition ? '' : 'py-6'} style={hasAbsolutePosition ? imageStyle : {}}>
+            {hasAbsolutePosition ? (
+              <img
+                src={imgMetadata.imageUrl || block.content}
+                alt={imgMetadata.alt || 'Image'}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '1rem' }}
+              />
+            ) : (
+              <img
+                src={imgMetadata.imageUrl || block.content}
+                alt={imgMetadata.alt || 'Image'}
+                className="max-w-full h-auto rounded-2xl shadow-lg mx-auto"
+                style={imageStyle}
+              />
+            )}
+            {hasAbsolutePosition && (
+              <div className="absolute -top-6 left-0 bg-purple-600 text-white text-xs px-2 py-1 rounded shadow-lg">
+                📍 Position: {imgMetadata.position.x} / {imgMetadata.position.y}
+              </div>
+            )}
           </div>
         );
 
