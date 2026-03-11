@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CardIcon from "@/components/CardIcon";
+import FeatureCard from "@/components/FeatureCard";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 
@@ -82,13 +83,13 @@ export default function Home() {
               { cardKey: 'hero-features-independant', icon: '🎯', title: 'Centre indépendant', desc: "Pas d'objectifs de vente, pas de réseau à satisfaire." },
               { cardKey: 'hero-features-transparence', icon: '💰', title: 'Transparence des prix', desc: 'Prix clairs, remboursements expliqués.' },
             ].map((feature) => (
-              <div key={feature.title} className="bg-bg p-6 rounded-2xl hover:shadow-lg transition-all">
-                <div className="mb-4">
-                  <CardIcon cardKey={feature.cardKey} defaultEmoji={feature.icon} size={48} />
-                </div>
-                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                <p className="text-text-light">{feature.desc}</p>
-              </div>
+              <FeatureCard
+                key={feature.cardKey}
+                cardKey={feature.cardKey}
+                defaultIcon={feature.icon}
+                defaultTitle={feature.title}
+                defaultDescription={feature.desc}
+              />
             ))}
           </div>
         </div>
