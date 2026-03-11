@@ -1,13 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
+import { writeFile, mkdir, readdir, unlink } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import { requireAuth } from '@/lib/auth-helpers';
 
 /**
- * Route API pour uploader des images
- * POST /api/admin/upload
+ * Route API pour gérer les images
+ * GET /api/admin/upload - Liste toutes les images
+ * POST /api/admin/upload - Upload une nouvelle image
+ * DELETE /api/admin/upload?file=xxx.jpg - Supprime une image
  */
+
+export async function GET() {
+  const { error } = await requireAuth();
+  if (error) return error;
+
+  try {
+    const uploadsDir = join(process.cwd(), 'public', 'uploads');
+
+    if (!existsSync(uploadsDir)) {
+      return NextResponse.json([]);
+    }
+
+    const files = await readdir(uploadsDir);
+    const images = files
+      .filter(file => !file.startsWith('.')) // Ignorer .gitkeep
+      .map(file => ({
+        name: file,
+        url: `/uploads/${file}`,
+      }))
+      .sort((a, b) => b.name.localeCompare(a.name)); // Plus récents en premier
+
+    return NextResponse.json(images);
+  } catch (error) {
+    console.error('Error listing images:', error);
+    return NextResponse.json({ error: 'Failed to list images' }, { status: 500 });
+  }
+}
+
 export async function POST(request: NextRequest) {
   const { error } = await requireAuth();
   if (error) return error;
@@ -65,5 +95,38 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error uploading file:', error);
     return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
+  try {
+    const searchParams = request.nextUrl.searchParams;
+    const fileName = searchParams.get('file');
+
+    if (!fileName) {
+      return NextResponse.json({ error: 'File name is required' }, { status: 400 });
+    }
+
+    // Sécurité : empêcher les traversées de répertoire
+    if (fileName.includes('..') || fileName.includes('/')) {
+      return NextResponse.json({ error: 'Invalid file name' }, { status: 400 });
+    }
+
+    const uploadsDir = join(process.cwd(), 'public', 'uploads');
+    const filePath = join(uploadsDir, fileName);
+
+    if (!existsSync(filePath)) {
+      return NextResponse.json({ error: 'File not found' }, { status: 404 });
+    }
+
+    await unlink(filePath);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    return NextResponse.json({ error: 'Failed to delete file' }, { status: 500 });
   }
 }

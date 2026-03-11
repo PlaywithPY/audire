@@ -155,6 +155,7 @@ export default function AdminDashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<{ name: string; url: string }[]>([]);
 
   useEffect(() => {
     fetchData();
@@ -229,8 +230,19 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (activeTab === 'content') {
       fetchBlocks();
+      fetchUploadedImages();
     }
   }, [selectedPage, activeTab]);
+
+  async function fetchUploadedImages() {
+    try {
+      const res = await fetch('/api/admin/upload');
+      const data = await res.json();
+      setUploadedImages(data);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+    }
+  }
 
   async function saveBlock(block: ContentBlock) {
     setSaving(true);
@@ -1034,6 +1046,109 @@ export default function AdminDashboard() {
                   {saving ? 'Importation...' : '📥 Importer maintenant'}
                 </button>
               </div>
+            </section>
+
+            {/* Gestionnaire d'images */}
+            <section className="bg-white rounded-lg shadow-md p-6 mb-8">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">🖼️ Médiathèque - Vos images</h2>
+                <label className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition cursor-pointer">
+                  📤 Uploader une image
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+
+                      const formData = new FormData();
+                      formData.append('file', file);
+
+                      setSaving(true);
+                      try {
+                        const res = await fetch('/api/admin/upload', {
+                          method: 'POST',
+                          body: formData,
+                        });
+                        const data = await res.json();
+
+                        if (data.success) {
+                          alert('✅ Image uploadée !');
+                          fetchUploadedImages();
+                        } else {
+                          alert('❌ Erreur: ' + data.error);
+                        }
+                      } catch (error) {
+                        console.error('Upload error:', error);
+                        alert('❌ Erreur lors de l\'upload');
+                      } finally {
+                        setSaving(false);
+                        // Reset input
+                        e.target.value = '';
+                      }
+                    }}
+                  />
+                </label>
+              </div>
+
+              <p className="text-sm text-gray-600 mb-4">
+                💡 Uploadez vos images ici, puis copiez l'URL pour les utiliser dans vos blocs HTML ou texte.
+              </p>
+
+              {uploadedImages.length === 0 ? (
+                <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                  <p className="text-gray-600 mb-2">Aucune image uploadée</p>
+                  <p className="text-sm text-gray-500">Cliquez sur "Uploader une image" pour commencer</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {uploadedImages.map((image) => (
+                    <div key={image.name} className="border border-gray-200 rounded-lg p-3 hover:border-blue-400 transition">
+                      <img
+                        src={image.url}
+                        alt={image.name}
+                        className="w-full h-32 object-cover rounded mb-2"
+                      />
+                      <p className="text-xs text-gray-600 truncate mb-2" title={image.name}>
+                        {image.name}
+                      </p>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(image.url);
+                            alert('✅ URL copiée : ' + image.url);
+                          }}
+                          className="flex-1 bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600"
+                          title="Copier l'URL"
+                        >
+                          📋 Copier URL
+                        </button>
+                        <button
+                          onClick={async () => {
+                            if (!confirm('Supprimer cette image ?')) return;
+
+                            try {
+                              await fetch(`/api/admin/upload?file=${encodeURIComponent(image.name)}`, {
+                                method: 'DELETE',
+                              });
+                              alert('✅ Image supprimée !');
+                              fetchUploadedImages();
+                            } catch (error) {
+                              console.error('Delete error:', error);
+                              alert('❌ Erreur lors de la suppression');
+                            }
+                          }}
+                          className="bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600"
+                          title="Supprimer"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
 
             {/* Liste des blocs */}
