@@ -1161,18 +1161,89 @@ export default function AdminDashboard() {
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-semibold mb-2">Icône (emoji)</label>
-                            <input
-                              type="text"
-                              value={editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}').icon || '' : ''}
-                              onChange={(e) => {
-                                const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata) : {};
-                                meta.icon = e.target.value;
-                                setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
-                              }}
-                              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-3xl"
-                              placeholder="👂"
-                            />
+                            <label className="block text-sm font-semibold mb-2">
+                              Icône / Image
+                              <span className="text-xs font-normal text-gray-500 ml-2">
+                                (Choisissez l'un ou l'autre)
+                              </span>
+                            </label>
+
+                            {/* Option 1: Emoji */}
+                            <div className="mb-3">
+                              <label className="block text-xs text-gray-600 mb-1">Option 1: Emoji</label>
+                              <input
+                                type="text"
+                                value={editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}').icon || '' : ''}
+                                onChange={(e) => {
+                                  const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata) : {};
+                                  meta.icon = e.target.value;
+                                  setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
+                                }}
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-3xl"
+                                placeholder="👂"
+                              />
+                            </div>
+
+                            {/* Option 2: Upload d'image */}
+                            <div>
+                              <label className="block text-xs text-gray-600 mb-1">Option 2: Image (drag & drop ou cliquez)</label>
+                              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-400 transition">
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={async (e) => {
+                                    const file = e.target.files?.[0];
+                                    if (!file) return;
+
+                                    const formData = new FormData();
+                                    formData.append('file', file);
+
+                                    setSaving(true);
+                                    try {
+                                      const res = await fetch('/api/admin/upload', {
+                                        method: 'POST',
+                                        body: formData,
+                                      });
+                                      const data = await res.json();
+
+                                      if (data.success) {
+                                        const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata) : {};
+                                        meta.imageUrl = data.url;
+                                        setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
+                                        alert('✅ Image uploadée !');
+                                      } else {
+                                        alert('❌ Erreur: ' + data.error);
+                                      }
+                                    } catch (error) {
+                                      console.error('Upload error:', error);
+                                      alert('❌ Erreur lors de l\'upload');
+                                    } finally {
+                                      setSaving(false);
+                                    }
+                                  }}
+                                  className="w-full text-sm"
+                                />
+                                {editingBlock.metadata && JSON.parse(editingBlock.metadata || '{}').imageUrl && (
+                                  <div className="mt-3 flex items-center gap-3">
+                                    <img
+                                      src={JSON.parse(editingBlock.metadata).imageUrl}
+                                      alt="Preview"
+                                      className="w-16 h-16 object-cover rounded border"
+                                    />
+                                    <button
+                                      onClick={() => {
+                                        const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata) : {};
+                                        delete meta.imageUrl;
+                                        setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
+                                      }}
+                                      className="text-red-600 text-sm hover:underline"
+                                    >
+                                      🗑️ Supprimer l'image
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
                           </div>
                           <div>
                             <label className="block text-sm font-semibold mb-2">Description</label>
@@ -1230,8 +1301,18 @@ export default function AdminDashboard() {
                               </button>
                             ) : editingBlock.blockType === 'card' ? (
                               <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                                <div className="mb-4 text-4xl">
-                                  {editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}').icon || '📷' : '📷'}
+                                <div className="mb-4">
+                                  {editingBlock.metadata && JSON.parse(editingBlock.metadata || '{}').imageUrl ? (
+                                    <img
+                                      src={JSON.parse(editingBlock.metadata).imageUrl}
+                                      alt={editingBlock.content}
+                                      className="w-16 h-16 object-contain"
+                                    />
+                                  ) : (
+                                    <span className="text-4xl">
+                                      {editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}').icon || '📷' : '📷'}
+                                    </span>
+                                  )}
                                 </div>
                                 <h3 className="font-bold text-lg mb-2">{editingBlock.content}</h3>
                                 <p className="text-gray-600 text-sm">
