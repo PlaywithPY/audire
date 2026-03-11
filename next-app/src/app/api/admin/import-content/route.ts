@@ -53,6 +53,56 @@ const contentBlocks = [
     order: 6,
   },
 
+  // ========== CARDS PAGE D'ACCUEIL ==========
+  {
+    pageKey: 'home',
+    blockKey: 'hero-features-test',
+    blockType: 'card',
+    content: 'Test auditif gratuit',
+    metadata: JSON.stringify({ icon: '👂', description: 'Un test complet et sans engagement pour comprendre votre audition.' }),
+    order: 10,
+  },
+  {
+    pageKey: 'home',
+    blockKey: 'hero-features-accompagnement',
+    blockType: 'card',
+    content: 'Accompagnement humain',
+    metadata: JSON.stringify({ icon: '💬', description: 'Pas de jargon technique, pas de pression commerciale.' }),
+    order: 11,
+  },
+  {
+    pageKey: 'home',
+    blockKey: 'hero-features-suivi',
+    blockType: 'card',
+    content: 'Suivi personnalisé',
+    metadata: JSON.stringify({ icon: '🔧', description: 'Réglages progressifs, adaptations, suivi régulier.' }),
+    order: 12,
+  },
+  {
+    pageKey: 'home',
+    blockKey: 'hero-features-qualite',
+    blockType: 'card',
+    content: 'Solutions de qualité',
+    metadata: JSON.stringify({ icon: '🏆', description: 'Oticon et Bernafon, deux marques reconnues.' }),
+    order: 13,
+  },
+  {
+    pageKey: 'home',
+    blockKey: 'hero-features-independant',
+    blockType: 'card',
+    content: 'Centre indépendant',
+    metadata: JSON.stringify({ icon: '🎯', description: "Pas d'objectifs de vente, pas de réseau à satisfaire." }),
+    order: 14,
+  },
+  {
+    pageKey: 'home',
+    blockKey: 'hero-features-transparence',
+    blockType: 'card',
+    content: 'Transparence des prix',
+    metadata: JSON.stringify({ icon: '💰', description: 'Prix clairs, remboursements expliqués.' }),
+    order: 15,
+  },
+
   // ========== PAGE CONTACT ==========
   {
     pageKey: 'contact',
@@ -286,6 +336,7 @@ export async function POST() {
             content: block.content,
             blockType: block.blockType,
             order: block.order,
+            metadata: (block as any).metadata || null,
           },
           create: {
             pageKey: block.pageKey,
@@ -293,6 +344,7 @@ export async function POST() {
             blockType: block.blockType,
             content: block.content,
             order: block.order,
+            metadata: (block as any).metadata || null,
             isVisible: true,
           },
         });
