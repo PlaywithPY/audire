@@ -1541,6 +1541,136 @@ export default function AdminDashboard() {
                               placeholder="Description de l'image pour l'accessibilité"
                             />
                           </div>
+
+                          {/* Position et Taille */}
+                          <div className="border-t-2 border-gray-200 pt-4 mt-4">
+                            <h4 className="font-semibold text-lg mb-4">📐 Position et Taille</h4>
+
+                            {/* Type de positionnement */}
+                            <div className="mb-4">
+                              <label className="block text-sm font-semibold mb-2">Type de positionnement</label>
+                              <div className="flex gap-4">
+                                <label className="flex items-center gap-2">
+                                  <input
+                                    type="radio"
+                                    checked={!editingBlock.metadata || !JSON.parse(editingBlock.metadata || '{}').position?.type}
+                                    onChange={() => {
+                                      const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}') : {};
+                                      delete meta.position;
+                                      setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
+                                    }}
+                                    className="w-4 h-4"
+                                  />
+                                  <span>Normal (dans le flux)</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                  <input
+                                    type="radio"
+                                    checked={!!(editingBlock.metadata && JSON.parse(editingBlock.metadata || '{}').position?.type === 'absolute')}
+                                    onChange={() => {
+                                      const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}') : {};
+                                      meta.position = {
+                                        type: 'absolute',
+                                        x: '50%',
+                                        y: '50%',
+                                        zIndex: 1
+                                      };
+                                      setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
+                                    }}
+                                    className="w-4 h-4"
+                                  />
+                                  <span>Absolu (positionné librement)</span>
+                                </label>
+                              </div>
+                            </div>
+
+                            {/* Contrôles de position absolue */}
+                            {editingBlock.metadata && JSON.parse(editingBlock.metadata || '{}').position?.type === 'absolute' && (
+                              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-4">
+                                <p className="text-sm text-blue-700 mb-3">
+                                  💡 L'image sera positionnée librement sur la page. Utilisez des valeurs en px, %, rem, etc.
+                                </p>
+                                <div className="grid grid-cols-3 gap-4">
+                                  <div>
+                                    <label className="block text-sm font-semibold mb-2">Position X (left)</label>
+                                    <input
+                                      type="text"
+                                      value={JSON.parse(editingBlock.metadata || '{}').position?.x || '0'}
+                                      onChange={(e) => {
+                                        const meta = JSON.parse(editingBlock.metadata || '{}');
+                                        meta.position = { ...meta.position, x: e.target.value };
+                                        setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
+                                      }}
+                                      className="w-full px-3 py-2 border border-gray-300 rounded"
+                                      placeholder="ex: 100px, 50%"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-semibold mb-2">Position Y (top)</label>
+                                    <input
+                                      type="text"
+                                      value={JSON.parse(editingBlock.metadata || '{}').position?.y || '0'}
+                                      onChange={(e) => {
+                                        const meta = JSON.parse(editingBlock.metadata || '{}');
+                                        meta.position = { ...meta.position, y: e.target.value };
+                                        setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
+                                      }}
+                                      className="w-full px-3 py-2 border border-gray-300 rounded"
+                                      placeholder="ex: 200px, 10%"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-semibold mb-2">Z-Index</label>
+                                    <input
+                                      type="number"
+                                      value={JSON.parse(editingBlock.metadata || '{}').position?.zIndex || 1}
+                                      onChange={(e) => {
+                                        const meta = JSON.parse(editingBlock.metadata || '{}');
+                                        meta.position = { ...meta.position, zIndex: parseInt(e.target.value) };
+                                        setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
+                                      }}
+                                      className="w-full px-3 py-2 border border-gray-300 rounded"
+                                      placeholder="1"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Contrôles de taille */}
+                            <div className="grid grid-cols-2 gap-4 mt-4">
+                              <div>
+                                <label className="block text-sm font-semibold mb-2">Largeur</label>
+                                <input
+                                  type="text"
+                                  value={editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}').size?.width || 'auto' : 'auto'}
+                                  onChange={(e) => {
+                                    const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}') : {};
+                                    if (!meta.size) meta.size = {};
+                                    meta.size.width = e.target.value;
+                                    setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
+                                  }}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded"
+                                  placeholder="ex: 300px, 50%, auto"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-semibold mb-2">Hauteur</label>
+                                <input
+                                  type="text"
+                                  value={editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}').size?.height || 'auto' : 'auto'}
+                                  onChange={(e) => {
+                                    const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}') : {};
+                                    if (!meta.size) meta.size = {};
+                                    meta.size.height = e.target.value;
+                                    setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
+                                  }}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded"
+                                  placeholder="ex: 200px, 30vh, auto"
+                                />
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       ) : (
                         /* Formulaire standard pour les autres types */
