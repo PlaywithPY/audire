@@ -5,6 +5,8 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import VisualPageBuilder from '@/components/VisualPageBuilder';
+import WYSIWYGEditor from '@/components/WYSIWYGEditor';
+import ImagePicker from '@/components/ImagePicker';
 
 type ThemeColors = {
   primary: string;
@@ -156,6 +158,9 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<{ name: string; url: string }[]>([]);
+  const [viewMode, setViewMode] = useState<'list' | 'split' | 'wysiwyg'>('wysiwyg');
+  const [showImagePicker, setShowImagePicker] = useState(false);
+  const [imagePickerCallback, setImagePickerCallback] = useState<((url: string) => void) | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -1153,16 +1158,51 @@ export default function AdminDashboard() {
 
             {/* Liste des blocs */}
             <section className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold">
                   🧱 Blocs - {pages.find((p) => p.key === selectedPage)?.label}
                 </h2>
-                <button
-                  onClick={() => setShowNewBlockForm(!showNewBlockForm)}
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
-                >
-                  + Nouveau bloc
-                </button>
+                <div className="flex gap-3">
+                  {/* View mode selector */}
+                  <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
+                    <button
+                      onClick={() => setViewMode('list')}
+                      className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+                        viewMode === 'list'
+                          ? 'bg-white text-blue-600 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      📋 Liste
+                    </button>
+                    <button
+                      onClick={() => setViewMode('split')}
+                      className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+                        viewMode === 'split'
+                          ? 'bg-white text-blue-600 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      ⚡ Split
+                    </button>
+                    <button
+                      onClick={() => setViewMode('wysiwyg')}
+                      className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+                        viewMode === 'wysiwyg'
+                          ? 'bg-white text-blue-600 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      🎨 WYSIWYG
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => setShowNewBlockForm(!showNewBlockForm)}
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+                  >
+                    + Nouveau bloc
+                  </button>
+                </div>
               </div>
 
               {/* Formulaire nouveau bloc */}
@@ -1301,43 +1341,63 @@ export default function AdminDashboard() {
 
                             {/* Option 2: Upload d'image */}
                             <div>
-                              <label className="block text-xs text-gray-600 mb-1">Option 2: Image (drag & drop ou cliquez)</label>
-                              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-400 transition">
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={async (e) => {
-                                    const file = e.target.files?.[0];
-                                    if (!file) return;
-
-                                    const formData = new FormData();
-                                    formData.append('file', file);
-
-                                    setSaving(true);
-                                    try {
-                                      const res = await fetch('/api/admin/upload', {
-                                        method: 'POST',
-                                        body: formData,
-                                      });
-                                      const data = await res.json();
-
-                                      if (data.success) {
-                                        const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata) : {};
-                                        meta.imageUrl = data.url;
-                                        setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
-                                        alert('✅ Image uploadée !');
-                                      } else {
-                                        alert('❌ Erreur: ' + data.error);
-                                      }
-                                    } catch (error) {
-                                      console.error('Upload error:', error);
-                                      alert('❌ Erreur lors de l\'upload');
-                                    } finally {
-                                      setSaving(false);
-                                    }
+                              <label className="block text-xs text-gray-600 mb-1">Option 2: Image</label>
+                              <div className="flex gap-2 mb-3">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setImagePickerCallback(() => (url: string) => {
+                                      const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata) : {};
+                                      meta.imageUrl = url;
+                                      setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
+                                    });
+                                    setShowImagePicker(true);
                                   }}
-                                  className="w-full text-sm"
-                                />
+                                  className="flex-1 bg-blue-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                                >
+                                  🖼️ Choisir depuis la médiathèque
+                                </button>
+                                <label className="flex-1 bg-green-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors cursor-pointer text-center">
+                                  📤 Upload une image
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={async (e) => {
+                                      const file = e.target.files?.[0];
+                                      if (!file) return;
+
+                                      const formData = new FormData();
+                                      formData.append('file', file);
+
+                                      setSaving(true);
+                                      try {
+                                        const res = await fetch('/api/admin/upload', {
+                                          method: 'POST',
+                                          body: formData,
+                                        });
+                                        const data = await res.json();
+
+                                        if (data.success) {
+                                          const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata) : {};
+                                          meta.imageUrl = data.url;
+                                          setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
+                                          alert('✅ Image uploadée !');
+                                        } else {
+                                          alert('❌ Erreur: ' + data.error);
+                                        }
+                                      } catch (error) {
+                                        console.error('Upload error:', error);
+                                        alert('❌ Erreur lors de l\'upload');
+                                      } finally {
+                                        setSaving(false);
+                                      }
+                                    }}
+                                  />
+                                </label>
+                              </div>
+                              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4"
+                                >
                                 {editingBlock.metadata && JSON.parse(editingBlock.metadata || '{}').imageUrl && (
                                   <div className="mt-3 flex items-center gap-3">
                                     <img
@@ -1372,6 +1432,113 @@ export default function AdminDashboard() {
                               rows={4}
                               className="w-full px-4 py-3 border border-gray-300 rounded-lg"
                               placeholder="Ex: Un test complet et sans engagement..."
+                            />
+                          </div>
+                        </div>
+                      ) : editingBlock.blockType === 'image' ? (
+                        /* Formulaire spécifique pour les images */
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-semibold mb-2">Image</label>
+                            <div className="flex gap-2 mb-3">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setImagePickerCallback(() => (url: string) => {
+                                    const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}') : {};
+                                    meta.imageUrl = url;
+                                    setEditingBlock({
+                                      ...editingBlock,
+                                      content: url,
+                                      metadata: JSON.stringify(meta)
+                                    });
+                                  });
+                                  setShowImagePicker(true);
+                                }}
+                                className="flex-1 bg-blue-600 text-white px-6 py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                              >
+                                🖼️ Choisir depuis la médiathèque
+                              </button>
+                              <label className="flex-1 bg-green-600 text-white px-6 py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors cursor-pointer text-center">
+                                📤 Uploader une nouvelle image
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={async (e) => {
+                                    const file = e.target.files?.[0];
+                                    if (!file) return;
+
+                                    const formData = new FormData();
+                                    formData.append('file', file);
+
+                                    setSaving(true);
+                                    try {
+                                      const res = await fetch('/api/admin/upload', {
+                                        method: 'POST',
+                                        body: formData,
+                                      });
+                                      const data = await res.json();
+
+                                      if (data.success) {
+                                        const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}') : {};
+                                        meta.imageUrl = data.url;
+                                        setEditingBlock({
+                                          ...editingBlock,
+                                          content: data.url,
+                                          metadata: JSON.stringify(meta)
+                                        });
+                                        alert('✅ Image uploadée !');
+                                      } else {
+                                        alert('❌ Erreur: ' + data.error);
+                                      }
+                                    } catch (error) {
+                                      console.error('Upload error:', error);
+                                      alert('❌ Erreur lors de l\'upload');
+                                    } finally {
+                                      setSaving(false);
+                                      e.target.value = '';
+                                    }
+                                  }}
+                                />
+                              </label>
+                            </div>
+
+                            {/* Preview de l'image */}
+                            {(editingBlock.content || (editingBlock.metadata && JSON.parse(editingBlock.metadata || '{}').imageUrl)) && (
+                              <div className="border-2 border-gray-200 rounded-lg p-4 bg-gray-50">
+                                <img
+                                  src={(editingBlock.metadata && JSON.parse(editingBlock.metadata || '{}').imageUrl) || editingBlock.content}
+                                  alt="Preview"
+                                  className="max-w-full h-auto rounded-lg shadow-md"
+                                />
+                                <button
+                                  onClick={() => {
+                                    setEditingBlock({
+                                      ...editingBlock,
+                                      content: '',
+                                      metadata: JSON.stringify({})
+                                    });
+                                  }}
+                                  className="mt-3 text-red-600 text-sm font-medium hover:underline"
+                                >
+                                  🗑️ Supprimer l'image
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-sm font-semibold mb-2">Texte alternatif (alt)</label>
+                            <input
+                              type="text"
+                              value={editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}').alt || '' : ''}
+                              onChange={(e) => {
+                                const meta = editingBlock.metadata ? JSON.parse(editingBlock.metadata || '{}') : {};
+                                meta.alt = e.target.value;
+                                setEditingBlock({ ...editingBlock, metadata: JSON.stringify(meta) });
+                              }}
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+                              placeholder="Description de l'image pour l'accessibilité"
                             />
                           </div>
                         </div>
@@ -1459,41 +1626,78 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               ) : (
-                /* Mode affichage avec Visual Page Builder */
-                <VisualPageBuilder
-                  blocks={blocks}
-                  onReorder={async (reorderedBlocks) => {
-                    setBlocks(reorderedBlocks);
-                    // Sauvegarder l'ordre
-                    try {
-                      await Promise.all(
-                        reorderedBlocks.map((block) =>
-                          fetch('/api/admin/blocks', {
+                /* Mode affichage selon le viewMode */
+                <>
+                  {viewMode === 'wysiwyg' ? (
+                    <WYSIWYGEditor
+                      blocks={blocks}
+                      onReorder={async (reorderedBlocks) => {
+                        setBlocks(reorderedBlocks);
+                        try {
+                          await Promise.all(
+                            reorderedBlocks.map((block) =>
+                              fetch('/api/admin/blocks', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: block.id, order: block.order }),
+                              })
+                            )
+                          );
+                        } catch (error) {
+                          console.error('Error saving order:', error);
+                          alert('❌ Erreur lors de la sauvegarde de l\'ordre');
+                        }
+                      }}
+                      onEdit={(block) => setEditingBlock(block)}
+                      onDelete={deleteBlock}
+                      onToggleVisibility={async (blockId) => {
+                        const block = blocks.find((b) => b.id === blockId);
+                        if (block) {
+                          await fetch('/api/admin/blocks', {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ id: block.id, order: block.order }),
-                          })
-                        )
-                      );
-                    } catch (error) {
-                      console.error('Error saving order:', error);
-                      alert('❌ Erreur lors de la sauvegarde de l\'ordre');
-                    }
-                  }}
-                  onEdit={(block) => setEditingBlock(block)}
-                  onDelete={deleteBlock}
-                  onToggleVisibility={async (blockId) => {
-                    const block = blocks.find((b) => b.id === blockId);
-                    if (block) {
-                      await fetch('/api/admin/blocks', {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ id: blockId, isVisible: !block.isVisible }),
-                      });
-                      fetchBlocks();
-                    }
-                  }}
-                />
+                            body: JSON.stringify({ id: blockId, isVisible: !block.isVisible }),
+                          });
+                          fetchBlocks();
+                        }
+                      }}
+                    />
+                  ) : (
+                    <VisualPageBuilder
+                      blocks={blocks}
+                      onReorder={async (reorderedBlocks) => {
+                        setBlocks(reorderedBlocks);
+                        try {
+                          await Promise.all(
+                            reorderedBlocks.map((block) =>
+                              fetch('/api/admin/blocks', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: block.id, order: block.order }),
+                              })
+                            )
+                          );
+                        } catch (error) {
+                          console.error('Error saving order:', error);
+                          alert('❌ Erreur lors de la sauvegarde de l\'ordre');
+                        }
+                      }}
+                      onEdit={(block) => setEditingBlock(block)}
+                      onDelete={deleteBlock}
+                      onToggleVisibility={async (blockId) => {
+                        const block = blocks.find((b) => b.id === blockId);
+                        if (block) {
+                          await fetch('/api/admin/blocks', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: blockId, isVisible: !block.isVisible }),
+                          });
+                          fetchBlocks();
+                        }
+                      }}
+                    />
+                  )}
+                </>
               )}
             </section>
           </>
@@ -1740,6 +1944,18 @@ export default function AdminDashboard() {
         )}
 
       </div>
+
+      {/* Image Picker Modal */}
+      <ImagePicker
+        isOpen={showImagePicker}
+        onClose={() => setShowImagePicker(false)}
+        onSelect={(url) => {
+          if (imagePickerCallback) {
+            imagePickerCallback(url);
+            setImagePickerCallback(null);
+          }
+        }}
+      />
     </div>
   );
 }
