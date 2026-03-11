@@ -21,7 +21,6 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-              <span className="w-2 h-2 bg-white rounded-full"></span>
               <span className="text-sm font-medium">Centre auditif indépendant • Province de Liège</span>
             </div>
 
@@ -73,43 +72,43 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <div className="animate-fadeInUp" style={{ animationDelay: '0.1s' }}>
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto items-center justify-center">
+            <div className="animate-float" style={{ animationDelay: '0s' }}>
               <FeatureCard
                 icon="👂"
                 title="Test auditif gratuit"
                 description="Un test complet et sans engagement pour comprendre votre audition."
               />
             </div>
-            <div className="animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
+            <div className="animate-float" style={{ animationDelay: '0.5s' }}>
               <FeatureCard
                 icon="💬"
                 title="Accompagnement humain"
                 description="Pas de jargon technique, pas de pression commerciale."
               />
             </div>
-            <div className="animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
+            <div className="animate-float" style={{ animationDelay: '1s' }}>
               <FeatureCard
                 icon="🔧"
                 title="Suivi personnalisé"
                 description="Réglages progressifs, adaptations, suivi régulier."
               />
             </div>
-            <div className="animate-fadeInUp" style={{ animationDelay: '0.4s' }}>
+            <div className="animate-float" style={{ animationDelay: '1.5s' }}>
               <FeatureCard
                 icon="🏆"
                 title="Solutions de qualité"
                 description="Oticon et Bernafon, deux marques reconnues."
               />
             </div>
-            <div className="animate-fadeInUp" style={{ animationDelay: '0.5s' }}>
+            <div className="animate-float" style={{ animationDelay: '2s' }}>
               <FeatureCard
                 icon="🎯"
                 title="Centre indépendant"
                 description="Pas d'objectifs de vente, pas de réseau à satisfaire."
               />
             </div>
-            <div className="animate-fadeInUp" style={{ animationDelay: '0.6s' }}>
+            <div className="animate-float" style={{ animationDelay: '2.5s' }}>
               <FeatureCard
                 icon="💰"
                 title="Transparence des prix"
