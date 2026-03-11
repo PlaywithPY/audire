@@ -1129,7 +1129,7 @@ export default function AdminDashboard() {
                             if (!confirm('Supprimer cette image ?')) return;
 
                             try {
-                              await fetch(`/api/admin/upload?file=${encodeURIComponent(image.name)}`, {
+                              await fetch(`/api/admin/upload?url=${encodeURIComponent(image.url)}`, {
                                 method: 'DELETE',
                               });
                               alert('✅ Image supprimée !');

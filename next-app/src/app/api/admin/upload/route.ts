@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir, readdir, unlink } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { list, put, del } from '@vercel/blob';
 import { requireAuth } from '@/lib/auth-helpers';
 
 /**
- * Route API pour gérer les images
+ * Route API pour gérer les images avec Vercel Blob
  * GET /api/admin/upload - Liste toutes les images
  * POST /api/admin/upload - Upload une nouvelle image
- * DELETE /api/admin/upload?file=xxx.jpg - Supprime une image
+ * DELETE /api/admin/upload?url=xxx - Supprime une image
  */
 
 export async function GET() {
@@ -16,24 +14,25 @@ export async function GET() {
   if (error) return error;
 
   try {
-    const uploadsDir = join(process.cwd(), 'public', 'uploads');
+    console.log('📋 Listing images from Vercel Blob...');
 
-    if (!existsSync(uploadsDir)) {
-      return NextResponse.json([]);
-    }
+    // Lister tous les blobs
+    const { blobs } = await list();
 
-    const files = await readdir(uploadsDir);
-    const images = files
-      .filter(file => !file.startsWith('.')) // Ignorer .gitkeep
-      .map(file => ({
-        name: file,
-        url: `/uploads/${file}`,
-      }))
-      .sort((a, b) => b.name.localeCompare(a.name)); // Plus récents en premier
+    console.log(`📦 Found ${blobs.length} blobs`);
+
+    // Transformer en format utilisable
+    const images = blobs.map(blob => ({
+      name: blob.pathname,
+      url: blob.url,
+      size: blob.size,
+      uploadedAt: blob.uploadedAt,
+    }))
+    .sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()); // Plus récents en premier
 
     return NextResponse.json(images);
   } catch (error) {
-    console.error('Error listing images:', error);
+    console.error('❌ Error listing images:', error);
     return NextResponse.json({ error: 'Failed to list images' }, { status: 500 });
   }
 }
@@ -76,34 +75,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Créer le dossier uploads s'il n'existe pas
-    const uploadsDir = join(process.cwd(), 'public', 'uploads');
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true });
-    }
-
     // Générer un nom de fichier unique
     const timestamp = Date.now();
     const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
     const fileName = `${timestamp}-${originalName}`;
-    const filePath = join(uploadsDir, fileName);
 
-    // Convertir le fichier en buffer et le sauvegarder
-    console.log('🔄 Converting to buffer...');
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    console.log('☁️ Uploading to Vercel Blob:', fileName);
 
-    console.log('💾 Writing file to:', filePath);
-    await writeFile(filePath, buffer);
+    // Uploader vers Vercel Blob
+    const blob = await put(fileName, file, {
+      access: 'public',
+      addRandomSuffix: false,
+    });
 
-    // Retourner l'URL publique du fichier
-    const publicUrl = `/uploads/${fileName}`;
-    console.log('✅ Upload successful:', publicUrl);
+    console.log('✅ Upload successful:', blob.url);
 
     return NextResponse.json({
       success: true,
-      url: publicUrl,
-      fileName,
+      url: blob.url,
+      fileName: fileName,
     });
   } catch (error) {
     console.error('❌ Error uploading file:', error);
@@ -121,29 +111,22 @@ export async function DELETE(request: NextRequest) {
 
   try {
     const searchParams = request.nextUrl.searchParams;
-    const fileName = searchParams.get('file');
+    const blobUrl = searchParams.get('url');
 
-    if (!fileName) {
-      return NextResponse.json({ error: 'File name is required' }, { status: 400 });
+    if (!blobUrl) {
+      return NextResponse.json({ error: 'Blob URL is required' }, { status: 400 });
     }
 
-    // Sécurité : empêcher les traversées de répertoire
-    if (fileName.includes('..') || fileName.includes('/')) {
-      return NextResponse.json({ error: 'Invalid file name' }, { status: 400 });
-    }
+    console.log('🗑️ Deleting blob:', blobUrl);
 
-    const uploadsDir = join(process.cwd(), 'public', 'uploads');
-    const filePath = join(uploadsDir, fileName);
+    // Supprimer le blob
+    await del(blobUrl);
 
-    if (!existsSync(filePath)) {
-      return NextResponse.json({ error: 'File not found' }, { status: 404 });
-    }
-
-    await unlink(filePath);
+    console.log('✅ Blob deleted successfully');
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting file:', error);
+    console.error('❌ Error deleting blob:', error);
     return NextResponse.json({ error: 'Failed to delete file' }, { status: 500 });
   }
 }
