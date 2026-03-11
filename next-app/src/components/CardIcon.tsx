@@ -24,21 +24,25 @@ export default function CardIcon({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchCardImage() {
+    async function fetchCardData() {
       try {
-        const res = await fetch('/api/admin/card-images');
+        const res = await fetch(`/api/cards?cardKey=${cardKey}`);
         const data = await res.json();
-        const image = data.find((img: any) => img.cardKey === cardKey);
-        setCardImage(image || null);
+        if (data) {
+          setCardImage({
+            imageUrl: data.imageUrl || '',
+            fallbackEmoji: data.icon || defaultEmoji,
+          });
+        }
       } catch (error) {
-        console.error('Error fetching card image:', error);
+        console.error('Error fetching card data:', error);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchCardImage();
-  }, [cardKey]);
+    fetchCardData();
+  }, [cardKey, defaultEmoji]);
 
   // Si on charge, afficher l'emoji par défaut
   if (loading) {
@@ -58,16 +62,25 @@ export default function CardIcon({
     );
   }
 
-  // Si l'image a échoué à charger, utiliser le fallback emoji
-  if (imageError) {
+  // Si pas d'imageUrl, afficher l'emoji
+  if (!cardImage.imageUrl) {
     return (
       <span className={`text-${size === 48 ? '5xl' : '4xl'} ${className}`}>
-        {cardImage.fallbackEmoji}
+        {cardImage.fallbackEmoji || defaultEmoji}
       </span>
     );
   }
 
-  // Essayer d'afficher l'image
+  // Si l'image a échoué à charger, utiliser le fallback emoji
+  if (imageError) {
+    return (
+      <span className={`text-${size === 48 ? '5xl' : '4xl'} ${className}`}>
+        {cardImage.fallbackEmoji || defaultEmoji}
+      </span>
+    );
+  }
+
+  // Afficher l'image
   return (
     <div className={className} style={{ width: size, height: size }}>
       <Image
