@@ -392,11 +392,6 @@ export default function AdminDashboard() {
     }
   }
 
-  useEffect(() => {
-    if (activeTab === 'card-images') {
-      fetchCardImages();
-    }
-  }, [activeTab]);
 
   async function createCardImage() {
     if (!newCardImage.cardKey || !newCardImage.imageUrl) {
