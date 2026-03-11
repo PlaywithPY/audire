@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import BlocksBuilder from '@/components/BlocksBuilder';
+import VisualPageBuilder from '@/components/VisualPageBuilder';
 
 type ThemeColors = {
   primary: string;
@@ -1459,8 +1459,8 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               ) : (
-                /* Mode affichage avec Builder Drag & Drop */
-                <BlocksBuilder
+                /* Mode affichage avec Visual Page Builder */
+                <VisualPageBuilder
                   blocks={blocks}
                   onReorder={async (reorderedBlocks) => {
                     setBlocks(reorderedBlocks);
