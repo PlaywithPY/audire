@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+// Désactiver le cache pour cette route
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 /**
  * Route API pour récupérer les cards (blocs de type 'card')
  * GET /api/cards?cardKey=hero-features-test
