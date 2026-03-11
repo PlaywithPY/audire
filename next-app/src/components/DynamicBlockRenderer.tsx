@@ -16,9 +16,14 @@ type ContentBlock = {
 type DynamicBlockRendererProps = {
   pageKey: string;
   className?: string;
+  absoluteOnly?: boolean; // Afficher uniquement les blocs en position absolue
 };
 
-export default function DynamicBlockRenderer({ pageKey, className = '' }: DynamicBlockRendererProps) {
+export default function DynamicBlockRenderer({
+  pageKey,
+  className = '',
+  absoluteOnly = false
+}: DynamicBlockRendererProps) {
   const [blocks, setBlocks] = useState<ContentBlock[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,8 +35,23 @@ export default function DynamicBlockRenderer({ pageKey, className = '' }: Dynami
     try {
       const res = await fetch(`/api/blocks?pageKey=${pageKey}`);
       const data = await res.json();
-      // Filtrer uniquement les blocs visibles
-      setBlocks(data.filter((b: ContentBlock) => b.isVisible));
+
+      // Filtrer les blocs
+      let filteredBlocks = data.filter((b: ContentBlock) => b.isVisible);
+
+      // Si absoluteOnly, ne garder que les blocs en position absolue
+      if (absoluteOnly) {
+        filteredBlocks = filteredBlocks.filter((b: ContentBlock) => {
+          try {
+            const meta = b.metadata ? JSON.parse(b.metadata) : {};
+            return meta.position?.type === 'absolute';
+          } catch {
+            return false;
+          }
+        });
+      }
+
+      setBlocks(filteredBlocks);
     } catch (error) {
       console.error('Error fetching blocks:', error);
     } finally {
@@ -150,7 +170,10 @@ function BlockRenderer({ block }: { block: ContentBlock }) {
       const imageAlt = metadata.alt || 'Image';
 
       return (
-        <div style={combinedStyle} className={hasAbsolutePosition ? '' : 'mb-6'}>
+        <div
+          style={combinedStyle}
+          className={hasAbsolutePosition ? 'pointer-events-auto' : 'mb-6'}
+        >
           <img
             src={imageUrl}
             alt={imageAlt}

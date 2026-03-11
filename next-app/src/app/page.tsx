@@ -8,7 +8,14 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="min-h-screen">
+      <main className="min-h-screen relative">
+        {/* Couche d'overlay pour les blocs en position absolue uniquement */}
+        <DynamicBlockRenderer
+          pageKey="home"
+          absoluteOnly={true}
+          className="absolute inset-0 pointer-events-none"
+        />
+
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary to-primary-dark text-white py-20">
         <div className="container mx-auto px-4">
@@ -103,13 +110,6 @@ export default function Home() {
           <p className="mt-4 text-sm text-text-muted">
             Test gratuit • Sans engagement • Conseils personnalisés
           </p>
-        </div>
-      </section>
-
-      {/* Dynamic Content from Admin */}
-      <section className="relative py-12 bg-white">
-        <div className="container mx-auto px-4">
-          <DynamicBlockRenderer pageKey="home" className="space-y-6" />
         </div>
       </section>
 
