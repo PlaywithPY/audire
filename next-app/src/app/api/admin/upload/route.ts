@@ -39,14 +39,23 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  console.log('📤 Upload request received');
+
   const { error } = await requireAuth();
-  if (error) return error;
+  if (error) {
+    console.log('❌ Auth error:', error);
+    return error;
+  }
 
   try {
     const formData = await request.formData();
+    console.log('📋 FormData parsed');
+
     const file = formData.get('file') as File;
+    console.log('📁 File from formData:', file?.name, file?.type, file?.size);
 
     if (!file) {
+      console.log('❌ No file in formData');
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
@@ -80,12 +89,16 @@ export async function POST(request: NextRequest) {
     const filePath = join(uploadsDir, fileName);
 
     // Convertir le fichier en buffer et le sauvegarder
+    console.log('🔄 Converting to buffer...');
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+
+    console.log('💾 Writing file to:', filePath);
     await writeFile(filePath, buffer);
 
     // Retourner l'URL publique du fichier
     const publicUrl = `/uploads/${fileName}`;
+    console.log('✅ Upload successful:', publicUrl);
 
     return NextResponse.json({
       success: true,
@@ -93,7 +106,11 @@ export async function POST(request: NextRequest) {
       fileName,
     });
   } catch (error) {
-    console.error('Error uploading file:', error);
+    console.error('❌ Error uploading file:', error);
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
     return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
   }
 }
