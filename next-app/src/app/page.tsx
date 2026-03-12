@@ -72,49 +72,37 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto items-center justify-center">
-            <div className="animate-float" style={{ animationDelay: '0s' }}>
-              <FeatureCard
-                icon="👂"
-                title="Test auditif gratuit"
-                description="Un test complet et sans engagement pour comprendre votre audition."
-              />
-            </div>
-            <div className="animate-float" style={{ animationDelay: '0.5s' }}>
-              <FeatureCard
-                icon="💬"
-                title="Accompagnement humain"
-                description="Pas de jargon technique, pas de pression commerciale."
-              />
-            </div>
-            <div className="animate-float" style={{ animationDelay: '1s' }}>
-              <FeatureCard
-                icon="🔧"
-                title="Suivi personnalisé"
-                description="Réglages progressifs, adaptations, suivi régulier."
-              />
-            </div>
-            <div className="animate-float" style={{ animationDelay: '1.5s' }}>
-              <FeatureCard
-                icon="🏆"
-                title="Solutions de qualité"
-                description="Oticon et Bernafon, deux marques reconnues."
-              />
-            </div>
-            <div className="animate-float" style={{ animationDelay: '2s' }}>
-              <FeatureCard
-                icon="🎯"
-                title="Centre indépendant"
-                description="Pas d'objectifs de vente, pas de réseau à satisfaire."
-              />
-            </div>
-            <div className="animate-float" style={{ animationDelay: '2.5s' }}>
-              <FeatureCard
-                icon="💰"
-                title="Transparence des prix"
-                description="Prix clairs, remboursements expliqués."
-              />
-            </div>
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <FeatureCard
+              icon="👂"
+              title="Test auditif gratuit"
+              description="Un test complet et sans engagement pour comprendre votre audition."
+            />
+            <FeatureCard
+              icon="💬"
+              title="Accompagnement humain"
+              description="Pas de jargon technique, pas de pression commerciale."
+            />
+            <FeatureCard
+              icon="🔧"
+              title="Suivi personnalisé"
+              description="Réglages progressifs, adaptations, suivi régulier."
+            />
+            <FeatureCard
+              icon="🏆"
+              title="Solutions de qualité"
+              description="Oticon et Bernafon, deux marques reconnues."
+            />
+            <FeatureCard
+              icon="🎯"
+              title="Centre indépendant"
+              description="Pas d'objectifs de vente, pas de réseau à satisfaire."
+            />
+            <FeatureCard
+              icon="💰"
+              title="Transparence des prix"
+              description="Prix clairs, remboursements expliqués."
+            />
           </div>
         </div>
       </section>

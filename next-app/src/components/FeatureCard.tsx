@@ -8,7 +8,7 @@ export default function FeatureCard({ icon, title, description }: FeatureCardPro
   return (
     <div className="bg-bg p-6 rounded-2xl shadow-md">
       <div className="mb-4">
-        <span className="text-5xl">{icon}</span>
+        <span className="text-5xl inline-block animate-float">{icon}</span>
       </div>
       <h3 className="text-xl font-bold mb-2">
         {title}

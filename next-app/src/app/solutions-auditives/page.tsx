@@ -1,11 +1,79 @@
+'use client';
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Metadata } from "next";
+import { useState } from "react";
 
-export const metadata: Metadata = {
-  title: "Solutions auditives — Audire",
-  description: "Découvrez nos solutions auditives Oticon et Bernafon. Appareils discrets, performants et adaptés à votre quotidien.",
-};
+interface SolutionCardProps {
+  title: string;
+  icon: string;
+  shortDesc: string;
+  fullDesc: string;
+  avantages: string[];
+  inconvenients: string[];
+}
+
+function SolutionCard({ title, icon, shortDesc, fullDesc, avantages, inconvenients }: SolutionCardProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+      {/* Card cliquable */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full p-8 text-left hover:bg-primary/5 transition-colors"
+      >
+        <div className="text-5xl mb-4 inline-block animate-float">{icon}</div>
+        <h3 className="text-2xl font-bold mb-4">{title}</h3>
+        <p className="text-text-light mb-4">{shortDesc}</p>
+        <div className="flex items-center gap-2 text-primary font-semibold">
+          <span>{isOpen ? '▼' : '▶'}</span>
+          <span>{isOpen ? 'Voir moins' : 'En savoir plus'}</span>
+        </div>
+      </button>
+
+      {/* Contenu détaillé (accordion) */}
+      <div
+        className={`transition-all duration-300 ease-in-out ${
+          isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="px-8 pb-8 border-t border-border">
+          <div className="pt-6 space-y-6">
+            {/* Description complète */}
+            <div>
+              <h4 className="font-bold text-lg mb-2">Description</h4>
+              <p className="text-text-light">{fullDesc}</p>
+            </div>
+
+            {/* Tableau avantages/inconvénients */}
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Avantages */}
+              <div className="bg-green-50 p-4 rounded-xl">
+                <h4 className="font-bold text-lg mb-3 text-green-800">✅ Avantages</h4>
+                <ul className="space-y-2">
+                  {avantages.map((av, idx) => (
+                    <li key={idx} className="text-sm text-green-900">• {av}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Inconvénients */}
+              <div className="bg-orange-50 p-4 rounded-xl">
+                <h4 className="font-bold text-lg mb-3 text-orange-800">⚠️ Points d'attention</h4>
+                <ul className="space-y-2">
+                  {inconvenients.map((inc, idx) => (
+                    <li key={idx} className="text-sm text-orange-900">• {inc}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function SolutionsAuditives() {
   return (
@@ -88,29 +156,61 @@ export default function SolutionsAuditives() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {[
-                {
-                  title: 'Contours d\'oreille',
-                  desc: 'Discrets et confortables, ils se placent derrière l\'oreille. Idéaux pour tous types de pertes auditives.',
-                  icon: '👂'
-                },
-                {
-                  title: 'Intra-auriculaires',
-                  desc: 'Presque invisibles, ils se placent directement dans le conduit auditif. Parfaits pour un maximum de discrétion.',
-                  icon: '🔍'
-                },
-                {
-                  title: 'Rechargeables',
-                  desc: 'Plus besoin de piles ! Rechargez vos appareils la nuit et profitez d\'une journée complète d\'autonomie.',
-                  icon: '🔋'
-                },
-              ].map((type) => (
-                <div key={type.title} className="bg-white p-8 rounded-2xl hover:shadow-lg transition-all">
-                  <div className="text-5xl mb-4">{type.icon}</div>
-                  <h3 className="text-2xl font-bold mb-4">{type.title}</h3>
-                  <p className="text-text-light">{type.desc}</p>
-                </div>
-              ))}
+              <SolutionCard
+                title="Contours d'oreille"
+                icon="👂"
+                shortDesc="Discrets et confortables, ils se placent derrière l'oreille."
+                fullDesc="Les contours d'oreille (BTE - Behind The Ear) sont les appareils auditifs les plus polyvalents. Ils se placent confortablement derrière l'oreille et conviennent à tous types de pertes auditives, de légères à profondes."
+                avantages={[
+                  'Adaptés à toutes les pertes auditives',
+                  'Faciles à manipuler',
+                  'Batterie longue durée',
+                  'Entretien simple',
+                  'Excellente qualité sonore'
+                ]}
+                inconvenients={[
+                  'Légèrement plus visibles',
+                  'Peuvent interférer avec les lunettes',
+                  'Sensibles au vent'
+                ]}
+              />
+              <SolutionCard
+                title="Intra-auriculaires"
+                icon="🔍"
+                shortDesc="Presque invisibles, placés dans le conduit auditif."
+                fullDesc="Les appareils intra-auriculaires (ITE/CIC) sont fabriqués sur mesure pour s'adapter parfaitement à votre conduit auditif. Ils offrent une discrétion maximale tout en délivrant une excellente qualité sonore."
+                avantages={[
+                  'Très discrets, presque invisibles',
+                  'Confort optimal (sur mesure)',
+                  'Qualité sonore naturelle',
+                  'Pas d\'interférence avec lunettes',
+                  'Bonne localisation des sons'
+                ]}
+                inconvenients={[
+                  'Nécessitent une bonne dextérité',
+                  'Batterie plus petite',
+                  'Entretien plus délicat',
+                  'Non adaptés aux pertes sévères'
+                ]}
+              />
+              <SolutionCard
+                title="Rechargeables"
+                icon="🔋"
+                shortDesc="Plus besoin de piles ! Autonomie d'une journée complète."
+                fullDesc="Les appareils rechargeables représentent l'avenir de l'audiologie. Plus besoin de manipuler de petites piles : déposez simplement vos appareils dans leur station de charge la nuit."
+                avantages={[
+                  'Plus de piles à changer',
+                  'Écologique et économique',
+                  'Charge rapide (3-4h)',
+                  'Autonomie 24h',
+                  'Facilité d\'utilisation'
+                ]}
+                inconvenients={[
+                  'Nécessite accès à électricité',
+                  'Légèrement plus chers',
+                  'Station de charge à transporter en voyage'
+                ]}
+              />
             </div>
           </div>
         </section>
