@@ -29,7 +29,7 @@ function SolutionCard({ solution, onToggle, isActive }: SolutionCardProps) {
         isActive ? 'ring-2 ring-primary shadow-xl' : ''
       }`}
     >
-      <div className="text-5xl mb-4 inline-block animate-float">{solution.icon}</div>
+      <div className="text-5xl mb-4 animate-float text-center">{solution.icon}</div>
       <h3 className="text-2xl font-bold mb-4">{solution.title}</h3>
       <p className="text-text-light mb-4">{solution.shortDesc}</p>
       <div className="flex items-center gap-2 text-primary font-semibold">
