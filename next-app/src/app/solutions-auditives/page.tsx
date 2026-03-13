@@ -43,58 +43,64 @@ function SolutionCard({ solution, onToggle, isActive }: SolutionCardProps) {
 }
 
 function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
-  if (!solution) return null;
+  const isOpen = solution !== null;
 
   return (
-    <div className="grid transition-all duration-500 ease-in-out grid-rows-[1fr] opacity-100 mt-8">
+    <div
+      className={`grid transition-all duration-500 ease-in-out ${
+        isOpen ? 'grid-rows-[1fr] opacity-100 mt-8' : 'grid-rows-[0fr] opacity-0 mt-0'
+      }`}
+    >
       <div className="overflow-hidden">
-        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-          {/* Image */}
-          <div className="mb-8 rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary-light/10 aspect-video flex items-center justify-center max-w-2xl mx-auto">
-            <span className="text-9xl">{solution.image}</span>
-          </div>
-
-          {/* Description détaillée */}
-          <div className="mb-8 max-w-4xl mx-auto">
-            <h4 className="text-2xl font-bold mb-4 text-primary">📝 Description complète</h4>
-            <p className="text-text-light leading-relaxed text-lg">{solution.fullDesc}</p>
-          </div>
-
-          {/* Tableau Avantages / Inconvénients - PLEINE LARGEUR */}
-          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {/* Avantages */}
-            <div className="bg-green-50 rounded-xl p-8">
-              <h4 className="text-xl font-bold mb-6 text-green-700 flex items-center gap-3">
-                <span className="text-3xl">✅</span>
-                Avantages
-              </h4>
-              <ul className="space-y-3">
-                {solution.pros.map((pro, idx) => (
-                  <li key={idx} className="text-text-light flex items-start gap-3 text-base">
-                    <span className="text-green-600 mt-1 text-xl">•</span>
-                    <span>{pro}</span>
-                  </li>
-                ))}
-              </ul>
+        {solution && (
+          <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+            {/* Image */}
+            <div className="mb-8 rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary-light/10 aspect-video flex items-center justify-center max-w-2xl mx-auto">
+              <span className="text-9xl">{solution.image}</span>
             </div>
 
-            {/* Inconvénients */}
-            <div className="bg-orange-50 rounded-xl p-8">
-              <h4 className="text-xl font-bold mb-6 text-orange-700 flex items-center gap-3">
-                <span className="text-3xl">⚠️</span>
-                Points d'attention
-              </h4>
-              <ul className="space-y-3">
-                {solution.cons.map((con, idx) => (
-                  <li key={idx} className="text-text-light flex items-start gap-3 text-base">
-                    <span className="text-orange-600 mt-1 text-xl">•</span>
-                    <span>{con}</span>
-                  </li>
-                ))}
-              </ul>
+            {/* Description détaillée */}
+            <div className="mb-8 max-w-4xl mx-auto">
+              <h4 className="text-2xl font-bold mb-4 text-primary">📝 Description complète</h4>
+              <p className="text-text-light leading-relaxed text-lg">{solution.fullDesc}</p>
+            </div>
+
+            {/* Tableau Avantages / Inconvénients - PLEINE LARGEUR */}
+            <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+              {/* Avantages */}
+              <div className="bg-green-50 rounded-xl p-8">
+                <h4 className="text-xl font-bold mb-6 text-green-700 flex items-center gap-3">
+                  <span className="text-3xl">✅</span>
+                  Avantages
+                </h4>
+                <ul className="space-y-3">
+                  {solution.pros.map((pro, idx) => (
+                    <li key={idx} className="text-text-light flex items-start gap-3 text-base">
+                      <span className="text-green-600 mt-1 text-xl">•</span>
+                      <span>{pro}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Inconvénients */}
+              <div className="bg-orange-50 rounded-xl p-8">
+                <h4 className="text-xl font-bold mb-6 text-orange-700 flex items-center gap-3">
+                  <span className="text-3xl">⚠️</span>
+                  Points d'attention
+                </h4>
+                <ul className="space-y-3">
+                  {solution.cons.map((con, idx) => (
+                    <li key={idx} className="text-text-light flex items-start gap-3 text-base">
+                      <span className="text-orange-600 mt-1 text-xl">•</span>
+                      <span>{con}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
