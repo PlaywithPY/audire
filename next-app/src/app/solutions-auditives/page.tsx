@@ -75,8 +75,8 @@ function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
                 </h4>
                 <ul className="space-y-3">
                   {solution.pros.map((pro, idx) => (
-                    <li key={idx} className="text-text-light flex items-start gap-3 text-base">
-                      <span className="text-green-600 mt-1 text-xl">•</span>
+                    <li key={idx} className="text-text-light flex items-baseline gap-3 text-base">
+                      <span className="text-green-600 text-xl flex-shrink-0">•</span>
                       <span>{pro}</span>
                     </li>
                   ))}
@@ -91,8 +91,8 @@ function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
                 </h4>
                 <ul className="space-y-3">
                   {solution.cons.map((con, idx) => (
-                    <li key={idx} className="text-text-light flex items-start gap-3 text-base">
-                      <span className="text-orange-600 mt-1 text-xl">•</span>
+                    <li key={idx} className="text-text-light flex items-baseline gap-3 text-base">
+                      <span className="text-orange-600 text-xl flex-shrink-0">•</span>
                       <span>{con}</span>
                     </li>
                   ))}
