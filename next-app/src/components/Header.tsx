@@ -1,12 +1,22 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TopBanner from './TopBanner';
 import Logo from './Logo';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const navigation = [
     { name: 'Accueil', href: '/' },
@@ -23,9 +33,13 @@ export default function Header() {
       <TopBanner />
 
       {/* Header avec logo en survol */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm flex items-center min-h-[88px]">
-        {/* Logo en position absolute à gauche avec marge */}
-        <div className="absolute left-6 top-1/2 -translate-y-1/2 z-[51]">
+      <header className={`sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm flex items-center min-h-[88px] transition-all ${
+        isScrolled ? 'shadow-md' : ''
+      }`}>
+        {/* Logo en position absolute à gauche avec marge - Se décale vers le bas au scroll */}
+        <div className={`absolute left-6 z-[51] transition-all duration-300 ${
+          isScrolled ? 'top-6' : 'top-1/2 -translate-y-1/2'
+        }`}>
           <Logo />
         </div>
 
