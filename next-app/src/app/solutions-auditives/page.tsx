@@ -112,70 +112,60 @@ export default function SolutionsAuditives() {
   const solutions: SolutionData[] = [
     {
       id: 'contours',
-      title: "Contours d'oreille",
-      icon: "👂",
-      shortDesc: "Discrets et confortables, ils se placent derrière l'oreille.",
-      fullDesc: "Les contours d'oreille sont des appareils auditifs polyvalents qui se positionnent derrière le pavillon de l'oreille. Un tube fin relie l'appareil à un embout placé dans le conduit auditif. Cette conception classique offre une excellente amplification pour tous les types de perte auditive, de légère à profonde. Ils sont faciles à manipuler et offrent une longue autonomie de batterie.",
+      title: "Le contour d'oreille",
+      icon: "🎧",
+      shortDesc: "Modèle polyvalent et simple d'utilisation, le contour d'oreille se porte derrière le pavillon. Un tube fin relie l'appareil à un embout dans le conduit auditif. Il convient à la grande majorité des pertes auditives.",
+      fullDesc: "Grâce à son boîtier positionné derrière l'oreille, le contour d'oreille est facile à manipuler et à entretenir au quotidien. Il peut intégrer une batterie rechargeable et une connexion Bluetooth pour s'associer à votre téléphone, votre télévision ou d'autres accessoires. Disponible dans différentes teintes pour se fondre dans la couleur de vos cheveux ou de votre peau, il reste très discret malgré son placement externe.",
       image: "🎧",
       pros: [
-        "Adapté à toutes les pertes auditives (légère à profonde)",
+        "Convient à presque tous les degrés de perte auditive",
         "Facile à manipuler et à entretenir",
-        "Batterie longue durée ou option rechargeable",
-        "Nombreuses fonctionnalités (Bluetooth, réglages multiples)",
-        "Puissance d'amplification élevée",
-        "Compatibilité avec de nombreux accessoires"
+        "Batterie rechargeable disponible",
+        "Connectivité Bluetooth (TV, téléphone…)",
+        "Large choix de teintes discrètes"
       ],
       cons: [
-        "Légèrement visible derrière l'oreille",
-        "Peut interférer avec les lunettes ou casques",
-        "Sensible au vent lors d'activités extérieures",
-        "Peut générer un effet d'occlusion (sensation d'oreille bouchée)"
+        "Visible derrière l'oreille",
+        "Peut parfois gêner le port de lunettes"
       ]
     },
     {
       id: 'intra',
-      title: "Intra-auriculaires",
-      icon: "🔍",
-      shortDesc: "Presque invisibles, placés dans le conduit auditif.",
-      fullDesc: "Les appareils intra-auriculaires sont des solutions discrètes fabriquées sur mesure pour s'adapter parfaitement à votre conduit auditif. Ils sont quasiment invisibles de l'extérieur et offrent un son naturel grâce à leur positionnement dans l'oreille. Idéaux pour les pertes auditives légères à modérées, ils privilégient la discrétion maximale.",
+      title: "L'intra-auriculaire",
+      icon: "👁️",
+      shortDesc: "Fabriqué sur mesure à partir d'une empreinte de votre conduit auditif, l'intra-auriculaire se glisse entièrement dans l'oreille. Sa discrétion en fait le choix préféré des personnes qui souhaitent un appareil quasi invisible.",
+      fullDesc: "Positionné directement dans le conduit auditif, l'intra-auriculaire capte les sons de façon naturelle grâce à sa proximité avec le tympan. Il est particulièrement adapté aux personnes qui portent des lunettes, car son placement ne génère aucune interférence avec les branches. Sa conception sur mesure garantit un ajustement précis et un confort de port élevé.",
       image: "👁️",
       pros: [
-        "Pratiquement invisibles de l'extérieur",
-        "Confort sur mesure adapté à votre oreille",
-        "Son naturel grâce au positionnement dans le conduit",
-        "Pas d'interférence avec lunettes, casques ou chapeaux",
-        "Moins sensible au vent",
-        "Discrétion absolue dans toutes les situations"
+        "Discrétion maximale",
+        "Moulage personnalisé pour un confort optimal",
+        "Son naturel grâce à la position dans l'oreille",
+        "Pas de gêne avec les lunettes ou le casque"
       ],
       cons: [
-        "Nécessite une bonne dextérité pour manipulation",
-        "Pile plus petite, autonomie réduite",
-        "Entretien plus délicat (cérumen)",
-        "Limité aux pertes auditives légères à modérées",
-        "Peut être inconfortable pour certaines morphologies d'oreille"
+        "Non adapté aux pertes sévères à profondes",
+        "Manipulation plus délicate",
+        "Entretien fréquent (cérumen)"
       ]
     },
     {
       id: 'oticon',
       title: "Oticon Intent",
       icon: "⭐",
-      shortDesc: "Technologie intelligente qui s'adapte à vos intentions.",
-      fullDesc: "L'Oticon Intent représente le summum de la technologie auditive moderne. Équipé de capteurs 4D révolutionnaires, il détecte et s'adapte automatiquement à vos intentions : conversation, écoute, mouvement. L'intelligence artificielle intégrée analyse votre environnement sonore 500 fois par seconde pour offrir une expérience d'écoute exceptionnelle et naturelle.",
+      shortDesc: "L'Oticon Intent est une aide auditive haut de gamme équipée de capteurs de mouvement. Elle analyse vos gestes et vos déplacements pour adapter l'amplification à chaque situation, sans aucune intervention de votre part.",
+      fullDesc: "Doté d'une puce de traitement performante et de quatre capteurs intégrés, l'Oticon Intent détecte en temps réel ce que vous faites et s'ajuste automatiquement pour vous offrir le son le plus clair possible dans chaque contexte. Sa connectivité Bluetooth vous permet de le coupler à votre smartphone ou à votre télévision. La batterie rechargeable tient toute la journée, et son boîtier est certifié résistant à l'eau et à la poussière (IP68).",
       image: "🚀",
       pros: [
-        "Technologie révolutionnaire avec capteurs 4D",
-        "Intelligence artificielle qui s'adapte à vos intentions",
-        "Qualité sonore exceptionnelle et naturelle",
-        "Bluetooth avancé pour connexions multiples",
-        "Batterie rechargeable lithium-ion (autonomie 24h+)",
-        "Design très discret et moderne",
-        "Application mobile complète pour réglages personnalisés"
+        "Adaptation automatique à chaque situation",
+        "Capteurs de mouvement intégrés",
+        "Son clair et naturel dans le bruit",
+        "Connectivité Bluetooth complète",
+        "Batterie rechargeable longue durée",
+        "Résistant à l'eau et à la poussière (IP68)"
       ],
       cons: [
-        "Prix premium (2 500€ - 3 500€ par oreille)",
-        "Nécessite une période d'adaptation aux fonctionnalités",
-        "Nombreuses fonctionnalités avancées à maîtriser",
-        "Dépendance à la recharge quotidienne"
+        "Tarif haut de gamme",
+        "Nécessite un temps d'adaptation"
       ]
     }
   ];
