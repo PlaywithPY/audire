@@ -23,14 +23,14 @@ export default function Header() {
       <TopBanner />
 
       {/* Header avec logo en survol */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm flex items-center">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm flex items-center min-h-[88px]">
         {/* Logo en position absolute à gauche avec marge */}
-        <div className="absolute left-6 top-1/2 -translate-y-1/2 z-[51] py-2">
+        <div className="absolute left-6 top-1/2 -translate-y-1/2 z-[51]">
           <Logo />
         </div>
 
         {/* Navigation avec padding-left pour le logo */}
-        <nav className="container mx-auto px-4 py-4 pl-44">
+        <nav className="container mx-auto px-4 py-5 pl-48">
           <div className="flex items-center justify-between gap-8">
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
