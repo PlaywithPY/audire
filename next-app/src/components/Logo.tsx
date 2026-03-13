@@ -10,9 +10,9 @@ export default function Logo() {
           alt="Audire - Centre auditif indépendant"
           width={400}
           height={133}
-          className="h-32 w-auto group-hover:opacity-90 transition-all drop-shadow-[0_2px_4px_rgba(0,0,0,0.12)]"
+          className="h-32 w-auto group-hover:opacity-90 transition-all drop-shadow-[0_3px_8px_rgba(0,0,0,0.18)]"
           style={{
-            filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12))'
+            filter: 'drop-shadow(0 3px 8px rgba(0, 0, 0, 0.18))'
           }}
           priority
         />
