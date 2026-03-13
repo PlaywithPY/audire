@@ -21,17 +21,20 @@ export default function Header() {
   return (
     <>
       <TopBanner />
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm">
-        {/* Navigation avec Logo */}
-        <nav className="container mx-auto px-4 py-5">
-          <div className="flex items-center justify-between gap-8">
-            {/* Logo à gauche */}
-            <div className="flex-shrink-0">
-              <Logo />
-            </div>
 
+      {/* Logo séparé - Plus grand et centré */}
+      <div className="bg-white border-b border-border/50">
+        <div className="container mx-auto px-4 py-6 flex justify-center">
+          <Logo />
+        </div>
+      </div>
+
+      {/* Barre de navigation - Plus compacte */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm">
+        <nav className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between gap-8">
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-6 flex-1 justify-end">
+            <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
               {navigation.map((item) => (
                 <Link
                   key={item.name}

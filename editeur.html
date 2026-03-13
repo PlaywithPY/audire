@@ -305,7 +305,63 @@
       </div>
     </div>
 
-    <!-- 🦻 AIDES AUDITIVES (Éditeur Canvas) -->
+    <!-- 🦻 AIDES AUDITIVES (Simple JSON Editor) -->
+    <div class="tab-panel" id="panel-aides-auditives">
+      <div class="card">
+        <div class="card-head">🦻 Gestion des aides auditives</div>
+        <p style="margin-bottom: 20px; color: #777; line-height: 1.6;">
+          Éditeur simple et efficace pour gérer vos aides auditives.<br>
+          Modifiez directement le JSON pour ajuster les contenus de la page <strong>Solutions auditives</strong>.
+        </p>
+        <div class="fg">
+          <label>Configuration JSON des aides auditives</label>
+          <textarea
+            id="aides-auditives-json"
+            style="min-height: 500px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6;"
+            placeholder='{"page_principale": {...}, "solutions": [...]}'
+          ></textarea>
+          <div class="hint">
+            Format JSON — Modifiez le contenu directement. Sauvegardez pour mettre à jour le fichier <code>content/solutions-auditives.json</code>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">💡 Structure JSON</div>
+        <div style="line-height: 1.8; color: #555;">
+          <strong>Structure d'une aide auditive :</strong>
+          <pre style="background: #f5f5f5; padding: 16px; border-radius: 8px; overflow-x: auto; margin-top: 12px; font-size: 13px;">{
+  "id": "contour-oreille",
+  "titre": "Le contour d'oreille",
+  "badge": "",
+  "image": "/audire/images/solutions/contour-oreille.png",
+  "description_courte": "Description brève...",
+  "description_longue": "Description complète...",
+  "avantages": [
+    "Avantage 1",
+    "Avantage 2"
+  ],
+  "inconvenients": [
+    "Point d'attention 1"
+  ],
+  "niveaux_perte": ["Légère", "Modérée", "Sévère"],
+  "type": "Contour d'oreille",
+  "marques": ["Oticon", "Bernafon"]
+}</pre>
+          <strong style="display: block; margin-top: 16px;">Page principale :</strong>
+          <pre style="background: #f5f5f5; padding: 16px; border-radius: 8px; overflow-x: auto; margin-top: 12px; font-size: 13px;">{
+  "page_principale": {
+    "titre": "Retrouver le son qui vous correspond",
+    "intro": "Texte d'introduction...",
+    "types_titre": "Quelle aide auditive vous convient ?",
+    "types_intro": "Texte explicatif..."
+  },
+  "solutions": [...]
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🎨 AIDES AUDITIVES WYSIWYG (Ancien - Complexe) -->
     <div class="tab-panel" id="panel-solutions">
       <div class="card">
         <div class="card-head">🦻 Gestionnaire des aides auditives</div>
@@ -931,18 +987,19 @@ function forgetToken() {
 
 // ===== TABS CONFIG =====
 const TABS = [
-  { id: 'config',         label: '⚙️ Configuration' },
-  { id: 'design',         label: '🎨 Design' },
-  { id: 'backgrounds',    label: '🖼️ Images de fond' },
-  { id: 'home',           label: '🏠 Accueil' },
-  { id: 'test',           label: '👂 Test auditif' },
-  { id: 'accompagnement', label: '🤝 Accompagnement' },
-  { id: 'solutions',      label: '🦻 Aides auditives' },
-  { id: 'produits',       label: '📦 Produits (ancien)' },
-  { id: 'remboursements', label: '💰 Remboursements' },
-  { id: 'faq',            label: '❓ FAQ' },
-  { id: 'contact',        label: '📞 Contact' },
-  { id: 'pharmaciens',    label: '🏪 Pharmaciens' },
+  { id: 'config',           label: '⚙️ Configuration' },
+  { id: 'design',           label: '🎨 Design' },
+  { id: 'backgrounds',      label: '🖼️ Images de fond' },
+  { id: 'home',             label: '🏠 Accueil' },
+  { id: 'test',             label: '👂 Test auditif' },
+  { id: 'accompagnement',   label: '🤝 Accompagnement' },
+  { id: 'aides-auditives',  label: '🦻 Aides auditives' },
+  { id: 'solutions',        label: '🎨 Aides auditives (WYSIWYG - ancien)' },
+  { id: 'produits',         label: '📦 Produits (ancien)' },
+  { id: 'remboursements',   label: '💰 Remboursements' },
+  { id: 'faq',              label: '❓ FAQ' },
+  { id: 'contact',          label: '📞 Contact' },
+  { id: 'pharmaciens',      label: '🏪 Pharmaciens' },
 ];
 
 // ===== AUTH =====
@@ -1002,6 +1059,7 @@ async function reloadAll() {
     fillDesign();
     fillBackgrounds();
     fillProduits();
+    fillAidesAuditives();
     fillSolutionsCanvas();
     showStatus('Données chargées ✓', 'ok');
   } catch(e) {
@@ -1691,6 +1749,26 @@ function collectProduits() {
   }
 }
 
+// ===== AIDES AUDITIVES (Simple JSON Editor) =====
+function fillAidesAuditives() {
+  const textarea = document.getElementById('aides-auditives-json');
+  if (textarea && sac) {
+    textarea.value = JSON.stringify(sac, null, 2);
+  }
+}
+
+function collectAidesAuditives() {
+  const textarea = document.getElementById('aides-auditives-json');
+  if (!textarea) return;
+
+  try {
+    sac = JSON.parse(textarea.value || '{}');
+  } catch(e) {
+    showStatus('Erreur JSON aides auditives : ' + e.message, 'err');
+    throw e;
+  }
+}
+
 // ===== LOCAL SAVE via save.php =====
 async function saveAll() {
   collectAll();
@@ -1744,6 +1822,7 @@ async function saveAllGitHub() {
   collectAll();
   collectDesign();
   collectProduits();
+  collectAidesAuditives();
   collectSolutionsCanvas();
 
   const btn = document.getElementById('saveBtn');
