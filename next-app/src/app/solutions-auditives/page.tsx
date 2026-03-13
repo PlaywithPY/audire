@@ -4,78 +4,124 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useState } from "react";
 
-interface SolutionCardProps {
+interface SolutionData {
+  id: string;
   title: string;
   icon: string;
   shortDesc: string;
-  fullDesc: string;
-  avantages: string[];
-  inconvenients: string[];
 }
 
-function SolutionCard({ title, icon, shortDesc, fullDesc, avantages, inconvenients }: SolutionCardProps) {
-  const [isOpen, setIsOpen] = useState(false);
+interface ComparisonRow {
+  category: string;
+  contours: string;
+  intra: string;
+  oticon: string;
+}
 
+interface SolutionCardProps {
+  solution: SolutionData;
+  onToggle: () => void;
+  isActive: boolean;
+}
+
+function SolutionCard({ solution, onToggle, isActive }: SolutionCardProps) {
   return (
-    <div className="bg-white rounded-2xl shadow-md overflow-hidden">
-      {/* Card cliquable */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-8 text-left hover:bg-primary/5 transition-colors"
-      >
-        <div className="text-5xl mb-4 inline-block animate-float">{icon}</div>
-        <h3 className="text-2xl font-bold mb-4">{title}</h3>
-        <p className="text-text-light mb-4">{shortDesc}</p>
-        <div className="flex items-center gap-2 text-primary font-semibold">
-          <span>{isOpen ? '▼' : '▶'}</span>
-          <span>{isOpen ? 'Voir moins' : 'En savoir plus'}</span>
-        </div>
-      </button>
-
-      {/* Contenu détaillé (accordion) */}
-      <div
-        className={`transition-all duration-300 ease-in-out ${
-          isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
-        }`}
-      >
-        <div className="px-8 pb-8 border-t border-border">
-          <div className="pt-6 space-y-6">
-            {/* Description complète */}
-            <div>
-              <h4 className="font-bold text-lg mb-2">Description</h4>
-              <p className="text-text-light">{fullDesc}</p>
-            </div>
-
-            {/* Tableau avantages/inconvénients */}
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Avantages */}
-              <div className="bg-green-50 p-4 rounded-xl">
-                <h4 className="font-bold text-lg mb-3 text-green-800">✅ Avantages</h4>
-                <ul className="space-y-2">
-                  {avantages.map((av, idx) => (
-                    <li key={idx} className="text-sm text-green-900">• {av}</li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Inconvénients */}
-              <div className="bg-orange-50 p-4 rounded-xl">
-                <h4 className="font-bold text-lg mb-3 text-orange-800">⚠️ Points d'attention</h4>
-                <ul className="space-y-2">
-                  {inconvenients.map((inc, idx) => (
-                    <li key={idx} className="text-sm text-orange-900">• {inc}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+    <button
+      onClick={onToggle}
+      className={`bg-white rounded-2xl shadow-md p-8 text-left hover:bg-primary/5 transition-all ${
+        isActive ? 'ring-2 ring-primary' : ''
+      }`}
+    >
+      <div className="text-5xl mb-4 inline-block animate-float">{solution.icon}</div>
+      <h3 className="text-2xl font-bold mb-4">{solution.title}</h3>
+      <p className="text-text-light mb-4">{solution.shortDesc}</p>
+      <div className="flex items-center gap-2 text-primary font-semibold">
+        <span>{isActive ? '▼' : '▶'}</span>
+        <span>{isActive ? 'Voir moins' : 'En savoir plus'}</span>
       </div>
-    </div>
+    </button>
   );
 }
 
 export default function SolutionsAuditives() {
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+
+  const solutions: SolutionData[] = [
+    {
+      id: 'contours',
+      title: "Contours d'oreille",
+      icon: "👂",
+      shortDesc: "Discrets et confortables, ils se placent derrière l'oreille."
+    },
+    {
+      id: 'intra',
+      title: "Intra-auriculaires",
+      icon: "🔍",
+      shortDesc: "Presque invisibles, placés dans le conduit auditif."
+    },
+    {
+      id: 'oticon',
+      title: "Oticon Intent",
+      icon: "⭐",
+      shortDesc: "Technologie intelligente qui s'adapte à vos intentions."
+    }
+  ];
+
+  const comparisonData: ComparisonRow[] = [
+    {
+      category: "📍 Position",
+      contours: "Derrière l'oreille avec embout dans le conduit",
+      intra: "Directement dans le conduit auditif",
+      oticon: "Derrière l'oreille (design miniature)"
+    },
+    {
+      category: "👁️ Discrétion",
+      contours: "Visible mais discret, plusieurs couleurs disponibles",
+      intra: "Presque invisible, sur mesure",
+      oticon: "Très discret, design moderne et élégant"
+    },
+    {
+      category: "🎯 Adapté pour",
+      contours: "Toutes pertes auditives (légère à profonde)",
+      intra: "Pertes légères à modérées",
+      oticon: "Pertes légères à sévères"
+    },
+    {
+      category: "🔋 Autonomie",
+      contours: "Batterie longue durée ou rechargeable",
+      intra: "Pile plus petite, autonomie réduite",
+      oticon: "Rechargeable lithium-ion, autonomie 24h+"
+    },
+    {
+      category: "🎛️ Fonctionnalités",
+      contours: "Bluetooth, réglages multiples, accessoires",
+      intra: "Réglages basiques, discrétion maximale",
+      oticon: "Intelligence artificielle, Bluetooth avancé, capteurs 4D"
+    },
+    {
+      category: "✅ Avantages",
+      contours: "Facile à manipuler • Batterie longue durée • Puissant • Connexions sans fil",
+      intra: "Invisible • Confort sur mesure • Son naturel • Pas d'interférence avec lunettes",
+      oticon: "Technologie révolutionnaire • S'adapte à vos intentions • Qualité sonore exceptionnelle • Connectivité premium"
+    },
+    {
+      category: "⚠️ Points d'attention",
+      contours: "Légèrement visible • Peut interférer avec lunettes • Sensible au vent",
+      intra: "Nécessite dextérité • Batterie petite • Entretien délicat • Limité aux pertes modérées",
+      oticon: "Prix premium • Nécessite adaptation • Fonctionnalités avancées à maîtriser"
+    },
+    {
+      category: "💰 Gamme de prix",
+      contours: "1 200€ - 2 500€ par oreille",
+      intra: "1 500€ - 2 800€ par oreille",
+      oticon: "2 500€ - 3 500€ par oreille"
+    }
+  ];
+
+  const handleToggle = (id: string) => {
+    setActiveTab(activeTab === id ? null : id);
+  };
+
   return (
     <>
       <Header />
@@ -145,7 +191,7 @@ export default function SolutionsAuditives() {
           </div>
         </section>
 
-        {/* Types d'appareils */}
+        {/* Types d'appareils avec tableau comparatif */}
         <section className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
@@ -155,62 +201,81 @@ export default function SolutionsAuditives() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              <SolutionCard
-                title="Contours d'oreille"
-                icon="👂"
-                shortDesc="Discrets et confortables, ils se placent derrière l'oreille."
-                fullDesc="Les contours d'oreille (BTE - Behind The Ear) sont les appareils auditifs les plus polyvalents. Ils se placent confortablement derrière l'oreille et conviennent à tous types de pertes auditives, de légères à profondes."
-                avantages={[
-                  'Adaptés à toutes les pertes auditives',
-                  'Faciles à manipuler',
-                  'Batterie longue durée',
-                  'Entretien simple',
-                  'Excellente qualité sonore'
-                ]}
-                inconvenients={[
-                  'Légèrement plus visibles',
-                  'Peuvent interférer avec les lunettes',
-                  'Sensibles au vent'
-                ]}
-              />
-              <SolutionCard
-                title="Intra-auriculaires"
-                icon="🔍"
-                shortDesc="Presque invisibles, placés dans le conduit auditif."
-                fullDesc="Les appareils intra-auriculaires (ITE/CIC) sont fabriqués sur mesure pour s'adapter parfaitement à votre conduit auditif. Ils offrent une discrétion maximale tout en délivrant une excellente qualité sonore."
-                avantages={[
-                  'Très discrets, presque invisibles',
-                  'Confort optimal (sur mesure)',
-                  'Qualité sonore naturelle',
-                  'Pas d\'interférence avec lunettes',
-                  'Bonne localisation des sons'
-                ]}
-                inconvenients={[
-                  'Nécessitent une bonne dextérité',
-                  'Batterie plus petite',
-                  'Entretien plus délicat',
-                  'Non adaptés aux pertes sévères'
-                ]}
-              />
-              <SolutionCard
-                title="Rechargeables"
-                icon="🔋"
-                shortDesc="Plus besoin de piles ! Autonomie d'une journée complète."
-                fullDesc="Les appareils rechargeables représentent l'avenir de l'audiologie. Plus besoin de manipuler de petites piles : déposez simplement vos appareils dans leur station de charge la nuit."
-                avantages={[
-                  'Plus de piles à changer',
-                  'Écologique et économique',
-                  'Charge rapide (3-4h)',
-                  'Autonomie 24h',
-                  'Facilité d\'utilisation'
-                ]}
-                inconvenients={[
-                  'Nécessite accès à électricité',
-                  'Légèrement plus chers',
-                  'Station de charge à transporter en voyage'
-                ]}
-              />
+            <div className="max-w-6xl mx-auto">
+              {/* Cartes des solutions */}
+              <div className="grid md:grid-cols-3 gap-8 mb-8">
+                {solutions.map((solution) => (
+                  <SolutionCard
+                    key={solution.id}
+                    solution={solution}
+                    onToggle={() => handleToggle(solution.id)}
+                    isActive={activeTab === solution.id}
+                  />
+                ))}
+              </div>
+
+              {/* Tableau comparatif (se déroule sous les 3 colonnes) */}
+              <div
+                className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                  activeTab ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                {activeTab && (
+                  <div className="bg-white rounded-2xl shadow-lg p-8 mt-4">
+                    <h3 className="text-2xl font-bold mb-6 text-center">
+                      Tableau comparatif détaillé
+                    </h3>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-collapse">
+                        <thead>
+                          <tr className="bg-primary/10">
+                            <th className="p-4 text-left font-bold border border-border">
+                              Caractéristique
+                            </th>
+                            <th className="p-4 text-left font-bold border border-border">
+                              👂 Contours d'oreille
+                            </th>
+                            <th className="p-4 text-left font-bold border border-border">
+                              🔍 Intra-auriculaires
+                            </th>
+                            <th className="p-4 text-left font-bold border border-border">
+                              ⭐ Oticon Intent
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {comparisonData.map((row, idx) => (
+                            <tr key={idx} className="hover:bg-primary/5 transition-colors">
+                              <td className="p-4 font-semibold border border-border bg-bg">
+                                {row.category}
+                              </td>
+                              <td className="p-4 border border-border text-text-light whitespace-pre-line">
+                                {row.contours}
+                              </td>
+                              <td className="p-4 border border-border text-text-light whitespace-pre-line">
+                                {row.intra}
+                              </td>
+                              <td className="p-4 border border-border text-text-light whitespace-pre-line">
+                                {row.oticon}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="mt-6 text-center">
+                      <button
+                        onClick={() => setActiveTab(null)}
+                        className="text-primary hover:text-primary-dark font-semibold"
+                      >
+                        ▲ Fermer le tableau
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </section>
