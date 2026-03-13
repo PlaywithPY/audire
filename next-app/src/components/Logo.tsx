@@ -10,7 +10,10 @@ export default function Logo() {
           alt="Audire - Centre auditif indépendant"
           width={360}
           height={120}
-          className="h-32 w-auto group-hover:opacity-80 transition-opacity"
+          className="h-24 w-auto group-hover:opacity-90 transition-all drop-shadow-[0_2px_4px_rgba(0,0,0,0.12)]"
+          style={{
+            filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12))'
+          }}
           priority
         />
       </div>
