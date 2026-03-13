@@ -23,76 +23,75 @@ interface SolutionCardProps {
 
 function SolutionCard({ solution, onToggle, isActive }: SolutionCardProps) {
   return (
-    <div className="flex flex-col">
-      <button
-        onClick={onToggle}
-        className={`bg-white rounded-2xl shadow-md p-8 text-left hover:shadow-xl transition-all duration-300 ${
-          isActive ? 'ring-2 ring-primary shadow-xl' : ''
-        }`}
-      >
-        <div className="text-5xl mb-4 inline-block animate-float">{solution.icon}</div>
-        <h3 className="text-2xl font-bold mb-4">{solution.title}</h3>
-        <p className="text-text-light mb-4">{solution.shortDesc}</p>
-        <div className="flex items-center gap-2 text-primary font-semibold">
-          <span className="transition-transform duration-300" style={{ transform: isActive ? 'rotate(90deg)' : 'rotate(0deg)' }}>
-            ▶
-          </span>
-          <span>{isActive ? 'Voir moins' : 'En savoir plus'}</span>
-        </div>
-      </button>
+    <button
+      onClick={onToggle}
+      className={`bg-white rounded-2xl shadow-md p-8 text-left hover:shadow-xl transition-all duration-300 ${
+        isActive ? 'ring-2 ring-primary shadow-xl' : ''
+      }`}
+    >
+      <div className="text-5xl mb-4 inline-block animate-float">{solution.icon}</div>
+      <h3 className="text-2xl font-bold mb-4">{solution.title}</h3>
+      <p className="text-text-light mb-4">{solution.shortDesc}</p>
+      <div className="flex items-center gap-2 text-primary font-semibold">
+        <span className="transition-transform duration-300" style={{ transform: isActive ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+          ▶
+        </span>
+        <span>{isActive ? 'Voir moins' : 'En savoir plus'}</span>
+      </div>
+    </button>
+  );
+}
 
-      {/* Panneau détaillé qui se déroule */}
-      <div
-        className={`grid transition-all duration-500 ease-in-out ${
-          isActive ? 'grid-rows-[1fr] opacity-100 mt-6' : 'grid-rows-[0fr] opacity-0'
-        }`}
-      >
-        <div className="overflow-hidden">
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            {/* Image */}
-            <div className="mb-6 rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary-light/10 aspect-video flex items-center justify-center">
-              <span className="text-8xl">{solution.image}</span>
+function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
+  if (!solution) return null;
+
+  return (
+    <div className="grid transition-all duration-500 ease-in-out grid-rows-[1fr] opacity-100 mt-8">
+      <div className="overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+          {/* Image */}
+          <div className="mb-8 rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary-light/10 aspect-video flex items-center justify-center max-w-2xl mx-auto">
+            <span className="text-9xl">{solution.image}</span>
+          </div>
+
+          {/* Description détaillée */}
+          <div className="mb-8 max-w-4xl mx-auto">
+            <h4 className="text-2xl font-bold mb-4 text-primary">📝 Description complète</h4>
+            <p className="text-text-light leading-relaxed text-lg">{solution.fullDesc}</p>
+          </div>
+
+          {/* Tableau Avantages / Inconvénients - PLEINE LARGEUR */}
+          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {/* Avantages */}
+            <div className="bg-green-50 rounded-xl p-8">
+              <h4 className="text-xl font-bold mb-6 text-green-700 flex items-center gap-3">
+                <span className="text-3xl">✅</span>
+                Avantages
+              </h4>
+              <ul className="space-y-3">
+                {solution.pros.map((pro, idx) => (
+                  <li key={idx} className="text-text-light flex items-start gap-3 text-base">
+                    <span className="text-green-600 mt-1 text-xl">•</span>
+                    <span>{pro}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            {/* Description détaillée */}
-            <div className="mb-6">
-              <h4 className="text-xl font-bold mb-3 text-primary">📝 Description</h4>
-              <p className="text-text-light leading-relaxed">{solution.fullDesc}</p>
-            </div>
-
-            {/* Tableau Avantages / Inconvénients */}
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Avantages */}
-              <div className="bg-green-50 rounded-xl p-6">
-                <h4 className="text-lg font-bold mb-4 text-green-700 flex items-center gap-2">
-                  <span className="text-2xl">✅</span>
-                  Avantages
-                </h4>
-                <ul className="space-y-2">
-                  {solution.pros.map((pro, idx) => (
-                    <li key={idx} className="text-text-light flex items-start gap-2">
-                      <span className="text-green-600 mt-1">•</span>
-                      <span>{pro}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Inconvénients */}
-              <div className="bg-orange-50 rounded-xl p-6">
-                <h4 className="text-lg font-bold mb-4 text-orange-700 flex items-center gap-2">
-                  <span className="text-2xl">⚠️</span>
-                  Points d'attention
-                </h4>
-                <ul className="space-y-2">
-                  {solution.cons.map((con, idx) => (
-                    <li key={idx} className="text-text-light flex items-start gap-2">
-                      <span className="text-orange-600 mt-1">•</span>
-                      <span>{con}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            {/* Inconvénients */}
+            <div className="bg-orange-50 rounded-xl p-8">
+              <h4 className="text-xl font-bold mb-6 text-orange-700 flex items-center gap-3">
+                <span className="text-3xl">⚠️</span>
+                Points d'attention
+              </h4>
+              <ul className="space-y-3">
+                {solution.cons.map((con, idx) => (
+                  <li key={idx} className="text-text-light flex items-start gap-3 text-base">
+                    <span className="text-orange-600 mt-1 text-xl">•</span>
+                    <span>{con}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
@@ -259,8 +258,8 @@ export default function SolutionsAuditives() {
             </div>
 
             <div className="max-w-7xl mx-auto">
-              {/* Cartes des solutions avec panneaux détaillés */}
-              <div className="grid md:grid-cols-3 gap-8">
+              {/* Cartes des solutions - Grid 3 colonnes */}
+              <div className="grid md:grid-cols-3 gap-8 mb-4">
                 {solutions.map((solution) => (
                   <SolutionCard
                     key={solution.id}
@@ -270,6 +269,11 @@ export default function SolutionsAuditives() {
                   />
                 ))}
               </div>
+
+              {/* Panneau détaillé - PLEINE LARGEUR en dessous */}
+              <SolutionDetailPanel
+                solution={solutions.find(s => s.id === activeTab) || null}
+              />
             </div>
           </div>
         </section>
