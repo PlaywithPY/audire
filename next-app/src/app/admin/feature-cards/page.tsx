@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getAllPages, PageCardsDefinition } from '@/lib/card-definitions';
+import { getAllPages, PageCardsDefinition, CardGroup } from '@/lib/card-definitions';
+import ImageUploadModal from '@/components/ImageUploadModal';
 
 type CardImage = {
   id: number;
@@ -29,6 +30,8 @@ export default function FeatureCardsAdmin() {
   const [saving, setSaving] = useState(false);
   const [apiError, setApiError] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('home');
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [uploadingForCard, setUploadingForCard] = useState<CardImage | null>(null);
 
   const pages = getAllPages();
 
@@ -133,14 +136,110 @@ export default function FeatureCardsAdmin() {
   }
 
   const activePage = pages.find(p => p.pageKey === activeTab);
-  const activePageCards = activePage?.cards || [];
+  const activePageGroups = activePage?.groups || [];
+  const hasGroups = activePageGroups.length > 0;
+
+  // Fonction pour obtenir la classe CSS selon le layout
+  const getLayoutClass = (layout: 'grid-3' | 'grid-2' | 'list') => {
+    switch (layout) {
+      case 'grid-3':
+        return 'grid md:grid-cols-2 lg:grid-cols-3 gap-6';
+      case 'grid-2':
+        return 'grid md:grid-cols-2 gap-6';
+      case 'list':
+        return 'space-y-6';
+      default:
+        return 'grid md:grid-cols-2 lg:grid-cols-3 gap-6';
+    }
+  };
+
+  // Fonction pour rendre une card
+  const renderCard = (cardDef: any, layout: string) => {
+    const existing = cardImages.find(
+      c => c.pageKey === activeTab && c.cardKey === cardDef.cardKey
+    );
+
+    const isListLayout = layout === 'list';
+
+    return (
+      <div
+        key={cardDef.cardKey}
+        className={`border-2 border-gray-200 rounded-lg p-5 hover:shadow-lg transition-all ${
+          isListLayout ? 'flex gap-4 items-start' : ''
+        }`}
+      >
+        {isListLayout && (
+          <div className="flex-shrink-0 w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold">
+            {cardDef.fallbackEmoji}
+          </div>
+        )}
+
+        <div className={isListLayout ? 'flex-grow' : ''}>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-bold text-lg">{cardDef.title}</h3>
+            <span className="text-2xl">{cardDef.fallbackEmoji}</span>
+          </div>
+
+          <p className="text-sm text-gray-600 mb-3">
+            <code className="bg-gray-100 px-2 py-1 rounded text-xs">{cardDef.cardKey}</code>
+          </p>
+
+          {existing ? (
+            <>
+              <div className="mb-3 relative h-32 bg-gray-100 rounded overflow-hidden">
+                <img
+                  src={existing.imageUrl}
+                  alt={existing.imageAlt || cardDef.title}
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: existing.imagePosition }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </div>
+              <div className="text-xs text-gray-500 mb-3 space-y-1">
+                <p><strong>Position:</strong> {existing.imagePosition}</p>
+                <p><strong>Lien:</strong> {existing.href || 'Aucun'}</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setEditingCard(existing)}
+                  className="flex-1 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                >
+                  ✏️ Modifier
+                </button>
+                <button
+                  onClick={() => {
+                    setUploadingForCard(existing);
+                    setUploadModalOpen(true);
+                  }}
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                  title="Uploader une nouvelle image"
+                >
+                  📸
+                </button>
+              </div>
+            </>
+          ) : (
+            <button
+              onClick={() => createCard(activeTab, cardDef.cardKey, cardDef)}
+              disabled={saving}
+              className="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:opacity-50"
+            >
+              ➕ Créer cette card
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Gestion des Feature Cards</h1>
+          <h1 className="text-2xl font-bold">🎨 Gestion des Feature Cards</h1>
           <Link href="/admin" className="text-primary hover:underline">
             ← Retour admin
           </Link>
@@ -179,9 +278,9 @@ CREATE INDEX IF NOT EXISTS "CardImage_pageKey_idx" ON "CardImage"("pageKey");`}
           <h2 className="text-lg font-bold mb-2">📝 Mode d'emploi</h2>
           <ul className="space-y-2 text-sm text-gray-700">
             <li>• Sélectionnez une page dans les onglets ci-dessous</li>
-            <li>• Cliquez sur une card pour la modifier</li>
+            <li>• Les cards sont organisées <strong>exactement comme sur le site</strong></li>
+            <li>• Cliquez sur ✏️ pour modifier les infos, ou 📸 pour uploader une image</li>
             <li>• <strong>Image Position</strong> : Contrôle la position de l'image (ex: "center 35%")</li>
-            <li>• Les images doivent être dans <code className="bg-white px-2 py-1 rounded">/public/images/</code></li>
           </ul>
         </div>
 
@@ -207,80 +306,81 @@ CREATE INDEX IF NOT EXISTS "CardImage_pageKey_idx" ON "CardImage"("pageKey");`}
           </div>
         </div>
 
-        {/* Cards de la page active */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-bold mb-4">
-            Cards de "{activePage?.pageLabel}"
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {activePageCards.map((cardDef) => {
-              const existing = cardImages.find(
-                c => c.pageKey === activeTab && c.cardKey === cardDef.cardKey
-              );
-
-              return (
-                <div key={cardDef.cardKey} className="border border-gray-200 rounded-lg p-4">
-                  <h3 className="font-bold text-lg mb-2">{cardDef.title}</h3>
-                  <p className="text-sm text-gray-600 mb-3">
-                    Key: <code className="bg-gray-100 px-2 py-1 rounded">{cardDef.cardKey}</code>
+        {/* Cards de la page active - Par groupes */}
+        {hasGroups ? (
+          <div className="space-y-12">
+            {activePageGroups.map((group) => (
+              <div key={group.groupKey} className="bg-white rounded-lg shadow-md p-8">
+                <div className="mb-6 pb-4 border-b-2 border-gray-200">
+                  <h2 className="text-2xl font-bold text-primary mb-2">{group.groupLabel}</h2>
+                  <p className="text-sm text-gray-500">
+                    Layout: <span className="font-semibold">{group.layout}</span> • {group.cards.length} card(s)
                   </p>
-
-                  {existing ? (
-                    <>
-                      <div className="mb-3 relative h-32 bg-gray-100 rounded overflow-hidden">
-                        <img
-                          src={existing.imageUrl}
-                          alt={existing.imageAlt || cardDef.title}
-                          className="w-full h-full object-cover"
-                          style={{ objectPosition: existing.imagePosition }}
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                          }}
-                        />
-                      </div>
-                      <div className="text-xs text-gray-500 mb-3">
-                        <p>Position: <strong>{existing.imagePosition}</strong></p>
-                        <p>Lien: <strong>{existing.href || 'Aucun'}</strong></p>
-                      </div>
-                      <button
-                        onClick={() => setEditingCard(existing)}
-                        className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                      >
-                        ✏️ Modifier
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      onClick={() => createCard(activeTab, cardDef.cardKey, cardDef)}
-                      disabled={saving}
-                      className="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:opacity-50"
-                    >
-                      ➕ Créer
-                    </button>
-                  )}
                 </div>
-              );
-            })}
+                <div className={getLayoutClass(group.layout)}>
+                  {group.cards.map((cardDef) => renderCard(cardDef, group.layout))}
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
+        ) : (
+          // Fallback si pas de groupes définis
+          <div className="bg-white rounded-lg shadow-md p-8">
+            <h2 className="text-xl font-bold mb-6">
+              Cards de "{activePage?.pageLabel}"
+            </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {activePage?.cards.map((cardDef) => renderCard(cardDef, 'grid-3'))}
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Modal d'upload d'image */}
+      <ImageUploadModal
+        isOpen={uploadModalOpen}
+        onClose={() => {
+          setUploadModalOpen(false);
+          setUploadingForCard(null);
+        }}
+        onImageSelected={(imageUrl) => {
+          if (uploadingForCard) {
+            // Mettre à jour directement la card avec la nouvelle image
+            const updatedCard = { ...uploadingForCard, imageUrl };
+            saveCard(updatedCard);
+          }
+          setUploadModalOpen(false);
+          setUploadingForCard(null);
+        }}
+      />
 
       {/* Modal d'édition */}
       {editingCard && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold mb-6">Modifier la card</h2>
+            <h2 className="text-2xl font-bold mb-6">✏️ Modifier la card</h2>
 
             <div className="space-y-4">
               <div>
                 <label className="block font-semibold mb-2">URL de l'image</label>
-                <input
-                  type="text"
-                  value={editingCard.imageUrl}
-                  onChange={(e) => setEditingCard({ ...editingCard, imageUrl: e.target.value })}
-                  className="w-full border border-gray-300 rounded px-4 py-2"
-                  placeholder="/images/mon-image.jpg"
-                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={editingCard.imageUrl}
+                    onChange={(e) => setEditingCard({ ...editingCard, imageUrl: e.target.value })}
+                    className="flex-1 border border-gray-300 rounded px-4 py-2"
+                    placeholder="/images/mon-image.jpg"
+                  />
+                  <button
+                    onClick={() => {
+                      setUploadingForCard(editingCard);
+                      setUploadModalOpen(true);
+                    }}
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                  >
+                    📸 Upload
+                  </button>
+                </div>
               </div>
 
               <div>
