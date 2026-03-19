@@ -156,9 +156,189 @@ async function main() {
     },
   });
 
+  // ==========================================
+  // CATÉGORIES DE PERTE AUDITIVE
+  // ==========================================
+
+  const categoryLegere = await prisma.hearingLossCategory.upsert({
+    where: { slug: 'legere' },
+    update: {},
+    create: {
+      name: 'Légère',
+      slug: 'legere',
+      minDb: 20,
+      maxDb: 40,
+      description: 'Difficulté à suivre une conversation dans un environnement bruyant',
+      order: 1,
+    },
+  });
+
+  const categoryMoyenne = await prisma.hearingLossCategory.upsert({
+    where: { slug: 'moyenne' },
+    update: {},
+    create: {
+      name: 'Moyenne',
+      slug: 'moyenne',
+      minDb: 41,
+      maxDb: 70,
+      description: 'Difficulté à suivre une conversation sans appareil auditif',
+      order: 2,
+    },
+  });
+
+  const categorySevere = await prisma.hearingLossCategory.upsert({
+    where: { slug: 'severe' },
+    update: {},
+    create: {
+      name: 'Sévère',
+      slug: 'severe',
+      minDb: 71,
+      maxDb: 90,
+      description: 'Seuls les sons très forts sont perçus',
+      order: 3,
+    },
+  });
+
+  const categoryProfonde = await prisma.hearingLossCategory.upsert({
+    where: { slug: 'profonde' },
+    update: {},
+    create: {
+      name: 'Profonde',
+      slug: 'profonde',
+      minDb: 91,
+      maxDb: 120,
+      description: 'Aucun son n\'est perçu sans appareil auditif puissant',
+      order: 4,
+    },
+  });
+
+  // ==========================================
+  // TYPES D'APPAREILS
+  // ==========================================
+
+  const typeContour = await prisma.deviceType.upsert({
+    where: { slug: 'contour' },
+    update: {},
+    create: {
+      name: 'Contour d\'oreille',
+      slug: 'contour',
+      description: 'Appareil qui se porte derrière l\'oreille avec un tube relié à un embout',
+      order: 1,
+    },
+  });
+
+  const typeIntra = await prisma.deviceType.upsert({
+    where: { slug: 'intra' },
+    update: {},
+    create: {
+      name: 'Intra-auriculaire',
+      slug: 'intra',
+      description: 'Appareil sur mesure qui se glisse dans le conduit auditif',
+      order: 2,
+    },
+  });
+
+  const typeRic = await prisma.deviceType.upsert({
+    where: { slug: 'ric' },
+    update: {},
+    create: {
+      name: 'RIC (Écouteur déporté)',
+      slug: 'ric',
+      description: 'Appareil discret avec l\'écouteur placé dans le conduit auditif',
+      order: 3,
+    },
+  });
+
+  // ==========================================
+  // PRODUITS EXEMPLES
+  // ==========================================
+
+  // Exemple de produit Oticon
+  await prisma.product.upsert({
+    where: { slug: 'oticon-intent' },
+    update: {},
+    create: {
+      name: 'Oticon Intent',
+      slug: 'oticon-intent',
+      brand: 'Oticon',
+      model: 'Intent',
+      shortDescription: 'Aide auditive intelligente avec capteurs de mouvement pour une adaptation automatique à votre environnement.',
+      fullDescription: 'L\'Oticon Intent est une aide auditive haut de gamme équipée de quatre capteurs de mouvement. Elle détecte vos gestes, vos déplacements et votre situation pour adapter automatiquement l\'amplification. La technologie BrainHearing™ d\'Oticon vous permet de profiter d\'un son naturel et clair dans tous les environnements.',
+      priceRange: '2500€ - 3500€',
+      imagePosition: 'center center',
+      isVisible: true,
+      isFeatured: true,
+      order: 1,
+      hearingLossCategoryId: categoryMoyenne.id,
+      deviceTypeId: typeRic.id,
+      features: JSON.stringify({
+        bluetooth: true,
+        rechargeable: true,
+        waterproof: 'IP68',
+        capteursMouvement: true,
+        connectiviteTV: true,
+        autonomie: '24 heures',
+      }),
+      pros: JSON.stringify([
+        'Adaptation automatique à chaque situation',
+        'Capteurs de mouvement intégrés',
+        'Son clair et naturel dans le bruit',
+        'Connectivité Bluetooth complète',
+        'Batterie rechargeable longue durée',
+        'Résistant à l\'eau et à la poussière (IP68)',
+      ]),
+      cons: JSON.stringify([
+        'Tarif premium',
+        'Nécessite un temps d\'adaptation aux réglages automatiques',
+      ]),
+    },
+  });
+
+  // Exemple de produit Bernafon
+  await prisma.product.upsert({
+    where: { slug: 'bernafon-alpha' },
+    update: {},
+    create: {
+      name: 'Bernafon Alpha',
+      slug: 'bernafon-alpha',
+      brand: 'Bernafon',
+      model: 'Alpha XT',
+      shortDescription: 'Appareil auditif fiable avec un excellent rapport qualité-prix, idéal pour un usage quotidien.',
+      fullDescription: 'Le Bernafon Alpha offre une qualité sonore exceptionnelle avec des fonctionnalités modernes à un prix accessible. Simple d\'utilisation, il s\'adapte à votre style de vie et vous permet de profiter pleinement de vos conversations et de vos activités quotidiennes.',
+      priceRange: '1200€ - 1800€',
+      imagePosition: 'center center',
+      isVisible: true,
+      isFeatured: false,
+      order: 2,
+      hearingLossCategoryId: categoryLegere.id,
+      deviceTypeId: typeContour.id,
+      features: JSON.stringify({
+        bluetooth: true,
+        rechargeable: false,
+        pileType: 'P13',
+        autonomiePile: '7-10 jours',
+        connectiviteTV: false,
+      }),
+      pros: JSON.stringify([
+        'Excellent rapport qualité-prix',
+        'Facile à utiliser',
+        'Confortable toute la journée',
+        'Entretien simple',
+        'Piles facilement disponibles',
+      ]),
+      cons: JSON.stringify([
+        'Pas de batterie rechargeable',
+        'Moins de fonctionnalités avancées',
+      ]),
+    },
+  });
+
   console.log('✅ Database seeded!');
   console.log(`   - ${jemeppeHours.length} horaires créés pour ${centreJemeppe.name}`);
   console.log(`   - ${liegeHours.length} horaires créés pour ${centreLiege.name}`);
+  console.log('   - 4 catégories de perte auditive créées');
+  console.log('   - 3 types d\'appareils créés');
+  console.log('   - 2 produits exemples créés');
 }
 
 main()
