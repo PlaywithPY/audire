@@ -19,7 +19,7 @@ export async function GET() {
   }
 }
 
-// POST - Créer une nouvelle image de card
+// POST - Créer une nouvelle image de card (ou mettre à jour si existe déjà)
 export async function POST(request: NextRequest) {
   const { error } = await requireAuth();
   if (error) return error;
@@ -35,8 +35,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const cardImage = await prisma.cardImage.create({
-      data: {
+    // Utiliser upsert pour créer ou mettre à jour
+    const cardImage = await prisma.cardImage.upsert({
+      where: {
+        pageKey_cardKey: {
+          pageKey,
+          cardKey,
+        },
+      },
+      update: {
+        imageUrl,
+        fallbackEmoji: fallbackEmoji || '📷',
+        imagePosition: imagePosition || 'center center',
+        href,
+        title,
+        description,
+        imageAlt,
+      },
+      create: {
         pageKey,
         cardKey,
         imageUrl,
@@ -52,7 +68,7 @@ export async function POST(request: NextRequest) {
     revalidatePath('/', 'layout');
     return NextResponse.json(cardImage);
   } catch (error) {
-    console.error('Erreur lors de la création de l\'image:', error);
+    console.error('Erreur lors de la création/mise à jour de l\'image:', error);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }
