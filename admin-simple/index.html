@@ -58,6 +58,12 @@
         <button class="tab" data-tab="homepage">🏠 Accueil</button>
         <button class="tab" data-tab="navigation">🧭 Navigation</button>
         <button class="tab" data-tab="solutions">🦻 Solutions auditives</button>
+        <button class="tab" data-tab="test-gratuit">🎯 Test gratuit</button>
+        <button class="tab" data-tab="partenaires">🤝 Partenaires</button>
+        <button class="tab" data-tab="faq">❓ FAQ</button>
+        <button class="tab" data-tab="remboursements">💰 Remboursements</button>
+        <button class="tab" data-tab="accompagnement">🫱 Accompagnement</button>
+        <button class="tab" data-tab="images">📷 Gérer les images</button>
       </div>
 
       <!-- Tab Content: Contact -->
@@ -180,6 +186,163 @@
           <p class="help-text" style="margin-top: 8px;">
             💡 Après avoir sauvegardé, cliquez sur "Générer les pages HTML" pour créer automatiquement les fichiers HTML de chaque solution.
           </p>
+        </div>
+      </div>
+
+      <!-- Tab Content: Test Gratuit -->
+      <div class="tab-content" data-content="test-gratuit">
+        <div class="card">
+          <h2>🎯 Test Auditif Gratuit</h2>
+
+          <h3>Hero</h3>
+          <div class="form-group">
+            <label for="testKicker">Kicker</label>
+            <input type="text" id="testKicker" />
+          </div>
+          <div class="form-group">
+            <label for="testTitle">Titre</label>
+            <input type="text" id="testTitle" />
+          </div>
+          <div class="form-group">
+            <label for="testSubtitle">Sous-titre</label>
+            <textarea id="testSubtitle" rows="3"></textarea>
+          </div>
+
+          <button id="saveTestGratuit" class="btn btn-primary">💾 Sauvegarder</button>
+        </div>
+      </div>
+
+      <!-- Tab Content: Partenaires -->
+      <div class="tab-content" data-content="partenaires">
+        <div class="card">
+          <h2>🤝 Partenaires Pharmaciens</h2>
+
+          <h3>Hero</h3>
+          <div class="form-group">
+            <label for="partKicker">Kicker</label>
+            <input type="text" id="partKicker" />
+          </div>
+          <div class="form-group">
+            <label for="partTitle">Titre</label>
+            <input type="text" id="partTitle" />
+          </div>
+          <div class="form-group">
+            <label for="partSubtitle">Sous-titre</label>
+            <textarea id="partSubtitle" rows="3"></textarea>
+          </div>
+
+          <button id="savePartenaires" class="btn btn-primary">💾 Sauvegarder</button>
+        </div>
+      </div>
+
+      <!-- Tab Content: FAQ -->
+      <div class="tab-content" data-content="faq">
+        <div class="card">
+          <h2>❓ FAQ</h2>
+
+          <h3>Hero</h3>
+          <div class="form-group">
+            <label for="faqKicker">Kicker</label>
+            <input type="text" id="faqKicker" />
+          </div>
+          <div class="form-group">
+            <label for="faqTitle">Titre</label>
+            <input type="text" id="faqTitle" />
+          </div>
+          <div class="form-group">
+            <label for="faqSubtitle">Sous-titre</label>
+            <textarea id="faqSubtitle" rows="3"></textarea>
+          </div>
+
+          <button id="saveFaq" class="btn btn-primary">💾 Sauvegarder</button>
+        </div>
+      </div>
+
+      <!-- Tab Content: Remboursements -->
+      <div class="tab-content" data-content="remboursements">
+        <div class="card">
+          <h2>💰 Remboursements</h2>
+
+          <h3>Hero</h3>
+          <div class="form-group">
+            <label for="remKicker">Kicker</label>
+            <input type="text" id="remKicker" />
+          </div>
+          <div class="form-group">
+            <label for="remTitle">Titre</label>
+            <input type="text" id="remTitle" />
+          </div>
+          <div class="form-group">
+            <label for="remSubtitle">Sous-titre</label>
+            <textarea id="remSubtitle" rows="3"></textarea>
+          </div>
+
+          <button id="saveRemboursements" class="btn btn-primary">💾 Sauvegarder</button>
+        </div>
+      </div>
+
+      <!-- Tab Content: Accompagnement -->
+      <div class="tab-content" data-content="accompagnement">
+        <div class="card">
+          <h2>🫱 Notre Accompagnement</h2>
+
+          <h3>Hero</h3>
+          <div class="form-group">
+            <label for="accKicker">Kicker</label>
+            <input type="text" id="accKicker" />
+          </div>
+          <div class="form-group">
+            <label for="accTitle">Titre</label>
+            <input type="text" id="accTitle" />
+          </div>
+          <div class="form-group">
+            <label for="accSubtitle">Sous-titre</label>
+            <textarea id="accSubtitle" rows="3"></textarea>
+          </div>
+
+          <button id="saveAccompagnement" class="btn btn-primary">💾 Sauvegarder</button>
+        </div>
+      </div>
+
+      <!-- Tab Content: Images -->
+      <div class="tab-content" data-content="images">
+        <div class="card">
+          <h2>📷 Gestion des images</h2>
+          <p class="help-text">
+            Uploadez vos images directement sur la branche <strong>main</strong>.
+            Les images seront disponibles dans le dossier <code>/audire/images/</code>.
+          </p>
+
+          <div class="form-group">
+            <label for="imagePath">Chemin de destination</label>
+            <input type="text" id="imagePath" value="images/" placeholder="images/solutions/" />
+            <small>Chemin relatif depuis la racine du site (ex: images/, images/solutions/)</small>
+          </div>
+
+          <div class="form-group">
+            <label for="imageFile">Sélectionner une image</label>
+            <input type="file" id="imageFile" accept="image/*" />
+            <small>Formats acceptés: JPG, PNG, WebP, SVG</small>
+          </div>
+
+          <div id="imagePreview" style="margin: 20px 0; display: none;">
+            <h3>Aperçu</h3>
+            <img id="previewImg" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid var(--border);" />
+            <p id="previewInfo" style="margin-top: 8px; color: var(--text-muted); font-size: 14px;"></p>
+          </div>
+
+          <button id="uploadImage" class="btn btn-primary" disabled>📤 Upload vers main</button>
+
+          <div id="uploadStatus" class="help-text" style="margin-top: 16px; display: none;"></div>
+
+          <hr style="margin: 32px 0;" />
+
+          <h3>Images existantes</h3>
+          <p class="help-text">Liste des images dans le dossier images/</p>
+          <div id="imagesList" style="margin-top: 16px;">
+            <button id="loadImages" class="btn btn-secondary">🔄 Charger les images</button>
+            <div id="imagesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 16px;"></div>
+          </div>
         </div>
       </div>
 

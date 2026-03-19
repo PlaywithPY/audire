@@ -246,12 +246,15 @@ async function loadAllContent() {
       loadContact(),
       loadHomepage(),
       loadNavigation(),
-      loadSolutionsAuditives()
+      loadSolutionsAuditives(),
+      loadTextesJSON()
     ]);
   } catch (error) {
     showStatus('Erreur lors du chargement des contenus', 'error');
   }
 }
+
+let textesData = null;
 
 async function loadContact() {
   try {
@@ -301,6 +304,41 @@ async function loadSolutionsAuditives() {
     renderSolutions(content.solutions || []);
   } catch (error) {
     console.error('Erreur chargement solutions:', error);
+  }
+}
+
+async function loadTextesJSON() {
+  try {
+    const { content } = await getFile('content/textes.json');
+    textesData = content;
+
+    // Test Gratuit
+    $('#testKicker').value = content['test-auditif-gratuit']?.hero?.kicker || '';
+    $('#testTitle').value = content['test-auditif-gratuit']?.hero?.title || '';
+    $('#testSubtitle').value = content['test-auditif-gratuit']?.hero?.subtitle || '';
+
+    // Partenaires
+    $('#partKicker').value = content['partenaires-pharmaciens']?.hero?.kicker || '';
+    $('#partTitle').value = content['partenaires-pharmaciens']?.hero?.title || '';
+    $('#partSubtitle').value = content['partenaires-pharmaciens']?.hero?.subtitle || '';
+
+    // FAQ
+    $('#faqKicker').value = content['faq']?.hero?.kicker || '';
+    $('#faqTitle').value = content['faq']?.hero?.title || '';
+    $('#faqSubtitle').value = content['faq']?.hero?.subtitle || '';
+
+    // Remboursements
+    $('#remKicker').value = content['remboursements']?.hero?.kicker || '';
+    $('#remTitle').value = content['remboursements']?.hero?.title || '';
+    $('#remSubtitle').value = content['remboursements']?.hero?.subtitle || '';
+
+    // Accompagnement
+    $('#accKicker').value = content['notre-accompagnement']?.hero?.kicker || '';
+    $('#accTitle').value = content['notre-accompagnement']?.hero?.title || '';
+    $('#accSubtitle').value = content['notre-accompagnement']?.hero?.subtitle || '';
+
+  } catch (error) {
+    console.error('Erreur chargement textes.json:', error);
   }
 }
 
@@ -609,6 +647,304 @@ async function saveSolutionsAuditives() {
     console.error(error);
   } finally {
     btn.classList.remove('loading');
+  }
+}
+
+async function saveTestGratuit() {
+  const btn = $('#saveTestGratuit');
+  btn.classList.add('loading');
+
+  try {
+    textesData['test-auditif-gratuit'].hero.kicker = $('#testKicker').value;
+    textesData['test-auditif-gratuit'].hero.title = $('#testTitle').value;
+    textesData['test-auditif-gratuit'].hero.subtitle = $('#testSubtitle').value;
+
+    await updateFile('content/textes.json', textesData, 'Mise à jour Test Auditif Gratuit via admin');
+    showStatus('✅ Test gratuit sauvegardé !', 'success');
+  } catch (error) {
+    showStatus('❌ Erreur : ' + error.message, 'error');
+  } finally {
+    btn.classList.remove('loading');
+  }
+}
+
+async function savePartenaires() {
+  const btn = $('#savePartenaires');
+  btn.classList.add('loading');
+
+  try {
+    textesData['partenaires-pharmaciens'].hero.kicker = $('#partKicker').value;
+    textesData['partenaires-pharmaciens'].hero.title = $('#partTitle').value;
+    textesData['partenaires-pharmaciens'].hero.subtitle = $('#partSubtitle').value;
+
+    await updateFile('content/textes.json', textesData, 'Mise à jour Partenaires via admin');
+    showStatus('✅ Partenaires sauvegardé !', 'success');
+  } catch (error) {
+    showStatus('❌ Erreur : ' + error.message, 'error');
+  } finally {
+    btn.classList.remove('loading');
+  }
+}
+
+async function saveFaq() {
+  const btn = $('#saveFaq');
+  btn.classList.add('loading');
+
+  try {
+    textesData['faq'].hero.kicker = $('#faqKicker').value;
+    textesData['faq'].hero.title = $('#faqTitle').value;
+    textesData['faq'].hero.subtitle = $('#faqSubtitle').value;
+
+    await updateFile('content/textes.json', textesData, 'Mise à jour FAQ via admin');
+    showStatus('✅ FAQ sauvegardée !', 'success');
+  } catch (error) {
+    showStatus('❌ Erreur : ' + error.message, 'error');
+  } finally {
+    btn.classList.remove('loading');
+  }
+}
+
+async function saveRemboursements() {
+  const btn = $('#saveRemboursements');
+  btn.classList.add('loading');
+
+  try {
+    textesData['remboursements'].hero.kicker = $('#remKicker').value;
+    textesData['remboursements'].hero.title = $('#remTitle').value;
+    textesData['remboursements'].hero.subtitle = $('#remSubtitle').value;
+
+    await updateFile('content/textes.json', textesData, 'Mise à jour Remboursements via admin');
+    showStatus('✅ Remboursements sauvegardés !', 'success');
+  } catch (error) {
+    showStatus('❌ Erreur : ' + error.message, 'error');
+  } finally {
+    btn.classList.remove('loading');
+  }
+}
+
+async function saveAccompagnement() {
+  const btn = $('#saveAccompagnement');
+  btn.classList.add('loading');
+
+  try {
+    textesData['notre-accompagnement'].hero.kicker = $('#accKicker').value;
+    textesData['notre-accompagnement'].hero.title = $('#accTitle').value;
+    textesData['notre-accompagnement'].hero.subtitle = $('#accSubtitle').value;
+
+    await updateFile('content/textes.json', textesData, 'Mise à jour Accompagnement via admin');
+    showStatus('✅ Accompagnement sauvegardé !', 'success');
+  } catch (error) {
+    showStatus('❌ Erreur : ' + error.message, 'error');
+  } finally {
+    btn.classList.remove('loading');
+  }
+}
+
+// ========== GESTION DES IMAGES ==========
+
+function handleImageSelect() {
+  const fileInput = $('#imageFile');
+  const uploadBtn = $('#uploadImage');
+  const preview = $('#imagePreview');
+  const previewImg = $('#previewImg');
+  const previewInfo = $('#previewInfo');
+
+  const file = fileInput.files[0];
+  if (!file) {
+    uploadBtn.disabled = true;
+    preview.style.display = 'none';
+    return;
+  }
+
+  // Vérifier le type
+  if (!file.type.startsWith('image/')) {
+    showStatus('❌ Veuillez sélectionner une image valide', 'error');
+    uploadBtn.disabled = true;
+    return;
+  }
+
+  // Afficher l'aperçu
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    previewImg.src = e.target.result;
+    preview.style.display = 'block';
+    previewInfo.textContent = `${file.name} - ${(file.size / 1024).toFixed(2)} KB`;
+    uploadBtn.disabled = false;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadImageToMain() {
+  const fileInput = $('#imageFile');
+  const pathInput = $('#imagePath');
+  const uploadBtn = $('#uploadImage');
+  const uploadStatus = $('#uploadStatus');
+
+  const file = fileInput.files[0];
+  if (!file) {
+    showStatus('❌ Veuillez sélectionner une image', 'error');
+    return;
+  }
+
+  let targetPath = pathInput.value.trim();
+  if (!targetPath.endsWith('/')) {
+    targetPath += '/';
+  }
+
+  const fileName = file.name;
+  const fullPath = targetPath + fileName;
+
+  uploadBtn.classList.add('loading');
+  uploadStatus.style.display = 'block';
+  uploadStatus.textContent = '⏳ Upload en cours vers la branche main...';
+  uploadStatus.style.color = 'var(--text)';
+
+  try {
+    // Lire le fichier en base64
+    const base64Content = await readFileAsBase64(file);
+
+    // Vérifier si le fichier existe déjà
+    let sha = null;
+    try {
+      const response = await fetch(
+        `${CONFIG.baseUrl}/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${fullPath}?ref=main`,
+        {
+          headers: {
+            'Authorization': `token ${githubToken}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        sha = data.sha;
+        uploadStatus.textContent = '⚠️ Fichier existant détecté, remplacement en cours...';
+      }
+    } catch (e) {
+      // Le fichier n'existe pas, c'est OK
+    }
+
+    // Créer ou mettre à jour le fichier sur main
+    const body = {
+      message: `Upload image ${fileName} via admin`,
+      content: base64Content,
+      branch: 'main'
+    };
+
+    if (sha) {
+      body.sha = sha;
+    }
+
+    const response = await fetch(
+      `${CONFIG.baseUrl}/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${fullPath}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${githubToken}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Erreur lors de l\'upload');
+    }
+
+    const imageUrl = `/audire/${fullPath}`;
+    uploadStatus.style.color = '#4CAF50';
+    uploadStatus.innerHTML = `✅ Image uploadée avec succès !<br>URL: <code>${imageUrl}</code>`;
+    showStatus(`✅ Image uploadée sur main: ${imageUrl}`, 'success');
+
+    // Réinitialiser
+    fileInput.value = '';
+    $('#imagePreview').style.display = 'none';
+    uploadBtn.disabled = true;
+
+  } catch (error) {
+    uploadStatus.style.color = '#ff6b6b';
+    uploadStatus.textContent = `❌ Erreur: ${error.message}`;
+    showStatus('❌ Erreur lors de l\'upload: ' + error.message, 'error');
+  } finally {
+    uploadBtn.classList.remove('loading');
+  }
+}
+
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      // Extraire uniquement la partie base64 (enlever le préfixe data:image/...;base64,)
+      const base64 = reader.result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function loadImagesList() {
+  const loadBtn = $('#loadImages');
+  const grid = $('#imagesGrid');
+
+  loadBtn.classList.add('loading');
+  grid.innerHTML = '<p style="color: var(--text-muted);">Chargement...</p>';
+
+  try {
+    const response = await fetch(
+      `${CONFIG.baseUrl}/repos/${CONFIG.owner}/${CONFIG.repo}/contents/images?ref=main`,
+      {
+        headers: {
+          'Authorization': `token ${githubToken}`,
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Impossible de charger les images');
+    }
+
+    const files = await response.json();
+    const imageFiles = files.filter(f =>
+      f.type === 'file' && /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f.name)
+    );
+
+    if (imageFiles.length === 0) {
+      grid.innerHTML = '<p style="color: var(--text-muted);">Aucune image trouvée</p>';
+      return;
+    }
+
+    grid.innerHTML = '';
+    imageFiles.forEach(file => {
+      const card = document.createElement('div');
+      card.style.cssText = 'border: 2px solid var(--border); border-radius: 8px; padding: 8px; background: var(--bg-alt);';
+
+      const img = document.createElement('img');
+      img.src = file.download_url;
+      img.alt = file.name;
+      img.style.cssText = 'width: 100%; height: 120px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;';
+
+      const name = document.createElement('p');
+      name.textContent = file.name;
+      name.style.cssText = 'margin: 0; font-size: 12px; color: var(--text); word-break: break-all;';
+
+      const url = document.createElement('code');
+      url.textContent = `/audire/images/${file.name}`;
+      url.style.cssText = 'font-size: 10px; color: var(--text-muted); display: block; margin-top: 4px;';
+
+      card.appendChild(img);
+      card.appendChild(name);
+      card.appendChild(url);
+      grid.appendChild(card);
+    });
+
+  } catch (error) {
+    grid.innerHTML = `<p style="color: #ff6b6b;">Erreur: ${error.message}</p>`;
+  } finally {
+    loadBtn.classList.remove('loading');
   }
 }
 
@@ -1011,6 +1347,18 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#addMainLink').addEventListener('click', () => addLink('mainLinks'));
   $('#addTopLink').addEventListener('click', () => addLink('topLinks'));
   $('#addSolution').addEventListener('click', addSolution);
+
+  // Nouveaux event listeners pour les pages
+  $('#saveTestGratuit').addEventListener('click', saveTestGratuit);
+  $('#savePartenaires').addEventListener('click', savePartenaires);
+  $('#saveFaq').addEventListener('click', saveFaq);
+  $('#saveRemboursements').addEventListener('click', saveRemboursements);
+  $('#saveAccompagnement').addEventListener('click', saveAccompagnement);
+
+  // Event listeners pour les images
+  $('#imageFile').addEventListener('change', handleImageSelect);
+  $('#uploadImage').addEventListener('click', uploadImageToMain);
+  $('#loadImages').addEventListener('click', loadImagesList);
 
   // Support Enter key pour login
   $('#githubToken').addEventListener('keypress', (e) => {
