@@ -6,6 +6,19 @@ import ImageFeatureCard from "@/components/ImageFeatureCard";
 import { useState, useEffect } from "react";
 import { CardData } from "@/lib/card-helpers";
 
+interface Product {
+  id: number;
+  name: string;
+  slug: string;
+  brand: string;
+  shortDescription: string;
+  price: number | null;
+  priceRange: string | null;
+  imageUrl: string | null;
+  imageAlt: string | null;
+  isFeatured: boolean;
+}
+
 interface SolutionData {
   id: string;
   title: string;
@@ -15,6 +28,7 @@ interface SolutionData {
   image: string;
   pros: string[];
   cons: string[];
+  deviceTypeSlug?: string; // Pour lier aux produits
 }
 
 interface SolutionCardProps {
@@ -65,8 +79,13 @@ function SolutionCard({ solution, cardData, onToggle, isActive }: SolutionCardPr
   );
 }
 
-function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
+function SolutionDetailPanel({ solution, products }: { solution: SolutionData | null; products: Product[] }) {
   const isOpen = solution !== null;
+
+  // Filtrer les produits correspondant au type d'appareil
+  const relatedProducts = solution?.deviceTypeSlug
+    ? products.filter((p: any) => p.deviceType?.slug === solution.deviceTypeSlug)
+    : [];
 
   return (
     <div
@@ -89,7 +108,7 @@ function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
             </div>
 
             {/* Tableau Avantages / Inconvénients - PLEINE LARGEUR */}
-            <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-12">
               {/* Avantages */}
               <div className="bg-green-50 rounded-xl p-8">
                 <h4 className="text-xl font-bold mb-6 text-green-700 flex items-center gap-3">
@@ -122,6 +141,60 @@ function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
                 </ul>
               </div>
             </div>
+
+            {/* Section des produits correspondants */}
+            {relatedProducts.length > 0 && (
+              <div className="border-t-2 border-gray-200 pt-12 max-w-6xl mx-auto">
+                <h4 className="text-2xl font-bold mb-6 text-primary flex items-center gap-3">
+                  <span className="text-3xl">🦻</span>
+                  Nos appareils de type "{solution.title}"
+                </h4>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {relatedProducts.map((product) => (
+                    <a
+                      key={product.id}
+                      href={`/products/${product.slug}`}
+                      className="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-primary hover:shadow-lg transition-all group"
+                    >
+                      {product.imageUrl ? (
+                        <div className="w-full h-40 mb-4 rounded-lg overflow-hidden bg-gray-100">
+                          <img
+                            src={product.imageUrl}
+                            alt={product.imageAlt || product.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-full h-40 mb-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary-light/10 flex items-center justify-center">
+                          <span className="text-6xl">🦻</span>
+                        </div>
+                      )}
+                      {product.isFeatured && (
+                        <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-semibold mb-2">
+                          ⭐ Recommandé
+                        </span>
+                      )}
+                      <h5 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">
+                        {product.name}
+                      </h5>
+                      <p className="text-sm text-gray-500 mb-3">{product.brand}</p>
+                      <p className="text-sm text-text-light mb-4 line-clamp-2">
+                        {product.shortDescription}
+                      </p>
+                      {(product.price || product.priceRange) && (
+                        <p className="text-primary font-semibold">
+                          {product.price ? `${product.price}€` : product.priceRange}
+                        </p>
+                      )}
+                      <div className="mt-4 text-primary font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
+                        <span>En savoir plus</span>
+                        <span>→</span>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -133,14 +206,20 @@ export default function SolutionsAuditives() {
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [brandCards, setBrandCards] = useState<CardData[]>([]);
   const [typeCards, setTypeCards] = useState<CardData[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
-  // Charger les cards depuis l'API
+  // Charger les cards et les produits depuis l'API
   useEffect(() => {
-    async function loadCards() {
+    async function loadData() {
       try {
-        const res = await fetch('/api/card-images?pageKey=solutions-auditives');
-        if (res.ok) {
-          const allCards = await res.json();
+        const [cardsRes, productsRes] = await Promise.all([
+          fetch('/api/card-images?pageKey=solutions-auditives'),
+          fetch('/api/products?visible=true'),
+        ]);
+
+        // Cards
+        if (cardsRes.ok) {
+          const allCards = await cardsRes.json();
 
           // Séparer les cards par type
           const brands = allCards.filter((c: any) => ['solution-oticon', 'solution-bernafon'].includes(c.cardKey));
@@ -153,13 +232,19 @@ export default function SolutionsAuditives() {
           setBrandCards(getDefaultBrands());
           setTypeCards(getDefaultTypes());
         }
+
+        // Produits
+        if (productsRes.ok) {
+          const productsData = await productsRes.json();
+          setProducts(productsData);
+        }
       } catch (error) {
-        console.error('Error loading cards:', error);
+        console.error('Error loading data:', error);
         setBrandCards(getDefaultBrands());
         setTypeCards(getDefaultTypes());
       }
     }
-    loadCards();
+    loadData();
   }, []);
 
   function getDefaultBrands(): CardData[] {
@@ -230,6 +315,7 @@ export default function SolutionsAuditives() {
       shortDesc: "Modèle polyvalent et simple d'utilisation, le contour d'oreille se porte derrière le pavillon. Un tube fin relie l'appareil à un embout dans le conduit auditif. Il convient à la grande majorité des pertes auditives.",
       fullDesc: "Grâce à son boîtier positionné derrière l'oreille, le contour d'oreille est facile à manipuler et à entretenir au quotidien. Il peut intégrer une batterie rechargeable et une connexion Bluetooth pour s'associer à votre téléphone, votre télévision ou d'autres accessoires. Disponible dans différentes teintes pour se fondre dans la couleur de vos cheveux ou de votre peau, il reste très discret malgré son placement externe.",
       image: "🎧",
+      deviceTypeSlug: "contour",
       pros: [
         "Convient à presque tous les degrés de perte auditive",
         "Facile à manipuler et à entretenir",
@@ -249,6 +335,7 @@ export default function SolutionsAuditives() {
       shortDesc: "Fabriqué sur mesure à partir d'une empreinte de votre conduit auditif, l'intra-auriculaire se glisse entièrement dans l'oreille. Sa discrétion en fait le choix préféré des personnes qui souhaitent un appareil quasi invisible.",
       fullDesc: "Positionné directement dans le conduit auditif, l'intra-auriculaire capte les sons de façon naturelle grâce à sa proximité avec le tympan. Il est particulièrement adapté aux personnes qui portent des lunettes, car son placement ne génère aucune interférence avec les branches. Sa conception sur mesure garantit un ajustement précis et un confort de port élevé.",
       image: "👁️",
+      deviceTypeSlug: "intra",
       pros: [
         "Discrétion maximale",
         "Moulage personnalisé pour un confort optimal",
@@ -268,6 +355,7 @@ export default function SolutionsAuditives() {
       shortDesc: "L'Oticon Intent est une aide auditive haut de gamme équipée de capteurs de mouvement. Elle analyse vos gestes et vos déplacements pour adapter l'amplification à chaque situation, sans aucune intervention de votre part.",
       fullDesc: "Doté d'une puce de traitement performante et de quatre capteurs intégrés, l'Oticon Intent détecte en temps réel ce que vous faites et s'ajuste automatiquement pour vous offrir le son le plus clair possible dans chaque contexte. Sa connectivité Bluetooth vous permet de le coupler à votre smartphone ou à votre télévision. La batterie rechargeable tient toute la journée, et son boîtier est certifié résistant à l'eau et à la poussière (IP68).",
       image: "🚀",
+      deviceTypeSlug: "ric",
       pros: [
         "Adaptation automatique à chaque situation",
         "Capteurs de mouvement intégrés",
@@ -371,6 +459,7 @@ export default function SolutionsAuditives() {
               {/* Panneau détaillé - PLEINE LARGEUR en dessous */}
               <SolutionDetailPanel
                 solution={solutions.find(s => s.id === activeTab) || null}
+                products={products}
               />
             </div>
           </div>
