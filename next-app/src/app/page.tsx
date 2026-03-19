@@ -4,8 +4,13 @@ import ImageFeatureCard from "@/components/ImageFeatureCard";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 import ParallaxSection from "@/components/ParallaxSection";
+import { getFeatureCards } from "@/lib/card-helpers";
 
-export default function Home() {
+// Revalider la page toutes les 60 secondes (ISR)
+export const revalidate = 60;
+
+export default async function Home() {
+  const featureCards = await getFeatureCards();
   return (
     <>
       <Header />
@@ -92,55 +97,18 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <ImageFeatureCard
-              imageSrc="/images/hearing-test.jpg"
-              title="Test auditif gratuit"
-              description="Un test complet et sans engagement pour comprendre votre audition."
-              imageAlt="Test auditif avec casque professionnel"
-              href="/test-auditif-gratuit"
-              imagePosition="center 35%"
-              fallbackEmoji="👂"
-            />
-            <ImageFeatureCard
-              imageSrc="/images/human-support.jpg"
-              title="Accompagnement humain"
-              description="Pas de jargon technique, pas de pression commerciale."
-              imageAlt="Accompagnement personnalisé et humain"
-              href="/notre-accompagnement"
-              fallbackEmoji="💬"
-            />
-            <ImageFeatureCard
-              imageSrc="/images/personalized-follow-up.jpg"
-              title="Suivi personnalisé"
-              description="Réglages progressifs, adaptations, suivi régulier."
-              imageAlt="Suivi personnalisé de votre appareil auditif"
-              href="/notre-accompagnement"
-              fallbackEmoji="🔧"
-            />
-            <ImageFeatureCard
-              imageSrc="/images/quality-solutions.jpg"
-              title="Solutions de qualité"
-              description="Oticon et Bernafon, deux marques reconnues."
-              imageAlt="Appareils auditifs de qualité"
-              href="/solutions-auditives"
-              fallbackEmoji="🏆"
-            />
-            <ImageFeatureCard
-              imageSrc="/images/independent-center.jpg"
-              title="Centre indépendant"
-              description="Pas d'objectifs de vente, pas de réseau à satisfaire."
-              imageAlt="Centre auditif indépendant"
-              href="/notre-accompagnement"
-              fallbackEmoji="🎯"
-            />
-            <ImageFeatureCard
-              imageSrc="/images/price-transparency.jpg"
-              title="Transparence des prix"
-              description="Prix clairs, remboursements expliqués."
-              imageAlt="Transparence des prix et remboursements"
-              href="/remboursements"
-              fallbackEmoji="💰"
-            />
+            {featureCards.map((card) => (
+              <ImageFeatureCard
+                key={card.cardKey}
+                imageSrc={card.imageSrc}
+                title={card.title}
+                description={card.description}
+                imageAlt={card.imageAlt}
+                href={card.href}
+                imagePosition={card.imagePosition}
+                fallbackEmoji={card.fallbackEmoji}
+              />
+            ))}
           </div>
         </div>
       </section>
