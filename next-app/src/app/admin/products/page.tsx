@@ -39,6 +39,15 @@ type Product = {
   isVisible: boolean;
   isFeatured: boolean;
   order: number;
+  showBrand: boolean;
+  showPrice: boolean;
+  showShortDescription: boolean;
+  showFullDescription: boolean;
+  showImage: boolean;
+  showFeatures: boolean;
+  showProsCons: boolean;
+  showDeviceType: boolean;
+  showHearingLossLevel: boolean;
   hearingLossCategoryId: number | null;
   hearingLossCategory: HearingLossCategory | null;
   deviceTypeId: number | null;
@@ -78,6 +87,15 @@ export default function AdminProducts() {
     isVisible: true,
     isFeatured: false,
     order: 0,
+    showBrand: true,
+    showPrice: true,
+    showShortDescription: true,
+    showFullDescription: true,
+    showImage: true,
+    showFeatures: true,
+    showProsCons: true,
+    showDeviceType: true,
+    showHearingLossLevel: true,
     hearingLossCategoryId: '',
     deviceTypeId: '',
     features: '{}',
@@ -446,6 +464,95 @@ export default function AdminProducts() {
                     <span>⭐ Produit mis en avant</span>
                   </label>
                 </div>
+
+                {/* Section Contrôles de visibilité */}
+                <div className="md:col-span-2 mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
+                  <h4 className="font-bold mb-3 text-blue-900">🔧 Contrôles de visibilité des informations</h4>
+                  <p className="text-sm text-blue-700 mb-4">Choisissez quelles informations afficher sur le site pour ce produit</p>
+                  <div className="grid md:grid-cols-3 gap-3">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={newProduct.showBrand}
+                        onChange={(e) => setNewProduct({ ...newProduct, showBrand: e.target.checked })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Marque</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={newProduct.showPrice}
+                        onChange={(e) => setNewProduct({ ...newProduct, showPrice: e.target.checked })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Prix</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={newProduct.showImage}
+                        onChange={(e) => setNewProduct({ ...newProduct, showImage: e.target.checked })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Image</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={newProduct.showShortDescription}
+                        onChange={(e) => setNewProduct({ ...newProduct, showShortDescription: e.target.checked })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Description courte</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={newProduct.showFullDescription}
+                        onChange={(e) => setNewProduct({ ...newProduct, showFullDescription: e.target.checked })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Description complète</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={newProduct.showFeatures}
+                        onChange={(e) => setNewProduct({ ...newProduct, showFeatures: e.target.checked })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Caractéristiques</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={newProduct.showProsCons}
+                        onChange={(e) => setNewProduct({ ...newProduct, showProsCons: e.target.checked })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Avantages/Inconvénients</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={newProduct.showDeviceType}
+                        onChange={(e) => setNewProduct({ ...newProduct, showDeviceType: e.target.checked })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Type d'appareil</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={newProduct.showHearingLossLevel}
+                        onChange={(e) => setNewProduct({ ...newProduct, showHearingLossLevel: e.target.checked })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Niveau de perte auditive</span>
+                    </label>
+                  </div>
+                </div>
               </div>
               <div className="flex gap-2 mt-6">
                 <button
@@ -756,6 +863,140 @@ export default function AdminProducts() {
                       />
                       <span>⭐ Produit mis en avant</span>
                     </label>
+                  </div>
+
+                  {/* Section Contrôles de visibilité */}
+                  <div className="md:col-span-2 mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
+                    <h4 className="font-bold mb-3 text-blue-900">🔧 Contrôles de visibilité des informations</h4>
+                    <p className="text-sm text-blue-700 mb-4">Choisissez quelles informations afficher sur le site pour ce produit</p>
+                    <div className="grid md:grid-cols-3 gap-3">
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={editingProduct.showBrand}
+                          onChange={(e) =>
+                            setEditingProduct({
+                              ...editingProduct,
+                              showBrand: e.target.checked,
+                            })
+                          }
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm">Marque</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={editingProduct.showPrice}
+                          onChange={(e) =>
+                            setEditingProduct({
+                              ...editingProduct,
+                              showPrice: e.target.checked,
+                            })
+                          }
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm">Prix</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={editingProduct.showImage}
+                          onChange={(e) =>
+                            setEditingProduct({
+                              ...editingProduct,
+                              showImage: e.target.checked,
+                            })
+                          }
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm">Image</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={editingProduct.showShortDescription}
+                          onChange={(e) =>
+                            setEditingProduct({
+                              ...editingProduct,
+                              showShortDescription: e.target.checked,
+                            })
+                          }
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm">Description courte</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={editingProduct.showFullDescription}
+                          onChange={(e) =>
+                            setEditingProduct({
+                              ...editingProduct,
+                              showFullDescription: e.target.checked,
+                            })
+                          }
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm">Description complète</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={editingProduct.showFeatures}
+                          onChange={(e) =>
+                            setEditingProduct({
+                              ...editingProduct,
+                              showFeatures: e.target.checked,
+                            })
+                          }
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm">Caractéristiques</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={editingProduct.showProsCons}
+                          onChange={(e) =>
+                            setEditingProduct({
+                              ...editingProduct,
+                              showProsCons: e.target.checked,
+                            })
+                          }
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm">Avantages/Inconvénients</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={editingProduct.showDeviceType}
+                          onChange={(e) =>
+                            setEditingProduct({
+                              ...editingProduct,
+                              showDeviceType: e.target.checked,
+                            })
+                          }
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm">Type d'appareil</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={editingProduct.showHearingLossLevel}
+                          onChange={(e) =>
+                            setEditingProduct({
+                              ...editingProduct,
+                              showHearingLossLevel: e.target.checked,
+                            })
+                          }
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm">Niveau de perte auditive</span>
+                      </label>
+                    </div>
                   </div>
                 </div>
                 <div className="flex gap-2 mt-6">
