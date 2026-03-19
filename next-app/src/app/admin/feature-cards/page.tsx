@@ -34,6 +34,7 @@ export default function FeatureCardsAdmin() {
   const [editingCard, setEditingCard] = useState<CardImage | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [apiError, setApiError] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -50,10 +51,26 @@ export default function FeatureCardsAdmin() {
   async function fetchCardImages() {
     try {
       const res = await fetch('/api/admin/card-images');
+      if (!res.ok) {
+        console.error('API error:', res.status);
+        setCardImages([]);
+        setApiError(true);
+        return;
+      }
       const data = await res.json();
-      setCardImages(data);
+      // Vérifier que data est bien un tableau
+      if (Array.isArray(data)) {
+        setCardImages(data);
+        setApiError(false);
+      } else {
+        console.error('API did not return an array:', data);
+        setCardImages([]);
+        setApiError(true);
+      }
     } catch (error) {
       console.error('Error fetching card images:', error);
+      setCardImages([]);
+      setApiError(true);
     } finally {
       setLoading(false);
     }
@@ -147,6 +164,30 @@ export default function FeatureCardsAdmin() {
       </header>
 
       <div className="container mx-auto px-6 py-8">
+        {/* Erreur API - Migration requise */}
+        {apiError && (
+          <div className="bg-red-50 border-2 border-red-300 rounded-lg p-6 mb-8">
+            <h2 className="text-lg font-bold mb-3 text-red-800">⚠️ Migration SQL requise</h2>
+            <p className="text-sm text-red-700 mb-4">
+              L'API retourne une erreur. Vous devez probablement exécuter la migration SQL sur votre base de données Neon.
+            </p>
+            <div className="bg-white rounded p-4 mb-3">
+              <p className="text-xs font-semibold mb-2">Exécutez ce SQL sur Neon :</p>
+              <code className="text-xs block whitespace-pre bg-gray-100 p-3 rounded overflow-x-auto">
+{`ALTER TABLE "CardImage"
+ADD COLUMN IF NOT EXISTS "imagePosition" TEXT NOT NULL DEFAULT 'center center',
+ADD COLUMN IF NOT EXISTS "href" TEXT,
+ADD COLUMN IF NOT EXISTS "title" TEXT,
+ADD COLUMN IF NOT EXISTS "description" TEXT,
+ADD COLUMN IF NOT EXISTS "imageAlt" TEXT;`}
+              </code>
+            </div>
+            <p className="text-xs text-red-600">
+              Après avoir exécuté la migration, rafraîchissez cette page.
+            </p>
+          </div>
+        )}
+
         {/* Instructions */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
           <h2 className="text-lg font-bold mb-3">📝 Instructions</h2>
