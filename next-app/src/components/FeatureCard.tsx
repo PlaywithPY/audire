@@ -7,8 +7,8 @@ interface FeatureCardProps {
 export default function FeatureCard({ icon, title, description }: FeatureCardProps) {
   return (
     <div className="bg-bg p-6 rounded-2xl shadow-md">
-      <div className="mb-4">
-        <span className="text-5xl inline-block animate-float">{icon}</span>
+      <div className="mb-4 flex justify-center">
+        <span className="text-5xl animate-float">{icon}</span>
       </div>
       <h3 className="text-xl font-bold mb-2">
         {title}

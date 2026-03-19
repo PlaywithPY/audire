@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FeatureCard from "@/components/FeatureCard";
+import ImageFeatureCard from "@/components/ImageFeatureCard";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 import ParallaxSection from "@/components/ParallaxSection";
@@ -92,10 +93,11 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <FeatureCard
-              icon="👂"
+            <ImageFeatureCard
+              imageSrc="/images/hearing-test.jpg"
               title="Test auditif gratuit"
               description="Un test complet et sans engagement pour comprendre votre audition."
+              imageAlt="Test auditif avec casque professionnel"
             />
             <FeatureCard
               icon="💬"
