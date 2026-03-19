@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { getDefaultCardsForPage } from './card-definitions';
 
 export interface CardData {
   cardKey: string;
@@ -11,77 +12,21 @@ export interface CardData {
   fallbackEmoji: string;
 }
 
-// Définitions par défaut des cards (fallback si pas dans la DB)
-// IMPORTANT: Les cardKey doivent correspondre à ceux définis dans /admin/feature-cards
-const DEFAULT_CARDS: CardData[] = [
-  {
-    cardKey: 'hearing-test',
-    imageSrc: '/images/hearing-test.jpg',
-    title: 'Test auditif gratuit',
-    description: 'Un test complet et sans engagement pour comprendre votre audition.',
-    imageAlt: 'Test auditif avec casque professionnel',
-    href: '/test-auditif-gratuit',
-    imagePosition: 'center 35%',
-    fallbackEmoji: '👂',
-  },
-  {
-    cardKey: 'human-support',
-    imageSrc: '/images/human-support.jpg',
-    title: 'Accompagnement humain',
-    description: 'Pas de jargon technique, pas de pression commerciale.',
-    imageAlt: 'Accompagnement personnalisé et humain',
-    href: '/notre-accompagnement',
-    imagePosition: 'center center',
-    fallbackEmoji: '💬',
-  },
-  {
-    cardKey: 'personalized-follow-up',
-    imageSrc: '/images/personalized-follow-up.jpg',
-    title: 'Suivi personnalisé',
-    description: 'Réglages progressifs, adaptations, suivi régulier.',
-    imageAlt: 'Suivi personnalisé de votre appareil auditif',
-    href: '/notre-accompagnement',
-    imagePosition: 'center center',
-    fallbackEmoji: '🔧',
-  },
-  {
-    cardKey: 'quality-solutions',
-    imageSrc: '/images/quality-solutions.jpg',
-    title: 'Solutions de qualité',
-    description: 'Oticon et Bernafon, deux marques reconnues.',
-    imageAlt: 'Appareils auditifs de qualité',
-    href: '/solutions-auditives',
-    imagePosition: 'center center',
-    fallbackEmoji: '🏆',
-  },
-  {
-    cardKey: 'independent-center',
-    imageSrc: '/images/independent-center.jpg',
-    title: 'Centre indépendant',
-    description: 'Pas d\'objectifs de vente, pas de réseau à satisfaire.',
-    imageAlt: 'Centre auditif indépendant',
-    href: '/notre-accompagnement',
-    imagePosition: 'center center',
-    fallbackEmoji: '🎯',
-  },
-  {
-    cardKey: 'price-transparency',
-    imageSrc: '/images/price-transparency.jpg',
-    title: 'Transparence des prix',
-    description: 'Prix clairs, remboursements expliqués.',
-    imageAlt: 'Transparence des prix et remboursements',
-    href: '/remboursements',
-    imagePosition: 'center center',
-    fallbackEmoji: '💰',
-  },
-];
-
 /**
- * Récupère les cards depuis la DB et merge avec les valeurs par défaut
+ * Récupère les cards depuis la DB pour une page spécifique et merge avec les valeurs par défaut
  */
-export async function getFeatureCards(): Promise<CardData[]> {
+export async function getFeatureCards(pageKey: string = 'home'): Promise<CardData[]> {
   try {
+    // Récupérer les définitions par défaut pour cette page
+    const defaultCards = getDefaultCardsForPage(pageKey);
+
+    if (defaultCards.length === 0) {
+      console.warn(`No default cards found for page: ${pageKey}`);
+      return [];
+    }
+
     const dbCards = await prisma.cardImage.findMany({
+      where: { pageKey },
       orderBy: { cardKey: 'asc' },
     });
 
@@ -89,7 +34,7 @@ export async function getFeatureCards(): Promise<CardData[]> {
     const dbCardMap = new Map(dbCards.map(card => [card.cardKey, card]));
 
     // Merger les cards par défaut avec les données DB
-    return DEFAULT_CARDS.map(defaultCard => {
+    return defaultCards.map(defaultCard => {
       const dbCard = dbCardMap.get(defaultCard.cardKey);
 
       if (!dbCard) {
@@ -111,6 +56,6 @@ export async function getFeatureCards(): Promise<CardData[]> {
   } catch (error) {
     console.error('Erreur lors de la récupération des cards:', error);
     // En cas d'erreur, retourner les valeurs par défaut
-    return DEFAULT_CARDS;
+    return getDefaultCardsForPage(pageKey);
   }
 }

@@ -4,9 +4,11 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getAllPages, PageCardsDefinition } from '@/lib/card-definitions';
 
 type CardImage = {
   id: number;
+  pageKey: string;
   cardKey: string;
   imageUrl: string;
   fallbackEmoji: string;
@@ -18,15 +20,6 @@ type CardImage = {
   updatedAt: string;
 };
 
-const CARD_KEYS = [
-  { key: 'hearing-test', label: 'Test auditif gratuit', defaultHref: '/test-auditif-gratuit' },
-  { key: 'human-support', label: 'Accompagnement humain', defaultHref: '/notre-accompagnement' },
-  { key: 'personalized-follow-up', label: 'Suivi personnalisé', defaultHref: '/notre-accompagnement' },
-  { key: 'quality-solutions', label: 'Solutions de qualité', defaultHref: '/solutions-auditives' },
-  { key: 'independent-center', label: 'Centre indépendant', defaultHref: '/notre-accompagnement' },
-  { key: 'price-transparency', label: 'Transparence des prix', defaultHref: '/remboursements' },
-];
-
 export default function FeatureCardsAdmin() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -35,6 +28,9 @@ export default function FeatureCardsAdmin() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [apiError, setApiError] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>('home');
+
+  const pages = getAllPages();
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -58,7 +54,6 @@ export default function FeatureCardsAdmin() {
         return;
       }
       const data = await res.json();
-      // Vérifier que data est bien un tableau
       if (Array.isArray(data)) {
         setCardImages(data);
         setApiError(false);
@@ -84,42 +79,39 @@ export default function FeatureCardsAdmin() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(card),
       });
-      alert('✅ Card sauvegardée !');
+      await fetchCardImages();
       setEditingCard(null);
-      fetchCardImages();
     } catch (error) {
       console.error('Error saving card:', error);
-      alert('❌ Erreur lors de la sauvegarde');
+      alert('Erreur lors de la sauvegarde');
     } finally {
       setSaving(false);
     }
   }
 
-  async function createCard(cardKey: string) {
-    const defaultCard = CARD_KEYS.find(c => c.key === cardKey);
-    if (!defaultCard) return;
-
+  async function createCard(pageKey: string, cardKey: string, defaultData: any) {
     setSaving(true);
     try {
-      await fetch('/api/admin/card-images', {
+      const res = await fetch('/api/admin/card-images', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          pageKey,
           cardKey,
-          imageUrl: `/images/${cardKey}.jpg`,
-          fallbackEmoji: '📷',
-          imagePosition: 'center 35%',
-          href: defaultCard.defaultHref,
-          title: defaultCard.label,
-          description: '',
-          imageAlt: defaultCard.label,
+          imageUrl: defaultData.imageSrc,
+          fallbackEmoji: defaultData.fallbackEmoji,
+          imagePosition: defaultData.imagePosition,
+          href: defaultData.href,
+          title: defaultData.title,
+          description: defaultData.description,
+          imageAlt: defaultData.imageAlt,
         }),
       });
-      alert('✅ Card créée !');
-      fetchCardImages();
+      if (res.ok) {
+        await fetchCardImages();
+      }
     } catch (error) {
       console.error('Error creating card:', error);
-      alert('❌ Erreur lors de la création');
     } finally {
       setSaving(false);
     }
@@ -127,10 +119,10 @@ export default function FeatureCardsAdmin() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement...</p>
+          <div className="animate-spin text-6xl mb-4">⏳</div>
+          <p className="text-text-light">Chargement...</p>
         </div>
       </div>
     );
@@ -140,77 +132,97 @@ export default function FeatureCardsAdmin() {
     return null;
   }
 
+  const activePage = pages.find(p => p.pageKey === activeTab);
+  const activePageCards = activePage?.cards || [];
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 py-4 px-6">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">🎴 Gestion des Feature Cards</h1>
-          <div className="flex gap-3">
-            <Link
-              href="/admin"
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
-            >
-              ← Admin principal
-            </Link>
-            <Link
-              href="/"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-            >
-              Retour au site
-            </Link>
-          </div>
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Gestion des Feature Cards</h1>
+          <Link href="/admin" className="text-primary hover:underline">
+            ← Retour admin
+          </Link>
         </div>
       </header>
 
       <div className="container mx-auto px-6 py-8">
-        {/* Erreur API - Migration requise */}
+        {/* Erreur API */}
         {apiError && (
           <div className="bg-red-50 border-2 border-red-300 rounded-lg p-6 mb-8">
             <h2 className="text-lg font-bold mb-3 text-red-800">⚠️ Migration SQL requise</h2>
             <p className="text-sm text-red-700 mb-4">
-              L'API retourne une erreur. Vous devez probablement exécuter la migration SQL sur votre base de données Neon.
+              L'API retourne une erreur. Vous devez probablement exécuter la migration SQL sur Neon.
             </p>
             <div className="bg-white rounded p-4 mb-3">
               <p className="text-xs font-semibold mb-2">Exécutez ce SQL sur Neon :</p>
               <code className="text-xs block whitespace-pre bg-gray-100 p-3 rounded overflow-x-auto">
-{`ALTER TABLE "CardImage"
-ADD COLUMN IF NOT EXISTS "imagePosition" TEXT NOT NULL DEFAULT 'center center',
-ADD COLUMN IF NOT EXISTS "href" TEXT,
-ADD COLUMN IF NOT EXISTS "title" TEXT,
-ADD COLUMN IF NOT EXISTS "description" TEXT,
-ADD COLUMN IF NOT EXISTS "imageAlt" TEXT;`}
+{`-- Migration: Ajouter pageKey à CardImage
+ALTER TABLE "CardImage"
+ADD COLUMN IF NOT EXISTS "pageKey" TEXT NOT NULL DEFAULT 'home';
+
+ALTER TABLE "CardImage"
+DROP CONSTRAINT IF EXISTS "CardImage_cardKey_key";
+
+ALTER TABLE "CardImage"
+ADD CONSTRAINT "CardImage_pageKey_cardKey_key" UNIQUE ("pageKey", "cardKey");
+
+CREATE INDEX IF NOT EXISTS "CardImage_pageKey_idx" ON "CardImage"("pageKey");`}
               </code>
             </div>
-            <p className="text-xs text-red-600">
-              Après avoir exécuté la migration, rafraîchissez cette page.
-            </p>
           </div>
         )}
 
         {/* Instructions */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-          <h2 className="text-lg font-bold mb-3">📝 Instructions</h2>
+          <h2 className="text-lg font-bold mb-2">📝 Mode d'emploi</h2>
           <ul className="space-y-2 text-sm text-gray-700">
-            <li>• <strong>Image Position</strong> : Contrôle la position de l'image dans la card (ex: "center 35%" pour centrer horizontalement et décentrer vers le bas)</li>
-            <li>• <strong>Valeurs courantes</strong> : "center center" (centré), "center 30%" (vers le haut), "center 70%" (vers le bas)</li>
-            <li>• <strong>Lien (href)</strong> : Page vers laquelle la card redirige quand on clique dessus</li>
-            <li>• Assurez-vous d'avoir uploadé les images dans <code className="bg-white px-2 py-1 rounded">/public/images/</code></li>
+            <li>• Sélectionnez une page dans les onglets ci-dessous</li>
+            <li>• Cliquez sur une card pour la modifier</li>
+            <li>• <strong>Image Position</strong> : Contrôle la position de l'image (ex: "center 35%")</li>
+            <li>• Les images doivent être dans <code className="bg-white px-2 py-1 rounded">/public/images/</code></li>
           </ul>
         </div>
 
-        {/* Liste des cards disponibles */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4">Cards disponibles</h2>
+        {/* Onglets des pages */}
+        <div className="bg-white rounded-lg shadow-md mb-8">
+          <div className="flex border-b border-gray-200 overflow-x-auto">
+            {pages.map((page) => (
+              <button
+                key={page.pageKey}
+                onClick={() => setActiveTab(page.pageKey)}
+                className={`px-6 py-4 font-semibold whitespace-nowrap transition-colors ${
+                  activeTab === page.pageKey
+                    ? 'border-b-2 border-primary text-primary bg-blue-50'
+                    : 'text-gray-600 hover:text-primary hover:bg-gray-50'
+                }`}
+              >
+                {page.pageLabel}
+                <span className="ml-2 text-xs bg-gray-200 px-2 py-1 rounded-full">
+                  {page.cards.length}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Cards de la page active */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-bold mb-4">
+            Cards de "{activePage?.pageLabel}"
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {CARD_KEYS.map((cardDef) => {
-              const existing = cardImages.find(c => c.cardKey === cardDef.key);
+            {activePageCards.map((cardDef) => {
+              const existing = cardImages.find(
+                c => c.pageKey === activeTab && c.cardKey === cardDef.cardKey
+              );
 
               return (
-                <div key={cardDef.key} className="border border-gray-200 rounded-lg p-4">
-                  <h3 className="font-bold text-lg mb-2">{cardDef.label}</h3>
+                <div key={cardDef.cardKey} className="border border-gray-200 rounded-lg p-4">
+                  <h3 className="font-bold text-lg mb-2">{cardDef.title}</h3>
                   <p className="text-sm text-gray-600 mb-3">
-                    Key: <code className="bg-gray-100 px-2 py-1 rounded">{cardDef.key}</code>
+                    Key: <code className="bg-gray-100 px-2 py-1 rounded">{cardDef.cardKey}</code>
                   </p>
 
                   {existing ? (
@@ -218,7 +230,7 @@ ADD COLUMN IF NOT EXISTS "imageAlt" TEXT;`}
                       <div className="mb-3 relative h-32 bg-gray-100 rounded overflow-hidden">
                         <img
                           src={existing.imageUrl}
-                          alt={existing.imageAlt || cardDef.label}
+                          alt={existing.imageAlt || cardDef.title}
                           className="w-full h-full object-cover"
                           style={{ objectPosition: existing.imagePosition }}
                           onError={(e) => {
@@ -239,11 +251,11 @@ ADD COLUMN IF NOT EXISTS "imageAlt" TEXT;`}
                     </>
                   ) : (
                     <button
-                      onClick={() => createCard(cardDef.key)}
+                      onClick={() => createCard(activeTab, cardDef.cardKey, cardDef)}
                       disabled={saving}
                       className="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:opacity-50"
                     >
-                      ➕ Créer cette card
+                      ➕ Créer
                     </button>
                   )}
                 </div>
@@ -251,161 +263,100 @@ ADD COLUMN IF NOT EXISTS "imageAlt" TEXT;`}
             })}
           </div>
         </div>
+      </div>
 
-        {/* Formulaire d'édition */}
-        {editingCard && (
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-bold mb-6">✏️ Édition de la card</h2>
+      {/* Modal d'édition */}
+      {editingCard && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-6">Modifier la card</h2>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Colonne gauche - Formulaire */}
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Card Key</label>
-                  <input
-                    type="text"
-                    value={editingCard.cardKey}
-                    disabled
-                    className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-50"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Titre</label>
-                  <input
-                    type="text"
-                    value={editingCard.title || ''}
-                    onChange={(e) => setEditingCard({ ...editingCard, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded"
-                    placeholder="Test auditif gratuit"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Description</label>
-                  <textarea
-                    value={editingCard.description || ''}
-                    onChange={(e) => setEditingCard({ ...editingCard, description: e.target.value })}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded"
-                    placeholder="Un test complet et sans engagement..."
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold mb-2">URL de l'image</label>
-                  <input
-                    type="text"
-                    value={editingCard.imageUrl}
-                    onChange={(e) => setEditingCard({ ...editingCard, imageUrl: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded"
-                    placeholder="/images/hearing-test.jpg"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Texte alternatif (alt)</label>
-                  <input
-                    type="text"
-                    value={editingCard.imageAlt || ''}
-                    onChange={(e) => setEditingCard({ ...editingCard, imageAlt: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded"
-                    placeholder="Test auditif avec casque professionnel"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold mb-2">
-                    Position de l'image (object-position)
-                    <span className="text-xs font-normal text-gray-500 ml-2">
-                      Important pour cadrer le visage
-                    </span>
-                  </label>
-                  <input
-                    type="text"
-                    value={editingCard.imagePosition}
-                    onChange={(e) => setEditingCard({ ...editingCard, imagePosition: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded"
-                    placeholder="center 35%"
-                  />
-                  <div className="mt-2 text-xs text-gray-600">
-                    <p><strong>Exemples :</strong></p>
-                    <ul className="list-disc list-inside ml-2">
-                      <li><code>center center</code> - Image centrée</li>
-                      <li><code>center 30%</code> - Décentré vers le haut (voir plus de la partie haute)</li>
-                      <li><code>center 35%</code> - Légèrement vers le haut (recommandé pour les visages)</li>
-                      <li><code>center 70%</code> - Décentré vers le bas</li>
-                      <li><code>left center</code> - Aligné à gauche</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Lien (href)</label>
-                  <input
-                    type="text"
-                    value={editingCard.href || ''}
-                    onChange={(e) => setEditingCard({ ...editingCard, href: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded"
-                    placeholder="/test-auditif-gratuit"
-                  />
-                </div>
-              </div>
-
-              {/* Colonne droite - Prévisualisation */}
+            <div className="space-y-4">
               <div>
-                <h3 className="font-semibold mb-3">📋 Prévisualisation</h3>
-                <div className="border-2 border-gray-300 rounded-lg p-4 bg-gray-50">
-                  {/* Card Preview */}
-                  <div className="bg-white rounded-2xl shadow-md overflow-hidden">
-                    <div className="relative h-48 overflow-hidden bg-gradient-to-br from-blue-100 to-blue-50">
-                      <img
-                        src={editingCard.imageUrl}
-                        alt={editingCard.imageAlt || 'Preview'}
-                        className="w-full h-full object-cover"
-                        style={{ objectPosition: editingCard.imagePosition }}
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold mb-2">
-                        {editingCard.title || 'Titre de la card'}
-                      </h3>
-                      <p className="text-gray-600">
-                        {editingCard.description || 'Description de la card'}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 text-xs text-gray-600 space-y-1">
-                    <p><strong>Lien :</strong> {editingCard.href || 'Aucun'}</p>
-                    <p><strong>Position :</strong> {editingCard.imagePosition}</p>
-                  </div>
-                </div>
+                <label className="block font-semibold mb-2">URL de l'image</label>
+                <input
+                  type="text"
+                  value={editingCard.imageUrl}
+                  onChange={(e) => setEditingCard({ ...editingCard, imageUrl: e.target.value })}
+                  className="w-full border border-gray-300 rounded px-4 py-2"
+                  placeholder="/images/mon-image.jpg"
+                />
               </div>
-            </div>
 
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => saveCard(editingCard)}
-                disabled={saving}
-                className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 disabled:opacity-50 font-semibold"
-              >
-                {saving ? 'Sauvegarde...' : '💾 Sauvegarder'}
-              </button>
-              <button
-                onClick={() => setEditingCard(null)}
-                className="bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 font-semibold"
-              >
-                Annuler
-              </button>
+              <div>
+                <label className="block font-semibold mb-2">Position de l'image</label>
+                <input
+                  type="text"
+                  value={editingCard.imagePosition}
+                  onChange={(e) => setEditingCard({ ...editingCard, imagePosition: e.target.value })}
+                  className="w-full border border-gray-300 rounded px-4 py-2"
+                  placeholder="center center"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Ex: "center center", "center 35%", "center 60%"
+                </p>
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-2">Titre</label>
+                <input
+                  type="text"
+                  value={editingCard.title || ''}
+                  onChange={(e) => setEditingCard({ ...editingCard, title: e.target.value })}
+                  className="w-full border border-gray-300 rounded px-4 py-2"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-2">Description</label>
+                <textarea
+                  value={editingCard.description || ''}
+                  onChange={(e) => setEditingCard({ ...editingCard, description: e.target.value })}
+                  className="w-full border border-gray-300 rounded px-4 py-2"
+                  rows={3}
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-2">Lien (href)</label>
+                <input
+                  type="text"
+                  value={editingCard.href || ''}
+                  onChange={(e) => setEditingCard({ ...editingCard, href: e.target.value })}
+                  className="w-full border border-gray-300 rounded px-4 py-2"
+                  placeholder="/page-destination"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-2">Texte alternatif (alt)</label>
+                <input
+                  type="text"
+                  value={editingCard.imageAlt || ''}
+                  onChange={(e) => setEditingCard({ ...editingCard, imageAlt: e.target.value })}
+                  className="w-full border border-gray-300 rounded px-4 py-2"
+                />
+              </div>
+
+              <div className="flex gap-4 mt-6">
+                <button
+                  onClick={() => saveCard(editingCard)}
+                  disabled={saving}
+                  className="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark disabled:opacity-50"
+                >
+                  {saving ? 'Sauvegarde...' : '💾 Sauvegarder'}
+                </button>
+                <button
+                  onClick={() => setEditingCard(null)}
+                  className="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300"
+                >
+                  Annuler
+                </button>
+              </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

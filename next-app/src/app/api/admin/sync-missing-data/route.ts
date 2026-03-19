@@ -43,7 +43,12 @@ export async function POST() {
     for (const cardData of defaultCardImages) {
       try {
         const existing = await prisma.cardImage.findUnique({
-          where: { cardKey: cardData.cardKey },
+          where: {
+            pageKey_cardKey: {
+              pageKey: (cardData as any).pageKey || 'home',
+              cardKey: cardData.cardKey,
+            }
+          },
         });
 
         if (!existing) {

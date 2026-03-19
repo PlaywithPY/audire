@@ -26,17 +26,18 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { cardKey, imageUrl, fallbackEmoji, imagePosition, href, title, description, imageAlt } = body;
+    const { pageKey, cardKey, imageUrl, fallbackEmoji, imagePosition, href, title, description, imageAlt } = body;
 
-    if (!cardKey || !imageUrl) {
+    if (!pageKey || !cardKey || !imageUrl) {
       return NextResponse.json(
-        { error: 'cardKey et imageUrl sont requis' },
+        { error: 'pageKey, cardKey et imageUrl sont requis' },
         { status: 400 }
       );
     }
 
     const cardImage = await prisma.cardImage.create({
       data: {
+        pageKey,
         cardKey,
         imageUrl,
         fallbackEmoji: fallbackEmoji || '📷',
@@ -63,7 +64,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, imageUrl, fallbackEmoji, imagePosition, href, title, description, imageAlt } = body;
+    const { id, pageKey, imageUrl, fallbackEmoji, imagePosition, href, title, description, imageAlt } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'id requis' }, { status: 400 });
@@ -72,6 +73,7 @@ export async function PUT(request: NextRequest) {
     const cardImage = await prisma.cardImage.update({
       where: { id },
       data: {
+        ...(pageKey !== undefined && { pageKey }),
         ...(imageUrl !== undefined && { imageUrl }),
         ...(fallbackEmoji !== undefined && { fallbackEmoji }),
         ...(imagePosition !== undefined && { imagePosition }),
