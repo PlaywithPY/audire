@@ -1,13 +1,19 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ImageFeatureCard from "@/components/ImageFeatureCard";
 import { Metadata } from "next";
+import { getFeatureCards } from "@/lib/card-helpers";
 
 export const metadata: Metadata = {
   title: "Partenaires pharmaciens — Audire",
   description: "Vous êtes pharmacien ? Découvrez notre partenariat et comment orienter vos patients vers Audire.",
 };
 
-export default function PartenairesPharmaciens() {
+// Revalider la page toutes les 60 secondes (ISR)
+export const revalidate = 60;
+
+export default async function PartenairesPharmaciens() {
+  const featureCards = await getFeatureCards('partenaires-pharmaciens');
   return (
     <>
       <Header />
@@ -44,43 +50,17 @@ export default function PartenairesPharmaciens() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {[
-                {
-                  icon: '🏆',
-                  title: 'Expertise reconnue',
-                  desc: 'Solutions Oticon et Bernafon, deux marques de référence mondiale en audiologie.'
-                },
-                {
-                  icon: '💙',
-                  title: 'Accompagnement humain',
-                  desc: 'Prise en charge personnalisée et suivi régulier de vos patients.'
-                },
-                {
-                  icon: '⚡',
-                  title: 'Réactivité',
-                  desc: 'Prise de rendez-vous rapide et disponibilité pour les urgences.'
-                },
-                {
-                  icon: '💎',
-                  title: 'Transparence',
-                  desc: 'Prix clairs et explications détaillées des remboursements INAMI.'
-                },
-                {
-                  icon: '🎯',
-                  title: 'Indépendance',
-                  desc: 'Centre indépendant sans objectifs de vente, focus sur le bien-être du patient.'
-                },
-                {
-                  icon: '🤝',
-                  title: 'Retour d\'information',
-                  desc: 'Nous vous tenons informé du suivi de vos patients (avec leur accord).'
-                },
-              ].map((item) => (
-                <div key={item.title} className="bg-bg p-6 rounded-2xl hover:shadow-lg transition-all">
-                  <div className="text-4xl mb-4">{item.icon}</div>
-                  <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                  <p className="text-text-light">{item.desc}</p>
-                </div>
+              {featureCards.map((card) => (
+                <ImageFeatureCard
+                  key={card.cardKey}
+                  imageSrc={card.imageSrc}
+                  title={card.title}
+                  description={card.description}
+                  imageAlt={card.imageAlt}
+                  href={card.href}
+                  imagePosition={card.imagePosition}
+                  fallbackEmoji={card.fallbackEmoji}
+                />
               ))}
             </div>
           </div>

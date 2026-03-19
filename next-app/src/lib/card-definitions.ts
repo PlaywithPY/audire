@@ -16,11 +16,11 @@ export interface PageCardsDefinition {
   groups?: CardGroup[]; // Cards organisées par sections (optionnel)
 }
 
-// Définitions des cards par page
+// Définitions des cards par page (dans l'ordre du menu site)
 export const PAGE_CARDS: PageCardsDefinition[] = [
   {
     pageKey: 'home',
-    pageLabel: 'Page d\'accueil',
+    pageLabel: 'Accueil',
     cards: [
       {
         cardKey: 'hearing-test',
@@ -632,6 +632,61 @@ export const PAGE_CARDS: PageCardsDefinition[] = [
       },
     ],
   },
+  {
+    pageKey: 'test-auditif-gratuit',
+    pageLabel: 'Test gratuit',
+    cards: [
+      {
+        cardKey: 'test-signs',
+        imageSrc: '/images/test-signs.jpg',
+        title: 'Les signes qui doivent alerter',
+        description: 'Vous faites souvent répéter, vous augmentez le volume de la TV, vous avez du mal à suivre les conversations dans le bruit.',
+        imageAlt: 'Signes de perte auditive',
+        href: '#',
+        imagePosition: 'center center',
+        fallbackEmoji: '🔍',
+      },
+      {
+        cardKey: 'test-benefits',
+        imageSrc: '/images/test-benefits.jpg',
+        title: 'Les bénéfices d\'un dépistage précoce',
+        description: 'Meilleure qualité de vie, relations sociales préservées, moins de fatigue au quotidien.',
+        imageAlt: 'Bénéfices du dépistage',
+        href: '#',
+        imagePosition: 'center center',
+        fallbackEmoji: '✨',
+      },
+    ],
+    groups: [
+      {
+        groupKey: 'why-test',
+        groupLabel: 'Pourquoi faire un test auditif ?',
+        layout: 'grid-2',
+        cards: [
+          {
+            cardKey: 'test-signs',
+            imageSrc: '/images/test-signs.jpg',
+            title: 'Les signes qui doivent alerter',
+            description: 'Vous faites souvent répéter, vous augmentez le volume de la TV, vous avez du mal à suivre les conversations dans le bruit.',
+            imageAlt: 'Signes de perte auditive',
+            href: '#',
+            imagePosition: 'center center',
+            fallbackEmoji: '🔍',
+          },
+          {
+            cardKey: 'test-benefits',
+            imageSrc: '/images/test-benefits.jpg',
+            title: 'Les bénéfices d\'un dépistage précoce',
+            description: 'Meilleure qualité de vie, relations sociales préservées, moins de fatigue au quotidien.',
+            imageAlt: 'Bénéfices du dépistage',
+            href: '#',
+            imagePosition: 'center center',
+            fallbackEmoji: '✨',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 // Helper pour récupérer les cards d'une page spécifique
@@ -640,7 +695,10 @@ export function getDefaultCardsForPage(pageKey: string): CardData[] {
   return pageDef?.cards || [];
 }
 
-// Helper pour récupérer toutes les pages avec leurs cards
+// Helper pour récupérer toutes les pages avec leurs cards (dans l'ordre du menu)
 export function getAllPages(): PageCardsDefinition[] {
-  return PAGE_CARDS;
+  const pageOrder = ['home', 'solutions-auditives', 'notre-accompagnement', 'partenaires-pharmaciens', 'test-auditif-gratuit'];
+  return pageOrder
+    .map(key => PAGE_CARDS.find(p => p.pageKey === key))
+    .filter((p): p is PageCardsDefinition => p !== undefined);
 }
