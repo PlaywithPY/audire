@@ -2,7 +2,9 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useState } from "react";
+import ImageFeatureCard from "@/components/ImageFeatureCard";
+import { useState, useEffect } from "react";
+import { CardData } from "@/lib/card-helpers";
 
 interface SolutionData {
   id: string;
@@ -17,26 +19,47 @@ interface SolutionData {
 
 interface SolutionCardProps {
   solution: SolutionData;
+  cardData?: CardData;
   onToggle: () => void;
   isActive: boolean;
 }
 
-function SolutionCard({ solution, onToggle, isActive }: SolutionCardProps) {
+function SolutionCard({ solution, cardData, onToggle, isActive }: SolutionCardProps) {
   return (
     <button
       onClick={onToggle}
-      className={`bg-white rounded-2xl shadow-md p-8 text-left hover:shadow-xl transition-all duration-300 ${
+      className={`bg-white rounded-2xl shadow-md overflow-hidden text-left hover:shadow-xl transition-all duration-300 ${
         isActive ? 'ring-2 ring-primary shadow-xl' : ''
       }`}
     >
-      <div className="text-5xl mb-4 animate-float text-center">{solution.icon}</div>
-      <h3 className="text-2xl font-bold mb-4">{solution.title}</h3>
-      <p className="text-text-light mb-4">{solution.shortDesc}</p>
-      <div className="flex items-center gap-2 text-primary font-semibold">
-        <span className="transition-transform duration-300" style={{ transform: isActive ? 'rotate(90deg)' : 'rotate(0deg)' }}>
-          ▶
-        </span>
-        <span>{isActive ? 'Voir moins' : 'En savoir plus'}</span>
+      {/* Image dynamique ou emoji */}
+      {cardData?.imageSrc ? (
+        <div className="h-48 bg-gray-100 overflow-hidden">
+          <img
+            src={cardData.imageSrc}
+            alt={cardData.imageAlt || solution.title}
+            className="w-full h-full object-cover"
+            style={{ objectPosition: cardData.imagePosition }}
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
+          />
+        </div>
+      ) : (
+        <div className="h-48 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary-light/10">
+          <div className="text-7xl animate-float">{solution.icon}</div>
+        </div>
+      )}
+
+      <div className="p-8">
+        <h3 className="text-2xl font-bold mb-4">{cardData?.title || solution.title}</h3>
+        <p className="text-text-light mb-4">{cardData?.description || solution.shortDesc}</p>
+        <div className="flex items-center gap-2 text-primary font-semibold">
+          <span className="transition-transform duration-300" style={{ transform: isActive ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+            ▶
+          </span>
+          <span>{isActive ? 'Voir moins' : 'En savoir plus'}</span>
+        </div>
       </div>
     </button>
   );
@@ -108,6 +131,96 @@ function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
 
 export default function SolutionsAuditives() {
   const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [brandCards, setBrandCards] = useState<CardData[]>([]);
+  const [typeCards, setTypeCards] = useState<CardData[]>([]);
+
+  // Charger les cards depuis l'API
+  useEffect(() => {
+    async function loadCards() {
+      try {
+        const res = await fetch('/api/card-images?pageKey=solutions-auditives');
+        if (res.ok) {
+          const allCards = await res.json();
+
+          // Séparer les cards par type
+          const brands = allCards.filter((c: any) => ['solution-oticon', 'solution-bernafon'].includes(c.cardKey));
+          const types = allCards.filter((c: any) => ['solution-contour', 'solution-intra', 'solution-intent'].includes(c.cardKey));
+
+          setBrandCards(brands.length > 0 ? brands : getDefaultBrands());
+          setTypeCards(types.length > 0 ? types : getDefaultTypes());
+        } else {
+          // Utiliser les valeurs par défaut
+          setBrandCards(getDefaultBrands());
+          setTypeCards(getDefaultTypes());
+        }
+      } catch (error) {
+        console.error('Error loading cards:', error);
+        setBrandCards(getDefaultBrands());
+        setTypeCards(getDefaultTypes());
+      }
+    }
+    loadCards();
+  }, []);
+
+  function getDefaultBrands(): CardData[] {
+    return [
+      {
+        cardKey: 'solution-oticon',
+        imageSrc: '/images/solution-oticon.jpg',
+        title: 'Oticon',
+        description: 'Technologie BrainHearing™, connexion Bluetooth, design discret, batterie rechargeable.',
+        imageAlt: 'Marque Oticon',
+        href: '#',
+        imagePosition: 'center center',
+        fallbackEmoji: '🔵',
+      },
+      {
+        cardKey: 'solution-bernafon',
+        imageSrc: '/images/solution-bernafon.jpg',
+        title: 'Bernafon',
+        description: 'Excellent rapport qualité/prix, facilité d\'utilisation, confort toute la journée.',
+        imageAlt: 'Marque Bernafon',
+        href: '#',
+        imagePosition: 'center center',
+        fallbackEmoji: '🟢',
+      },
+    ];
+  }
+
+  function getDefaultTypes(): CardData[] {
+    return [
+      {
+        cardKey: 'solution-contour',
+        imageSrc: '/images/solution-contour.jpg',
+        title: 'Le contour d\'oreille',
+        description: 'Modèle polyvalent et simple d\'utilisation',
+        imageAlt: 'Contour d\'oreille',
+        href: '#',
+        imagePosition: 'center center',
+        fallbackEmoji: '🎧',
+      },
+      {
+        cardKey: 'solution-intra',
+        imageSrc: '/images/solution-intra.jpg',
+        title: 'L\'intra-auriculaire',
+        description: 'Discrétion maximale',
+        imageAlt: 'Intra-auriculaire',
+        href: '#',
+        imagePosition: 'center center',
+        fallbackEmoji: '👁️',
+      },
+      {
+        cardKey: 'solution-intent',
+        imageSrc: '/images/solution-intent.jpg',
+        title: 'Oticon Intent',
+        description: 'Adaptation automatique',
+        imageAlt: 'Oticon Intent',
+        href: '#',
+        imagePosition: 'center center',
+        fallbackEmoji: '⭐',
+      },
+    ];
+  }
 
   const solutions: SolutionData[] = [
     {
@@ -211,34 +324,18 @@ export default function SolutionsAuditives() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-              <div className="bg-bg p-8 rounded-2xl">
-                <h3 className="text-2xl font-bold mb-4 text-primary">🔵 Oticon</h3>
-                <p className="text-text-light mb-4">
-                  Oticon est une marque danoise reconnue pour son innovation technologique.
-                  Leurs appareils sont conçus pour vous aider à entendre de manière naturelle,
-                  même dans les environnements bruyants.
-                </p>
-                <ul className="space-y-2 text-text-light">
-                  <li>✅ Technologie BrainHearing™</li>
-                  <li>✅ Connexion Bluetooth</li>
-                  <li>✅ Design discret</li>
-                  <li>✅ Batterie rechargeable</li>
-                </ul>
-              </div>
-
-              <div className="bg-bg p-8 rounded-2xl">
-                <h3 className="text-2xl font-bold mb-4 text-primary">🟢 Bernafon</h3>
-                <p className="text-text-light mb-4">
-                  Bernafon propose des solutions auditives fiables et abordables,
-                  avec une attention particulière portée au confort et à la simplicité d'utilisation.
-                </p>
-                <ul className="space-y-2 text-text-light">
-                  <li>✅ Excellent rapport qualité/prix</li>
-                  <li>✅ Facilité d'utilisation</li>
-                  <li>✅ Confort toute la journée</li>
-                  <li>✅ Service fiable</li>
-                </ul>
-              </div>
+              {brandCards.map((card) => (
+                <ImageFeatureCard
+                  key={card.cardKey}
+                  imageSrc={card.imageSrc}
+                  title={card.title}
+                  description={card.description}
+                  imageAlt={card.imageAlt}
+                  href={card.href}
+                  imagePosition={card.imagePosition}
+                  fallbackEmoji={card.fallbackEmoji}
+                />
+              ))}
             </div>
           </div>
         </section>
@@ -256,14 +353,19 @@ export default function SolutionsAuditives() {
             <div className="max-w-7xl mx-auto">
               {/* Cartes des solutions - Grid 3 colonnes */}
               <div className="grid md:grid-cols-3 gap-8 mb-4">
-                {solutions.map((solution) => (
-                  <SolutionCard
-                    key={solution.id}
-                    solution={solution}
-                    onToggle={() => handleToggle(solution.id)}
-                    isActive={activeTab === solution.id}
-                  />
-                ))}
+                {solutions.map((solution) => {
+                  // Trouver la card correspondante pour l'image
+                  const cardData = typeCards.find(c => c.cardKey === `solution-${solution.id}`);
+                  return (
+                    <SolutionCard
+                      key={solution.id}
+                      solution={solution}
+                      cardData={cardData}
+                      onToggle={() => handleToggle(solution.id)}
+                      isActive={activeTab === solution.id}
+                    />
+                  );
+                })}
               </div>
 
               {/* Panneau détaillé - PLEINE LARGEUR en dessous */}
