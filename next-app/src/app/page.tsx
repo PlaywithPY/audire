@@ -99,6 +99,7 @@ export default function Home() {
               imageAlt="Test auditif avec casque professionnel"
               href="/test-auditif-gratuit"
               imagePosition="center 35%"
+              fallbackEmoji="👂"
             />
             <ImageFeatureCard
               imageSrc="/images/human-support.jpg"
@@ -106,6 +107,7 @@ export default function Home() {
               description="Pas de jargon technique, pas de pression commerciale."
               imageAlt="Accompagnement personnalisé et humain"
               href="/notre-accompagnement"
+              fallbackEmoji="💬"
             />
             <ImageFeatureCard
               imageSrc="/images/personalized-follow-up.jpg"
@@ -113,6 +115,7 @@ export default function Home() {
               description="Réglages progressifs, adaptations, suivi régulier."
               imageAlt="Suivi personnalisé de votre appareil auditif"
               href="/notre-accompagnement"
+              fallbackEmoji="🔧"
             />
             <ImageFeatureCard
               imageSrc="/images/quality-solutions.jpg"
@@ -120,6 +123,7 @@ export default function Home() {
               description="Oticon et Bernafon, deux marques reconnues."
               imageAlt="Appareils auditifs de qualité"
               href="/solutions-auditives"
+              fallbackEmoji="🏆"
             />
             <ImageFeatureCard
               imageSrc="/images/independent-center.jpg"
@@ -127,6 +131,7 @@ export default function Home() {
               description="Pas d'objectifs de vente, pas de réseau à satisfaire."
               imageAlt="Centre auditif indépendant"
               href="/notre-accompagnement"
+              fallbackEmoji="🎯"
             />
             <ImageFeatureCard
               imageSrc="/images/price-transparency.jpg"
@@ -134,6 +139,7 @@ export default function Home() {
               description="Prix clairs, remboursements expliqués."
               imageAlt="Transparence des prix et remboursements"
               href="/remboursements"
+              fallbackEmoji="💰"
             />
           </div>
         </div>
