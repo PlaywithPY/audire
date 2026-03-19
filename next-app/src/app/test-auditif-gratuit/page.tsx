@@ -1,13 +1,19 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ImageFeatureCard from "@/components/ImageFeatureCard";
 import { Metadata } from "next";
+import { getFeatureCards } from "@/lib/card-helpers";
 
 export const metadata: Metadata = {
   title: "Test auditif gratuit — Audire",
   description: "Réservez votre test auditif gratuit et sans engagement chez Audire. 30 minutes pour comprendre votre audition.",
 };
 
-export default function TestAuditifGratuit() {
+// Revalider la page toutes les 60 secondes (ISR)
+export const revalidate = 60;
+
+export default async function TestAuditifGratuit() {
+  const featureCards = await getFeatureCards('test-auditif-gratuit');
   return (
     <>
       <Header />
@@ -51,57 +57,18 @@ export default function TestAuditifGratuit() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-              <div className="bg-bg p-8 rounded-2xl">
-                <h3 className="text-2xl font-bold mb-4">🔍 Les signes qui doivent alerter</h3>
-                <ul className="space-y-3 text-text-light">
-                  <li className="flex items-start gap-3">
-                    <span className="text-primary font-bold">→</span>
-                    <span>Vous faites souvent répéter</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-primary font-bold">→</span>
-                    <span>Vous augmentez le volume de la TV</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-primary font-bold">→</span>
-                    <span>Vous avez du mal à suivre les conversations dans le bruit</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-primary font-bold">→</span>
-                    <span>Vous vous sentez fatigué après une conversation</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-primary font-bold">→</span>
-                    <span>Votre entourage vous fait remarquer que vous n'entendez pas bien</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-bg p-8 rounded-2xl">
-                <h3 className="text-2xl font-bold mb-4">✨ Les bénéfices d'un dépistage précoce</h3>
-                <ul className="space-y-3 text-text-light">
-                  <li className="flex items-start gap-3">
-                    <span className="text-primary font-bold">→</span>
-                    <span>Meilleure qualité de vie</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-primary font-bold">→</span>
-                    <span>Relations sociales préservées</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-primary font-bold">→</span>
-                    <span>Moins de fatigue au quotidien</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-primary font-bold">→</span>
-                    <span>Adaptation plus facile aux appareils</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-primary font-bold">→</span>
-                    <span>Prévention du déclin cognitif</span>
-                  </li>
-                </ul>
-              </div>
+              {featureCards.map((card) => (
+                <ImageFeatureCard
+                  key={card.cardKey}
+                  imageSrc={card.imageSrc}
+                  title={card.title}
+                  description={card.description}
+                  imageAlt={card.imageAlt}
+                  href={card.href}
+                  imagePosition={card.imagePosition}
+                  fallbackEmoji={card.fallbackEmoji}
+                />
+              ))}
             </div>
           </div>
         </section>
