@@ -5,12 +5,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 interface ImageFeatureCardProps {
-  imageSrc: string;
+  imageSrc?: string;
   title: string;
   description: string;
   imageAlt?: string;
   href?: string;
   imagePosition?: string; // e.g., "center 30%", "center top", etc.
+  fallbackEmoji?: string; // Emoji à afficher si pas d'image
 }
 
 export default function ImageFeatureCard({
@@ -19,11 +20,16 @@ export default function ImageFeatureCard({
   description,
   imageAlt = 'Feature image',
   href,
-  imagePosition = 'center 35%' // Décentré vers le bas par défaut
+  imagePosition = 'center 35%', // Décentré vers le bas par défaut
+  fallbackEmoji = '📷'
 }: ImageFeatureCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  // Déterminer si on doit afficher l'emoji
+  const shouldShowEmoji = !imageSrc || imageError;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,23 +61,34 @@ export default function ImageFeatureCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Container pour l'image avec effet parallax */}
+      {/* Container pour l'image/emoji avec effet parallax */}
       <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary/20 to-primary-light/20">
-        <div
-          ref={imageRef}
-          className="absolute inset-0 transition-transform duration-500 ease-out"
-        >
-          <Image
-            src={imageSrc}
-            alt={imageAlt}
-            fill
-            className="object-cover"
-            style={{ objectPosition: imagePosition }}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        </div>
-        {/* Overlay léger pour améliorer la lisibilité */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+        {shouldShowEmoji ? (
+          /* Affichage de l'emoji (fallback) */
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-6xl animate-float">{fallbackEmoji}</span>
+          </div>
+        ) : (
+          /* Affichage de l'image avec parallax */
+          <>
+            <div
+              ref={imageRef}
+              className="absolute inset-0 transition-transform duration-500 ease-out"
+            >
+              <Image
+                src={imageSrc!}
+                alt={imageAlt}
+                fill
+                className="object-cover"
+                style={{ objectPosition: imagePosition }}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                onError={() => setImageError(true)}
+              />
+            </div>
+            {/* Overlay léger pour améliorer la lisibilité */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+          </>
+        )}
       </div>
 
       {/* Contenu de la card */}
