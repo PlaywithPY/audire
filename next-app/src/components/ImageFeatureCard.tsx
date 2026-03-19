@@ -2,19 +2,24 @@
 
 import { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface ImageFeatureCardProps {
   imageSrc: string;
   title: string;
   description: string;
   imageAlt?: string;
+  href?: string;
+  imagePosition?: string; // e.g., "center 30%", "center top", etc.
 }
 
 export default function ImageFeatureCard({
   imageSrc,
   title,
   description,
-  imageAlt = 'Feature image'
+  imageAlt = 'Feature image',
+  href,
+  imagePosition = 'center 35%' // Décentré vers le bas par défaut
 }: ImageFeatureCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -43,10 +48,10 @@ export default function ImageFeatureCard({
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isHovered]);
 
-  return (
+  const CardContent = () => (
     <div
       ref={cardRef}
-      className="bg-bg rounded-2xl shadow-md overflow-hidden group cursor-pointer transition-shadow hover:shadow-xl"
+      className="bg-bg rounded-2xl shadow-md overflow-hidden group cursor-pointer transition-shadow hover:shadow-xl h-full"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -61,6 +66,7 @@ export default function ImageFeatureCard({
             alt={imageAlt}
             fill
             className="object-cover"
+            style={{ objectPosition: imagePosition }}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
@@ -79,4 +85,14 @@ export default function ImageFeatureCard({
       </div>
     </div>
   );
+
+  if (href) {
+    return (
+      <Link href={href} className="block h-full">
+        <CardContent />
+      </Link>
+    );
+  }
+
+  return <CardContent />;
 }

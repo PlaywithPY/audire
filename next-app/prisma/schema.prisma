@@ -71,11 +71,16 @@ model ThemeColors {
 
 // Images pour les cards (remplace les émojis)
 model CardImage {
-  id          Int      @id @default(autoincrement())
-  cardKey     String   @unique // Identifiant unique de la card (ex: "solutions-oticon")
-  imageUrl    String   // URL de l'image
-  fallbackEmoji String @default("📷") // Emoji de fallback
-  updatedAt   DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  cardKey       String   @unique // Identifiant unique de la card (ex: "solutions-oticon")
+  imageUrl      String   // URL de l'image
+  fallbackEmoji String   @default("📷") // Emoji de fallback
+  imagePosition String   @default("center center") // Position de l'image (object-position CSS)
+  href          String?  // Lien vers une page
+  title         String?  // Titre de la card
+  description   String?  @db.Text // Description de la card
+  imageAlt      String?  // Texte alternatif pour l'image
+  updatedAt     DateTime @updatedAt
 }
 
 // Sections avec images de fond
