@@ -35,35 +35,45 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Utiliser upsert pour créer ou mettre à jour
-    const cardImage = await prisma.cardImage.upsert({
+    // Vérifier si la card existe déjà
+    const existing = await prisma.cardImage.findFirst({
       where: {
-        pageKey_cardKey: {
-          pageKey,
-          cardKey,
-        },
-      },
-      update: {
-        imageUrl,
-        fallbackEmoji: fallbackEmoji || '📷',
-        imagePosition: imagePosition || 'center center',
-        href,
-        title,
-        description,
-        imageAlt,
-      },
-      create: {
         pageKey,
         cardKey,
-        imageUrl,
-        fallbackEmoji: fallbackEmoji || '📷',
-        imagePosition: imagePosition || 'center center',
-        href,
-        title,
-        description,
-        imageAlt,
       },
     });
+
+    let cardImage;
+    if (existing) {
+      // Mettre à jour
+      cardImage = await prisma.cardImage.update({
+        where: { id: existing.id },
+        data: {
+          imageUrl,
+          fallbackEmoji: fallbackEmoji || '📷',
+          imagePosition: imagePosition || 'center center',
+          href,
+          title,
+          description,
+          imageAlt,
+        },
+      });
+    } else {
+      // Créer
+      cardImage = await prisma.cardImage.create({
+        data: {
+          pageKey,
+          cardKey,
+          imageUrl,
+          fallbackEmoji: fallbackEmoji || '📷',
+          imagePosition: imagePosition || 'center center',
+          href,
+          title,
+          description,
+          imageAlt,
+        },
+      });
+    }
 
     revalidatePath('/', 'layout');
     return NextResponse.json(cardImage);
