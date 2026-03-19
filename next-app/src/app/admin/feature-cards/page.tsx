@@ -357,101 +357,166 @@ CREATE INDEX IF NOT EXISTS "CardImage_pageKey_idx" ON "CardImage"("pageKey");`}
       {/* Modal d'édition */}
       {editingCard && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg p-8 max-w-6xl w-full max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold mb-6">✏️ Modifier la card</h2>
 
-            <div className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Colonne gauche : Prévisualisation */}
               <div>
-                <label className="block font-semibold mb-2">URL de l'image</label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={editingCard.imageUrl}
-                    onChange={(e) => setEditingCard({ ...editingCard, imageUrl: e.target.value })}
-                    className="flex-1 border border-gray-300 rounded px-4 py-2"
-                    placeholder="/images/mon-image.jpg"
-                  />
-                  <button
-                    onClick={() => {
-                      setUploadingForCard(editingCard);
-                      setUploadModalOpen(true);
-                    }}
-                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                  >
-                    📸 Upload
-                  </button>
+                <h3 className="font-bold text-lg mb-3">👁️ Prévisualisation</h3>
+                <div className="bg-gray-100 rounded-lg p-4">
+                  <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                    {/* Image avec le centrage réel */}
+                    <div className="h-48 bg-gray-200 overflow-hidden">
+                      <img
+                        src={editingCard.imageUrl}
+                        alt={editingCard.imageAlt || editingCard.title || 'Preview'}
+                        className="w-full h-full object-cover"
+                        style={{ objectPosition: editingCard.imagePosition }}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    </div>
+                    {/* Contenu de la card */}
+                    <div className="p-6">
+                      <h4 className="font-bold text-xl mb-2">{editingCard.title || 'Titre'}</h4>
+                      <p className="text-gray-600 text-sm">{editingCard.description || 'Description'}</p>
+                    </div>
+                  </div>
+
+                  {/* Info sur la position */}
+                  <div className="mt-4 bg-blue-50 border border-blue-200 rounded p-3 text-sm">
+                    <p className="font-semibold mb-1">💡 Position actuelle :</p>
+                    <code className="text-xs bg-white px-2 py-1 rounded">{editingCard.imagePosition}</code>
+                    <p className="text-xs text-gray-600 mt-2">
+                      Modifiez la position à droite pour voir le changement en temps réel
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <label className="block font-semibold mb-2">Position de l'image</label>
-                <input
-                  type="text"
-                  value={editingCard.imagePosition}
-                  onChange={(e) => setEditingCard({ ...editingCard, imagePosition: e.target.value })}
-                  className="w-full border border-gray-300 rounded px-4 py-2"
-                  placeholder="center center"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Ex: "center center", "center 35%", "center 60%"
-                </p>
-              </div>
+              {/* Colonne droite : Formulaire */}
+              <div className="space-y-4">
+                <div>
+                  <label className="block font-semibold mb-2">URL de l'image</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={editingCard.imageUrl}
+                      onChange={(e) => setEditingCard({ ...editingCard, imageUrl: e.target.value })}
+                      className="flex-1 border border-gray-300 rounded px-4 py-2"
+                      placeholder="/images/mon-image.jpg"
+                    />
+                    <button
+                      onClick={() => {
+                        setUploadingForCard(editingCard);
+                        setUploadModalOpen(true);
+                      }}
+                      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                    >
+                      📸
+                    </button>
+                  </div>
+                </div>
 
-              <div>
-                <label className="block font-semibold mb-2">Titre</label>
-                <input
-                  type="text"
-                  value={editingCard.title || ''}
-                  onChange={(e) => setEditingCard({ ...editingCard, title: e.target.value })}
-                  className="w-full border border-gray-300 rounded px-4 py-2"
-                />
-              </div>
+                <div>
+                  <label className="block font-semibold mb-2">Position de l'image</label>
+                  <input
+                    type="text"
+                    value={editingCard.imagePosition}
+                    onChange={(e) => setEditingCard({ ...editingCard, imagePosition: e.target.value })}
+                    className="w-full border border-gray-300 rounded px-4 py-2"
+                    placeholder="center center"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Ex: "center center", "center 35%", "center 60%", "left center", "right center"
+                  </p>
+                  {/* Boutons rapides */}
+                  <div className="flex gap-2 mt-2 flex-wrap">
+                    <button
+                      onClick={() => setEditingCard({ ...editingCard, imagePosition: 'center center' })}
+                      className="text-xs bg-gray-200 px-3 py-1 rounded hover:bg-gray-300"
+                    >
+                      center center
+                    </button>
+                    <button
+                      onClick={() => setEditingCard({ ...editingCard, imagePosition: 'center 35%' })}
+                      className="text-xs bg-gray-200 px-3 py-1 rounded hover:bg-gray-300"
+                    >
+                      center 35%
+                    </button>
+                    <button
+                      onClick={() => setEditingCard({ ...editingCard, imagePosition: 'center 60%' })}
+                      className="text-xs bg-gray-200 px-3 py-1 rounded hover:bg-gray-300"
+                    >
+                      center 60%
+                    </button>
+                    <button
+                      onClick={() => setEditingCard({ ...editingCard, imagePosition: 'center top' })}
+                      className="text-xs bg-gray-200 px-3 py-1 rounded hover:bg-gray-300"
+                    >
+                      center top
+                    </button>
+                  </div>
+                </div>
 
-              <div>
-                <label className="block font-semibold mb-2">Description</label>
-                <textarea
-                  value={editingCard.description || ''}
-                  onChange={(e) => setEditingCard({ ...editingCard, description: e.target.value })}
-                  className="w-full border border-gray-300 rounded px-4 py-2"
-                  rows={3}
-                />
-              </div>
+                <div>
+                  <label className="block font-semibold mb-2">Titre</label>
+                  <input
+                    type="text"
+                    value={editingCard.title || ''}
+                    onChange={(e) => setEditingCard({ ...editingCard, title: e.target.value })}
+                    className="w-full border border-gray-300 rounded px-4 py-2"
+                  />
+                </div>
 
-              <div>
-                <label className="block font-semibold mb-2">Lien (href)</label>
-                <input
-                  type="text"
-                  value={editingCard.href || ''}
-                  onChange={(e) => setEditingCard({ ...editingCard, href: e.target.value })}
-                  className="w-full border border-gray-300 rounded px-4 py-2"
-                  placeholder="/page-destination"
-                />
-              </div>
+                <div>
+                  <label className="block font-semibold mb-2">Description</label>
+                  <textarea
+                    value={editingCard.description || ''}
+                    onChange={(e) => setEditingCard({ ...editingCard, description: e.target.value })}
+                    className="w-full border border-gray-300 rounded px-4 py-2"
+                    rows={3}
+                  />
+                </div>
 
-              <div>
-                <label className="block font-semibold mb-2">Texte alternatif (alt)</label>
-                <input
-                  type="text"
-                  value={editingCard.imageAlt || ''}
-                  onChange={(e) => setEditingCard({ ...editingCard, imageAlt: e.target.value })}
-                  className="w-full border border-gray-300 rounded px-4 py-2"
-                />
-              </div>
+                <div>
+                  <label className="block font-semibold mb-2">Lien (href)</label>
+                  <input
+                    type="text"
+                    value={editingCard.href || ''}
+                    onChange={(e) => setEditingCard({ ...editingCard, href: e.target.value })}
+                    className="w-full border border-gray-300 rounded px-4 py-2"
+                    placeholder="/page-destination"
+                  />
+                </div>
 
-              <div className="flex gap-4 mt-6">
-                <button
-                  onClick={() => saveCard(editingCard)}
-                  disabled={saving}
-                  className="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark disabled:opacity-50"
-                >
-                  {saving ? 'Sauvegarde...' : '💾 Sauvegarder'}
-                </button>
-                <button
-                  onClick={() => setEditingCard(null)}
-                  className="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300"
-                >
-                  Annuler
-                </button>
+                <div>
+                  <label className="block font-semibold mb-2">Texte alternatif (alt)</label>
+                  <input
+                    type="text"
+                    value={editingCard.imageAlt || ''}
+                    onChange={(e) => setEditingCard({ ...editingCard, imageAlt: e.target.value })}
+                    className="w-full border border-gray-300 rounded px-4 py-2"
+                  />
+                </div>
+
+                <div className="flex gap-4 mt-6 pt-4 border-t border-gray-200">
+                  <button
+                    onClick={() => saveCard(editingCard)}
+                    disabled={saving}
+                    className="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark disabled:opacity-50"
+                  >
+                    {saving ? 'Sauvegarde...' : '💾 Sauvegarder'}
+                  </button>
+                  <button
+                    onClick={() => setEditingCard(null)}
+                    className="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300"
+                  >
+                    Annuler
+                  </button>
+                </div>
               </div>
             </div>
           </div>
