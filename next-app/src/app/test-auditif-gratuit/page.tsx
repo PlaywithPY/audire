@@ -13,7 +13,12 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function TestAuditifGratuit() {
-  const featureCards = await getFeatureCards('test-auditif-gratuit');
+  const allCards = await getFeatureCards('test-auditif-gratuit');
+
+  // Séparer les cards en 2 groupes
+  const whyTestCards = allCards.filter(card => ['test-signs', 'test-benefits'].includes(card.cardKey));
+  const stepCards = allCards.filter(card => card.cardKey.startsWith('test-step-'));
+
   return (
     <>
       <Header />
@@ -57,7 +62,7 @@ export default async function TestAuditifGratuit() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-              {featureCards.map((card) => (
+              {whyTestCards.map((card) => (
                 <ImageFeatureCard
                   key={card.cardKey}
                   imageSrc={card.imageSrc}
@@ -84,44 +89,19 @@ export default async function TestAuditifGratuit() {
             </div>
 
             <div className="max-w-4xl mx-auto space-y-6">
-              {[
-                {
-                  step: '1',
-                  title: 'Discussion initiale (5 min)',
-                  desc: 'On échange sur votre quotidien, vos difficultés, vos habitudes de vie.',
-                  icon: '💬'
-                },
-                {
-                  step: '2',
-                  title: 'Examen visuel (5 min)',
-                  desc: 'Vérification de vos conduits auditifs avec un otoscope (sans douleur).',
-                  icon: '👀'
-                },
-                {
-                  step: '3',
-                  title: 'Tests auditifs (15 min)',
-                  desc: 'Vous écoutez différents sons à travers un casque. Aucune préparation nécessaire.',
-                  icon: '🎧'
-                },
-                {
-                  step: '4',
-                  title: 'Résultats et explications (5 min)',
-                  desc: 'On vous explique vos résultats avec des mots simples et on répond à vos questions.',
-                  icon: '📊'
-                },
-              ].map((item) => (
-                <div key={item.step} className="flex gap-6 items-start bg-white p-8 rounded-2xl hover:shadow-lg transition-all">
+              {stepCards.map((card, index) => (
+                <div key={card.cardKey} className="flex gap-6 items-start bg-white p-8 rounded-2xl hover:shadow-lg transition-all">
                   <div className="flex-shrink-0">
                     <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold">
-                      {item.step}
+                      {index + 1}
                     </div>
                   </div>
                   <div className="flex-grow">
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="text-4xl">{item.icon}</span>
-                      <h3 className="text-2xl font-bold">{item.title}</h3>
+                      <span className="text-4xl">{card.fallbackEmoji}</span>
+                      <h3 className="text-2xl font-bold">{card.title}</h3>
                     </div>
-                    <p className="text-text-light text-lg leading-relaxed">{item.desc}</p>
+                    <p className="text-text-light text-lg leading-relaxed">{card.description}</p>
                   </div>
                 </div>
               ))}
