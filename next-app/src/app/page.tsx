@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import FeatureCard from "@/components/FeatureCard";
 import ImageFeatureCard from "@/components/ImageFeatureCard";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
@@ -98,31 +97,43 @@ export default function Home() {
               title="Test auditif gratuit"
               description="Un test complet et sans engagement pour comprendre votre audition."
               imageAlt="Test auditif avec casque professionnel"
+              href="/test-auditif-gratuit"
+              imagePosition="center 35%"
             />
-            <FeatureCard
-              icon="💬"
+            <ImageFeatureCard
+              imageSrc="/images/human-support.jpg"
               title="Accompagnement humain"
               description="Pas de jargon technique, pas de pression commerciale."
+              imageAlt="Accompagnement personnalisé et humain"
+              href="/notre-accompagnement"
             />
-            <FeatureCard
-              icon="🔧"
+            <ImageFeatureCard
+              imageSrc="/images/personalized-follow-up.jpg"
               title="Suivi personnalisé"
               description="Réglages progressifs, adaptations, suivi régulier."
+              imageAlt="Suivi personnalisé de votre appareil auditif"
+              href="/notre-accompagnement"
             />
-            <FeatureCard
-              icon="🏆"
+            <ImageFeatureCard
+              imageSrc="/images/quality-solutions.jpg"
               title="Solutions de qualité"
               description="Oticon et Bernafon, deux marques reconnues."
+              imageAlt="Appareils auditifs de qualité"
+              href="/solutions-auditives"
             />
-            <FeatureCard
-              icon="🎯"
+            <ImageFeatureCard
+              imageSrc="/images/independent-center.jpg"
               title="Centre indépendant"
               description="Pas d'objectifs de vente, pas de réseau à satisfaire."
+              imageAlt="Centre auditif indépendant"
+              href="/notre-accompagnement"
             />
-            <FeatureCard
-              icon="💰"
+            <ImageFeatureCard
+              imageSrc="/images/price-transparency.jpg"
               title="Transparence des prix"
               description="Prix clairs, remboursements expliqués."
+              imageAlt="Transparence des prix et remboursements"
+              href="/remboursements"
             />
           </div>
         </div>

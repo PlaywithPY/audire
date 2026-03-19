@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { cardKey, imageUrl, fallbackEmoji } = body;
+    const { cardKey, imageUrl, fallbackEmoji, imagePosition, href, title, description, imageAlt } = body;
 
     if (!cardKey || !imageUrl) {
       return NextResponse.json(
@@ -40,6 +40,11 @@ export async function POST(request: NextRequest) {
         cardKey,
         imageUrl,
         fallbackEmoji: fallbackEmoji || '📷',
+        imagePosition: imagePosition || 'center center',
+        href,
+        title,
+        description,
+        imageAlt,
       },
     });
 
@@ -58,7 +63,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, imageUrl, fallbackEmoji } = body;
+    const { id, imageUrl, fallbackEmoji, imagePosition, href, title, description, imageAlt } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'id requis' }, { status: 400 });
@@ -67,8 +72,13 @@ export async function PUT(request: NextRequest) {
     const cardImage = await prisma.cardImage.update({
       where: { id },
       data: {
-        ...(imageUrl && { imageUrl }),
-        ...(fallbackEmoji && { fallbackEmoji }),
+        ...(imageUrl !== undefined && { imageUrl }),
+        ...(fallbackEmoji !== undefined && { fallbackEmoji }),
+        ...(imagePosition !== undefined && { imagePosition }),
+        ...(href !== undefined && { href }),
+        ...(title !== undefined && { title }),
+        ...(description !== undefined && { description }),
+        ...(imageAlt !== undefined && { imageAlt }),
       },
     });
 
