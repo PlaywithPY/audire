@@ -9,7 +9,6 @@ type ImageEffect = {
   effectType: 'parallax' | 'zoom' | 'fade' | 'slide' | 'fixed' | 'none';
   effectSpeed: number;
   effectScale: number;
-  effectDirection: 'up' | 'down' | 'left' | 'right';
   pageKey: string;
   sectionKey: string;
   order: number;
@@ -152,21 +151,7 @@ function ParallaxEffect({ imageEffect, className }: { imageEffect: ImageEffect; 
         const relativeScroll = scrolled - elementTop + windowHeight;
         const parallaxOffset = relativeScroll * (1 - imageEffect.effectSpeed);
 
-        // Inverser le sens si nécessaire
-        const direction = imageEffect.effectDirection || 'down';
-        let transform = '';
-
-        if (direction === 'up') {
-          transform = `translateY(-${parallaxOffset * imageEffect.effectSpeed}px)`;
-        } else if (direction === 'down') {
-          transform = `translateY(${parallaxOffset * imageEffect.effectSpeed}px)`;
-        } else if (direction === 'left') {
-          transform = `translateX(-${parallaxOffset * imageEffect.effectSpeed}px)`;
-        } else if (direction === 'right') {
-          transform = `translateX(${parallaxOffset * imageEffect.effectSpeed}px)`;
-        }
-
-        imageRef.current.style.transform = transform;
+        imageRef.current.style.transform = `translateY(${parallaxOffset * imageEffect.effectSpeed}px)`;
       }
     };
 
@@ -174,7 +159,7 @@ function ParallaxEffect({ imageEffect, className }: { imageEffect: ImageEffect; 
     handleScroll(); // Initial call
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [imageEffect.effectSpeed, imageEffect.effectDirection]);
+  }, [imageEffect.effectSpeed]);
 
   return (
     <section
@@ -389,23 +374,9 @@ function SlideEffect({ imageEffect, className }: { imageEffect: ImageEffect; cla
       if (isVisible) {
         const relativeScroll = scrolled - elementTop + windowHeight;
         const progress = relativeScroll / (elementHeight + windowHeight);
-        const offset = (progress - 0.5) * 100 * imageEffect.effectSpeed;
+        const translateX = (progress - 0.5) * 100 * imageEffect.effectSpeed;
 
-        // Appliquer la direction
-        const direction = imageEffect.effectDirection || 'right';
-        let transform = '';
-
-        if (direction === 'left') {
-          transform = `translateX(-${Math.abs(offset)}px)`;
-        } else if (direction === 'right') {
-          transform = `translateX(${offset}px)`;
-        } else if (direction === 'up') {
-          transform = `translateY(-${Math.abs(offset)}px)`;
-        } else if (direction === 'down') {
-          transform = `translateY(${offset}px)`;
-        }
-
-        imageRef.current.style.transform = transform;
+        imageRef.current.style.transform = `translateX(${translateX}px)`;
       }
     };
 
@@ -413,7 +384,7 @@ function SlideEffect({ imageEffect, className }: { imageEffect: ImageEffect; cla
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [imageEffect.effectSpeed, imageEffect.effectDirection]);
+  }, [imageEffect.effectSpeed]);
 
   return (
     <section

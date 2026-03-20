@@ -13,7 +13,6 @@ type ImageEffect = {
   effectType: 'parallax' | 'zoom' | 'fade' | 'slide' | 'fixed' | 'none';
   effectSpeed: number; // 0.1 à 1.0 pour parallax
   effectScale: number; // 1.0 à 1.5 pour zoom
-  effectDirection: 'up' | 'down' | 'left' | 'right'; // sens de l'effet
   pageKey: string;
   sectionKey: string; // identifiant de la section (ex: "hero-services", "about-team")
   order: number; // ordre d'affichage dans la page
@@ -62,7 +61,6 @@ export default function ImageEffectsAdmin() {
     effectType: 'parallax',
     effectSpeed: 0.5,
     effectScale: 1.2,
-    effectDirection: 'down',
     pageKey: selectedPage,
     sectionKey: '',
     order: 0,
@@ -403,34 +401,6 @@ export default function ImageEffectsAdmin() {
                         }}
                         className="w-full"
                       />
-                    </div>
-                  )}
-
-                  {(currentEffect.effectType === 'parallax' || currentEffect.effectType === 'slide') && (
-                    <div>
-                      <label className="block font-semibold mb-2">🧭 Sens de l'effet</label>
-                      <select
-                        value={currentEffect.effectDirection}
-                        onChange={(e) => {
-                          const value = e.target.value as ImageEffect['effectDirection'];
-                          if (showNewForm) {
-                            setNewEffect({ ...newEffect, effectDirection: value });
-                          } else if (editingEffect) {
-                            setEditingEffect({ ...editingEffect, effectDirection: value });
-                          }
-                        }}
-                        className="w-full border border-gray-300 rounded px-4 py-2"
-                      >
-                        <option value="down">⬇️ Vers le bas (par défaut)</option>
-                        <option value="up">⬆️ Vers le haut (inversé)</option>
-                        <option value="left">⬅️ Vers la gauche</option>
-                        <option value="right">➡️ Vers la droite</option>
-                      </select>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {currentEffect.effectType === 'parallax'
-                          ? 'Direction du mouvement de l\'image lors du scroll'
-                          : 'Direction du glissement de l\'image'}
-                      </p>
                     </div>
                   )}
 
