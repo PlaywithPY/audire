@@ -224,7 +224,7 @@ export default function SolutionsAuditives() {
 
   const solutions: SolutionData[] = [
     {
-      id: 'contours',
+      id: 'contour',
       title: "Le contour d'oreille",
       icon: "🎧",
       shortDesc: "Modèle polyvalent et simple d'utilisation, le contour d'oreille se porte derrière le pavillon. Un tube fin relie l'appareil à un embout dans le conduit auditif. Il convient à la grande majorité des pertes auditives.",
@@ -262,7 +262,7 @@ export default function SolutionsAuditives() {
       ]
     },
     {
-      id: 'oticon',
+      id: 'intent',
       title: "Oticon Intent",
       icon: "⭐",
       shortDesc: "L'Oticon Intent est une aide auditive haut de gamme équipée de capteurs de mouvement. Elle analyse vos gestes et vos déplacements pour adapter l'amplification à chaque situation, sans aucune intervention de votre part.",
