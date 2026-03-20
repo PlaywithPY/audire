@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -26,7 +26,7 @@ model Centre {
   phoneFixe    String   // Téléphone fixe
   phoneMobile  String?  // Téléphone mobile (GSM)
   email        String   // Email du centre
-  address      String   @db.Text // Adresse complète
+  address      String   // Adresse complète
   postalCode   String   // Code postal
   city         String   // Ville
   isActive     Boolean  @default(true) // Centre actif ou non
@@ -79,7 +79,7 @@ model CardImage {
   imagePosition String   @default("center center") // Position de l'image (object-position CSS)
   href          String?  // Lien vers une page
   title         String?  // Titre de la card
-  description   String?  @db.Text // Description de la card
+  description   String?  // Description de la card
   imageAlt      String?  // Texte alternatif pour l'image
   updatedAt     DateTime @updatedAt
 
@@ -101,8 +101,8 @@ model ContentBlock {
   pageKey     String   // Page où se trouve le bloc (ex: "home", "contact")
   blockKey    String   // Identifiant unique du bloc (ex: "hero-title", "about-text")
   blockType   String   // Type de bloc: "title", "text", "image", "button", "html"
-  content     String   @db.Text // Contenu du bloc (texte, URL, HTML, etc.)
-  metadata    String?  @db.Text // Métadonnées JSON (style, position, etc.)
+  content     String   // Contenu du bloc (texte, URL, HTML, etc.)
+  metadata    String?  // Métadonnées JSON (style, position, etc.)
   order       Int      @default(0) // Ordre d'affichage
   isVisible   Boolean  @default(true)
   updatedAt   DateTime @updatedAt
@@ -116,11 +116,11 @@ model ContentBlock {
 model Solution {
   id            Int      @id @default(autoincrement())
   solutionKey   String   @unique // Identifiant unique (ex: "contour", "intra", "intent")
-  fullDesc      String   @db.Text // Description complète
+  fullDesc      String   // Description complète
   detailImage   String?  // URL de l'image pour le panneau détaillé (optionnel)
   detailEmoji   String   @default("🎧") // Emoji de fallback pour l'image détaillée
-  pros          String   @db.Text // Avantages (JSON array)
-  cons          String   @db.Text // Inconvénients (JSON array)
+  pros          String   // Avantages (JSON array)
+  cons          String   // Inconvénients (JSON array)
   updatedAt     DateTime @updatedAt
 
   @@index([solutionKey])
@@ -130,7 +130,7 @@ model Solution {
 model Testimonial {
   id          Int      @id @default(autoincrement())
   name        String   // Nom du client (ou initiales)
-  text        String   @db.Text // Texte de l'avis
+  text        String   // Texte de l'avis
   rating      Int      @default(5) // Note sur 5
   location    String?  // Ville (ex: "Liège")
   isVisible   Boolean  @default(true)
