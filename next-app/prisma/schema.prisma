@@ -143,20 +143,21 @@ model Testimonial {
 
 // Images avec effets CSS entre les sections
 model ImageEffect {
-  id            Int      @id @default(autoincrement())
-  imageUrl      String   // URL de l'image
-  effectType    String   @default("none") // Type d'effet: "parallax", "zoom", "fade", "fixed", "slide", "none"
-  effectSpeed   Float    @default(0.5) // Vitesse de l'effet parallax (0.1 à 1.0)
-  effectScale   Float    @default(1.2) // Scale pour l'effet zoom (1.0 à 1.5)
-  pageKey       String   // Page où se trouve l'effet (ex: "home", "solutions-auditives")
-  sectionKey    String   // Identifiant de la section (ex: "hero-services", "about-team")
-  order         Int      @default(0) // Ordre d'affichage dans la page
-  isVisible     Boolean  @default(true)
-  alt           String?  // Texte alternatif pour l'image
-  overlayColor  String?  // Couleur de l'overlay (ex: "rgba(0,0,0,0.3)")
-  minHeight     String   @default("400px") // Hauteur minimale (ex: "400px", "50vh")
-  updatedAt     DateTime @updatedAt
-  createdAt     DateTime @default(now())
+  id               Int      @id @default(autoincrement())
+  imageUrl         String   // URL de l'image
+  effectType       String   @default("none") // Type d'effet: "parallax", "zoom", "fade", "fixed", "slide", "none"
+  effectSpeed      Float    @default(0.5) // Vitesse de l'effet parallax (0.1 à 1.0)
+  effectScale      Float    @default(1.2) // Scale pour l'effet zoom (1.0 à 1.5)
+  effectDirection  String   @default("down") // Direction de l'effet: "up", "down", "left", "right"
+  pageKey          String   // Page où se trouve l'effet (ex: "home", "solutions-auditives")
+  sectionKey       String   // Identifiant de la section (ex: "hero-services", "about-team")
+  order            Int      @default(0) // Ordre d'affichage dans la page
+  isVisible        Boolean  @default(true)
+  alt              String?  // Texte alternatif pour l'image
+  overlayColor     String?  // Couleur de l'overlay (ex: "rgba(0,0,0,0.3)")
+  minHeight        String   @default("400px") // Hauteur minimale (ex: "400px", "50vh")
+  updatedAt        DateTime @updatedAt
+  createdAt        DateTime @default(now())
 
   @@unique([pageKey, sectionKey])
   @@index([pageKey, order])

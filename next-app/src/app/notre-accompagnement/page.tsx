@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CardIcon from "@/components/CardIcon";
+import ImageEffectsRenderer from "@/components/ImageEffectsRenderer";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -31,6 +32,12 @@ export default function NotreAccompagnement() {
             </div>
           </div>
         </section>
+
+        {/* Image avec effet après Hero */}
+        <ImageEffectsRenderer
+          pageKey="notre-accompagnement"
+          sectionKey="after-hero"
+        />
 
         {/* Notre approche */}
         <section className="py-20 bg-white">
