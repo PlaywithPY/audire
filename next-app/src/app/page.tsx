@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import ImageFeatureCard from "@/components/ImageFeatureCard";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
-import ImageEffectsRenderer from "@/components/ImageEffectsRenderer";
+import AllPageImageEffects from "@/components/AllPageImageEffects";
 import { getFeatureCards } from "@/lib/card-helpers";
 
 // Revalider la page toutes les 60 secondes (ISR)
@@ -64,11 +64,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Image avec effet entre Hero et Features */}
-      <ImageEffectsRenderer
-        pageKey="home"
-        sectionKey="after-hero"
-      />
+      {/* Image Effects */}
+      <AllPageImageEffects pageKey="home" />
 
       {/* Features Section */}
       <section className="py-20 bg-white">
