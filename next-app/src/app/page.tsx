@@ -64,11 +64,14 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Slot pour effet after-hero */}
+      <div data-section="after-hero" className="relative" style={{ minHeight: '0px' }}></div>
+
       {/* Image Effects */}
       <AllPageImageEffects pageKey="home" />
 
       {/* Features Section */}
-      <section data-section="after-hero" className="py-20 bg-white">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <span className="inline-block bg-secondary text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
@@ -101,8 +104,11 @@ export default async function Home() {
       {/* Testimonials Carousel */}
       <TestimonialsCarousel />
 
+      {/* Slot pour effet after-features */}
+      <div data-section="after-features" className="relative" style={{ minHeight: '0px' }}></div>
+
       {/* CTA Section */}
-      <section data-section="after-features" className="py-20 bg-gradient-to-br from-primary/10 to-primary-light/10">
+      <section className="py-20 bg-gradient-to-br from-primary/10 to-primary-light/10">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-4">Prêt à mieux entendre ?</h2>
           <p className="text-xl text-text-light mb-8 max-w-2xl mx-auto">
