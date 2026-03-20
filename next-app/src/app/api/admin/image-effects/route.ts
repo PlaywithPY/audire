@@ -16,6 +16,8 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const pageKey = searchParams.get('pageKey');
 
+    console.log('🔍 GET /api/admin/image-effects - pageKey:', pageKey);
+
     if (!pageKey) {
       return NextResponse.json({ error: 'pageKey required' }, { status: 400 });
     }
@@ -24,6 +26,9 @@ export async function GET(request: NextRequest) {
       where: { pageKey },
       orderBy: { order: 'asc' },
     });
+
+    console.log(`✅ Found ${imageEffects.length} image effect(s) for pageKey="${pageKey}"`);
+    console.log('📦 Image effects:', imageEffects);
 
     return NextResponse.json(imageEffects);
   } catch (error) {
