@@ -27,9 +27,11 @@ export default function ImageFeatureCard({
   const imageRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
 
   // Déterminer si on doit afficher l'emoji
-  const shouldShowEmoji = !imageSrc || imageError;
+  // On affiche l'emoji si : pas d'imageSrc, imageSrc est vide, ou erreur de chargement
+  const shouldShowEmoji = !imageSrc || imageSrc.trim() === '' || imageError;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,6 +73,12 @@ export default function ImageFeatureCard({
         ) : (
           /* Affichage de l'image avec parallax */
           <>
+            {/* Placeholder emoji pendant le chargement */}
+            {imageLoading && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-6xl animate-float opacity-50">{fallbackEmoji}</span>
+              </div>
+            )}
             <div
               ref={imageRef}
               className="absolute inset-0 transition-transform duration-500 ease-out"
@@ -82,11 +90,17 @@ export default function ImageFeatureCard({
                 className="object-cover"
                 style={{ objectPosition: imagePosition }}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                onError={() => setImageError(true)}
+                onError={() => {
+                  setImageError(true);
+                  setImageLoading(false);
+                }}
+                onLoad={() => setImageLoading(false)}
               />
             </div>
             {/* Overlay léger pour améliorer la lisibilité */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+            {!imageLoading && (
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+            )}
           </>
         )}
       </div>
