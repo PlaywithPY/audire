@@ -44,7 +44,7 @@ export async function getFeatureCards(pageKey: string = 'home'): Promise<CardDat
       // Merger : priorité aux valeurs DB
       return {
         cardKey: defaultCard.cardKey,
-        imageSrc: dbCard.imageUrl || defaultCard.imageSrc,
+        imageSrc: dbCard.imageUrl !== undefined ? dbCard.imageUrl : defaultCard.imageSrc,
         title: dbCard.title || defaultCard.title,
         description: dbCard.description || defaultCard.description,
         imageAlt: dbCard.imageAlt || defaultCard.imageAlt,
