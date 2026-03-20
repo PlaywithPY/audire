@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import ImageFeatureCard from "@/components/ImageFeatureCard";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
-import AllPageImageEffects from "@/components/AllPageImageEffects";
+import ImageEffectsRenderer from "@/components/ImageEffectsRenderer";
 import { getFeatureCards } from "@/lib/card-helpers";
 
 // Revalider la page toutes les 60 secondes (ISR)
@@ -64,11 +64,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Slot pour effet after-hero */}
-      <div data-section="after-hero" className="relative" style={{ minHeight: '0px' }}></div>
-
-      {/* Image Effects */}
-      <AllPageImageEffects pageKey="home" />
+      {/* Image effect after hero */}
+      <ImageEffectsRenderer pageKey="home" sectionKey="after-hero" />
 
       {/* Features Section */}
       <section className="py-20 bg-white">
@@ -104,8 +101,8 @@ export default async function Home() {
       {/* Testimonials Carousel */}
       <TestimonialsCarousel />
 
-      {/* Slot pour effet after-features */}
-      <div data-section="after-features" className="relative" style={{ minHeight: '0px' }}></div>
+      {/* Image effect after features */}
+      <ImageEffectsRenderer pageKey="home" sectionKey="after-features" />
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-primary/10 to-primary-light/10">
