@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import AdminHeader from '@/components/AdminHeader';
 import ImageUploadModal from '@/components/ImageUploadModal';
+import BlockSelector from '@/components/BlockSelector';
 
 type ImageEffect = {
   id: number;
@@ -30,8 +31,10 @@ export default function ImageEffectsAdmin() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [blockSelectorOpen, setBlockSelectorOpen] = useState(false);
   const [showNewForm, setShowNewForm] = useState(false);
   const [selectedPage, setSelectedPage] = useState('home');
+  const [allPageKeys, setAllPageKeys] = useState<string[]>([]);
 
   const pages = [
     { key: 'home', label: '🏠 Accueil' },
@@ -78,25 +81,42 @@ export default function ImageEffectsAdmin() {
   useEffect(() => {
     if (status === 'authenticated') {
       fetchImageEffects();
+      fetchAllPageKeys();
     }
   }, [status, selectedPage]);
 
+  async function fetchAllPageKeys() {
+    try {
+      const res = await fetch('/api/admin/image-effects/all-pages');
+      if (res.ok) {
+        const data = await res.json();
+        setAllPageKeys(data.pageKeys || []);
+      }
+    } catch (error) {
+      console.error('Error fetching all page keys:', error);
+    }
+  }
+
   async function fetchImageEffects() {
     try {
+      console.log('🔍 Fetching image effects for pageKey:', selectedPage);
       const res = await fetch(`/api/admin/image-effects?pageKey=${selectedPage}`);
       if (!res.ok) {
-        console.error('API error:', res.status);
+        console.error('❌ API error:', res.status);
         setImageEffects([]);
         return;
       }
       const data = await res.json();
+      console.log('📦 Received image effects data:', data);
       if (Array.isArray(data)) {
+        console.log(`✅ Found ${data.length} image effect(s) for page "${selectedPage}"`);
         setImageEffects(data);
       } else {
+        console.warn('⚠️ Data is not an array:', data);
         setImageEffects([]);
       }
     } catch (error) {
-      console.error('Error fetching image effects:', error);
+      console.error('💥 Error fetching image effects:', error);
       setImageEffects([]);
     } finally {
       setLoading(false);
@@ -214,6 +234,14 @@ export default function ImageEffectsAdmin() {
               </button>
             ))}
           </div>
+          {allPageKeys.length > 0 && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
+              <p className="text-xs font-semibold text-blue-900 mb-1">🔍 PageKeys dans la base de données:</p>
+              <p className="text-xs text-blue-700">
+                {allPageKeys.join(', ') || 'Aucun'}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Liste des effets */}
@@ -245,22 +273,31 @@ export default function ImageEffectsAdmin() {
                 <div className="space-y-4">
                   <div>
                     <label className="block font-semibold mb-2">🏷️ Section Key (identifiant)</label>
-                    <input
-                      type="text"
-                      value={showNewForm ? newEffect.sectionKey : editingEffect?.sectionKey || ''}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (showNewForm) {
-                          setNewEffect({ ...newEffect, sectionKey: value });
-                        } else if (editingEffect) {
-                          setEditingEffect({ ...editingEffect, sectionKey: value });
-                        }
-                      }}
-                      className="w-full border border-gray-300 rounded px-4 py-2"
-                      placeholder="ex: hero-services, about-team"
-                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={showNewForm ? newEffect.sectionKey : editingEffect?.sectionKey || ''}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (showNewForm) {
+                            setNewEffect({ ...newEffect, sectionKey: value });
+                          } else if (editingEffect) {
+                            setEditingEffect({ ...editingEffect, sectionKey: value });
+                          }
+                        }}
+                        className="flex-1 border border-gray-300 rounded px-4 py-2"
+                        placeholder="ex: hero-services, about-team"
+                      />
+                      <button
+                        onClick={() => setBlockSelectorOpen(true)}
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        title="Choisir un bloc existant"
+                      >
+                        🧱
+                      </button>
+                    </div>
                     <p className="text-xs text-gray-500 mt-1">
-                      Identifiant unique pour cette section
+                      Identifiant unique pour cette section (ou cliquez sur 🧱 pour choisir un bloc)
                     </p>
                   </div>
 
@@ -643,6 +680,22 @@ export default function ImageEffectsAdmin() {
             setEditingEffect({ ...editingEffect, imageUrl });
           }
           setUploadModalOpen(false);
+        }}
+      />
+
+      {/* Modal de sélection de bloc */}
+      <BlockSelector
+        isOpen={blockSelectorOpen}
+        onClose={() => setBlockSelectorOpen(false)}
+        currentPageKey={selectedPage}
+        onSelect={(block) => {
+          const sectionKey = block.blockKey;
+          if (showNewForm) {
+            setNewEffect({ ...newEffect, sectionKey });
+          } else if (editingEffect) {
+            setEditingEffect({ ...editingEffect, sectionKey });
+          }
+          setBlockSelectorOpen(false);
         }}
       />
     </div>
