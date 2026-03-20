@@ -25,6 +25,7 @@ export async function GET(request: Request) {
     return NextResponse.json(blocks);
   } catch (error) {
     console.error('Error fetching blocks:', error);
-    return NextResponse.json({ error: 'Failed to fetch blocks' }, { status: 500 });
+    // Return empty array instead of error object to prevent client-side crashes
+    return NextResponse.json([]);
   }
 }

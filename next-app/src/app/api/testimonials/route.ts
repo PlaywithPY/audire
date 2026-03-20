@@ -19,6 +19,7 @@ export async function GET(request: Request) {
     return NextResponse.json(testimonials);
   } catch (error) {
     console.error('Error fetching testimonials:', error);
-    return NextResponse.json({ error: 'Failed to fetch testimonials' }, { status: 500 });
+    // Return empty array instead of error object to prevent client-side crashes
+    return NextResponse.json([]);
   }
 }
