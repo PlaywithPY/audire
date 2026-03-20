@@ -58,9 +58,12 @@ export default function BlockSelector({ isOpen, onClose, onSelect, currentPageKe
   }
 
   const filteredBlocks = blocks.filter(block =>
-    block.blockKey.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    // Ne montrer que les blocs visibles
+    block.isVisible &&
+    // Filtrer par terme de recherche
+    (block.blockKey.toLowerCase().includes(searchTerm.toLowerCase()) ||
     block.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    block.blockType.toLowerCase().includes(searchTerm.toLowerCase())
+    block.blockType.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const blockTypeIcons: Record<string, string> = {

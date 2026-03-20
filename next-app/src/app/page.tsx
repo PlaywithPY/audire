@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import ImageFeatureCard from "@/components/ImageFeatureCard";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
-import ParallaxSection from "@/components/ParallaxSection";
+import ImageEffectsRenderer from "@/components/ImageEffectsRenderer";
 import { getFeatureCards } from "@/lib/card-helpers";
 
 // Revalider la page toutes les 60 secondes (ISR)
@@ -64,23 +64,11 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Parallax Image Section */}
-      <ParallaxSection
-        imageSrc="/images/oticon-couple.jpg"
-        alt="Couple dans un environnement élégant avec Oticon"
-        speed={0.6}
-        height="600px"
-        overlay={true}
-      >
-        <div className="container mx-auto px-4 text-white text-center">
-          <h2 className="text-5xl font-bold mb-4 drop-shadow-lg">
-            Une technologie qui change la vie
-          </h2>
-          <p className="text-xl max-w-2xl mx-auto drop-shadow-md">
-            Redécouvrez les conversations, les moments partagés et la beauté des sons du quotidien
-          </p>
-        </div>
-      </ParallaxSection>
+      {/* Image avec effet entre Hero et Features */}
+      <ImageEffectsRenderer
+        pageKey="home"
+        sectionKey="after-hero"
+      />
 
       {/* Features Section */}
       <section className="py-20 bg-white">
