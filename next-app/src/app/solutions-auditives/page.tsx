@@ -17,6 +17,16 @@ interface SolutionData {
   cons: string[];
 }
 
+interface SolutionDetail {
+  id: number;
+  solutionKey: string;
+  fullDesc: string;
+  detailImage: string | null;
+  detailEmoji: string;
+  pros: string[];
+  cons: string[];
+}
+
 interface SolutionCardProps {
   solution: SolutionData;
   cardData?: CardData;
@@ -67,6 +77,7 @@ function SolutionCard({ solution, cardData, onToggle, isActive }: SolutionCardPr
 
 function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
   const isOpen = solution !== null;
+  const isImageUrl = solution?.image.startsWith('/') || solution?.image.startsWith('http');
 
   return (
     <div
@@ -77,9 +88,17 @@ function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
       <div className="overflow-hidden">
         {solution && (
           <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-            {/* Image */}
+            {/* Image ou Emoji */}
             <div className="mb-8 rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary-light/10 aspect-video flex items-center justify-center max-w-2xl mx-auto">
-              <span className="text-9xl">{solution.image}</span>
+              {isImageUrl ? (
+                <img
+                  src={solution.image}
+                  alt={solution.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-9xl">{solution.image}</span>
+              )}
             </div>
 
             {/* Description détaillée */}
@@ -133,6 +152,23 @@ export default function SolutionsAuditives() {
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [brandCards, setBrandCards] = useState<CardData[]>([]);
   const [typeCards, setTypeCards] = useState<CardData[]>([]);
+  const [solutionDetails, setSolutionDetails] = useState<SolutionDetail[]>([]);
+
+  // Charger les détails des solutions depuis l'API
+  useEffect(() => {
+    async function loadSolutionDetails() {
+      try {
+        const res = await fetch('/api/solutions');
+        if (res.ok) {
+          const data = await res.json();
+          setSolutionDetails(data);
+        }
+      } catch (error) {
+        console.error('Error loading solution details:', error);
+      }
+    }
+    loadSolutionDetails();
+  }, []);
 
   // Charger les cards depuis l'API
   useEffect(() => {
@@ -222,9 +258,10 @@ export default function SolutionsAuditives() {
     ];
   }
 
-  const solutions: SolutionData[] = [
+  // Données par défaut des solutions
+  const defaultSolutions: SolutionData[] = [
     {
-      id: 'contours',
+      id: 'contour',
       title: "Le contour d'oreille",
       icon: "🎧",
       shortDesc: "Modèle polyvalent et simple d'utilisation, le contour d'oreille se porte derrière le pavillon. Un tube fin relie l'appareil à un embout dans le conduit auditif. Il convient à la grande majorité des pertes auditives.",
@@ -262,12 +299,12 @@ export default function SolutionsAuditives() {
       ]
     },
     {
-      id: 'oticon',
+      id: 'intent',
       title: "Oticon Intent",
       icon: "⭐",
       shortDesc: "L'Oticon Intent est une aide auditive haut de gamme équipée de capteurs de mouvement. Elle analyse vos gestes et vos déplacements pour adapter l'amplification à chaque situation, sans aucune intervention de votre part.",
       fullDesc: "Doté d'une puce de traitement performante et de quatre capteurs intégrés, l'Oticon Intent détecte en temps réel ce que vous faites et s'ajuste automatiquement pour vous offrir le son le plus clair possible dans chaque contexte. Sa connectivité Bluetooth vous permet de le coupler à votre smartphone ou à votre télévision. La batterie rechargeable tient toute la journée, et son boîtier est certifié résistant à l'eau et à la poussière (IP68).",
-      image: "🚀",
+      image: "⭐",
       pros: [
         "Adaptation automatique à chaque situation",
         "Capteurs de mouvement intégrés",
@@ -282,6 +319,21 @@ export default function SolutionsAuditives() {
       ]
     }
   ];
+
+  // Fusionner les données par défaut avec les détails de la DB
+  const solutions: SolutionData[] = defaultSolutions.map(sol => {
+    const detail = solutionDetails.find(d => d.solutionKey === sol.id);
+    if (detail) {
+      return {
+        ...sol,
+        fullDesc: detail.fullDesc,
+        image: detail.detailImage || detail.detailEmoji,
+        pros: detail.pros,
+        cons: detail.cons,
+      };
+    }
+    return sol;
+  });
 
   const handleToggle = (id: string) => {
     setActiveTab(activeTab === id ? null : id);

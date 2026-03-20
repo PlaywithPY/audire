@@ -632,7 +632,17 @@ export default function AdminDashboard() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200 py-4 px-6">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">🛠️ Dashboard Admin - Audire</h1>
+          <div>
+            <h1 className="text-2xl font-bold">🛠️ Dashboard Admin - Audire</h1>
+            <div className="flex gap-4 mt-2 text-sm">
+              <Link href="/admin/feature-cards" className="text-primary hover:underline">
+                🎨 Feature Cards
+              </Link>
+              <Link href="/admin/solutions" className="text-primary hover:underline">
+                📋 Solutions détaillées
+              </Link>
+            </div>
+          </div>
           <Link
             href="/"
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
