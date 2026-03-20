@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getAllPages, PageCardsDefinition, CardGroup } from '@/lib/card-definitions';
 import ImageUploadModal from '@/components/ImageUploadModal';
+import AdminHeader from '@/components/AdminHeader';
 
 type CardImage = {
   id: number;
@@ -236,15 +237,7 @@ export default function FeatureCardsAdmin() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">🎨 Gestion des Feature Cards</h1>
-          <Link href="/admin" className="text-primary hover:underline">
-            ← Retour admin
-          </Link>
-        </div>
-      </header>
+      <AdminHeader currentPage="feature-cards" title="🎨 Gestion des Feature Cards" />
 
       <div className="container mx-auto px-6 py-8">
         {/* Erreur API */}
