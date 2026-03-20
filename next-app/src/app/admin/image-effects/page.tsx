@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import AdminHeader from '@/components/AdminHeader';
 import ImageUploadModal from '@/components/ImageUploadModal';
-import BlockSelector from '@/components/BlockSelector';
+import VisualSectionSelector from '@/components/VisualSectionSelector';
 
 type ImageEffect = {
   id: number;
@@ -31,7 +31,7 @@ export default function ImageEffectsAdmin() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
-  const [blockSelectorOpen, setBlockSelectorOpen] = useState(false);
+  const [sectionSelectorOpen, setSectionSelectorOpen] = useState(false);
   const [showNewForm, setShowNewForm] = useState(false);
   const [selectedPage, setSelectedPage] = useState('home');
   const [allPageKeys, setAllPageKeys] = useState<string[]>([]);
@@ -289,15 +289,15 @@ export default function ImageEffectsAdmin() {
                         placeholder="ex: hero-services, about-team"
                       />
                       <button
-                        onClick={() => setBlockSelectorOpen(true)}
+                        onClick={() => setSectionSelectorOpen(true)}
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                        title="Choisir un bloc existant"
+                        title="Choisir une section visuelle"
                       >
-                        🧱
+                        📐
                       </button>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
-                      Identifiant unique pour cette section (ou cliquez sur 🧱 pour choisir un bloc)
+                      Identifiant unique pour cette section (ou cliquez sur 📐 pour choisir une section visuelle)
                     </p>
                   </div>
 
@@ -683,19 +683,18 @@ export default function ImageEffectsAdmin() {
         }}
       />
 
-      {/* Modal de sélection de bloc */}
-      <BlockSelector
-        isOpen={blockSelectorOpen}
-        onClose={() => setBlockSelectorOpen(false)}
+      {/* Modal de sélection de section visuelle */}
+      <VisualSectionSelector
+        isOpen={sectionSelectorOpen}
+        onClose={() => setSectionSelectorOpen(false)}
         currentPageKey={selectedPage}
-        onSelect={(block) => {
-          const sectionKey = block.blockKey;
+        onSelect={(sectionKey) => {
           if (showNewForm) {
             setNewEffect({ ...newEffect, sectionKey });
           } else if (editingEffect) {
             setEditingEffect({ ...editingEffect, sectionKey });
           }
-          setBlockSelectorOpen(false);
+          setSectionSelectorOpen(false);
         }}
       />
     </div>
