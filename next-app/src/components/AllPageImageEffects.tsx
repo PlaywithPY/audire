@@ -26,6 +26,7 @@ type AllPageImageEffectsProps = {
 /**
  * Charge et affiche TOUS les effets d'images pour une page donnée
  * Optimisé : une seule requête API pour tous les effets
+ * Positionne chaque effet sur sa section correspondante
  */
 export default function AllPageImageEffects({
   pageKey,
@@ -79,17 +80,78 @@ export default function AllPageImageEffects({
     return null;
   }
 
-  // Rendre tous les effets dans l'ordre
+  // Rendre tous les effets positionnés sur leurs sections
   return (
-    <>
+    <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
       {effects.map((effect) => (
-        <SingleImageEffect
+        <PositionedImageEffect
           key={effect.id}
           imageEffect={effect}
           className={className}
         />
       ))}
-    </>
+    </div>
+  );
+}
+
+// Composant qui positionne un effet sur sa section correspondante
+function PositionedImageEffect({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState({ top: 0, height: 0, width: 0 });
+
+  useEffect(() => {
+    const updatePosition = () => {
+      const section = document.querySelector(`[data-section="${imageEffect.sectionKey}"]`) as HTMLElement;
+
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        const scrollY = window.scrollY || window.pageYOffset;
+
+        setDimensions({
+          top: rect.top + scrollY,
+          height: rect.height,
+          width: rect.width,
+        });
+
+        console.log(`📍 [PositionedImageEffect] Positioned "${imageEffect.sectionKey}" effect at top: ${rect.top + scrollY}px`);
+      } else {
+        console.warn(`⚠️ [PositionedImageEffect] Section "${imageEffect.sectionKey}" not found`);
+      }
+    };
+
+    // Initial position
+    updatePosition();
+
+    // Update on resize
+    window.addEventListener('resize', updatePosition);
+
+    // Update after a short delay to account for lazy loading
+    const timeout = setTimeout(updatePosition, 500);
+
+    return () => {
+      window.removeEventListener('resize', updatePosition);
+      clearTimeout(timeout);
+    };
+  }, [imageEffect.sectionKey]);
+
+  if (dimensions.height === 0) {
+    return null;
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      className="absolute left-0 right-0 pointer-events-none"
+      style={{
+        top: `${dimensions.top}px`,
+        height: `${dimensions.height}px`,
+      }}
+    >
+      <SingleImageEffect
+        imageEffect={imageEffect}
+        className={className}
+      />
+    </div>
   );
 }
 
@@ -141,10 +203,9 @@ function ParallaxEffect({ imageEffect, className }: { imageEffect: ImageEffect; 
   }, [imageEffect.effectSpeed]);
 
   return (
-    <section
+    <div
       ref={parallaxRef}
-      className={`relative overflow-hidden ${className}`}
-      style={{ minHeight: imageEffect.minHeight }}
+      className={`absolute inset-0 overflow-hidden ${className}`}
     >
       <div
         ref={imageRef}
@@ -165,7 +226,7 @@ function ParallaxEffect({ imageEffect, className }: { imageEffect: ImageEffect; 
       {imageEffect.overlayColor && (
         <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />
       )}
-    </section>
+    </div>
   );
 }
 
@@ -198,10 +259,9 @@ function ZoomEffect({ imageEffect, className }: { imageEffect: ImageEffect; clas
   }, [imageEffect.effectScale]);
 
   return (
-    <section
+    <div
       ref={zoomRef}
-      className={`relative overflow-hidden ${className}`}
-      style={{ minHeight: imageEffect.minHeight }}
+      className={`absolute inset-0 overflow-hidden ${className}`}
     >
       <div ref={imageRef} className="absolute inset-0 w-full h-full transition-transform duration-100">
         <Image
@@ -216,7 +276,7 @@ function ZoomEffect({ imageEffect, className }: { imageEffect: ImageEffect; clas
       {imageEffect.overlayColor && (
         <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />
       )}
-    </section>
+    </div>
   );
 }
 
@@ -254,10 +314,9 @@ function FadeEffect({ imageEffect, className }: { imageEffect: ImageEffect; clas
   }, []);
 
   return (
-    <section
+    <div
       ref={fadeRef}
-      className={`relative overflow-hidden ${className}`}
-      style={{ minHeight: imageEffect.minHeight }}
+      className={`absolute inset-0 overflow-hidden ${className}`}
     >
       <div ref={imageRef} className="absolute inset-0 w-full h-full transition-opacity duration-300">
         <Image
@@ -272,16 +331,15 @@ function FadeEffect({ imageEffect, className }: { imageEffect: ImageEffect; clas
       {imageEffect.overlayColor && (
         <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />
       )}
-    </section>
+    </div>
   );
 }
 
 // Effet Fixed
 function FixedEffect({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
   return (
-    <section
-      className={`relative overflow-hidden ${className}`}
-      style={{ minHeight: imageEffect.minHeight }}
+    <div
+      className={`absolute inset-0 overflow-hidden ${className}`}
     >
       <div
         className="absolute inset-0 w-full h-full"
@@ -295,7 +353,7 @@ function FixedEffect({ imageEffect, className }: { imageEffect: ImageEffect; cla
       {imageEffect.overlayColor && (
         <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />
       )}
-    </section>
+    </div>
   );
 }
 
@@ -328,10 +386,9 @@ function SlideEffect({ imageEffect, className }: { imageEffect: ImageEffect; cla
   }, [imageEffect.effectSpeed]);
 
   return (
-    <section
+    <div
       ref={slideRef}
-      className={`relative overflow-hidden ${className}`}
-      style={{ minHeight: imageEffect.minHeight }}
+      className={`absolute inset-0 overflow-hidden ${className}`}
     >
       <div ref={imageRef} className="absolute inset-0 w-full h-full transition-transform duration-100">
         <Image
@@ -346,16 +403,15 @@ function SlideEffect({ imageEffect, className }: { imageEffect: ImageEffect; cla
       {imageEffect.overlayColor && (
         <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />
       )}
-    </section>
+    </div>
   );
 }
 
 // Image simple
 function SimpleImage({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
   return (
-    <section
-      className={`relative overflow-hidden ${className}`}
-      style={{ minHeight: imageEffect.minHeight }}
+    <div
+      className={`absolute inset-0 overflow-hidden ${className}`}
     >
       <div className="relative w-full h-full">
         <Image
@@ -370,6 +426,6 @@ function SimpleImage({ imageEffect, className }: { imageEffect: ImageEffect; cla
       {imageEffect.overlayColor && (
         <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />
       )}
-    </section>
+    </div>
   );
 }
