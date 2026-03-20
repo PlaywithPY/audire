@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { list, put, del } from '@vercel/blob';
 import { requireAuth } from '@/lib/auth-helpers';
+import fs from 'fs';
+import path from 'path';
 
 /**
  * Route API pour gérer les images avec Vercel Blob
@@ -14,23 +16,61 @@ export async function GET() {
   if (error) return error;
 
   try {
-    console.log('📋 Listing images from Vercel Blob...');
+    console.log('📋 Listing images from Vercel Blob and local public/images...');
 
-    // Lister tous les blobs
+    // Lister tous les blobs de Vercel
     const { blobs } = await list();
 
-    console.log(`📦 Found ${blobs.length} blobs`);
+    console.log(`📦 Found ${blobs.length} blobs from Vercel`);
 
-    // Transformer en format utilisable
-    const images = blobs.map(blob => ({
+    // Transformer les blobs Vercel en format utilisable
+    const vercelImages = blobs.map(blob => ({
       name: blob.pathname,
       url: blob.url,
       size: blob.size,
       uploadedAt: blob.uploadedAt,
-    }))
-    .sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()); // Plus récents en premier
+      source: 'vercel-blob'
+    }));
 
-    return NextResponse.json(images);
+    // Lister les images locales dans public/images
+    const localImages: any[] = [];
+    try {
+      const publicImagesPath = path.join(process.cwd(), 'public', 'images');
+
+      if (fs.existsSync(publicImagesPath)) {
+        const files = fs.readdirSync(publicImagesPath);
+
+        files.forEach(file => {
+          const ext = path.extname(file).toLowerCase();
+          // Filtrer seulement les fichiers images
+          if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'].includes(ext)) {
+            const filePath = path.join(publicImagesPath, file);
+            const stats = fs.statSync(filePath);
+
+            localImages.push({
+              name: file,
+              url: `/images/${file}`,
+              size: stats.size,
+              uploadedAt: stats.mtime.toISOString(),
+              source: 'local'
+            });
+          }
+        });
+
+        console.log(`📁 Found ${localImages.length} local images`);
+      }
+    } catch (localError) {
+      console.warn('⚠️ Could not read local images:', localError);
+      // Continue même si on ne peut pas lire les images locales
+    }
+
+    // Combiner et trier par date (plus récents en premier)
+    const allImages = [...vercelImages, ...localImages]
+      .sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime());
+
+    console.log(`✅ Total: ${allImages.length} images (${vercelImages.length} Vercel + ${localImages.length} local)`);
+
+    return NextResponse.json(allImages);
   } catch (error) {
     console.error('❌ Error listing images:', error);
     return NextResponse.json({ error: 'Failed to list images' }, { status: 500 });
