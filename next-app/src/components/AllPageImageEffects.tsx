@@ -97,7 +97,7 @@ export default function AllPageImageEffects({
 // Composant qui positionne un effet sur sa section correspondante
 function PositionedImageEffect({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dimensions, setDimensions] = useState({ top: 0, height: 0, width: 0 });
+  const [position, setPosition] = useState<{ top: number } | null>(null);
 
   useEffect(() => {
     const updatePosition = () => {
@@ -107,10 +107,8 @@ function PositionedImageEffect({ imageEffect, className }: { imageEffect: ImageE
         const rect = section.getBoundingClientRect();
         const scrollY = window.scrollY || window.pageYOffset;
 
-        setDimensions({
+        setPosition({
           top: rect.top + scrollY,
-          height: rect.height,
-          width: rect.width,
         });
 
         console.log(`📍 [PositionedImageEffect] Positioned "${imageEffect.sectionKey}" effect at top: ${rect.top + scrollY}px`);
@@ -134,17 +132,17 @@ function PositionedImageEffect({ imageEffect, className }: { imageEffect: ImageE
     };
   }, [imageEffect.sectionKey]);
 
-  if (dimensions.height === 0) {
+  if (!position) {
     return null;
   }
 
   return (
     <div
       ref={containerRef}
-      className="absolute left-0 right-0 pointer-events-none"
+      className="absolute left-0 right-0 w-full pointer-events-none"
       style={{
-        top: `${dimensions.top}px`,
-        height: `${dimensions.height}px`,
+        top: `${position.top}px`,
+        height: imageEffect.minHeight,
       }}
     >
       <SingleImageEffect

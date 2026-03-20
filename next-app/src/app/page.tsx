@@ -64,11 +64,14 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Slot pour effet after-hero */}
+      <div data-section="after-hero" className="relative" style={{ minHeight: '0px' }}></div>
+
       {/* Image Effects */}
       <AllPageImageEffects pageKey="home" />
 
       {/* Features Section */}
-      <section data-section="whyAudire" className="py-20 bg-white">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <span className="inline-block bg-secondary text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
@@ -100,6 +103,9 @@ export default async function Home() {
 
       {/* Testimonials Carousel */}
       <TestimonialsCarousel />
+
+      {/* Slot pour effet after-features */}
+      <div data-section="after-features" className="relative" style={{ minHeight: '0px' }}></div>
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-primary/10 to-primary-light/10">
