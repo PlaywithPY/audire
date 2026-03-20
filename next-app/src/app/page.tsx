@@ -98,11 +98,11 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Testimonials Carousel */}
-      <TestimonialsCarousel />
-
       {/* Image effect after features */}
       <ImageEffectsRenderer pageKey="home" sectionKey="after-features" />
+
+      {/* Testimonials Carousel */}
+      <TestimonialsCarousel />
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-primary/10 to-primary-light/10">

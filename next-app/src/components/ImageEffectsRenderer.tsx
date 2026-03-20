@@ -9,6 +9,9 @@ type ImageEffect = {
   effectType: 'parallax' | 'zoom' | 'fade' | 'slide' | 'fixed' | 'none';
   effectSpeed: number;
   effectScale: number;
+  effectDirection: string;
+  effectIntensity: number;
+  imagePosition: string;
   pageKey: string;
   sectionKey: string;
   order: number;
@@ -149,7 +152,12 @@ function ParallaxEffect({ imageEffect, className }: { imageEffect: ImageEffect; 
       if (isVisible) {
         // Calculer le déplacement en fonction de la position de scroll
         const relativeScroll = scrolled - elementTop + windowHeight;
-        const parallaxOffset = relativeScroll * (1 - imageEffect.effectSpeed);
+
+        // Déterminer la direction (up = négatif, down = positif)
+        const directionMultiplier = imageEffect.effectDirection === 'up' ? -1 : 1;
+
+        // Appliquer l'intensité à la vitesse de l'effet
+        const parallaxOffset = relativeScroll * (1 - imageEffect.effectSpeed) * imageEffect.effectIntensity * directionMultiplier;
 
         imageRef.current.style.transform = `translateY(${parallaxOffset * imageEffect.effectSpeed}px)`;
       }
@@ -159,7 +167,7 @@ function ParallaxEffect({ imageEffect, className }: { imageEffect: ImageEffect; 
     handleScroll(); // Initial call
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [imageEffect.effectSpeed]);
+  }, [imageEffect.effectSpeed, imageEffect.effectDirection, imageEffect.effectIntensity]);
 
   return (
     <section
@@ -182,6 +190,7 @@ function ParallaxEffect({ imageEffect, className }: { imageEffect: ImageEffect; 
             alt={imageEffect.alt || 'Image parallax'}
             fill
             className="object-cover"
+            style={{ objectPosition: imageEffect.imagePosition }}
             priority
             sizes="100vw"
           />
@@ -218,7 +227,10 @@ function ZoomEffect({ imageEffect, className }: { imageEffect: ImageEffect; clas
       if (isVisible) {
         const relativeScroll = scrolled - elementTop + windowHeight;
         const progress = Math.min(relativeScroll / (elementHeight + windowHeight), 1);
-        const scale = 1 + (imageEffect.effectScale - 1) * progress;
+
+        // Appliquer l'intensité au zoom
+        const scaleAmount = (imageEffect.effectScale - 1) * imageEffect.effectIntensity;
+        const scale = 1 + scaleAmount * progress;
 
         imageRef.current.style.transform = `scale(${scale})`;
       }
@@ -228,7 +240,7 @@ function ZoomEffect({ imageEffect, className }: { imageEffect: ImageEffect; clas
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [imageEffect.effectScale]);
+  }, [imageEffect.effectScale, imageEffect.effectIntensity]);
 
   return (
     <section
@@ -245,6 +257,7 @@ function ZoomEffect({ imageEffect, className }: { imageEffect: ImageEffect; clas
           alt={imageEffect.alt || 'Image zoom'}
           fill
           className="object-cover"
+          style={{ objectPosition: imageEffect.imagePosition }}
           priority
           sizes="100vw"
         />
@@ -280,12 +293,16 @@ function FadeEffect({ imageEffect, className }: { imageEffect: ImageEffect; clas
         const relativeScroll = scrolled - elementTop + windowHeight;
         const progress = Math.min(relativeScroll / (elementHeight + windowHeight), 1);
 
-        // Fade in puis fade out
+        // Fade in puis fade out - Appliquer l'intensité
+        // Plus l'intensité est élevée, plus les transitions sont rapides
+        const fadeInPoint = 0.3 / imageEffect.effectIntensity;
+        const fadeOutPoint = 1 - fadeInPoint;
+
         let opacity = 1;
-        if (progress < 0.3) {
-          opacity = progress / 0.3;
-        } else if (progress > 0.7) {
-          opacity = (1 - progress) / 0.3;
+        if (progress < fadeInPoint) {
+          opacity = progress / fadeInPoint;
+        } else if (progress > fadeOutPoint) {
+          opacity = (1 - progress) / fadeInPoint;
         }
 
         imageRef.current.style.opacity = `${opacity}`;
@@ -296,7 +313,7 @@ function FadeEffect({ imageEffect, className }: { imageEffect: ImageEffect; clas
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [imageEffect.effectIntensity]);
 
   return (
     <section
@@ -313,6 +330,7 @@ function FadeEffect({ imageEffect, className }: { imageEffect: ImageEffect; clas
           alt={imageEffect.alt || 'Image fade'}
           fill
           className="object-cover"
+          style={{ objectPosition: imageEffect.imagePosition }}
           priority
           sizes="100vw"
         />
@@ -374,7 +392,12 @@ function SlideEffect({ imageEffect, className }: { imageEffect: ImageEffect; cla
       if (isVisible) {
         const relativeScroll = scrolled - elementTop + windowHeight;
         const progress = relativeScroll / (elementHeight + windowHeight);
-        const translateX = (progress - 0.5) * 100 * imageEffect.effectSpeed;
+
+        // Déterminer la direction (left = négatif, right = positif)
+        const directionMultiplier = imageEffect.effectDirection === 'left' ? -1 : 1;
+
+        // Appliquer l'intensité et la direction
+        const translateX = (progress - 0.5) * 100 * imageEffect.effectSpeed * imageEffect.effectIntensity * directionMultiplier;
 
         imageRef.current.style.transform = `translateX(${translateX}px)`;
       }
@@ -384,7 +407,7 @@ function SlideEffect({ imageEffect, className }: { imageEffect: ImageEffect; cla
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [imageEffect.effectSpeed]);
+  }, [imageEffect.effectSpeed, imageEffect.effectDirection, imageEffect.effectIntensity]);
 
   return (
     <section
@@ -401,6 +424,7 @@ function SlideEffect({ imageEffect, className }: { imageEffect: ImageEffect; cla
           alt={imageEffect.alt || 'Image slide'}
           fill
           className="object-cover"
+          style={{ objectPosition: imageEffect.imagePosition }}
           priority
           sizes="100vw"
         />
@@ -429,6 +453,7 @@ function SimpleImage({ imageEffect, className }: { imageEffect: ImageEffect; cla
           alt={imageEffect.alt || 'Image'}
           fill
           className="object-cover"
+          style={{ objectPosition: imageEffect.imagePosition }}
           priority
           sizes="100vw"
         />
