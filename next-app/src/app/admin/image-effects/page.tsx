@@ -87,6 +87,26 @@ export default function ImageEffectsAdmin() {
     }
   }, [status, selectedPage]);
 
+  // Réinitialiser le formulaire quand on change de page
+  useEffect(() => {
+    setNewEffect({
+      imageUrl: '',
+      effectType: 'parallax',
+      effectSpeed: 0.5,
+      effectScale: 1.2,
+      effectDirection: 'down',
+      pageKey: selectedPage,
+      sectionKey: '',
+      order: 0,
+      isVisible: true,
+      alt: null,
+      overlayColor: null,
+      minHeight: '400px',
+    });
+    setShowNewForm(false);
+    setEditingEffect(null);
+  }, [selectedPage]);
+
   async function fetchAllPageKeys() {
     try {
       const res = await fetch('/api/admin/image-effects/all-pages');
@@ -152,11 +172,23 @@ export default function ImageEffectsAdmin() {
 
     setSaving(true);
     try {
-      await fetch('/api/admin/image-effects', {
+      const res = await fetch('/api/admin/image-effects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEffect),
       });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        if (res.status === 400 && errorData.error) {
+          alert(`❌ ${errorData.error}\n\nVérifiez que:\n• Le pageKey correspond bien à "${selectedPage}"\n• Le sectionKey "${newEffect.sectionKey}" n'existe pas déjà\n• Utilisez le bouton "🔧 Diagnostic" pour corriger les incohérences`);
+        } else {
+          alert('❌ Erreur lors de la création');
+        }
+        setSaving(false);
+        return;
+      }
+
       await fetchImageEffects();
       setShowNewForm(false);
       setNewEffect({ ...newEffectTemplate, pageKey: selectedPage });
@@ -208,14 +240,25 @@ export default function ImageEffectsAdmin() {
       <div className="container mx-auto px-6 py-8">
         {/* Instructions */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-          <h2 className="text-lg font-bold mb-3">📝 Mode d'emploi</h2>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li>• Ajoutez des <strong>images avec effets CSS</strong> entre chaque section de page</li>
-            <li>• Les effets disponibles : Parallax, Zoom au scroll, Fade, Fixed, Slide</li>
-            <li>• Utilisez le <strong>sectionKey</strong> pour identifier où placer l'image (ex: "hero-services")</li>
-            <li>• L'ordre détermine la position dans la page (0 = premier, 1 = deuxième, etc.)</li>
-            <li>• Vous pouvez ajouter un overlay de couleur pour améliorer la lisibilité du texte</li>
-          </ul>
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <h2 className="text-lg font-bold mb-3">📝 Mode d'emploi</h2>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li>• Ajoutez des <strong>images avec effets CSS</strong> entre chaque section de page</li>
+                <li>• Les effets disponibles : Parallax, Zoom au scroll, Fade, Fixed, Slide</li>
+                <li>• Utilisez le <strong>sectionKey</strong> pour identifier où placer l'image (ex: "hero-services")</li>
+                <li>• L'ordre détermine la position dans la page (0 = premier, 1 = deuxième, etc.)</li>
+                <li>• Vous pouvez ajouter un overlay de couleur pour améliorer la lisibilité du texte</li>
+              </ul>
+            </div>
+            <button
+              onClick={() => router.push('/admin/fix-image-effects')}
+              className="ml-4 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 whitespace-nowrap text-sm font-semibold"
+              title="Diagnostiquer et corriger les incohérences"
+            >
+              🔧 Diagnostic
+            </button>
+          </div>
         </div>
 
         {/* Sélecteur de page */}
@@ -254,6 +297,10 @@ export default function ImageEffectsAdmin() {
             </h2>
             <button
               onClick={() => {
+                if (!showNewForm) {
+                  // On ouvre le formulaire : le réinitialiser avec le bon pageKey
+                  setNewEffect({ ...newEffectTemplate, pageKey: selectedPage });
+                }
                 setShowNewForm(!showNewForm);
                 setEditingEffect(null);
               }}
@@ -266,9 +313,14 @@ export default function ImageEffectsAdmin() {
           {/* Formulaire nouveau/édition */}
           {(showNewForm || editingEffect) && currentEffect && (
             <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-300 rounded-lg p-6 mb-6">
-              <h3 className="text-lg font-bold mb-4">
-                {editingEffect ? '✏️ Modifier l\'effet' : '➕ Créer un nouvel effet'}
-              </h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold">
+                  {editingEffect ? '✏️ Modifier l\'effet' : '➕ Créer un nouvel effet'}
+                </h3>
+                <div className="text-sm bg-white px-4 py-2 rounded-lg border-2 border-blue-400 font-semibold">
+                  📄 Page: <span className="text-blue-700">{currentEffect.pageKey}</span>
+                </div>
+              </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Colonne gauche : Configuration */}
