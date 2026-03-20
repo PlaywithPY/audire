@@ -414,10 +414,26 @@ CREATE INDEX IF NOT EXISTS "CardImage_pageKey_idx" ON "CardImage"("pageKey");`}
                         setUploadModalOpen(true);
                       }}
                       className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                      title="Uploader une image"
                     >
                       📸
                     </button>
+                    <button
+                      onClick={() => {
+                        const updatedCard = { ...editingCard, imageUrl: '' };
+                        setEditingCard(updatedCard);
+                        saveCard(updatedCard);
+                      }}
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                      title="Supprimer l'image (fallback emoji)"
+                      disabled={!editingCard.imageUrl || saving}
+                    >
+                      🗑️
+                    </button>
                   </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Cliquez sur 🗑️ pour supprimer l'image et utiliser l'emoji de fallback
+                  </p>
                 </div>
 
                 <div>
