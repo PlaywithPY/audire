@@ -17,6 +17,10 @@ interface Product {
   imageUrl: string | null;
   imageAlt: string | null;
   isFeatured: boolean;
+  showBrand?: boolean;
+  showPrice?: boolean;
+  showShortDescription?: boolean;
+  showImage?: boolean;
 }
 
 interface SolutionData {
@@ -156,7 +160,7 @@ function SolutionDetailPanel({ solution, products }: { solution: SolutionData | 
                       href={`/products/${product.slug}`}
                       className="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-primary hover:shadow-lg transition-all group"
                     >
-                      {product.imageUrl ? (
+                      {product.showImage !== false && (product.imageUrl ? (
                         <div className="w-full h-40 mb-4 rounded-lg overflow-hidden bg-gray-100">
                           <img
                             src={product.imageUrl}
@@ -168,7 +172,7 @@ function SolutionDetailPanel({ solution, products }: { solution: SolutionData | 
                         <div className="w-full h-40 mb-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary-light/10 flex items-center justify-center">
                           <span className="text-6xl">🦻</span>
                         </div>
-                      )}
+                      ))}
                       {product.isFeatured && (
                         <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-semibold mb-2">
                           ⭐ Recommandé
@@ -177,11 +181,15 @@ function SolutionDetailPanel({ solution, products }: { solution: SolutionData | 
                       <h5 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">
                         {product.name}
                       </h5>
-                      <p className="text-sm text-gray-500 mb-3">{product.brand}</p>
-                      <p className="text-sm text-text-light mb-4 line-clamp-2">
-                        {product.shortDescription}
-                      </p>
-                      {(product.price || product.priceRange) && (
+                      {product.showBrand !== false && product.brand && (
+                        <p className="text-sm text-gray-500 mb-3">{product.brand}</p>
+                      )}
+                      {product.showShortDescription !== false && product.shortDescription && (
+                        <p className="text-sm text-text-light mb-4 line-clamp-2">
+                          {product.shortDescription}
+                        </p>
+                      )}
+                      {product.showPrice !== false && (product.price || product.priceRange) && (
                         <p className="text-primary font-semibold">
                           {product.price ? `${product.price}€` : product.priceRange}
                         </p>

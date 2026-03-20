@@ -10,35 +10,44 @@ type Props = {
 
 // Générer les métadonnées pour le SEO
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const product = await prisma.product.findUnique({
-    where: { slug: params.slug },
-  });
+  try {
+    const product = await prisma.product.findUnique({
+      where: { slug: params.slug },
+    });
 
-  if (!product) {
+    if (!product) {
+      return {
+        title: 'Produit non trouvé - Audire',
+      };
+    }
+
     return {
-      title: 'Produit non trouvé - Audire',
+      title: product.metaTitle || `${product.name} - Audire`,
+      description:
+        product.metaDescription || product.shortDescription || `Découvrez ${product.name}`,
+    };
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+    return {
+      title: 'Produit - Audire',
+      description: 'Centre auditif indépendant en province de Liège',
     };
   }
-
-  return {
-    title: product.metaTitle || `${product.name} - Audire`,
-    description:
-      product.metaDescription || product.shortDescription || `Découvrez ${product.name}`,
-  };
 }
 
 export default async function ProductPage({ params }: Props) {
-  const product = await prisma.product.findUnique({
-    where: { slug: params.slug },
-    include: {
-      hearingLossCategory: true,
-      deviceType: true,
-    },
-  });
+  try {
+    const product = await prisma.product.findUnique({
+      where: { slug: params.slug },
+      include: {
+        hearingLossCategory: true,
+        deviceType: true,
+      },
+    });
 
-  if (!product || !product.isVisible) {
-    notFound();
-  }
+    if (!product || !product.isVisible) {
+      notFound();
+    }
 
   // Parser les features, pros et cons
   let features: Record<string, any> = {};
@@ -299,4 +308,8 @@ export default async function ProductPage({ params }: Props) {
       <Footer />
     </>
   );
+  } catch (error) {
+    console.error('Error loading product page:', error);
+    notFound();
+  }
 }
