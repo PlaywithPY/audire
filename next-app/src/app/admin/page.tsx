@@ -7,6 +7,7 @@ import Link from 'next/link';
 import VisualPageBuilder from '@/components/VisualPageBuilder';
 import WYSIWYGEditor from '@/components/WYSIWYGEditor';
 import ImagePicker from '@/components/ImagePicker';
+import AdminHeader from '@/components/AdminHeader';
 
 type ThemeColors = {
   primary: string;
@@ -629,28 +630,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 py-4 px-6">
-        <div className="container mx-auto flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold">🛠️ Dashboard Admin - Audire</h1>
-            <div className="flex gap-4 mt-2 text-sm">
-              <Link href="/admin/feature-cards" className="text-primary hover:underline">
-                🎨 Feature Cards
-              </Link>
-              <Link href="/admin/solutions" className="text-primary hover:underline">
-                📋 Solutions détaillées
-              </Link>
-            </div>
-          </div>
-          <Link
-            href="/"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-          >
-            ← Retour au site
-          </Link>
-        </div>
-      </header>
+      <AdminHeader currentPage="dashboard" title="🛠️ Dashboard Admin - Audire" />
 
       <div className="container mx-auto px-6 py-8">
         {/* Onglets */}

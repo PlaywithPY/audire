@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ImageUploadModal from '@/components/ImageUploadModal';
+import AdminHeader from '@/components/AdminHeader';
 
 type Solution = {
   id: number;
@@ -213,15 +214,7 @@ export default function SolutionsAdmin() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">📋 Gestion des Solutions Auditives</h1>
-          <Link href="/admin" className="text-primary hover:underline">
-            ← Retour admin
-          </Link>
-        </div>
-      </header>
+      <AdminHeader currentPage="solutions" title="📋 Gestion des Solutions Auditives" />
 
       <div className="container mx-auto px-6 py-8">
         {/* Instructions */}

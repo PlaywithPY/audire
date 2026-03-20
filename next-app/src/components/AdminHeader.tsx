@@ -1,0 +1,44 @@
+import Link from 'next/link';
+
+interface AdminHeaderProps {
+  currentPage?: 'dashboard' | 'feature-cards' | 'solutions' | 'image-effects';
+  title?: string;
+}
+
+export default function AdminHeader({ currentPage = 'dashboard', title }: AdminHeaderProps) {
+  const links = [
+    { href: '/admin', label: '🏠 Dashboard', key: 'dashboard' },
+    { href: '/admin/feature-cards', label: '🎨 Feature Cards', key: 'feature-cards' },
+    { href: '/admin/solutions', label: '📋 Solutions', key: 'solutions' },
+    { href: '/admin/image-effects', label: '🖼️ Images & Effets', key: 'image-effects' },
+  ];
+
+  return (
+    <header className="bg-white border-b border-gray-200 py-4 px-6 sticky top-0 z-50 shadow-sm">
+      <div className="container mx-auto flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-primary">
+            {title || '🛠️ Admin Audire'}
+          </h1>
+          <div className="flex gap-4 mt-2 text-sm">
+            {links.filter(link => link.key !== currentPage).map((link) => (
+              <Link
+                key={link.key}
+                href={link.href}
+                className="text-gray-600 hover:text-primary hover:underline transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+        <Link
+          href="/"
+          className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark transition"
+        >
+          ← Retour au site
+        </Link>
+      </div>
+    </header>
+  );
+}
