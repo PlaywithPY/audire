@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface ImageUploadModalProps {
   isOpen: boolean;
@@ -16,11 +16,11 @@ export default function ImageUploadModal({ isOpen, onClose, onImageSelected }: I
   const [previewUrl, setPreviewUrl] = useState<string>('');
 
   // Charger les images existantes quand on ouvre le modal
-  useState(() => {
+  useEffect(() => {
     if (isOpen && images.length === 0) {
       loadImages();
     }
-  });
+  }, [isOpen]);
 
   async function loadImages() {
     setLoading(true);

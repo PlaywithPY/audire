@@ -8,6 +8,7 @@ import VisualPageBuilder from '@/components/VisualPageBuilder';
 import WYSIWYGEditor from '@/components/WYSIWYGEditor';
 import ImagePicker from '@/components/ImagePicker';
 import AdminHeader from '@/components/AdminHeader';
+import BlockSelector from '@/components/BlockSelector';
 
 type ThemeColors = {
   primary: string;
@@ -162,6 +163,7 @@ export default function AdminDashboard() {
   const [viewMode, setViewMode] = useState<'list' | 'split' | 'wysiwyg'>('wysiwyg');
   const [showImagePicker, setShowImagePicker] = useState(false);
   const [imagePickerCallback, setImagePickerCallback] = useState<((url: string) => void) | null>(null);
+  const [showBlockSelector, setShowBlockSelector] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -1198,7 +1200,15 @@ export default function AdminDashboard() {
               {/* Formulaire nouveau bloc */}
               {showNewBlockForm && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                  <h3 className="font-bold mb-3">Créer un nouveau bloc</h3>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-bold">Créer un nouveau bloc</h3>
+                    <button
+                      onClick={() => setShowBlockSelector(true)}
+                      className="bg-blue-500 text-white text-sm px-3 py-1.5 rounded hover:bg-blue-600 transition"
+                    >
+                      📋 Copier depuis un bloc existant
+                    </button>
+                  </div>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold mb-2">Identifiant (blockKey)</label>
@@ -1209,6 +1219,9 @@ export default function AdminDashboard() {
                         placeholder="ex: hero-title"
                         className="w-full px-3 py-2 border border-gray-300 rounded"
                       />
+                      <p className="text-xs text-gray-500 mt-1">
+                        💡 Ou cliquez sur "Copier depuis un bloc existant" pour copier un bloc
+                      </p>
                     </div>
                     <div>
                       <label className="block text-sm font-semibold mb-2">Type de bloc</label>
@@ -2074,6 +2087,24 @@ export default function AdminDashboard() {
             imagePickerCallback(url);
             setImagePickerCallback(null);
           }
+        }}
+      />
+
+      {/* Block Selector Modal */}
+      <BlockSelector
+        isOpen={showBlockSelector}
+        onClose={() => setShowBlockSelector(false)}
+        currentPageKey={selectedPage}
+        onSelect={(block) => {
+          // Copier les données du bloc sélectionné dans le formulaire
+          setNewBlock({
+            ...newBlock,
+            blockKey: block.blockKey + '-copy',
+            blockType: block.blockType,
+            content: block.content,
+            order: blocks.length,
+          });
+          setShowBlockSelector(false);
         }}
       />
     </div>
