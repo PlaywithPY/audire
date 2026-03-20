@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 
         return {
           cardKey: defaultCard.cardKey,
-          imageSrc: dbCard.imageUrl !== undefined ? dbCard.imageUrl : defaultCard.imageSrc,
+          imageSrc: dbCard.imageUrl || '',
           title: dbCard.title || defaultCard.title,
           description: dbCard.description || defaultCard.description,
           imageAlt: dbCard.imageAlt || defaultCard.imageAlt,
