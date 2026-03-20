@@ -367,16 +367,22 @@ CREATE INDEX IF NOT EXISTS "CardImage_pageKey_idx" ON "CardImage"("pageKey");`}
                 <div className="bg-gray-100 rounded-lg p-4">
                   <div className="bg-white rounded-xl shadow-md overflow-hidden">
                     {/* Image avec le centrage réel */}
-                    <div className="h-48 bg-gray-200 overflow-hidden">
-                      <img
-                        src={editingCard.imageUrl}
-                        alt={editingCard.imageAlt || editingCard.title || 'Preview'}
-                        className="w-full h-full object-cover"
-                        style={{ objectPosition: editingCard.imagePosition }}
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                      />
+                    <div className="h-48 bg-gradient-to-br from-primary/20 to-primary-light/20 overflow-hidden relative">
+                      {editingCard.imageUrl ? (
+                        <img
+                          src={editingCard.imageUrl}
+                          alt={editingCard.imageAlt || editingCard.title || 'Preview'}
+                          className="w-full h-full object-cover"
+                          style={{ objectPosition: editingCard.imagePosition }}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-6xl animate-float">{editingCard.fallbackEmoji}</span>
+                        </div>
+                      )}
                     </div>
                     {/* Contenu de la card */}
                     <div className="p-6">
@@ -414,10 +420,21 @@ CREATE INDEX IF NOT EXISTS "CardImage_pageKey_idx" ON "CardImage"("pageKey");`}
                         setUploadModalOpen(true);
                       }}
                       className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                      title="Uploader une nouvelle image"
                     >
                       📸
                     </button>
+                    <button
+                      onClick={() => setEditingCard({ ...editingCard, imageUrl: '' })}
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                      title="Enlever l'image et utiliser l'emoji"
+                    >
+                      🗑️
+                    </button>
                   </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    💡 Cliquez sur 🗑️ pour enlever l'image et afficher l'emoji à la place
+                  </p>
                 </div>
 
                 <div>
