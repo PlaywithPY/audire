@@ -124,7 +124,7 @@ function applyBackgrounds(pageBackgrounds, currentPage) {
     if (!element) return;
 
     // Appliquer l'image de fond avec un overlay pour la lisibilité
-    element.style.backgroundImage = `linear-gradient(135deg, rgba(255, 140, 66, 0.88), rgba(230, 122, 46, 0.91)), url('${bgUrl}')`;
+    element.style.backgroundImage = `linear-gradient(rgba(255, 140, 66, 0.85), rgba(255, 140, 66, 0.85)), url('${bgUrl}')`;
     element.style.backgroundSize = 'cover';
     element.style.backgroundPosition = 'center';
     element.style.backgroundRepeat = 'no-repeat';
