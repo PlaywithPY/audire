@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContactInfo from "@/components/ContactInfo";
 import ContactHours from "@/components/ContactHours";
+import AllPageImageEffects from "@/components/AllPageImageEffects";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -164,6 +165,9 @@ export default function Contact() {
             </div>
           </div>
         </section>
+
+        {/* Image Effects */}
+        <AllPageImageEffects pageKey="contact" />
       </main>
       <Footer />
     </>

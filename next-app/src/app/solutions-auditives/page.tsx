@@ -3,7 +3,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ImageFeatureCard from "@/components/ImageFeatureCard";
-import ImageEffectsRenderer from "@/components/ImageEffectsRenderer";
+import AllPageImageEffects from "@/components/AllPageImageEffects";
 import { useState, useEffect } from "react";
 import { CardData } from "@/lib/card-helpers";
 
@@ -363,11 +363,8 @@ export default function SolutionsAuditives() {
           </div>
         </section>
 
-        {/* Image avec effet après Hero */}
-        <ImageEffectsRenderer
-          pageKey="solutions-auditives"
-          sectionKey="after-hero"
-        />
+        {/* Image Effects */}
+        <AllPageImageEffects pageKey="solutions-auditives" />
 
         {/* Marques */}
         <section className="py-20 bg-white">

@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ImageFeatureCard from "@/components/ImageFeatureCard";
-import ImageEffectsRenderer from "@/components/ImageEffectsRenderer";
+import AllPageImageEffects from "@/components/AllPageImageEffects";
 import { Metadata } from "next";
 import { getFeatureCards } from "@/lib/card-helpers";
 
@@ -49,11 +49,8 @@ export default async function TestAuditifGratuit() {
           </div>
         </section>
 
-        {/* Image avec effet après Hero */}
-        <ImageEffectsRenderer
-          pageKey="test-auditif-gratuit"
-          sectionKey="after-hero"
-        />
+        {/* Image Effects */}
+        <AllPageImageEffects pageKey="test-auditif-gratuit" />
 
         {/* Pourquoi faire un test */}
         <section className="py-20 bg-white">

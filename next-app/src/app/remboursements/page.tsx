@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AllPageImageEffects from "@/components/AllPageImageEffects";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -168,6 +169,9 @@ export default function Remboursements() {
             </a>
           </div>
         </section>
+
+        {/* Image Effects */}
+        <AllPageImageEffects pageKey="remboursements" />
       </main>
       <Footer />
     </>

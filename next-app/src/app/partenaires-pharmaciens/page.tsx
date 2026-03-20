@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ImageFeatureCard from "@/components/ImageFeatureCard";
+import AllPageImageEffects from "@/components/AllPageImageEffects";
 import { Metadata } from "next";
 import { getFeatureCards } from "@/lib/card-helpers";
 
@@ -162,6 +163,9 @@ export default async function PartenairesPharmaciens() {
             </a>
           </div>
         </section>
+
+        {/* Image Effects */}
+        <AllPageImageEffects pageKey="partenaires-pharmaciens" />
       </main>
       <Footer />
     </>

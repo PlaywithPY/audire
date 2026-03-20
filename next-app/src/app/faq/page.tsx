@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FAQAccordion from "@/components/FAQAccordion";
+import AllPageImageEffects from "@/components/AllPageImageEffects";
 
 const faqs = [
   {
@@ -90,6 +91,9 @@ export default function FAQ() {
             </a>
           </div>
         </section>
+
+        {/* Image Effects */}
+        <AllPageImageEffects pageKey="faq" />
       </main>
       <Footer />
     </>
