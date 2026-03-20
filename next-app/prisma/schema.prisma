@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -26,7 +26,7 @@ model Centre {
   phoneFixe    String   // Téléphone fixe
   phoneMobile  String?  // Téléphone mobile (GSM)
   email        String   // Email du centre
-  address      String   // Adresse complète
+  address      String   @db.Text // Adresse complète
   postalCode   String   // Code postal
   city         String   // Ville
   isActive     Boolean  @default(true) // Centre actif ou non
@@ -79,7 +79,7 @@ model CardImage {
   imagePosition String   @default("center center") // Position de l'image (object-position CSS)
   href          String?  // Lien vers une page
   title         String?  // Titre de la card
-  description   String?  // Description de la card
+  description   String?  @db.Text // Description de la card
   imageAlt      String?  // Texte alternatif pour l'image
   updatedAt     DateTime @updatedAt
 
@@ -101,8 +101,8 @@ model ContentBlock {
   pageKey     String   // Page où se trouve le bloc (ex: "home", "contact")
   blockKey    String   // Identifiant unique du bloc (ex: "hero-title", "about-text")
   blockType   String   // Type de bloc: "title", "text", "image", "button", "html"
-  content     String   // Contenu du bloc (texte, URL, HTML, etc.)
-  metadata    String?  // Métadonnées JSON (style, position, etc.)
+  content     String   @db.Text // Contenu du bloc (texte, URL, HTML, etc.)
+  metadata    String?  @db.Text // Métadonnées JSON (style, position, etc.)
   order       Int      @default(0) // Ordre d'affichage
   isVisible   Boolean  @default(true)
   updatedAt   DateTime @updatedAt
@@ -116,7 +116,7 @@ model ContentBlock {
 model Testimonial {
   id          Int      @id @default(autoincrement())
   name        String   // Nom du client (ou initiales)
-  text        String   // Texte de l'avis
+  text        String   @db.Text // Texte de l'avis
   rating      Int      @default(5) // Note sur 5
   location    String?  // Ville (ex: "Liège")
   isVisible   Boolean  @default(true)
@@ -125,88 +125,4 @@ model Testimonial {
   updatedAt   DateTime @updatedAt
 
   @@index([isVisible, isFeatured])
-}
-
-// Catégories de perte auditive
-model HearingLossCategory {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique // Ex: "Légère", "Moyenne", "Sévère", "Profonde"
-  slug        String    @unique // Ex: "legere", "moyenne", "severe", "profonde"
-  minDb       Int?      // Seuil minimal en dB (ex: 26)
-  maxDb       Int?      // Seuil maximal en dB (ex: 40)
-  description String?
-  order       Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  products    Product[]
-
-  @@index([order])
-}
-
-// Types d'appareils auditifs
-model DeviceType {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique // Ex: "Contour d'oreille", "Intra-auriculaire", "RIC"
-  slug        String    @unique // Ex: "contour", "intra", "ric"
-  description String?
-  order       Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  products    Product[]
-
-  @@index([order])
-}
-
-// Produits (appareils auditifs)
-model Product {
-  id                    Int                  @id @default(autoincrement())
-  name                  String               // Nom du produit (ex: "Phonak Virto R Infinio")
-  slug                  String               @unique // URL-friendly (ex: "phonak-virto-r-infinio")
-  brand                 String               // Marque (ex: "Phonak", "Oticon", "Bernafon")
-  model                 String?              // Modèle spécifique
-  shortDescription      String               // Description courte pour les listes
-  fullDescription       String?              // Description complète pour la page détail
-  price                 Float?               // Prix unitaire (optionnel)
-  priceRange            String?              // Fourchette de prix (ex: "1500€ - 2500€")
-  imageUrl              String?              // Image principale du produit
-  imagePosition         String               @default("center center") // Position de l'image
-  imageAlt              String?              // Texte alternatif pour l'image
-  isVisible             Boolean              @default(true)
-  isFeatured            Boolean              @default(false) // Produit mis en avant
-  order                 Int                  @default(0) // Ordre d'affichage
-
-  // Contrôles de visibilité des informations
-  showBrand             Boolean              @default(true) // Afficher la marque
-  showPrice             Boolean              @default(true) // Afficher le prix/fourchette
-  showShortDescription  Boolean              @default(true) // Afficher la description courte
-  showFullDescription   Boolean              @default(true) // Afficher la description complète
-  showImage             Boolean              @default(true) // Afficher l'image
-  showFeatures          Boolean              @default(true) // Afficher les caractéristiques
-  showProsCons          Boolean              @default(true) // Afficher avantages/inconvénients
-  showDeviceType        Boolean              @default(true) // Afficher le type d'appareil
-  showHearingLossLevel  Boolean              @default(true) // Afficher le niveau de perte auditive
-
-  // Relations
-  hearingLossCategoryId Int?
-  hearingLossCategory   HearingLossCategory? @relation(fields: [hearingLossCategoryId], references: [id])
-  deviceTypeId          Int?
-  deviceType            DeviceType?          @relation(fields: [deviceTypeId], references: [id])
-
-  // Caractéristiques techniques (JSON flexible)
-  features              String?              // JSON: {"bluetooth": true, "rechargeable": true, "waterproof": "IP68", etc.}
-
-  // Avantages et inconvénients
-  pros                  String?              // JSON array: ["Avantage 1", "Avantage 2"]
-  cons                  String?              // JSON array: ["Inconvénient 1", "Inconvénient 2"]
-
-  // SEO
-  metaTitle             String?
-  metaDescription       String?             
-  createdAt             DateTime             @default(now())
-  updatedAt             DateTime             @updatedAt
-
-  @@index([isVisible, isFeatured])
-  @@index([brand])
-  @@index([slug])
-  @@index([order])
 }

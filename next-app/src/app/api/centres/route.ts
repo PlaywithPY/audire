@@ -42,8 +42,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(centres);
   } catch (error) {
     console.error('Erreur lors de la récupération des centres:', error);
-    // Return empty array instead of error object to prevent client-side crashes
-    return NextResponse.json([]);
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }
 
