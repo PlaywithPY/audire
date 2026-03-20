@@ -149,6 +149,8 @@ model ImageEffect {
   effectSpeed      Float    @default(0.5) // Vitesse de l'effet parallax (0.1 à 1.0)
   effectScale      Float    @default(1.2) // Scale pour l'effet zoom (1.0 à 1.5)
   effectDirection  String   @default("down") // Direction de l'effet: up, down, left, right
+  effectIntensity  Float    @default(1.0) // Intensité de l'effet (0.1 = très subtil, 2.0 = très prononcé)
+  imagePosition    String   @default("center center") // Position de l'image (object-position CSS)
   pageKey          String   // Page où se trouve l'effet (ex: "home", "solutions-auditives")
   sectionKey       String   // Identifiant de la section (ex: "hero-services", "about-team")
   order            Int      @default(0) // Ordre d'affichage dans la page

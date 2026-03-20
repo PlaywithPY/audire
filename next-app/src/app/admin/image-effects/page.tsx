@@ -14,6 +14,8 @@ type ImageEffect = {
   effectSpeed: number; // 0.1 à 1.0 pour parallax
   effectScale: number; // 1.0 à 1.5 pour zoom
   effectDirection: 'up' | 'down' | 'left' | 'right'; // direction de l'effet
+  effectIntensity: number; // 0.1 à 2.0 - intensité de l'effet
+  imagePosition: string; // position de l'image (object-position CSS)
   pageKey: string;
   sectionKey: string; // identifiant de la section (ex: "hero-services", "about-team")
   order: number; // ordre d'affichage dans la page
@@ -63,6 +65,8 @@ export default function ImageEffectsAdmin() {
     effectSpeed: 0.5,
     effectScale: 1.2,
     effectDirection: 'down',
+    effectIntensity: 1.0,
+    imagePosition: 'center center',
     pageKey: selectedPage,
     sectionKey: '',
     order: 0,
@@ -95,6 +99,8 @@ export default function ImageEffectsAdmin() {
       effectSpeed: 0.5,
       effectScale: 1.2,
       effectDirection: 'down',
+      effectIntensity: 1.0,
+      imagePosition: 'center center',
       pageKey: selectedPage,
       sectionKey: '',
       order: 0,
@@ -428,6 +434,69 @@ export default function ImageEffectsAdmin() {
                     </select>
                     <p className="text-xs text-gray-500 mt-1">
                       Direction du mouvement de l'effet (parallax, slide, etc.)
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold mb-2">
+                      💪 Intensité de l'effet: {currentEffect.effectIntensity}
+                    </label>
+                    <input
+                      type="range"
+                      min="0.1"
+                      max="2"
+                      step="0.1"
+                      value={currentEffect.effectIntensity}
+                      onChange={(e) => {
+                        const value = parseFloat(e.target.value);
+                        if (showNewForm) {
+                          setNewEffect({ ...newEffect, effectIntensity: value });
+                        } else if (editingEffect) {
+                          setEditingEffect({ ...editingEffect, effectIntensity: value });
+                        }
+                      }}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Contrôle l'intensité de tous les effets (0.1 = très subtil, 1.0 = normal, 2.0 = très prononcé)
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold mb-2">🎯 Position de l'image</label>
+                    <input
+                      type="text"
+                      value={showNewForm ? newEffect.imagePosition : editingEffect?.imagePosition || 'center center'}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (showNewForm) {
+                          setNewEffect({ ...newEffect, imagePosition: value });
+                        } else if (editingEffect) {
+                          setEditingEffect({ ...editingEffect, imagePosition: value });
+                        }
+                      }}
+                      className="w-full border border-gray-300 rounded px-4 py-2"
+                      placeholder="center center"
+                    />
+                    <div className="flex gap-2 mt-2">
+                      {['center center', 'center 30%', 'center top', 'center bottom', 'left center', 'right center'].map((pos) => (
+                        <button
+                          key={pos}
+                          onClick={() => {
+                            if (showNewForm) {
+                              setNewEffect({ ...newEffect, imagePosition: pos });
+                            } else if (editingEffect) {
+                              setEditingEffect({ ...editingEffect, imagePosition: pos });
+                            }
+                          }}
+                          className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300"
+                        >
+                          {pos}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Contrôle le centrage de l'image (comme feature-cards)
                     </p>
                   </div>
 
