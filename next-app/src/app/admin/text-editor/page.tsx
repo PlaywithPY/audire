@@ -31,60 +31,111 @@ const pageDefinitions: PageDefinition[] = [
     pageKey: 'home',
     pageLabel: '🏠 Accueil',
     texts: [
-      { textKey: 'hero-title', label: 'Titre principal', defaultContent: 'Bienvenue chez Audire', type: 'text' },
-      { textKey: 'hero-subtitle', label: 'Sous-titre', defaultContent: 'Votre audition, notre priorité', type: 'text' },
-      { textKey: 'hero-description', label: 'Description héro', defaultContent: 'Découvrez nos solutions auditives sur mesure', type: 'textarea', rows: 3 },
-      { textKey: 'about-title', label: 'Titre À propos', defaultContent: 'À propos d\'Audire', type: 'text' },
-      { textKey: 'about-description', label: 'Description À propos', defaultContent: 'Nous sommes des experts...', type: 'textarea', rows: 5 },
-      { textKey: 'services-title', label: 'Titre Services', defaultContent: 'Nos Services', type: 'text' },
-      { textKey: 'services-description', label: 'Description Services', defaultContent: 'Découvrez nos services...', type: 'textarea', rows: 3 },
+      { textKey: 'hero-title', label: 'Titre principal (H1)', defaultContent: 'Mieux entendre, simplement.', type: 'text' },
+      { textKey: 'hero-kicker', label: 'Badge/Kicker', defaultContent: 'Centre auditif indépendant • Province de Liège', type: 'text' },
+      { textKey: 'section-1-title', label: 'Titre section "Pourquoi Audire"', defaultContent: 'Pourquoi choisir Audire ?', type: 'text' },
+      { textKey: 'section-2-title', label: 'Titre section CTA', defaultContent: 'Prêt à mieux entendre ?', type: 'text' },
+      { textKey: 'description-1', label: 'Description hero', defaultContent: 'Chez Audire, on commence par comprendre votre quotidien et vos difficultés. Puis on vous propose une suite claire et sans pression. Test auditif gratuit, explications pédagogiques, réglages et suivi dans la durée.', type: 'textarea', rows: 5 },
+      { textKey: 'description-2', label: 'Description section "Pourquoi Audire"', defaultContent: 'Parce que bien entendre, ce n\'est pas qu\'une question d\'appareil. C\'est une question d\'accompagnement, d\'écoute et de suivi dans la durée.', type: 'textarea', rows: 5 },
+      { textKey: 'description-3', label: 'Description CTA', defaultContent: 'Prenez rendez-vous pour un test auditif gratuit et sans engagement.', type: 'textarea', rows: 3 },
     ]
   },
   {
-    pageKey: 'about',
-    pageLabel: '📖 À propos',
+    pageKey: 'test-auditif-gratuit',
+    pageLabel: '👂 Test Auditif Gratuit',
     texts: [
-      { textKey: 'page-title', label: 'Titre de la page', defaultContent: 'À propos d\'Audire', type: 'text' },
-      { textKey: 'intro', label: 'Introduction', defaultContent: 'Qui sommes-nous ?', type: 'textarea', rows: 5 },
-      { textKey: 'mission-title', label: 'Titre Mission', defaultContent: 'Notre Mission', type: 'text' },
-      { textKey: 'mission-description', label: 'Description Mission', defaultContent: 'Notre mission est de...', type: 'textarea', rows: 5 },
-      { textKey: 'values-title', label: 'Titre Valeurs', defaultContent: 'Nos Valeurs', type: 'text' },
-      { textKey: 'values-description', label: 'Description Valeurs', defaultContent: 'Nous croyons en...', type: 'textarea', rows: 5 },
-    ]
-  },
-  {
-    pageKey: 'solutions',
-    pageLabel: '🎧 Solutions',
-    texts: [
-      { textKey: 'page-title', label: 'Titre de la page', defaultContent: 'Solutions Auditives', type: 'text' },
-      { textKey: 'intro', label: 'Introduction', defaultContent: 'Découvrez nos solutions...', type: 'textarea', rows: 5 },
-      { textKey: 'contour-title', label: 'Titre Contour', defaultContent: 'Le contour d\'oreille', type: 'text' },
-      { textKey: 'contour-description', label: 'Description Contour', defaultContent: 'Description du contour...', type: 'textarea', rows: 5 },
-      { textKey: 'intra-title', label: 'Titre Intra', defaultContent: 'L\'intra-auriculaire', type: 'text' },
-      { textKey: 'intra-description', label: 'Description Intra', defaultContent: 'Description de l\'intra...', type: 'textarea', rows: 5 },
-    ]
-  },
-  {
-    pageKey: 'contact',
-    pageLabel: '📞 Contact',
-    texts: [
-      { textKey: 'page-title', label: 'Titre de la page', defaultContent: 'Contactez-nous', type: 'text' },
-      { textKey: 'intro', label: 'Introduction', defaultContent: 'N\'hésitez pas à nous contacter', type: 'textarea', rows: 3 },
-      { textKey: 'address-title', label: 'Titre Adresse', defaultContent: 'Notre adresse', type: 'text' },
-      { textKey: 'hours-title', label: 'Titre Horaires', defaultContent: 'Nos horaires', type: 'text' },
-      { textKey: 'form-title', label: 'Titre Formulaire', defaultContent: 'Envoyez-nous un message', type: 'text' },
+      { textKey: 'hero-title', label: 'Titre principal (H1)', defaultContent: 'Test auditif gratuit', type: 'text' },
+      { textKey: 'section-1-title', label: 'Titre section 1', defaultContent: 'Pourquoi faire un test auditif ?', type: 'text' },
+      { textKey: 'section-2-title', label: 'Titre section 2', defaultContent: 'Comment se déroule le test ?', type: 'text' },
+      { textKey: 'section-3-title', label: 'Titre section 3', defaultContent: 'Réservez votre test gratuit', type: 'text' },
+      { textKey: 'section-4-title', label: 'Titre section 4', defaultContent: 'Ou contactez-nous directement', type: 'text' },
+      { textKey: 'description-1', label: 'Description hero', defaultContent: 'Un test complet de 30 minutes pour comprendre votre audition. Gratuit, sans engagement, et expliqué avec des mots simples.', type: 'textarea', rows: 3 },
+      { textKey: 'description-2', label: 'Description section 1', defaultContent: 'La perte auditive est progressive et souvent difficile à détecter soi-même.', type: 'textarea', rows: 3 },
+      { textKey: 'description-3', label: 'Description section 2', defaultContent: 'Un test simple, indolore et complet en 30 minutes.', type: 'textarea', rows: 3 },
+      { textKey: 'description-4', label: 'Description section 3', defaultContent: 'Remplissez le formulaire ci-dessous et nous vous recontactons rapidement pour fixer un rendez-vous.', type: 'textarea', rows: 3 },
+      { textKey: 'description-5', label: 'Description section 4', defaultContent: 'Vous préférez nous appeler ? Nous sommes là pour vous.', type: 'textarea', rows: 3 },
     ]
   },
   {
     pageKey: 'notre-accompagnement',
-    pageLabel: '🤝 Notre accompagnement',
+    pageLabel: '🤝 Notre Accompagnement',
     texts: [
-      { textKey: 'page-title', label: 'Titre de la page', defaultContent: 'Notre Accompagnement', type: 'text' },
-      { textKey: 'intro', label: 'Introduction', defaultContent: 'Un accompagnement personnalisé', type: 'textarea', rows: 5 },
-      { textKey: 'process-title', label: 'Titre Processus', defaultContent: 'Notre processus', type: 'text' },
-      { textKey: 'process-description', label: 'Description Processus', defaultContent: 'Découvrez comment nous travaillons...', type: 'textarea', rows: 5 },
+      { textKey: 'hero-title', label: 'Titre principal (H1)', defaultContent: 'Notre accompagnement', type: 'text' },
+      { textKey: 'section-1-title', label: 'Titre section 1', defaultContent: 'Comment ça se passe ?', type: 'text' },
+      { textKey: 'section-2-title', label: 'Titre section 2', defaultContent: 'Ce qui nous différencie', type: 'text' },
+      { textKey: 'section-3-title', label: 'Titre section 3', defaultContent: 'Prêt à commencer ?', type: 'text' },
+      { textKey: 'description-1', label: 'Description hero', defaultContent: 'Chez Audire, vous n\'êtes pas un numéro. Nous prenons le temps de comprendre votre quotidien, vos difficultés et vos attentes pour vous proposer un accompagnement vraiment personnalisé.', type: 'textarea', rows: 5 },
+      { textKey: 'description-2', label: 'Description section 1', defaultContent: 'Un accompagnement en plusieurs étapes, à votre rythme et sans pression.', type: 'textarea', rows: 3 },
+      { textKey: 'description-3', label: 'Description section 2', defaultContent: 'Pourquoi nos clients nous recommandent à leurs proches ?', type: 'textarea', rows: 3 },
+      { textKey: 'description-4', label: 'Description section 3', defaultContent: 'Prenez rendez-vous pour un test auditif gratuit et sans engagement.', type: 'textarea', rows: 3 },
     ]
-  }
+  },
+  {
+    pageKey: 'solutions-auditives',
+    pageLabel: '🎧 Solutions Auditives',
+    texts: [
+      { textKey: 'hero-title', label: 'Titre principal (H1)', defaultContent: 'Solutions auditives', type: 'text' },
+      { textKey: 'section-1-title', label: 'Titre section 1', defaultContent: 'Oticon & Bernafon', type: 'text' },
+      { textKey: 'section-2-title', label: 'Titre section 2', defaultContent: 'Types d\'appareils', type: 'text' },
+      { textKey: 'section-3-title', label: 'Titre section 3', defaultContent: 'Trouvez votre solution', type: 'text' },
+      { textKey: 'description-1', label: 'Description hero', defaultContent: 'Chez Audire, nous proposons des solutions Oticon et Bernafon, deux marques reconnues pour leur qualité et leur innovation. Nos appareils sont discrets, performants et adaptés à votre quotidien.', type: 'textarea', rows: 5 },
+      { textKey: 'description-2', label: 'Description section 1', defaultContent: 'Deux marques de référence, reconnues dans le monde entier pour leur innovation et leur qualité.', type: 'textarea', rows: 3 },
+      { textKey: 'description-3', label: 'Description section 2', defaultContent: 'Cliquez sur une carte pour découvrir tous les détails de chaque solution auditive.', type: 'textarea', rows: 3 },
+      { textKey: 'description-4', label: 'Description section 3', defaultContent: 'Chaque personne est unique. Nous prenons le temps de comprendre vos besoins pour vous proposer la solution la plus adaptée.', type: 'textarea', rows: 3 },
+    ]
+  },
+  {
+    pageKey: 'remboursements',
+    pageLabel: '💰 Remboursements',
+    texts: [
+      { textKey: 'hero-title', label: 'Titre principal (H1)', defaultContent: 'Remboursements', type: 'text' },
+      { textKey: 'section-1-title', label: 'Titre section 1', defaultContent: 'Comment ça marche ?', type: 'text' },
+      { textKey: 'section-2-title', label: 'Titre section 2', defaultContent: 'Interventions INAMI', type: 'text' },
+      { textKey: 'section-3-title', label: 'Titre section 3', defaultContent: 'Une question sur les remboursements ?', type: 'text' },
+      { textKey: 'description-1', label: 'Description hero', defaultContent: 'Chez Audire, nous vous accompagnons dans toutes les démarches administratives. Vous comprenez exactement ce que vous allez payer, sans surprise.', type: 'textarea', rows: 5 },
+      { textKey: 'description-2', label: 'Description section 1', defaultContent: 'Le système de remboursement belge est parfois complexe. Nous vous expliquons tout, étape par étape.', type: 'textarea', rows: 3 },
+      { textKey: 'description-3', label: 'Description section 2', defaultContent: 'L\'INAMI intervient différemment selon votre âge et votre situation.', type: 'textarea', rows: 3 },
+      { textKey: 'description-4', label: 'Description section 3', defaultContent: 'Nous sommes là pour vous aider. Prenez rendez-vous et nous vous expliquerons tout en détail.', type: 'textarea', rows: 3 },
+    ]
+  },
+  {
+    pageKey: 'faq',
+    pageLabel: '❓ FAQ',
+    texts: [
+      { textKey: 'hero-title', label: 'Titre principal (H1)', defaultContent: 'Questions fréquentes', type: 'text' },
+      { textKey: 'section-1-title', label: 'Titre section 1', defaultContent: 'Vous ne trouvez pas votre réponse ?', type: 'text' },
+      { textKey: 'description-1', label: 'Description hero', defaultContent: 'Vous vous posez des questions sur les appareils auditifs, les remboursements ou notre accompagnement ? Vous trouverez ici les réponses aux questions les plus fréquentes.', type: 'textarea', rows: 5 },
+      { textKey: 'description-2', label: 'Description section 1', defaultContent: 'Contactez-nous ! Nous sommes là pour répondre à toutes vos questions.', type: 'textarea', rows: 3 },
+    ]
+  },
+  {
+    pageKey: 'contact',
+    pageLabel: '📍 Contact',
+    texts: [
+      { textKey: 'hero-title', label: 'Titre principal (H1)', defaultContent: 'Contact', type: 'text' },
+      { textKey: 'section-1-title', label: 'Titre section 1', defaultContent: 'Horaires d\'ouverture', type: 'text' },
+      { textKey: 'section-2-title', label: 'Titre section 2', defaultContent: 'Envoyez-nous un message', type: 'text' },
+      { textKey: 'description-1', label: 'Description hero', defaultContent: 'Une question ? Envie de prendre rendez-vous ? Nous sommes là pour vous accompagner.', type: 'textarea', rows: 3 },
+      { textKey: 'description-2', label: 'Description section 1', defaultContent: 'Nous sommes ouverts du lundi au vendredi. Le samedi sur rendez-vous uniquement.', type: 'textarea', rows: 3 },
+      { textKey: 'description-3', label: 'Description section 2', defaultContent: 'Vous avez une question ? Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais.', type: 'textarea', rows: 3 },
+    ]
+  },
+  {
+    pageKey: 'partenaires-pharmaciens',
+    pageLabel: '💊 Partenaires Pharmaciens',
+    texts: [
+      { textKey: 'hero-title', label: 'Titre principal (H1)', defaultContent: 'Partenaires pharmaciens', type: 'text' },
+      { textKey: 'section-1-title', label: 'Titre section 1', defaultContent: 'Pourquoi nous recommander ?', type: 'text' },
+      { textKey: 'section-2-title', label: 'Titre section 2', defaultContent: 'Comment orienter vos patients ?', type: 'text' },
+      { textKey: 'section-3-title', label: 'Titre section 3', defaultContent: 'Matériel de communication', type: 'text' },
+      { textKey: 'section-4-title', label: 'Titre section 4', defaultContent: 'Devenons partenaires', type: 'text' },
+      { textKey: 'description-1', label: 'Description hero', defaultContent: 'Vous êtes pharmacien en province de Liège ? Orientez vos patients vers un accompagnement de qualité pour leurs besoins auditifs.', type: 'textarea', rows: 3 },
+      { textKey: 'description-2', label: 'Description section 1', defaultContent: 'Un partenariat basé sur la confiance et l\'excellence du service.', type: 'textarea', rows: 3 },
+      { textKey: 'description-3', label: 'Description section 2', defaultContent: 'Un processus simple et efficace pour vos patients.', type: 'textarea', rows: 3 },
+      { textKey: 'description-4', label: 'Description section 3', defaultContent: 'Nous mettons à votre disposition du matériel pour informer vos patients.', type: 'textarea', rows: 3 },
+      { textKey: 'description-5', label: 'Description section 4', defaultContent: 'Vous souhaitez devenir partenaire ou obtenir plus d\'informations ? Contactez-nous dès maintenant.', type: 'textarea', rows: 3 },
+    ]
+  },
 ];
 
 export default function TextEditorAdmin() {
