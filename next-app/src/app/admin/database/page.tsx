@@ -20,6 +20,12 @@ type TestDbResult = {
   databaseUrl: string;
 };
 
+type DbSetupResult = {
+  success: boolean;
+  error?: string;
+  logs: string[];
+};
+
 export default function DatabaseAdmin() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -28,12 +34,40 @@ export default function DatabaseAdmin() {
   const [error, setError] = useState<string | null>(null);
   const [testDbLoading, setTestDbLoading] = useState(false);
   const [testDbResult, setTestDbResult] = useState<TestDbResult | null>(null);
+  const [dbSetupLoading, setDbSetupLoading] = useState(false);
+  const [dbSetupResult, setDbSetupResult] = useState<DbSetupResult | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/admin/login');
     }
   }, [status, router]);
+
+  async function handleDbSetup() {
+    if (!confirm('⚠️ ATTENTION ⚠️\n\nCette action va:\n1. Appliquer toutes les migrations Prisma (prisma migrate deploy)\n2. Peupler la base de données (prisma/seed.ts)\n\nVoulez-vous continuer ?')) {
+      return;
+    }
+
+    setDbSetupLoading(true);
+    setDbSetupResult(null);
+
+    try {
+      const res = await fetch('/api/admin/db-setup', {
+        method: 'POST',
+      });
+
+      const data = await res.json();
+      setDbSetupResult(data);
+    } catch (err) {
+      setDbSetupResult({
+        success: false,
+        error: err instanceof Error ? err.message : 'Erreur inconnue',
+        logs: [`❌ Erreur: ${err instanceof Error ? err.message : 'Erreur inconnue'}`],
+      });
+    } finally {
+      setDbSetupLoading(false);
+    }
+  }
 
   async function handleTestDbConnection() {
     setTestDbLoading(true);
@@ -110,6 +144,59 @@ export default function DatabaseAdmin() {
           <p className="text-sm text-gray-700">
             Cette page vous permet de gérer la base de données sans avoir besoin d'accéder à Vercel CLI ou au serveur directement.
           </p>
+        </div>
+
+        {/* Section Configuration Complète DB */}
+        <div className="bg-white rounded-lg shadow-md p-8 mb-8 border-2 border-purple-200">
+          <h2 className="text-2xl font-bold mb-4">🚀 Configuration Complète de la Base de Données</h2>
+          <p className="text-gray-600 mb-6">
+            Cette action exécute automatiquement toutes les étapes nécessaires pour configurer votre base de données :
+            <br />
+            <strong className="block mt-2">1.</strong> Application des migrations Prisma (<code className="bg-gray-100 px-2 py-1 rounded text-sm">prisma migrate deploy</code>)
+            <br />
+            <strong className="block mt-2">2.</strong> Peuplement initial de la base (<code className="bg-gray-100 px-2 py-1 rounded text-sm">npx tsx prisma/seed.ts</code>)
+            <br />
+            <br />
+            <span className="text-purple-700 font-semibold">💡 Utilisez ceci pour initialiser une nouvelle base de données PostgreSQL (Neon, Vercel, etc.)</span>
+          </p>
+
+          <button
+            onClick={handleDbSetup}
+            disabled={dbSetupLoading}
+            className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-4 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all mb-4 shadow-lg"
+          >
+            {dbSetupLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="animate-spin">⏳</span>
+                Configuration en cours... (cela peut prendre jusqu'à 2 minutes)
+              </span>
+            ) : (
+              '🔧 Exécuter la Configuration Complète (Migrations + Seed)'
+            )}
+          </button>
+
+          {/* Résultats du setup */}
+          {dbSetupResult && (
+            <div className={`border rounded-lg p-6 ${dbSetupResult.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+              <h3 className={`text-lg font-bold mb-4 ${dbSetupResult.success ? 'text-green-800' : 'text-red-800'}`}>
+                {dbSetupResult.success ? '✅ Configuration réussie !' : '❌ Erreur lors de la configuration'}
+              </h3>
+
+              {dbSetupResult.error && (
+                <div className="bg-white rounded-lg p-4 mb-4">
+                  <p className="font-bold text-red-700">Erreur :</p>
+                  <p className="text-red-600">{dbSetupResult.error}</p>
+                </div>
+              )}
+
+              <div className="bg-white rounded-lg p-4">
+                <h4 className="font-bold mb-2">📋 Logs détaillés :</h4>
+                <pre className="text-xs bg-gray-50 p-4 rounded overflow-x-auto max-h-96 overflow-y-auto whitespace-pre-wrap">
+                  {dbSetupResult.logs.join('\n')}
+                </pre>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Section Test de connexion */}
