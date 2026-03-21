@@ -40,11 +40,22 @@ export async function POST(request: Request) {
 
         if (fs.existsSync(sqlFile)) {
           logs.push(`   ➜ Application de ${folder}...`);
-          const sql = fs.readFileSync(sqlFile, 'utf-8');
+          const sqlContent = fs.readFileSync(sqlFile, 'utf-8');
 
-          // Exécuter le SQL
-          await prisma.$executeRawUnsafe(sql);
-          logs.push(`   ✓ ${folder} appliquée`);
+          // Séparer les commandes SQL (par point-virgule)
+          const commands = sqlContent
+            .split(';')
+            .map(cmd => cmd.trim())
+            .filter(cmd => cmd.length > 0 && !cmd.startsWith('--'));
+
+          // Exécuter chaque commande séparément
+          for (const command of commands) {
+            if (command) {
+              await prisma.$executeRawUnsafe(command);
+            }
+          }
+
+          logs.push(`   ✓ ${folder} appliquée (${commands.length} commandes)`);
         }
       }
 
