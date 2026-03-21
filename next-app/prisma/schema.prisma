@@ -164,3 +164,17 @@ model ImageEffect {
   @@unique([pageKey, sectionKey])
   @@index([pageKey, order])
 }
+
+// Textes éditables des pages
+model PageText {
+  id        Int      @id @default(autoincrement())
+  pageKey   String   // Page (ex: "home", "about", "solutions", "contact")
+  textKey   String   // Identifiant du texte (ex: "hero-title", "hero-subtitle", "description")
+  content   String   @db.Text // Contenu du texte
+  label     String?  // Label descriptif pour l'admin (ex: "Titre de la section héro")
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@unique([pageKey, textKey])
+  @@index([pageKey])
+}
