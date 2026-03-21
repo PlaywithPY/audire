@@ -1,3 +1,15 @@
+type PageDefinition = {
+  pageKey: string;
+  pageLabel: string;
+  texts: {
+    textKey: string;
+    label: string;
+    defaultContent: string;
+    type?: 'text' | 'textarea';
+    rows?: number;
+  }[];
+};
+
 const pageDefinitions: PageDefinition[] = [
   {
     pageKey: 'home',
@@ -122,3 +134,5 @@ const pageDefinitions: PageDefinition[] = [
     ]
   },
 ];
+
+export default pageDefinitions;
