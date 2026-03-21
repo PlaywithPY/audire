@@ -180,8 +180,8 @@ function ParallaxEffect({ imageEffect, className }: { imageEffect: ImageEffect; 
         ref={imageRef}
         className="absolute inset-0 w-full"
         style={{
-          height: '150%',
-          top: '-25%'
+          height: '200%',
+          top: '-50%'
         }}
       >
         <div className="relative w-full h-full">
