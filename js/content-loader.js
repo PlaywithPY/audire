@@ -193,10 +193,13 @@
     console.log(`🔄 Loading content for page: ${currentPage}`);
 
     // Charger les JSON en parallèle
-    [textes, config] = await Promise.all([
-      loadJSON('/audire/content/textes.json'),
-      loadJSON('/audire/content/config.json')
-    ]);
+    const pageContent = await loadJSON(`/audire/content/pages/${currentPage}.json`);
+    config = await loadJSON('/audire/content/config.json');
+
+    // Créer un objet textes avec la page actuelle
+    if (pageContent) {
+      textes = { [currentPage]: pageContent };
+    }
 
     // Appliquer les contenus
     replacePageContent();

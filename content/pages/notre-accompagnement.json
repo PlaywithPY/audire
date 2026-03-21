@@ -1,0 +1,98 @@
+{
+  "hero": {
+    "kicker": "Humain • Progressif • Sans pression",
+    "title": "Notre accompagnement",
+    "subtitle": "Bien entendre, ce n'est pas qu'une question d'appareil. C'est une question d'accompagnement, d'écoute et de suivi dans la durée. Chez Audire, nous vous guidons étape par étape, à votre rythme.",
+    "chips": [
+      "Écoute de vos besoins",
+      "Explications claires",
+      "Essai gratuit",
+      "Suivi personnalisé"
+    ]
+  },
+  "parcours": {
+    "tag": "Le parcours",
+    "title": "Comment ça se passe ?",
+    "subtitle": "Un parcours simple et progressif, sans engagement. Vous gardez toujours le contrôle.",
+    "steps": [
+      {
+        "title": "Test auditif gratuit",
+        "description": "Nous commençons par un test complet de votre audition (audiométrie). Nous analysons vos difficultés au quotidien : TV, téléphone, conversations, bruit, etc. Aucune obligation d'achat."
+      },
+      {
+        "title": "Explications et conseils",
+        "description": "On vous explique clairement ce qu'on a trouvé, sans jargon technique. Si un appareil n'est pas nécessaire, on vous le dit franchement. Si ça peut aider, on vous explique les options possibles, les solutions adaptées à votre situation."
+      },
+      {
+        "title": "Essai gratuit à domicile",
+        "description": "Vous testez l'appareil chez vous, dans votre quotidien réel (pendant un mois). Nous ajustons ensemble les réglages lors de rendez-vous réguliers. Vous prenez le temps de vous habituer. Si ça ne convient pas, vous arrêtez, sans frais."
+      },
+      {
+        "title": "Suivi et accompagnement continu",
+        "description": "Le vrai travail commence après l'achat. Nous assurons le suivi dans la durée : réglages fins progressifs, adaptations, nettoyage régulier, conseils d'utilisation. Nous sommes là pour vous accompagner sur le long terme."
+      }
+    ]
+  },
+  "philosophie": {
+    "tag": "Notre approche",
+    "title": "Notre philosophie",
+    "subtitle": "Ce qui fait la différence chez Audire, ce n'est pas seulement la qualité des appareils, mais la manière dont nous vous accompagnons.",
+    "features": [
+      {
+        "icon": "👂",
+        "title": "Écoute avant tout",
+        "description": "Nous commençons par écouter vos difficultés, votre quotidien, vos attentes. Chaque personne est unique."
+      },
+      {
+        "icon": "💬",
+        "title": "Transparence totale",
+        "description": "Pas de jargon technique, pas de surprise. Nous expliquons tout clairement : résultats, solutions, prix, remboursements."
+      },
+      {
+        "icon": "🚫",
+        "title": "Zéro pression",
+        "description": "Pas d'objectifs de vente, pas de techniques commerciales. Si un appareil n'est pas nécessaire, on vous le dit."
+      },
+      {
+        "icon": "🧪",
+        "title": "Essai sans risque",
+        "description": "Vous testez dans votre quotidien avant de décider. Pas de théorie : vous vivez l'expérience réelle."
+      },
+      {
+        "icon": "🔧",
+        "title": "Réglages progressifs",
+        "description": "L'adaptation prend du temps. Nous ajustons étape par étape jusqu'à trouver le bon équilibre pour vous."
+      },
+      {
+        "icon": "♾️",
+        "title": "Suivi à vie",
+        "description": "Nous restons à vos côtés pendant toute la durée de vie de vos appareils. Vous n'êtes jamais seul."
+      }
+    ]
+  },
+  "importance": {
+    "tag": "L'importance du suivi",
+    "title": "Pourquoi l'accompagnement est crucial ?",
+    "cards": [
+      {
+        "icon": "",
+        "title": "L'adaptation auditive prend du temps",
+        "description": "Quand vous commencez à porter des appareils auditifs, votre cerveau doit réapprendre à entendre. Il retrouve des sons qu'il avait oubliés : le bruit de vos pas, le froissement du papier, les oiseaux... Cette adaptation peut prendre 2 à 3 mois. C'est normal d'être parfois submergé au début."
+      },
+      {
+        "icon": "",
+        "title": "Chaque oreille est différente",
+        "description": "Deux personnes avec le même audiogramme n'ont pas les mêmes besoins. Votre environnement, vos activités, votre sensibilité au bruit sont uniques. Les réglages \"sur mesure\" ne s'arrêtent pas au premier rendez-vous."
+      },
+      {
+        "icon": "",
+        "title": "Le suivi technique est essentiel",
+        "description": "Les appareils auditifs sont des dispositifs techniques qui nécessitent un entretien régulier : nettoyage, changement de filtres, vérification des performances. Un appareil mal entretenu perd en efficacité."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Prêt à commencer ?",
+    "description": "Prenez rendez-vous pour un test auditif gratuit. C'est le premier pas d'un accompagnement qui vous ressemble."
+  }
+}

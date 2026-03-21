@@ -1,0 +1,115 @@
+{
+  "hero": {
+    "kicker": "Centre auditif indépendant • Province de Liège",
+    "title": "Mieux entendre, simplement.",
+    "subtitle": "Chez Audire, on commence par comprendre votre quotidien et vos difficultés. Puis on vous propose une suite claire et sans pression. Test auditif gratuit, explications pédagogiques, réglages et suivi dans la durée.",
+    "chips": [
+      "Test gratuit et sans engagement",
+      "Explications claires, sans jargon",
+      "Oticon & Bernafon",
+      "Suivi personnalisé"
+    ],
+    "note": "Vous hésitez ? Venez juste faire le point. Parfois la meilleure réponse est \"pas maintenant\" — et on vous le dira."
+  },
+  "whyAudire": {
+    "tag": "Notre approche",
+    "title": "Pourquoi choisir Audire ?",
+    "subtitle": "Parce que bien entendre, ce n'est pas qu'une question d'appareil. C'est une question d'accompagnement, d'écoute et de suivi dans la durée.",
+    "features": [
+      {
+        "icon": "👂",
+        "title": "Test auditif gratuit",
+        "description": "Un test complet et sans engagement pour comprendre votre audition. Nous prenons le temps d'expliquer les résultats clairement."
+      },
+      {
+        "icon": "💬",
+        "title": "Accompagnement humain",
+        "description": "Pas de jargon technique, pas de pression commerciale. Juste des explications claires et un accompagnement à votre rythme."
+      },
+      {
+        "icon": "🔧",
+        "title": "Suivi personnalisé",
+        "description": "Réglages progressifs, adaptations, suivi régulier. Nous restons à vos côtés pour que vous entendiez au mieux de vos capacités."
+      },
+      {
+        "icon": "🏆",
+        "title": "Solutions de qualité",
+        "description": "Nous travaillons avec Oticon et Bernafon, deux marques reconnues pour leur qualité et leur innovation technologique."
+      },
+      {
+        "icon": "🎯",
+        "title": "Centre indépendant",
+        "description": "Pas d'objectifs de vente, pas de réseau à satisfaire. Notre seul objectif : vous aider à mieux entendre."
+      },
+      {
+        "icon": "💰",
+        "title": "Transparence des prix",
+        "description": "Prix clairs, remboursements expliqués (INAMI + mutuelle). Pas de surprise, pas de frais cachés."
+      }
+    ]
+  },
+  "process": {
+    "tag": "Le processus",
+    "title": "Comment ça se passe ?",
+    "subtitle": "Un parcours simple et progressif, sans engagement. Vous gardez toujours le contrôle.",
+    "steps": [
+      {
+        "title": "Test auditif gratuit",
+        "description": "Un test complet (audiométrie) pour mesurer votre audition. Nous analysons vos difficultés au quotidien (TV, téléphone, conversations, bruit…). Gratuit, sans engagement, et vous repartez avec les résultats."
+      },
+      {
+        "title": "Explications et conseils",
+        "description": "On vous explique clairement ce qu'on a trouvé. Si un appareil n'est pas nécessaire, on vous le dit. Si ça peut aider, on vous propose un essai gratuit adapté à votre situation."
+      },
+      {
+        "title": "Essai et réglages",
+        "description": "Vous testez l'appareil chez vous, dans votre quotidien. On ajuste ensemble les réglages jusqu'à trouver le bon équilibre entre confort et efficacité. Vous prenez votre décision en toute connaissance de cause."
+      },
+      {
+        "title": "Suivi dans la durée",
+        "description": "Le vrai travail commence après l'achat : réglages fins, adaptations, nettoyage, conseils d'utilisation. Nous sommes là pour vous accompagner sur le long terme, pas juste pour une vente."
+      }
+    ]
+  },
+  "solutions": {
+    "tag": "Solutions",
+    "title": "Nos solutions auditives",
+    "subtitle": "Nous travaillons avec Oticon et Bernafon pour vous proposer des solutions adaptées à vos besoins et votre budget.",
+    "brands": [
+      {
+        "name": "Oticon",
+        "icon": "🎧",
+        "description": "Leader mondial de l'audition, Oticon propose des solutions innovantes reconnues pour leur qualité sonore exceptionnelle et leur technologie de pointe. Idéal pour les environnements bruyants et les conversations de groupe.",
+        "features": [
+          "Technologie BrainHearing™",
+          "Connectivité Bluetooth",
+          "Recharge lithium-ion",
+          "Design discret"
+        ]
+      },
+      {
+        "name": "Bernafon",
+        "icon": "🎵",
+        "description": "Marque suisse réputée pour son excellent rapport qualité-prix, Bernafon offre des appareils performants et fiables. Parfait pour un usage quotidien confortable avec une qualité sonore naturelle.",
+        "features": [
+          "Son naturel et équilibré",
+          "Facilité d'utilisation",
+          "Rapport qualité-prix excellent",
+          "Fiabilité suisse"
+        ]
+      }
+    ],
+    "note": "La discrétion n'est pas toujours synonyme de performance. Nous vous aidons à choisir l'appareil qui vous correspond vraiment, pas celui qui se voit le moins."
+  },
+  "pricing": {
+    "tag": "Remboursements",
+    "title": "Combien ça coûte vraiment ?",
+    "priceRange": "Les appareils auditifs coûtent entre 1 200 € et 3 500 € par oreille.",
+    "refund": "Mais grâce à l'INAMI et aux mutuelles, vous pouvez récupérer jusqu'à 840 € par oreille selon votre situation.",
+    "note": "Nous vous expliquons tout en détail lors de votre visite : conditions, démarches, délais. Transparence totale, zéro surprise."
+  },
+  "cta": {
+    "title": "Prêt à mieux entendre ?",
+    "description": "Prenez rendez-vous pour un test auditif gratuit et sans engagement. Ou appelez-nous directement, on se fera un plaisir de répondre à vos questions."
+  }
+}

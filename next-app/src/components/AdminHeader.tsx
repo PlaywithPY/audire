@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 interface AdminHeaderProps {
-  currentPage?: 'dashboard' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor';
+  currentPage?: 'dashboard' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'database';
   title?: string;
 }
 
@@ -12,6 +12,7 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
     { href: '/admin/solutions', label: '📋 Solutions', key: 'solutions' },
     { href: '/admin/image-effects', label: '🖼️ Images & Effets', key: 'image-effects' },
     { href: '/admin/text-editor', label: '📝 Textes', key: 'text-editor' },
+    { href: '/admin/database', label: '🗄️ Base de données', key: 'database' },
   ];
 
   return (

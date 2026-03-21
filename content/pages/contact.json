@@ -1,0 +1,40 @@
+{
+  "hero": {
+    "kicker": "Jemeppe-sur-Meuse • Province de Liège",
+    "title": "Nous contacter",
+    "subtitle": "Une question ? Besoin d'un rendez-vous ? N'hésitez pas à nous contacter par téléphone, email ou en utilisant le formulaire ci-dessous. Nous vous répondons rapidement."
+  },
+  "infos": {
+    "tag": "Infos pratiques",
+    "title": "Comment nous trouver ?",
+    "parking": {
+      "title": "🚗 Parking",
+      "description": "Parking gratuit disponible à proximité immédiate du centre. Facile d'accès en voiture depuis Liège (10 min), Seraing (5 min), Flémalle ou Engis."
+    },
+    "transport": {
+      "title": "🚌 Transports en commun",
+      "description": "Arrêt de bus \"Jemeppe Vinâve\" à 2 minutes à pied. Lignes TEC desservant Jemeppe-sur-Meuse depuis Liège, Seraing et les communes environnantes."
+    }
+  },
+  "form": {
+    "tag": "Contactez-nous",
+    "title": "Envoyez-nous un message",
+    "subtitle": "Vous préférez nous écrire ? Remplissez le formulaire ci-dessous, nous vous répondrons dans les plus brefs délais."
+  },
+  "quick": {
+    "tag": "Contact rapide",
+    "title": "Par téléphone ou email",
+    "phone": {
+      "title": "Par téléphone",
+      "description": "Pour une réponse immédiate, appelez-nous directement. Nous sommes à votre écoute."
+    },
+    "email": {
+      "title": "Par email",
+      "description": "Envoyez-nous un email, nous vous répondrons dans les 24h (jours ouvrables)."
+    }
+  },
+  "cta": {
+    "title": "Prêt à prendre rendez-vous ?",
+    "description": "Appelez-nous ou utilisez notre formulaire de contact pour fixer un rendez-vous. Test auditif gratuit et sans engagement."
+  }
+}
