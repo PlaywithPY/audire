@@ -61,8 +61,8 @@ export default function ParallaxSection({
         ref={imageRef}
         className="absolute inset-0 w-full"
         style={{
-          height: '150%', // Plus haute pour permettre le mouvement
-          top: '-25%'
+          height: '200%', // Plus haute pour permettre le mouvement
+          top: '-50%'
         }}
       >
         <div className="relative w-full h-full">
