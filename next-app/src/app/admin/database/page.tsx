@@ -13,18 +13,48 @@ type PopulateResult = {
   logs: string[];
 };
 
+type TestDbResult = {
+  success: boolean;
+  error: string | null;
+  logs: string[];
+  databaseUrl: string;
+};
+
 export default function DatabaseAdmin() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<PopulateResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [testDbLoading, setTestDbLoading] = useState(false);
+  const [testDbResult, setTestDbResult] = useState<TestDbResult | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/admin/login');
     }
   }, [status, router]);
+
+  async function handleTestDbConnection() {
+    setTestDbLoading(true);
+    setTestDbResult(null);
+
+    try {
+      const res = await fetch('/api/admin/test-db');
+      const data = await res.json();
+
+      setTestDbResult(data);
+    } catch (err) {
+      setTestDbResult({
+        success: false,
+        error: err instanceof Error ? err.message : 'Erreur inconnue',
+        logs: [`❌ Erreur de connexion: ${err instanceof Error ? err.message : 'Erreur inconnue'}`],
+        databaseUrl: 'Non disponible',
+      });
+    } finally {
+      setTestDbLoading(false);
+    }
+  }
 
   async function handlePopulateTexts() {
     if (!confirm('Voulez-vous vraiment peupler la base de données avec les textes des pages ?\n\nCeci créera les textes manquants mais ne modifiera pas les textes existants.')) {
@@ -80,6 +110,65 @@ export default function DatabaseAdmin() {
           <p className="text-sm text-gray-700">
             Cette page vous permet de gérer la base de données sans avoir besoin d'accéder à Vercel CLI ou au serveur directement.
           </p>
+        </div>
+
+        {/* Section Test de connexion */}
+        <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+          <h2 className="text-2xl font-bold mb-4">🔌 Test de Connexion à la Base de Données</h2>
+          <p className="text-gray-600 mb-6">
+            Testez la connexion à la base de données et vérifiez que les tables existent.
+            Utilisez ce test avant de peupler la base pour diagnostiquer les problèmes potentiels.
+          </p>
+
+          <button
+            onClick={handleTestDbConnection}
+            disabled={testDbLoading}
+            className="w-full bg-blue-600 text-white px-6 py-4 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all mb-4"
+          >
+            {testDbLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="animate-spin">⏳</span>
+                Test en cours...
+              </span>
+            ) : (
+              '🔍 Tester la connexion à la DB'
+            )}
+          </button>
+
+          {/* Résultats du test de connexion */}
+          {testDbResult && (
+            <div className={`border rounded-lg p-6 ${testDbResult.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+              <h3 className={`text-lg font-bold mb-4 ${testDbResult.success ? 'text-green-800' : 'text-red-800'}`}>
+                {testDbResult.success ? '✅ Connexion réussie' : '❌ Problème de connexion'}
+              </h3>
+
+              {testDbResult.error && (
+                <div className="bg-white rounded-lg p-4 mb-4">
+                  <p className="font-bold text-red-700">Erreur principale :</p>
+                  <p className="text-red-600">{testDbResult.error}</p>
+                </div>
+              )}
+
+              <div className="bg-white rounded-lg p-4">
+                <h4 className="font-bold mb-2">📋 Diagnostic détaillé :</h4>
+                <pre className="text-xs bg-gray-50 p-4 rounded overflow-x-auto max-h-96 overflow-y-auto whitespace-pre-wrap">
+                  {testDbResult.logs.join('\n')}
+                </pre>
+              </div>
+
+              {!testDbResult.success && (
+                <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <p className="font-bold text-yellow-800 mb-2">💡 Suggestions :</p>
+                  <ul className="text-sm text-yellow-700 space-y-1">
+                    <li>• Vérifiez que DATABASE_URL est correctement configurée dans .env ou .env.local</li>
+                    <li>• Si vous utilisez PostgreSQL, vérifiez que le serveur est accessible</li>
+                    <li>• Exécutez les migrations Prisma : <code className="bg-yellow-100 px-1 rounded">npx prisma migrate deploy</code></li>
+                    <li>• Si la table PageText n'existe pas, vous devez d'abord créer le schéma de base</li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Section Populate Texts */}
