@@ -2,6 +2,7 @@
  * Helper pour charger et utiliser les textes de la table PageText
  */
 
+import React from 'react';
 import { prisma } from '@/lib/prisma';
 
 /**
@@ -78,22 +79,20 @@ export async function PageText({
   pageKey,
   textKey,
   fallback = '',
-  as: Component = 'span',
+  as = 'span',
   className,
   dangerouslySetInnerHTML = false,
 }: PageTextProps) {
   const content = await getPageText(pageKey, textKey, fallback);
 
   if (dangerouslySetInnerHTML) {
-    return (
-      <Component
-        className={className}
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
-    );
+    return React.createElement(as, {
+      className,
+      dangerouslySetInnerHTML: { __html: content },
+    });
   }
 
-  return <Component className={className}>{content}</Component>;
+  return React.createElement(as, { className }, content);
 }
 
 /**
