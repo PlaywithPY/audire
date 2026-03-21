@@ -1,0 +1,137 @@
+{
+  "hero": {
+    "kicker": "Vos questions, nos réponses",
+    "title": "Questions fréquentes",
+    "subtitle": "Vous avez des questions sur les appareils auditifs, les tests, les remboursements ou notre centre ? Voici les réponses aux questions qu'on nous pose le plus souvent."
+  },
+  "sections": [
+    {
+      "tag": "Test auditif",
+      "title": "Questions sur le test auditif",
+      "questions": [
+        {
+          "question": "Le test auditif est-il vraiment gratuit et sans engagement ?",
+          "answer": "Oui, absolument. Le test auditif dure environ 30 minutes et vous ne devez rien acheter. Notre objectif est de vous donner une information claire sur votre audition, c'est tout."
+        },
+        {
+          "question": "Combien de temps dure le test ?",
+          "answer": "Environ 30 minutes au total : 5 minutes d'entretien initial pour comprendre vos difficultés, 15 minutes de test audiométrique en cabine, et 10 minutes pour analyser et expliquer les résultats ensemble."
+        },
+        {
+          "question": "Dois-je me préparer pour le test ?",
+          "answer": "Non, aucune préparation particulière n'est nécessaire. Venez simplement tel que vous êtes. Si vous portez déjà des appareils auditifs, pensez à les apporter pour que nous puissions vérifier leurs réglages."
+        },
+        {
+          "question": "Est-ce que je repartirai avec les résultats ?",
+          "answer": "Nous vous expliquons tout en détail. Vous aurez une vision claire de votre situation auditive et nous vous conseillons sur la suite."
+        },
+        {
+          "question": "À partir de quel âge peut-on faire un test ?",
+          "answer": "Il n'y a pas d'âge minimum ni maximum pour faire un test auditif. Nous testons aussi bien les enfants que les adultes et les seniors. L'important est de détecter une perte auditive le plus tôt possible."
+        },
+        {
+          "question": "Puis-je venir accompagné ?",
+          "answer": "Bien sûr ! Vous pouvez venir accompagné d'un proche (conjoint, enfant, ami...). C'est même conseillé, car vos proches remarquent souvent des choses que vous ne percevez pas vous-même."
+        }
+      ]
+    },
+    {
+      "tag": "Appareils",
+      "title": "Questions sur les appareils auditifs",
+      "questions": [
+        {
+          "question": "Combien coûte un appareil auditif ?",
+          "answer": "Entre 1 200 € et 3 500 € par oreille selon le modèle et les fonctionnalités. L'INAMI et les mutuelles remboursent jusqu'à 840 € par oreille selon votre situation. Nous vous expliquons tout en détail lors de votre visite. Le prix inclut l'appareil, les réglages, le suivi à vie et l'entretien."
+        },
+        {
+          "question": "Combien de temps dure l'adaptation à un appareil auditif ?",
+          "answer": "Cela varie selon les personnes, mais comptez généralement 2 à 3 mois pour une adaptation complète. Votre cerveau doit réapprendre à entendre des sons qu'il avait oubliés. Nous vous accompagnons avec des réglages réguliers jusqu'à ce que vous soyez parfaitement à l'aise."
+        },
+        {
+          "question": "Est-ce que les appareils auditifs se voient beaucoup ?",
+          "answer": "Les appareils modernes sont très discrets, mais la discrétion ne doit pas être votre seul critère. Un appareil plus visible peut être plus performant, plus facile à manipuler et mieux adapté à votre perte. Nous vous aidons à trouver le meilleur compromis entre discrétion et efficacité."
+        },
+        {
+          "question": "Quelle est la durée de vie d'un appareil auditif ?",
+          "answer": "En moyenne, un appareil auditif dure 5 à 7 ans. Tout dépend de l'entretien, de l'utilisation et des évolutions technologiques. Le remboursement INAMI est prévu tous les 5 ans, ce qui correspond à un cycle de renouvellement normal."
+        },
+        {
+          "question": "Puis-je porter mes appareils sous la douche ?",
+          "answer": "Non, même si les appareils modernes sont résistants à l'eau et à la transpiration (certification IP68), ils ne sont pas étanches. Il faut les retirer pour la douche, le bain ou la natation. En revanche, ils supportent très bien la transpiration et l'humidité du quotidien."
+        },
+        {
+          "question": "Les appareils auditifs ont-ils des piles ou une batterie ?",
+          "answer": "Cela dépend du modèle. Les appareils modernes proposent deux options : piles jetables (à changer toutes les semaines environ) ou batterie lithium-ion rechargeable (une charge nocturne = 24h d'autonomie). Nous vous conseillons selon vos préférences et votre dextérité."
+        },
+        {
+          "question": "Puis-je connecter mes appareils à mon smartphone ?",
+          "answer": "Oui, la plupart des appareils modernes (Oticon, Bernafon) disposent de la connectivité Bluetooth. Vous pouvez les connecter à votre smartphone (iPhone ou Android), votre TV, votre tablette... Les appels et la musique sont diffusés directement dans vos appareils auditifs."
+        }
+      ]
+    },
+    {
+      "tag": "Remboursements",
+      "title": "Questions sur les remboursements",
+      "questions": [
+        {
+          "question": "Ai-je droit au remboursement INAMI ?",
+          "answer": "Vous avez droit au remboursement INAMI si vous avez une prescription d'un médecin ORL et une perte auditive mesurée. Il n'y a pas de condition d'âge minimum. Le montant varie selon votre âge (moins de 18 ans ou plus) et le degré de perte auditive."
+        },
+        {
+          "question": "Combien vais-je récupérer ?",
+          "answer": "Cela dépend de votre situation : entre 400 € et 660 € de remboursement INAMI par oreille, plus 50 € à 180 € d'intervention de votre mutuelle. Au total, vous pouvez récupérer jusqu'à 840 € par oreille. Nous calculons avec vous votre remboursement personnalisé."
+        },
+        {
+          "question": "Combien de temps pour recevoir le remboursement ?",
+          "answer": "Généralement, votre mutuelle verse le remboursement (INAMI + intervention mutuelle) dans les 2 à 4 semaines après réception des documents. Les délais peuvent varier selon les mutuelles."
+        },
+        {
+          "question": "Puis-je me faire rembourser les deux oreilles ?",
+          "answer": "Oui, si votre perte auditive concerne les deux oreilles et que votre ORL prescrit deux appareils, vous pouvez bénéficier du remboursement pour chaque oreille (soit jusqu'à 1 680 € au total pour les deux oreilles)."
+        },
+        {
+          "question": "Le délai de 5 ans est-il strict ?",
+          "answer": "Oui, l'INAMI impose un délai de 5 ans minimum entre deux remboursements (sauf circonstances exceptionnelles : perte aggravée, appareil défectueux non réparable...). Si vous renouvelez avant 5 ans, vous ne serez pas remboursé."
+        },
+        {
+          "question": "Y a-t-il des frais cachés ?",
+          "answer": "Non. Le prix annoncé inclut tout : l'appareil, les réglages, le suivi à vie, l'entretien et les consommables (filtres, embouts, nettoyage...). Transparence totale, zéro surprise."
+        }
+      ]
+    },
+    {
+      "tag": "Centre Audire",
+      "title": "Questions sur notre centre",
+      "questions": [
+        {
+          "question": "Où êtes-vous situés ?",
+          "answer": "Nous sommes situés au 30, rue Grand-Vinâve à Jemeppe-sur-Meuse (4101), en province de Liège. Facile d'accès en voiture avec parking à proximité. À 10 minutes de Liège, 5 minutes de Seraing."
+        },
+        {
+          "question": "Quels sont vos horaires ?",
+          "answer": "Nous travaillons uniquement sur rendez-vous pour vous garantir un accueil personnalisé. Horaires : Lundi 13h-18h, Mardi à Samedi 9h30-18h. Appelez-nous au 04 233 61 25 pour prendre rendez-vous."
+        },
+        {
+          "question": "Proposez-vous un essai gratuit ?",
+          "answer": "Oui, si le test auditif montre qu'un appareil peut vous aider, nous vous proposons un essai gratuit à domicile, dans votre quotidien. Vous pouvez ainsi tester l'appareil en conditions réelles (1 à 4 semaines) avant de prendre une décision. Sans engagement."
+        },
+        {
+          "question": "Que signifie \"centre indépendant\" ?",
+          "answer": "Cela signifie que nous ne faisons partie d'aucune chaîne ou réseau. Nous n'avons pas d'objectifs de vente imposés, pas de pression commerciale. Notre seul objectif est de vous aider à mieux entendre, pas de vendre à tout prix."
+        },
+        {
+          "question": "Quelles marques proposez-vous ?",
+          "answer": "Nous travaillons avec Oticon et Bernafon, deux marques reconnues mondialement pour leur qualité, leur innovation et leur fiabilité. Nous avons choisi ces marques pour leur excellent rapport qualité-prix et leur service après-vente."
+        },
+        {
+          "question": "Assurez-vous le suivi après l'achat ?",
+          "answer": "Oui, le suivi est inclus à vie dans le prix de vos appareils. Réglages fins, adaptations, nettoyage, conseils, réparations courantes... Nous restons à vos côtés pendant toute la durée de vie de vos appareils. C'est notre engagement."
+        }
+      ]
+    }
+  ],
+  "cta": {
+    "title": "Vous ne trouvez pas votre réponse ?",
+    "description": "Appelez-nous ou prenez rendez-vous. Nous répondons à toutes vos questions sans engagement."
+  }
+}

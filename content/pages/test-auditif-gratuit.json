@@ -1,0 +1,104 @@
+{
+  "hero": {
+    "kicker": "Gratuit et sans engagement",
+    "title": "Test auditif gratuit",
+    "subtitle": "Un test complet de votre audition, sans engagement et sans frais. Audiométrie professionnelle, analyse de vos difficultés au quotidien et explications claires des résultats.",
+    "chips": [
+      "100% gratuit",
+      "Sans engagement",
+      "Durée: 30 minutes",
+      "Résultats immédiats"
+    ]
+  },
+  "deroulement": {
+    "tag": "Le déroulement",
+    "title": "En quoi consiste le test auditif ?",
+    "subtitle": "Un test complet et professionnel pour comprendre précisément votre audition et vos difficultés au quotidien.",
+    "steps": [
+      {
+        "title": "Entretien initial (5 min)",
+        "description": "Nous commençons par discuter de vos difficultés au quotidien : TV trop forte, difficultés à suivre les conversations, gêne dans le bruit, etc. Cela nous permet de mieux comprendre votre situation et d'adapter le test."
+      },
+      {
+        "title": "Audiométrie tonale (15 min)",
+        "description": "Dans une cabine insonorisée, vous portez un casque et indiquez quand vous entendez des sons de différentes fréquences et intensités. Ce test mesure précisément votre capacité auditive sur chaque oreille."
+      },
+      {
+        "title": "Explication des résultats (10 min)",
+        "description": "Nous analysons ensemble les résultats sur un audiogramme. Nous vous expliquons clairement ce qu'on a trouvé, ce que ça signifie pour votre quotidien, et les solutions possibles (si nécessaire)."
+      },
+      {
+        "title": "Conseils et suite",
+        "description": "Si un appareil n'est pas nécessaire, on vous le dit franchement. Si ça peut aider, on vous propose un essai gratuit adapté à votre situation. Vous gardez toujours le contrôle, sans pression."
+      }
+    ]
+  },
+  "signes": {
+    "tag": "Les signes",
+    "title": "Pourquoi faire un test auditif ?",
+    "subtitle": "Voici les signes qui peuvent indiquer une perte auditive. Si vous en reconnaissez plusieurs, il est temps de faire un test.",
+    "signs": [
+      {
+        "icon": "📺",
+        "title": "Télévision trop forte",
+        "description": "Votre entourage vous demande régulièrement de baisser le volume de la TV ou de la radio."
+      },
+      {
+        "icon": "👥",
+        "title": "Conversations difficiles",
+        "description": "Vous avez du mal à suivre les conversations de groupe, surtout dans les endroits bruyants (restaurants, fêtes...)."
+      },
+      {
+        "icon": "🔁",
+        "title": "Faire répéter",
+        "description": "Vous devez souvent faire répéter vos interlocuteurs ou vous ne comprenez pas tout du premier coup."
+      },
+      {
+        "icon": "📞",
+        "title": "Téléphone difficile",
+        "description": "Vous avez des difficultés à comprendre au téléphone, surtout si la ligne n'est pas parfaite."
+      },
+      {
+        "icon": "😓",
+        "title": "Fatigue sociale",
+        "description": "Les réunions, repas de famille ou sorties vous fatiguent à cause de l'effort de concentration pour entendre."
+      },
+      {
+        "icon": "🚪",
+        "title": "Sons manqués",
+        "description": "Vous n'entendez pas toujours la sonnette, le téléphone, ou les voix aiguës (enfants, femmes)."
+      }
+    ],
+    "note": "La perte auditive est souvent progressive et invisible. On s'habitue sans s'en rendre compte. Un test permet de faire le point objectivement."
+  },
+  "faq": [
+    {
+      "question": "Le test est-il vraiment gratuit ?",
+      "answer": "Oui, absolument. Le test auditif est totalement gratuit, sans frais cachés et sans obligation d'achat. C'est un service que nous offrons pour vous aider à faire le point sur votre audition."
+    },
+    {
+      "question": "Combien de temps dure le test ?",
+      "answer": "Environ 30 minutes au total : 5 minutes d'entretien initial, 15 minutes de test audiométrique en cabine, et 10 minutes pour analyser et expliquer les résultats ensemble."
+    },
+    {
+      "question": "Dois-je me préparer pour le test ?",
+      "answer": "Non, aucune préparation particulière n'est nécessaire. Venez simplement tel que vous êtes. Si vous portez déjà des appareils auditifs, pensez à les apporter."
+    },
+    {
+      "question": "Est-ce que je repartirai avec les résultats ?",
+      "answer": "Oui, vous repartez avec votre audiogramme (le graphique de vos résultats) et nous vous expliquons tout en détail. Vous aurez une vision claire de votre situation auditive."
+    },
+    {
+      "question": "Et si je n'ai pas besoin d'appareil ?",
+      "answer": "Parfait ! On vous le dira franchement. Le but du test est de faire le point, pas de vendre à tout prix. Si votre audition est bonne ou si un appareil n'est pas nécessaire, on vous l'expliquera clairement."
+    },
+    {
+      "question": "Puis-je essayer un appareil après le test ?",
+      "answer": "Oui, si le test montre qu'un appareil peut vous aider, nous vous proposerons un essai gratuit à domicile, sans engagement. Vous pourrez ainsi tester dans votre quotidien avant de prendre une décision."
+    }
+  ],
+  "cta": {
+    "title": "Prêt à faire le point sur votre audition ?",
+    "description": "Prenez rendez-vous pour un test auditif gratuit et sans engagement. 30 minutes pour comprendre votre audition et savoir où vous en êtes vraiment."
+  }
+}

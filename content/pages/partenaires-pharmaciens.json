@@ -1,0 +1,59 @@
+{
+  "hero": {
+    "kicker": "B2B • Pharmacies",
+    "title": "Partenariats pharmaciens",
+    "subtitle": "Vous êtes pharmacien et souhaitez proposer un service auditif de qualité à vos patients ? Audire vous accompagne avec des permanences régulières dans votre officine. Professionnalisme, indépendance et flexibilité.",
+    "chips": [
+      "Sans bail commercial",
+      "Redevance à l'activité",
+      "Service professionnel",
+      "Exclusivité audition"
+    ]
+  },
+  "concept": {
+    "tag": "Le concept",
+    "title": "Comment ça fonctionne ?",
+    "subtitle": "Un service auditif professionnel directement dans votre pharmacie, sans investissement ni contrainte."
+  },
+  "avantages": {
+    "tag": "Avantages",
+    "title": "Pourquoi proposer un service auditif ?",
+    "subtitle": "Les bénéfices d'un partenariat avec Audire pour votre officine."
+  },
+  "conditions": {
+    "tag": "Conditions",
+    "title": "Conditions pratiques",
+    "subtitle": "Les prérequis pour mettre en place un partenariat.",
+    "steps": [
+      {
+        "title": "Local calme disponible",
+        "description": "Vous devez disposer d'un local calme et confidentiel pour les consultations. Minimum 8-10 m² suffisent. Nous apportons le matériel de test."
+      },
+      {
+        "title": "Gestion des rendez-vous",
+        "description": "Votre équipe gère la prise de rendez-vous des patients. Nous vous fournissons un planning prévisionnel."
+      },
+      {
+        "title": "Pas de bail commercial",
+        "description": "Nous ne demandons pas de bail. Le partenariat repose sur une convention simple et flexible. Chacun peut y mettre fin avec un préavis raisonnable."
+      },
+      {
+        "title": "Redevance basée sur l'activité",
+        "description": "La redevance est proportionnelle au chiffre d'affaires réalisé dans votre officine. Pas de chiffre d'affaires = pas de redevance."
+      },
+      {
+        "title": "Exclusivité audition",
+        "description": "Nous garantissons l'exclusivité du service auditif dans votre pharmacie. En contrepartie, vous vous engagez à ne pas collaborer avec d'autres audioprothésistes."
+      }
+    ]
+  },
+  "support": {
+    "tag": "Support",
+    "title": "Ce que nous apportons"
+  },
+  "cta": {
+    "title": "Intéressé par un partenariat ?",
+    "description": "Contactez-nous pour discuter ensemble des modalités. Nous étudions chaque demande et adaptons notre offre à votre situation.",
+    "zone": "Zone de déplacement : Province de Liège et environs (Seraing, Flémalle, Engis, Grâce-Hollogne, Saint-Nicolas...)"
+  }
+}

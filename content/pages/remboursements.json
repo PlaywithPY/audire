@@ -1,0 +1,56 @@
+{
+  "hero": {
+    "kicker": "INAMI + Mutuelle",
+    "title": "Remboursements",
+    "subtitle": "Les appareils auditifs coûtent entre 1 200 € et 3 500 € par oreille. Mais grâce à l'INAMI et aux mutuelles, vous pouvez récupérer jusqu'à 840 € par oreille selon votre situation. On vous explique tout.",
+    "chips": [
+      "Remboursement INAMI",
+      "Intervention mutuelle",
+      "Transparence totale",
+      "On vous aide"
+    ]
+  },
+  "inami": {
+    "tag": "INAMI",
+    "title": "Remboursement de l'INAMI",
+    "subtitle": "L'Institut National d'Assurance Maladie-Invalidité (INAMI) rembourse une partie du coût des appareils auditifs selon votre âge et votre perte auditive.",
+    "conditions": "Conditions : Prescription médicale (ORL), test auditif validé, respect du délai de renouvellement."
+  },
+  "mutuelle": {
+    "tag": "Mutuelle",
+    "title": "Intervention de la mutuelle",
+    "subtitle": "En plus du remboursement INAMI, votre mutuelle intervient avec un montant supplémentaire. Ce montant varie selon votre mutuelle et votre formule."
+  },
+  "exemple": {
+    "tag": "Exemple",
+    "title": "Exemple de calcul",
+    "subtitle": "Voici un exemple concret pour comprendre le coût final après remboursements."
+  },
+  "demarches": {
+    "tag": "Démarches",
+    "title": "Comment ça marche ?",
+    "subtitle": "Les démarches sont simples. Nous vous accompagnons à chaque étape.",
+    "steps": [
+      {
+        "title": "Consultation ORL",
+        "description": "Avant de commander des appareils, vous devez consulter un médecin ORL qui établira une prescription. Cette prescription est obligatoire pour bénéficier des remboursements INAMI."
+      },
+      {
+        "title": "Test et essai chez Audire",
+        "description": "Nous réalisons le test auditif complet et vous proposons un essai gratuit des appareils adaptés. Nous effectuons les réglages nécessaires."
+      },
+      {
+        "title": "Commande et paiement",
+        "description": "Une fois votre décision prise, nous commandons vos appareils. Vous payez le montant total, puis nous vous fournissons tous les documents nécessaires pour les remboursements."
+      },
+      {
+        "title": "Demande de remboursement",
+        "description": "Vous envoyez les documents à votre mutuelle. Le remboursement est versé dans les 2 à 4 semaines suivant la demande. Nous vous guidons dans toutes ces démarches."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Besoin de plus d'informations ?",
+    "description": "Prenez rendez-vous ou appelez-nous. Nous vous expliquons tout en détail et vous aidons à calculer votre reste à charge personnalisé."
+  }
+}

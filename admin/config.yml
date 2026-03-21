@@ -1,139 +1,219 @@
 # Configuration Decap CMS pour Audire
-# MODE TEST (pour développement local - les changements ne sont PAS sauvegardés)
-# Pour production : changez "test-repo" en "github" et décommentez les lignes ci-dessous
 backend:
-  name: test-repo  # Changez en "github" pour production
-  # repo: PlaywithPY/audire
-  # branch: main
-  # base_url: https://api.netlify.com
-  # auth_endpoint: auth
+  name: github
+  repo: PlaywithPY/audire
+  branch: main
 
-# Décommentez pour utiliser le backend local (sauvegarde réelle en dev)
-# local_backend: true
-
-# Options de publication
-publish_mode: editorial_workflow # Brouillons avant publication
-media_folder: "images/uploads" # Dossier pour les images uploadées
-public_folder: "/images/uploads"
-
-# Langue de l'interface
+publish_mode: editorial_workflow
+media_folder: "images/uploads"
+public_folder: "/audire/images/uploads"
 locale: fr
 
-# Collections éditables
 collections:
-  # === CONTENUS GLOBAUX ===
-  - name: "settings"
-    label: "⚙️ Paramètres du site"
+  # =========================
+  # CONFIGURATION GLOBALE
+  # =========================
+  - name: "config"
+    label: "⚙️ Configuration"
     files:
-      - name: "contact"
-        label: "📞 Informations de contact"
-        file: "content/contact.json"
+      - name: "config"
+        label: "📞 Contact & Informations"
+        file: "content/config.json"
         fields:
-          - {label: "Téléphone (affichage)", name: "phoneDisplay", widget: "string", default: "04 233 61 25"}
-          - {label: "Téléphone (lien)", name: "phoneHref", widget: "string", default: "+3242336125"}
-          - {label: "Email", name: "email", widget: "string", default: "centre.audire@gmail.com"}
-          - {label: "Adresse - Rue", name: "street", widget: "string", default: "30, rue Grand-Vinâve"}
-          - {label: "Adresse - Code postal", name: "zip", widget: "string", default: "4101"}
-          - {label: "Adresse - Ville", name: "city", widget: "string", default: "Jemeppe-sur-Meuse"}
-          - {label: "Province", name: "province", widget: "string", default: "Province de Liège"}
-
-      - name: "navigation"
-        label: "🧭 Menu de navigation"
-        file: "content/navigation.json"
-        fields:
-          - label: "Liens principaux"
-            name: "mainLinks"
-            widget: "list"
+          - label: "Contact"
+            name: "contact"
+            widget: "object"
             fields:
-              - {label: "Texte", name: "text", widget: "string"}
-              - {label: "URL", name: "url", widget: "string"}
-          - label: "Liens topbar"
-            name: "topLinks"
-            widget: "list"
-            fields:
-              - {label: "Texte", name: "text", widget: "string"}
-              - {label: "URL", name: "url", widget: "string"}
+              - label: "Téléphone"
+                name: "phone"
+                widget: "object"
+                fields:
+                  - {label: "Affichage", name: "display", widget: "string"}
+                  - {label: "Lien (format +32...)", name: "href", widget: "string"}
+              - {label: "Email", name: "email", widget: "string"}
+              - label: "Adresse"
+                name: "address"
+                widget: "object"
+                fields:
+                  - {label: "Rue", name: "street", widget: "string"}
+                  - {label: "Code postal", name: "postalCode", widget: "string"}
+                  - {label: "Ville", name: "city", widget: "string"}
+                  - {label: "Région", name: "region", widget: "string"}
+                  - {label: "Pays", name: "country", widget: "string"}
 
-  # === PAGES ===
+  # =========================
+  # PAGES DU SITE
+  # =========================
   - name: "pages"
     label: "📄 Pages"
     files:
-      - name: "homepage"
+      # ========================================
+      # PAGE D'ACCUEIL
+      # ========================================
+      - name: "home"
         label: "🏠 Page d'accueil"
-        file: "content/pages/homepage.json"
+        file: "content/pages/home.json"
         fields:
-          - {label: "Titre principal (H1)", name: "title", widget: "string"}
-          - {label: "Sous-titre", name: "subtitle", widget: "text"}
-          - {label: "Badge (kicker)", name: "kicker", widget: "string"}
-          - label: "Puces (chips)"
-            name: "chips"
-            widget: "list"
-            field: {label: "Texte", name: "text", widget: "string"}
-          - label: "Section 'Ce qu'on fait'"
-            name: "whatWeDo"
+          - label: "Section Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Kicker (petit texte au-dessus)", name: "kicker", widget: "string"}
+              - {label: "Titre principal", name: "title", widget: "string"}
+              - {label: "Sous-titre", name: "subtitle", widget: "text"}
+              - {label: "Chips (liste de points)", name: "chips", widget: "list", field: {label: "Texte", name: "text", widget: "string"}}
+              - {label: "Note (texte 'Vous hésitez?')", name: "note", widget: "text"}
+
+          - label: "Section CTA finale"
+            name: "cta"
             widget: "object"
             fields:
               - {label: "Titre", name: "title", widget: "string"}
               - {label: "Description", name: "description", widget: "text"}
 
-      - name: "contact"
-        label: "📍 Page Contact"
-        file: "content/pages/contact.json"
+      # ========================================
+      # PAGE TEST AUDITIF
+      # ========================================
+      - name: "test-auditif-gratuit"
+        label: "👂 Page Test Auditif Gratuit"
+        file: "content/pages/test-auditif-gratuit.json"
         fields:
-          - {label: "Titre principal (H1)", name: "title", widget: "string"}
-          - {label: "Description", name: "description", widget: "text"}
-          - {label: "Badge (kicker)", name: "kicker", widget: "string"}
-
-      - name: "faq"
-        label: "❓ Page FAQ"
-        file: "content/pages/faq.json"
-        fields:
-          - {label: "Titre principal (H1)", name: "title", widget: "string"}
-          - {label: "Description", name: "description", widget: "text"}
-          - label: "Questions"
-            name: "questions"
-            widget: "list"
+          - label: "Section Hero"
+            name: "hero"
+            widget: "object"
             fields:
-              - {label: "Question", name: "question", widget: "string"}
-              - {label: "Réponse", name: "answer", widget: "text"}
+              - {label: "Kicker", name: "kicker", widget: "string"}
+              - {label: "Titre", name: "title", widget: "string"}
+              - {label: "Sous-titre", name: "subtitle", widget: "text"}
+              - {label: "Chips", name: "chips", widget: "list", field: {label: "Texte", name: "text", widget: "string"}}
 
-      - name: "partenaires"
-        label: "🤝 Page Partenaires Pharmaciens"
-        file: "content/pages/partenaires.json"
-        fields:
-          - {label: "Titre principal (H1)", name: "title", widget: "string"}
-          - {label: "Description", name: "description", widget: "text"}
-          - {label: "Badge (kicker)", name: "kicker", widget: "string"}
-          - label: "Avantages"
-            name: "benefits"
-            widget: "list"
+          - label: "Section CTA"
+            name: "cta"
+            widget: "object"
+            collapsed: true
             fields:
               - {label: "Titre", name: "title", widget: "string"}
               - {label: "Description", name: "description", widget: "text"}
 
-  # === SOLUTIONS ===
-  - name: "solutions"
-    label: "🎧 Solutions auditives"
-    folder: "content/solutions"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - {label: "Titre", name: "title", widget: "string"}
-      - {label: "Marque", name: "brand", widget: "select", options: ["Oticon", "Bernafon", "Autre"]}
-      - {label: "Description courte", name: "excerpt", widget: "text"}
-      - {label: "Description complète", name: "body", widget: "markdown"}
-      - {label: "Prix indicatif", name: "price", widget: "string", required: false}
-      - {label: "Image", name: "image", widget: "image", required: false}
-      - {label: "Ordre d'affichage", name: "order", widget: "number", default: 0}
+      # ========================================
+      # PAGE NOTRE ACCOMPAGNEMENT
+      # ========================================
+      - name: "notre-accompagnement"
+        label: "🤝 Page Notre Accompagnement"
+        file: "content/pages/notre-accompagnement.json"
+        fields:
+          - label: "Section Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Kicker", name: "kicker", widget: "string"}
+              - {label: "Titre", name: "title", widget: "string"}
 
-  # === FAQ ===
-  - name: "faq_items"
-    label: "❓ Questions FAQ"
-    folder: "content/faq"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - {label: "Question", name: "question", widget: "string"}
-      - {label: "Réponse", name: "answer", widget: "markdown"}
-      - {label: "Catégorie", name: "category", widget: "select", options: ["Test auditif", "Remboursements", "Appareils", "Suivi", "Général"]}
-      - {label: "Ordre d'affichage", name: "order", widget: "number", default: 0}
+          - label: "Section CTA"
+            name: "cta"
+            widget: "object"
+            fields:
+              - {label: "Titre", name: "title", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+
+      # ========================================
+      # PAGE SOLUTIONS AUDITIVES
+      # ========================================
+      - name: "solutions-auditives"
+        label: "🎧 Page Solutions Auditives"
+        file: "content/pages/solutions-auditives.json"
+        fields:
+          - label: "Section Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Kicker", name: "kicker", widget: "string"}
+              - {label: "Titre", name: "title", widget: "string"}
+
+          - label: "Section CTA"
+            name: "cta"
+            widget: "object"
+            fields:
+              - {label: "Titre", name: "title", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+
+      # ========================================
+      # PAGE REMBOURSEMENTS
+      # ========================================
+      - name: "remboursements"
+        label: "💰 Page Remboursements"
+        file: "content/pages/remboursements.json"
+        fields:
+          - label: "Section Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Kicker", name: "kicker", widget: "string"}
+              - {label: "Titre", name: "title", widget: "string"}
+              - {label: "Sous-titre", name: "subtitle", widget: "text", required: false}
+
+          - label: "Section CTA"
+            name: "cta"
+            widget: "object"
+            fields:
+              - {label: "Titre", name: "title", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+
+      # ========================================
+      # PAGE FAQ
+      # ========================================
+      - name: "faq"
+        label: "❓ Page FAQ"
+        file: "content/pages/faq.json"
+        fields:
+          - label: "Section Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Kicker", name: "kicker", widget: "string"}
+              - {label: "Titre", name: "title", widget: "string"}
+              - {label: "Sous-titre", name: "subtitle", widget: "text", required: false}
+
+          - label: "Section CTA"
+            name: "cta"
+            widget: "object"
+            fields:
+              - {label: "Titre", name: "title", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+
+      # ========================================
+      # PAGE CONTACT
+      # ========================================
+      - name: "contact"
+        label: "📍 Page Contact"
+        file: "content/pages/contact.json"
+        fields:
+          - label: "Section Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Kicker", name: "kicker", widget: "string"}
+              - {label: "Titre", name: "title", widget: "string"}
+              - {label: "Sous-titre", name: "subtitle", widget: "text", required: false}
+
+      # ========================================
+      # PAGE PARTENAIRES PHARMACIENS
+      # ========================================
+      - name: "partenaires-pharmaciens"
+        label: "💊 Page Partenaires Pharmaciens"
+        file: "content/pages/partenaires-pharmaciens.json"
+        fields:
+          - label: "Section Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Kicker", name: "kicker", widget: "string"}
+              - {label: "Titre", name: "title", widget: "string"}
+              - {label: "Sous-titre", name: "subtitle", widget: "text", required: false}
+
+          - label: "Section CTA"
+            name: "cta"
+            widget: "object"
+            fields:
+              - {label: "Titre", name: "title", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}

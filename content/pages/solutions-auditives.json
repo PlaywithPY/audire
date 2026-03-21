@@ -1,0 +1,33 @@
+{
+  "hero": {
+    "kicker": "",
+    "title": "",
+    "subtitle": "",
+    "chips": []
+  },
+  "marques": {
+    "tag": "",
+    "title": "",
+    "subtitle": ""
+  },
+  "types": {
+    "tag": "",
+    "title": "",
+    "subtitle": "",
+    "note": ""
+  },
+  "innovation": {
+    "tag": "",
+    "title": "",
+    "subtitle": ""
+  },
+  "prix": {
+    "title": "",
+    "description": "",
+    "note": ""
+  },
+  "cta": {
+    "title": "",
+    "description": ""
+  }
+}
