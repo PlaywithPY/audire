@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Upload, Image as ImageIcon } from 'lucide-react';
+import { X, Upload, Image as ImageIcon, Eye } from 'lucide-react';
 
 type ImagePickerProps = {
   isOpen: boolean;
@@ -22,6 +22,7 @@ export default function ImagePicker({ isOpen, onClose, onSelect, currentImage }:
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string>(currentImage || '');
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -140,22 +141,37 @@ export default function ImagePicker({ isOpen, onClose, onSelect, currentImage }:
               {images.map((image) => (
                 <div
                   key={image.url}
-                  onClick={() => setSelectedImage(image.url)}
-                  className={`relative group cursor-pointer rounded-lg overflow-hidden border-4 transition-all ${
+                  className={`relative group rounded-lg overflow-hidden border-4 transition-all ${
                     selectedImage === image.url
                       ? 'border-blue-600 shadow-lg scale-105'
                       : 'border-transparent hover:border-blue-300'
                   }`}
                 >
-                  <div className="aspect-square bg-gray-100">
+                  <div
+                    onClick={() => setSelectedImage(image.url)}
+                    className="aspect-square bg-gray-100 flex items-center justify-center p-2 cursor-pointer"
+                  >
                     <img
                       src={image.url}
                       alt={image.name}
-                      className="w-full h-full object-cover"
+                      className="max-w-full max-h-full object-contain"
                     />
                   </div>
+
+                  {/* Bouton pour voir en grand */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPreviewImage(image.url);
+                    }}
+                    className="absolute top-2 right-2 bg-white/90 hover:bg-white text-gray-700 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-10"
+                    title="Voir en grand"
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
+
                   {selectedImage === image.url && (
-                    <div className="absolute inset-0 bg-blue-600/20 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-blue-600/20 flex items-center justify-center pointer-events-none">
                       <div className="bg-blue-600 text-white rounded-full p-2">
                         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -163,7 +179,7 @@ export default function ImagePicker({ isOpen, onClose, onSelect, currentImage }:
                       </div>
                     </div>
                   )}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                     <p className="text-white text-xs truncate">{image.name}</p>
                   </div>
                 </div>
@@ -206,6 +222,31 @@ export default function ImagePicker({ isOpen, onClose, onSelect, currentImage }:
           </div>
         </div>
       </div>
+
+      {/* Modal de prévisualisation agrandie */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4"
+          onClick={() => setPreviewImage(null)}
+        >
+          <button
+            onClick={() => setPreviewImage(null)}
+            className="absolute top-4 right-4 bg-white text-gray-800 rounded-full p-3 hover:bg-gray-100 transition-colors shadow-lg z-10"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <div className="max-w-5xl max-h-[90vh] w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={previewImage}
+              alt="Prévisualisation"
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+            />
+          </div>
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-sm text-gray-700 shadow-lg">
+            Cliquez n'importe où pour fermer
+          </div>
+        </div>
+      )}
     </div>
   );
 }
