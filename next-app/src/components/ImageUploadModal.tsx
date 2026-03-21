@@ -14,6 +14,7 @@ export default function ImageUploadModal({ isOpen, onClose, onImageSelected }: I
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
   // Charger les images existantes quand on ouvre le modal
   useEffect(() => {
@@ -108,12 +109,26 @@ export default function ImageUploadModal({ isOpen, onClose, onImageSelected }: I
 
           {previewUrl && (
             <div className="mb-4">
-              <p className="text-sm font-semibold mb-2">Prévisualisation :</p>
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="max-h-48 rounded border border-gray-300"
-              />
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-semibold">Prévisualisation :</p>
+                <button
+                  onClick={() => setFullscreenImage(previewUrl)}
+                  className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                >
+                  👁️ Voir en grand
+                </button>
+              </div>
+              <div className="w-full h-64 bg-gray-100 rounded border-2 border-gray-300 flex items-center justify-center overflow-hidden relative group cursor-pointer"
+                   onClick={() => setFullscreenImage(previewUrl)}>
+                <img
+                  src={previewUrl}
+                  alt="Preview"
+                  className="max-w-full max-h-full object-contain"
+                />
+                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span className="text-white font-semibold text-lg">👁️ Voir en grand</span>
+                </div>
+              </div>
             </div>
           )}
 
@@ -143,26 +158,43 @@ export default function ImageUploadModal({ isOpen, onClose, onImageSelected }: I
           ) : (
             <div className="grid grid-cols-3 gap-4">
               {images.map((img) => (
-                <button
+                <div
                   key={img.url}
-                  onClick={() => {
-                    onImageSelected(img.url);
-                    onClose();
-                  }}
-                  className="group relative aspect-video bg-gray-100 rounded-lg overflow-hidden hover:ring-2 hover:ring-primary transition-all"
+                  className="group relative bg-gray-100 rounded-lg overflow-hidden hover:ring-2 hover:ring-primary transition-all"
                 >
-                  <img
-                    src={img.url}
-                    alt={img.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <button
+                    onClick={() => {
+                      onImageSelected(img.url);
+                      onClose();
+                    }}
+                    className="w-full h-48 flex items-center justify-center p-2"
+                  >
+                    <img
+                      src={img.url}
+                      alt={img.name}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </button>
+
+                  {/* Bouton pour voir en grand */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setFullscreenImage(img.url);
+                    }}
+                    className="absolute top-2 right-2 bg-white/90 hover:bg-white text-gray-700 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-10"
+                    title="Voir en grand"
+                  >
+                    👁️
+                  </button>
+
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                     <span className="text-white font-semibold">✓ Sélectionner</span>
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-xs p-2 truncate">
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-xs p-2 truncate pointer-events-none">
                     {img.name}
                   </div>
-                </button>
+                </div>
               ))}
             </div>
           )}
@@ -177,6 +209,31 @@ export default function ImageUploadModal({ isOpen, onClose, onImageSelected }: I
           </button>
         </div>
       </div>
+
+      {/* Modal de prévisualisation plein écran */}
+      {fullscreenImage && (
+        <div
+          className="fixed inset-0 bg-black/90 flex items-center justify-center z-[70] p-4"
+          onClick={() => setFullscreenImage(null)}
+        >
+          <button
+            onClick={() => setFullscreenImage(null)}
+            className="absolute top-4 right-4 bg-white text-gray-800 rounded-full p-3 hover:bg-gray-100 transition-colors shadow-lg z-10 text-2xl leading-none"
+          >
+            ✕
+          </button>
+          <div className="max-w-6xl max-h-[90vh] w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={fullscreenImage}
+              alt="Prévisualisation complète"
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+            />
+          </div>
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full text-sm text-gray-700 shadow-lg">
+            🖱️ Cliquez n'importe où pour fermer
+          </div>
+        </div>
+      )}
     </div>
   );
 }
