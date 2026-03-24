@@ -34,40 +34,14 @@ const pageDefinitions: PageDefinition[] = [
       { textKey: 'hero-kicker', label: '1️⃣ Badge/Kicker hero', defaultContent: 'Centre auditif indépendant • Province de Liège', type: 'text' },
       { textKey: 'hero-title', label: '2️⃣ Titre principal (H1)', defaultContent: 'Mieux entendre, simplement.', type: 'text' },
       { textKey: 'description-1', label: '3️⃣ Description hero', defaultContent: 'Chez Audire, on commence par comprendre votre quotidien et vos difficultés. Puis on vous propose une suite claire et sans pression. Test auditif gratuit, explications pédagogiques, réglages et suivi dans la durée.', type: 'textarea', rows: 5 },
+      { textKey: 'chip-1', label: '🏷️ Capsule 1', defaultContent: 'Test gratuit et sans engagement', type: 'text' },
+      { textKey: 'chip-2', label: '🏷️ Capsule 2', defaultContent: 'Explications claires, sans jargon', type: 'text' },
+      { textKey: 'chip-3', label: '🏷️ Capsule 3', defaultContent: 'Oticon & Bernafon', type: 'text' },
+      { textKey: 'chip-4', label: '🏷️ Capsule 4', defaultContent: 'Suivi personnalisé', type: 'text' },
       { textKey: 'section-1-title', label: '4️⃣ Titre section "Pourquoi Audire"', defaultContent: 'Pourquoi choisir Audire ?', type: 'text' },
       { textKey: 'description-2', label: '5️⃣ Description section "Pourquoi Audire"', defaultContent: 'Parce que bien entendre, ce n\'est pas qu\'une question d\'appareil. C\'est une question d\'accompagnement, d\'écoute et de suivi dans la durée.', type: 'textarea', rows: 5 },
       { textKey: 'section-2-title', label: '6️⃣ Titre section CTA', defaultContent: 'Prêt à mieux entendre ?', type: 'text' },
       { textKey: 'description-3', label: '7️⃣ Description CTA', defaultContent: 'Prenez rendez-vous pour un test auditif gratuit et sans engagement.', type: 'textarea', rows: 3 },
-    ]
-  },
-  {
-    pageKey: 'test-auditif-gratuit',
-    pageLabel: '👂 Test Auditif Gratuit',
-    texts: [
-      { textKey: 'hero-title', label: '1️⃣ Titre principal (H1)', defaultContent: 'Test auditif gratuit', type: 'text' },
-      { textKey: 'description-1', label: '2️⃣ Description hero', defaultContent: 'Un test complet de 30 minutes pour comprendre votre audition. Gratuit, sans engagement, et expliqué avec des mots simples.', type: 'textarea', rows: 3 },
-      { textKey: 'section-1-title', label: '3️⃣ Titre section 1 (Pourquoi)', defaultContent: 'Pourquoi faire un test auditif ?', type: 'text' },
-      { textKey: 'description-2', label: '4️⃣ Description section 1', defaultContent: 'La perte auditive est progressive et souvent difficile à détecter soi-même.', type: 'textarea', rows: 3 },
-      { textKey: 'section-2-title', label: '5️⃣ Titre section 2 (Déroulement)', defaultContent: 'Comment se déroule le test ?', type: 'text' },
-      { textKey: 'description-3', label: '6️⃣ Description section 2', defaultContent: 'Un test simple, indolore et complet en 30 minutes.', type: 'textarea', rows: 3 },
-      { textKey: 'section-3-title', label: '7️⃣ Titre section 3 (Réservation)', defaultContent: 'Réservez votre test gratuit', type: 'text' },
-      { textKey: 'description-4', label: '8️⃣ Description section 3', defaultContent: 'Remplissez le formulaire ci-dessous et nous vous recontactons rapidement pour fixer un rendez-vous.', type: 'textarea', rows: 3 },
-      { textKey: 'section-4-title', label: '9️⃣ Titre section 4 (Contact)', defaultContent: 'Ou contactez-nous directement', type: 'text' },
-      { textKey: 'description-5', label: '🔟 Description section 4', defaultContent: 'Vous préférez nous appeler ? Nous sommes là pour vous.', type: 'textarea', rows: 3 },
-    ]
-  },
-  {
-    pageKey: 'notre-accompagnement',
-    pageLabel: '🤝 Notre Accompagnement',
-    texts: [
-      { textKey: 'hero-title', label: '1️⃣ Titre principal (H1)', defaultContent: 'Notre accompagnement', type: 'text' },
-      { textKey: 'description-1', label: '2️⃣ Description hero', defaultContent: 'Chez Audire, vous n\'êtes pas un numéro. Nous prenons le temps de comprendre votre quotidien, vos difficultés et vos attentes pour vous proposer un accompagnement vraiment personnalisé.', type: 'textarea', rows: 5 },
-      { textKey: 'section-1-title', label: '3️⃣ Titre section 1 (Processus)', defaultContent: 'Comment ça se passe ?', type: 'text' },
-      { textKey: 'description-2', label: '4️⃣ Description section 1', defaultContent: 'Un accompagnement en plusieurs étapes, à votre rythme et sans pression.', type: 'textarea', rows: 3 },
-      { textKey: 'section-2-title', label: '5️⃣ Titre section 2 (Différences)', defaultContent: 'Ce qui nous différencie', type: 'text' },
-      { textKey: 'description-3', label: '6️⃣ Description section 2', defaultContent: 'Pourquoi nos clients nous recommandent à leurs proches ?', type: 'textarea', rows: 3 },
-      { textKey: 'section-3-title', label: '7️⃣ Titre section 3 (CTA)', defaultContent: 'Prêt à commencer ?', type: 'text' },
-      { textKey: 'description-4', label: '8️⃣ Description section 3', defaultContent: 'Prenez rendez-vous pour un test auditif gratuit et sans engagement.', type: 'textarea', rows: 3 },
     ]
   },
   {
@@ -99,6 +73,36 @@ const pageDefinitions: PageDefinition[] = [
     ]
   },
   {
+    pageKey: 'notre-accompagnement',
+    pageLabel: '🤝 Notre Accompagnement',
+    texts: [
+      { textKey: 'hero-title', label: '1️⃣ Titre principal (H1)', defaultContent: 'Notre accompagnement', type: 'text' },
+      { textKey: 'description-1', label: '2️⃣ Description hero', defaultContent: 'Chez Audire, vous n\'êtes pas un numéro. Nous prenons le temps de comprendre votre quotidien, vos difficultés et vos attentes pour vous proposer un accompagnement vraiment personnalisé.', type: 'textarea', rows: 5 },
+      { textKey: 'section-1-title', label: '3️⃣ Titre section 1 (Processus)', defaultContent: 'Comment ça se passe ?', type: 'text' },
+      { textKey: 'description-2', label: '4️⃣ Description section 1', defaultContent: 'Un accompagnement en plusieurs étapes, à votre rythme et sans pression.', type: 'textarea', rows: 3 },
+      { textKey: 'section-2-title', label: '5️⃣ Titre section 2 (Différences)', defaultContent: 'Ce qui nous différencie', type: 'text' },
+      { textKey: 'description-3', label: '6️⃣ Description section 2', defaultContent: 'Pourquoi nos clients nous recommandent à leurs proches ?', type: 'textarea', rows: 3 },
+      { textKey: 'section-3-title', label: '7️⃣ Titre section 3 (CTA)', defaultContent: 'Prêt à commencer ?', type: 'text' },
+      { textKey: 'description-4', label: '8️⃣ Description section 3', defaultContent: 'Prenez rendez-vous pour un test auditif gratuit et sans engagement.', type: 'textarea', rows: 3 },
+    ]
+  },
+  {
+    pageKey: 'partenaires-pharmaciens',
+    pageLabel: '💊 Partenaires Pharmaciens',
+    texts: [
+      { textKey: 'hero-title', label: '1️⃣ Titre principal (H1)', defaultContent: 'Partenaires pharmaciens', type: 'text' },
+      { textKey: 'description-1', label: '2️⃣ Description hero', defaultContent: 'Vous êtes pharmacien en province de Liège ? Orientez vos patients vers un accompagnement de qualité pour leurs besoins auditifs.', type: 'textarea', rows: 3 },
+      { textKey: 'section-1-title', label: '3️⃣ Titre section 1 (Avantages)', defaultContent: 'Pourquoi nous recommander ?', type: 'text' },
+      { textKey: 'description-2', label: '4️⃣ Description section 1', defaultContent: 'Un partenariat basé sur la confiance et l\'excellence du service.', type: 'textarea', rows: 3 },
+      { textKey: 'section-2-title', label: '5️⃣ Titre section 2 (Processus)', defaultContent: 'Comment orienter vos patients ?', type: 'text' },
+      { textKey: 'description-3', label: '6️⃣ Description section 2', defaultContent: 'Un processus simple et efficace pour vos patients.', type: 'textarea', rows: 3 },
+      { textKey: 'section-3-title', label: '7️⃣ Titre section 3 (Matériel)', defaultContent: 'Matériel de communication', type: 'text' },
+      { textKey: 'description-4', label: '8️⃣ Description section 3', defaultContent: 'Nous mettons à votre disposition du matériel pour informer vos patients.', type: 'textarea', rows: 3 },
+      { textKey: 'section-4-title', label: '9️⃣ Titre section 4 (CTA)', defaultContent: 'Devenons partenaires', type: 'text' },
+      { textKey: 'description-5', label: '🔟 Description section 4', defaultContent: 'Vous souhaitez devenir partenaire ou obtenir plus d\'informations ? Contactez-nous dès maintenant.', type: 'textarea', rows: 3 },
+    ]
+  },
+  {
     pageKey: 'faq',
     pageLabel: '❓ FAQ',
     texts: [
@@ -121,19 +125,19 @@ const pageDefinitions: PageDefinition[] = [
     ]
   },
   {
-    pageKey: 'partenaires-pharmaciens',
-    pageLabel: '💊 Partenaires Pharmaciens',
+    pageKey: 'test-auditif-gratuit',
+    pageLabel: '👂 Test Auditif Gratuit',
     texts: [
-      { textKey: 'hero-title', label: '1️⃣ Titre principal (H1)', defaultContent: 'Partenaires pharmaciens', type: 'text' },
-      { textKey: 'description-1', label: '2️⃣ Description hero', defaultContent: 'Vous êtes pharmacien en province de Liège ? Orientez vos patients vers un accompagnement de qualité pour leurs besoins auditifs.', type: 'textarea', rows: 3 },
-      { textKey: 'section-1-title', label: '3️⃣ Titre section 1 (Avantages)', defaultContent: 'Pourquoi nous recommander ?', type: 'text' },
-      { textKey: 'description-2', label: '4️⃣ Description section 1', defaultContent: 'Un partenariat basé sur la confiance et l\'excellence du service.', type: 'textarea', rows: 3 },
-      { textKey: 'section-2-title', label: '5️⃣ Titre section 2 (Processus)', defaultContent: 'Comment orienter vos patients ?', type: 'text' },
-      { textKey: 'description-3', label: '6️⃣ Description section 2', defaultContent: 'Un processus simple et efficace pour vos patients.', type: 'textarea', rows: 3 },
-      { textKey: 'section-3-title', label: '7️⃣ Titre section 3 (Matériel)', defaultContent: 'Matériel de communication', type: 'text' },
-      { textKey: 'description-4', label: '8️⃣ Description section 3', defaultContent: 'Nous mettons à votre disposition du matériel pour informer vos patients.', type: 'textarea', rows: 3 },
-      { textKey: 'section-4-title', label: '9️⃣ Titre section 4 (CTA)', defaultContent: 'Devenons partenaires', type: 'text' },
-      { textKey: 'description-5', label: '🔟 Description section 4', defaultContent: 'Vous souhaitez devenir partenaire ou obtenir plus d\'informations ? Contactez-nous dès maintenant.', type: 'textarea', rows: 3 },
+      { textKey: 'hero-title', label: '1️⃣ Titre principal (H1)', defaultContent: 'Test auditif gratuit', type: 'text' },
+      { textKey: 'description-1', label: '2️⃣ Description hero', defaultContent: 'Un test complet de 30 minutes pour comprendre votre audition. Gratuit, sans engagement, et expliqué avec des mots simples.', type: 'textarea', rows: 3 },
+      { textKey: 'section-1-title', label: '3️⃣ Titre section 1 (Pourquoi)', defaultContent: 'Pourquoi faire un test auditif ?', type: 'text' },
+      { textKey: 'description-2', label: '4️⃣ Description section 1', defaultContent: 'La perte auditive est progressive et souvent difficile à détecter soi-même.', type: 'textarea', rows: 3 },
+      { textKey: 'section-2-title', label: '5️⃣ Titre section 2 (Déroulement)', defaultContent: 'Comment se déroule le test ?', type: 'text' },
+      { textKey: 'description-3', label: '6️⃣ Description section 2', defaultContent: 'Un test simple, indolore et complet en 30 minutes.', type: 'textarea', rows: 3 },
+      { textKey: 'section-3-title', label: '7️⃣ Titre section 3 (Réservation)', defaultContent: 'Réservez votre test gratuit', type: 'text' },
+      { textKey: 'description-4', label: '8️⃣ Description section 3', defaultContent: 'Remplissez le formulaire ci-dessous et nous vous recontactons rapidement pour fixer un rendez-vous.', type: 'textarea', rows: 3 },
+      { textKey: 'section-4-title', label: '9️⃣ Titre section 4 (Contact)', defaultContent: 'Ou contactez-nous directement', type: 'text' },
+      { textKey: 'description-5', label: '🔟 Description section 4', defaultContent: 'Vous préférez nous appeler ? Nous sommes là pour vous.', type: 'textarea', rows: 3 },
     ]
   },
 ];
