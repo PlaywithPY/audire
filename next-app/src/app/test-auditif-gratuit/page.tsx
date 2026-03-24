@@ -1,24 +1,33 @@
+'use client';
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ImageFeatureCard from "@/components/ImageFeatureCard";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
-import { Metadata } from "next";
-import { getFeatureCards } from "@/lib/card-helpers";
+import { useState, useEffect } from "react";
+import { CardData } from "@/lib/card-helpers";
 
-export const metadata: Metadata = {
-  title: "Test auditif gratuit — Audire",
-  description: "Réservez votre test auditif gratuit et sans engagement chez Audire. 30 minutes pour comprendre votre audition.",
-};
+export default function TestAuditifGratuit() {
+  const [whyTestCards, setWhyTestCards] = useState<CardData[]>([]);
+  const [stepCards, setStepCards] = useState<CardData[]>([]);
 
-// Revalider la page toutes les 60 secondes (ISR)
-export const revalidate = 60;
+  useEffect(() => {
+    async function loadCards() {
+      try {
+        const res = await fetch('/api/card-images?pageKey=test-auditif-gratuit');
+        if (res.ok) {
+          const allCards: CardData[] = await res.json();
 
-export default async function TestAuditifGratuit() {
-  const allCards = await getFeatureCards('test-auditif-gratuit');
-
-  // Séparer les cards en 2 groupes
-  const whyTestCards = allCards.filter(card => ['test-signs', 'test-benefits'].includes(card.cardKey));
-  const stepCards = allCards.filter(card => card.cardKey.startsWith('test-step-'));
+          // Séparer les cards en 2 groupes
+          setWhyTestCards(allCards.filter(card => ['test-signs', 'test-benefits'].includes(card.cardKey)));
+          setStepCards(allCards.filter(card => card.cardKey.startsWith('test-step-')));
+        }
+      } catch (error) {
+        console.error('Error loading cards:', error);
+      }
+    }
+    loadCards();
+  }, []);
 
   return (
     <>

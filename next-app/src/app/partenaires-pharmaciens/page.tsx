@@ -1,20 +1,29 @@
+'use client';
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ImageFeatureCard from "@/components/ImageFeatureCard";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
-import { Metadata } from "next";
-import { getFeatureCards } from "@/lib/card-helpers";
+import { useState, useEffect } from "react";
+import { CardData } from "@/lib/card-helpers";
 
-export const metadata: Metadata = {
-  title: "Partenaires pharmaciens — Audire",
-  description: "Vous êtes pharmacien ? Découvrez notre partenariat et comment orienter vos patients vers Audire.",
-};
+export default function PartenairesPharmaciens() {
+  const [featureCards, setFeatureCards] = useState<CardData[]>([]);
 
-// Revalider la page toutes les 60 secondes (ISR)
-export const revalidate = 60;
-
-export default async function PartenairesPharmaciens() {
-  const featureCards = await getFeatureCards('partenaires-pharmaciens');
+  useEffect(() => {
+    async function loadCards() {
+      try {
+        const res = await fetch('/api/card-images?pageKey=partenaires-pharmaciens');
+        if (res.ok) {
+          const cards = await res.json();
+          setFeatureCards(cards);
+        }
+      } catch (error) {
+        console.error('Error loading cards:', error);
+      }
+    }
+    loadCards();
+  }, []);
   return (
     <>
       <Header />

@@ -1,18 +1,44 @@
+'use client';
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ImageFeatureCard from "@/components/ImageFeatureCard";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 import ImageEffectsRenderer from "@/components/ImageEffectsRenderer";
-import { getFeatureCards } from "@/lib/card-helpers";
-import { getPageTexts } from "@/lib/page-texts";
+import { useState, useEffect } from "react";
+import { CardData } from "@/lib/card-helpers";
 
-// Revalider la page toutes les 60 secondes (ISR)
-export const revalidate = 60;
+interface PageTexts {
+  [key: string]: string;
+}
 
-export default async function Home() {
-  const featureCards = await getFeatureCards();
-  const texts = await getPageTexts('home');
+export default function Home() {
+  const [featureCards, setFeatureCards] = useState<CardData[]>([]);
+  const [texts, setTexts] = useState<PageTexts>({});
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        // Charger les feature cards
+        const cardsRes = await fetch('/api/card-images?pageKey=home');
+        if (cardsRes.ok) {
+          const cardsData = await cardsRes.json();
+          setFeatureCards(cardsData);
+        }
+
+        // Charger les textes de la page
+        const textsRes = await fetch('/api/page-texts?pageKey=home');
+        if (textsRes.ok) {
+          const textsData = await textsRes.json();
+          setTexts(textsData);
+        }
+      } catch (error) {
+        console.error('Error loading page data:', error);
+      }
+    }
+    loadData();
+  }, []);
   return (
     <>
       <Header />
