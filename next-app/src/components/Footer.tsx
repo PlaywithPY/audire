@@ -2,11 +2,32 @@
 
 import Link from 'next/link';
 import { useCentre } from '@/contexts/CentreContext';
+import { useState, useEffect } from 'react';
 
 const daysOfWeekShort = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
+interface FooterTexts {
+  [key: string]: string;
+}
+
 export default function Footer() {
   const { currentCentre, loading } = useCentre();
+  const [texts, setTexts] = useState<FooterTexts>({});
+
+  useEffect(() => {
+    async function loadFooterTexts() {
+      try {
+        const res = await fetch('/api/page-texts?pageKey=footer');
+        if (res.ok) {
+          const data = await res.json();
+          setTexts(data);
+        }
+      } catch (error) {
+        console.error('Error loading footer texts:', error);
+      }
+    }
+    loadFooterTexts();
+  }, []);
 
   // Valeurs par défaut pendant le chargement
   const phoneLink = currentCentre?.phoneFixe?.replace(/\s/g, '') || '+3242750666';
@@ -73,15 +94,15 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           {/* À propos */}
           <div>
-            <h3 className="font-bold text-lg mb-4">{currentCentre?.name || 'Audire'}</h3>
+            <h3 className="font-bold text-lg mb-4">{texts['title'] || currentCentre?.name || 'Audire'}</h3>
             <p className="text-text-light text-sm mb-4">
-              Centre auditif indépendant en province de Liège. Accompagnement humain et solutions de qualité.
+              {texts['description'] || 'Centre auditif indépendant en province de Liège. Accompagnement humain et solutions de qualité.'}
             </p>
           </div>
 
           {/* Liens rapides */}
           <div>
-            <h3 className="font-bold text-lg mb-4">Liens rapides</h3>
+            <h3 className="font-bold text-lg mb-4">{texts['quick-links-title'] || 'Liens rapides'}</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/solutions-auditives" className="text-text-light hover:text-primary transition-colors">
@@ -108,7 +129,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="font-bold text-lg mb-4">Contact</h3>
+            <h3 className="font-bold text-lg mb-4">{texts['contact-title'] || 'Contact'}</h3>
             <ul className="space-y-2 text-sm text-text-light">
               <li>📍 {addressLines[0]}</li>
               <li>
@@ -145,20 +166,20 @@ export default function Footer() {
 
           {/* Horaires */}
           <div>
-            <h3 className="font-bold text-lg mb-4">Horaires</h3>
+            <h3 className="font-bold text-lg mb-4">{texts['hours-title'] || 'Horaires'}</h3>
             <ul className="space-y-2 text-sm text-text-light">{formatHours()}</ul>
           </div>
         </div>
 
         {/* Bottom bar */}
         <div className="border-t border-border mt-8 pt-8 flex flex-wrap justify-between items-center gap-4 text-sm text-text-muted">
-          <p>&copy; {new Date().getFullYear()} Audire. Tous droits réservés.</p>
+          <p>&copy; {new Date().getFullYear()} {texts['copyright'] || 'Audire. Tous droits réservés.'}</p>
           <div className="flex gap-4">
             <Link href="/mentions-legales" className="hover:text-primary transition-colors">
-              Mentions légales
+              {texts['legal-link-1'] || 'Mentions légales'}
             </Link>
             <Link href="/confidentialite" className="hover:text-primary transition-colors">
-              Politique de confidentialité
+              {texts['legal-link-2'] || 'Politique de confidentialité'}
             </Link>
           </div>
         </div>
