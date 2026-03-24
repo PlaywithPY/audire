@@ -117,9 +117,40 @@
     });
   }
 
+  // Remplace le contenu des éléments avec data-config-key
+  function replaceConfigKeys() {
+    if (!config) return;
+
+    // Trouve tous les éléments avec data-config-key
+    const elements = document.querySelectorAll('[data-config-key]');
+
+    elements.forEach(element => {
+      const key = element.getAttribute('data-config-key');
+      const value = getValueByKey(config, key);
+
+      if (value !== undefined && value !== null) {
+        const type = element.getAttribute('data-content-type') || 'text';
+
+        switch (type) {
+          case 'html':
+            element.innerHTML = value;
+            break;
+          case 'text':
+            element.textContent = value;
+            break;
+          default:
+            element.textContent = value;
+        }
+      }
+    });
+  }
+
   // Remplace les informations de configuration (téléphone, email, adresse, horaires)
   function replaceConfig() {
     if (!config) return;
+
+    // Appliquer data-config-key
+    replaceConfigKeys();
 
     // Téléphone
     if (config.contact?.phone) {

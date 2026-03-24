@@ -49,6 +49,10 @@
       }
     ]
   },
+  "faqSection": {
+    "tag": "Vos questions",
+    "title": "Questions sur les remboursements"
+  },
   "cta": {
     "title": "Besoin de plus d'informations ?",
     "description": "Prenez rendez-vous ou appelez-nous. Nous vous expliquons tout en détail et vous aidons à calculer votre reste à charge personnalisé."

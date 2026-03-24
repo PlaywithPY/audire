@@ -71,6 +71,10 @@
     ],
     "note": "La perte auditive est souvent progressive et invisible. On s'habitue sans s'en rendre compte. Un test permet de faire le point objectivement."
   },
+  "faqSection": {
+    "tag": "Vos questions",
+    "title": "Questions sur le test auditif"
+  },
   "faq": [
     {
       "question": "Le test est-il vraiment gratuit ?",

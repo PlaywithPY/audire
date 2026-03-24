@@ -108,6 +108,11 @@
     "refund": "Mais grâce à l'INAMI et aux mutuelles, vous pouvez récupérer jusqu'à 840 € par oreille selon votre situation.",
     "note": "Nous vous expliquons tout en détail lors de votre visite : conditions, démarches, délais. Transparence totale, zéro surprise."
   },
+  "faq": {
+    "tag": "Questions fréquentes",
+    "title": "Vos questions, nos réponses",
+    "subtitle": "Voici les questions qu'on nous pose le plus souvent."
+  },
   "cta": {
     "title": "Prêt à mieux entendre ?",
     "description": "Prenez rendez-vous pour un test auditif gratuit et sans engagement. Ou appelez-nous directement, on se fera un plaisir de répondre à vos questions."
