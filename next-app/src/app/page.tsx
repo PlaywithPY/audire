@@ -67,9 +67,14 @@ export default function Home() {
             </p>
 
             <div className="flex flex-wrap gap-3 justify-center mb-8">
-              {['Test gratuit et sans engagement', 'Explications claires, sans jargon', 'Oticon & Bernafon', 'Suivi personnalisé'].map((chip) => (
-                <span key={chip} className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium">
-                  {chip}
+              {[
+                { key: 'chip-1', default: 'Test gratuit et sans engagement' },
+                { key: 'chip-2', default: 'Explications claires, sans jargon' },
+                { key: 'chip-3', default: 'Oticon & Bernafon' },
+                { key: 'chip-4', default: 'Suivi personnalisé' }
+              ].map((chip) => (
+                <span key={chip.key} className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium">
+                  {texts[chip.key] || chip.default}
                 </span>
               ))}
             </div>
