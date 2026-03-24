@@ -24,9 +24,28 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(pageTexts);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching page texts:', error);
-    return NextResponse.json({ error: 'Failed to fetch page texts' }, { status: 500 });
+
+    // Messages d'erreur plus explicites
+    if (error?.code === 'P1001') {
+      return NextResponse.json({
+        error: 'Cannot connect to database. Please check DATABASE_URL in environment variables.',
+        details: 'Database server is not reachable. If using Neon, the database may be in sleep mode.'
+      }, { status: 500 });
+    }
+
+    if (error?.code === 'P2021') {
+      return NextResponse.json({
+        error: 'Table PageText does not exist. Please run database migrations.',
+        details: 'Run: npx prisma migrate deploy'
+      }, { status: 500 });
+    }
+
+    return NextResponse.json({
+      error: 'Failed to fetch page texts',
+      details: error?.message || 'Unknown error'
+    }, { status: 500 });
   }
 }
 
@@ -51,9 +70,35 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(pageText);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating page text:', error);
-    return NextResponse.json({ error: 'Failed to create page text' }, { status: 500 });
+
+    // Messages d'erreur plus explicites
+    if (error?.code === 'P1001') {
+      return NextResponse.json({
+        error: 'Cannot connect to database. Please check DATABASE_URL in environment variables.',
+        details: 'Database server is not reachable. If using Neon, the database may be in sleep mode.'
+      }, { status: 500 });
+    }
+
+    if (error?.code === 'P2021') {
+      return NextResponse.json({
+        error: 'Table PageText does not exist. Please run database migrations.',
+        details: 'Run: npx prisma migrate deploy'
+      }, { status: 500 });
+    }
+
+    if (error?.code === 'P2002') {
+      return NextResponse.json({
+        error: 'A text with this pageKey and textKey already exists.',
+        details: 'Please use a different combination or update the existing text.'
+      }, { status: 409 });
+    }
+
+    return NextResponse.json({
+      error: 'Failed to create page text',
+      details: error?.message || 'Unknown error'
+    }, { status: 500 });
   }
 }
 
@@ -77,9 +122,35 @@ export async function PUT(request: NextRequest) {
     });
 
     return NextResponse.json(pageText);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating page text:', error);
-    return NextResponse.json({ error: 'Failed to update page text' }, { status: 500 });
+
+    // Messages d'erreur plus explicites
+    if (error?.code === 'P1001') {
+      return NextResponse.json({
+        error: 'Cannot connect to database. Please check DATABASE_URL in environment variables.',
+        details: 'Database server is not reachable. If using Neon, the database may be in sleep mode.'
+      }, { status: 500 });
+    }
+
+    if (error?.code === 'P2021') {
+      return NextResponse.json({
+        error: 'Table PageText does not exist. Please run database migrations.',
+        details: 'Run: npx prisma migrate deploy'
+      }, { status: 500 });
+    }
+
+    if (error?.code === 'P2025') {
+      return NextResponse.json({
+        error: 'Text not found',
+        details: 'The text with this ID does not exist.'
+      }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      error: 'Failed to update page text',
+      details: error?.message || 'Unknown error'
+    }, { status: 500 });
   }
 }
 
@@ -103,8 +174,34 @@ export async function DELETE(request: NextRequest) {
     });
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error deleting page text:', error);
-    return NextResponse.json({ error: 'Failed to delete page text' }, { status: 500 });
+
+    // Messages d'erreur plus explicites
+    if (error?.code === 'P1001') {
+      return NextResponse.json({
+        error: 'Cannot connect to database. Please check DATABASE_URL in environment variables.',
+        details: 'Database server is not reachable. If using Neon, the database may be in sleep mode.'
+      }, { status: 500 });
+    }
+
+    if (error?.code === 'P2021') {
+      return NextResponse.json({
+        error: 'Table PageText does not exist. Please run database migrations.',
+        details: 'Run: npx prisma migrate deploy'
+      }, { status: 500 });
+    }
+
+    if (error?.code === 'P2025') {
+      return NextResponse.json({
+        error: 'Text not found',
+        details: 'The text with this ID does not exist.'
+      }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      error: 'Failed to delete page text',
+      details: error?.message || 'Unknown error'
+    }, { status: 500 });
   }
 }
