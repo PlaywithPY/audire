@@ -1,15 +1,32 @@
+'use client';
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CardIcon from "@/components/CardIcon";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
-import { Metadata } from "next";
+import { useState, useEffect } from "react";
 
-export const metadata: Metadata = {
-  title: "Notre accompagnement — Audire",
-  description: "Découvrez notre accompagnement personnalisé, du test auditif au suivi dans la durée.",
-};
+interface PageTexts {
+  [key: string]: string;
+}
 
 export default function NotreAccompagnement() {
+  const [texts, setTexts] = useState<PageTexts>({});
+
+  useEffect(() => {
+    async function loadTexts() {
+      try {
+        const res = await fetch('/api/page-texts?pageKey=notre-accompagnement');
+        if (res.ok) {
+          const data = await res.json();
+          setTexts(data);
+        }
+      } catch (error) {
+        console.error('Error loading page texts:', error);
+      }
+    }
+    loadTexts();
+  }, []);
   return (
     <>
       <Header />
@@ -19,15 +36,13 @@ export default function NotreAccompagnement() {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <span className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
-                Notre méthode
+                {texts['hero-kicker'] || 'Notre méthode'}
               </span>
               <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                Notre accompagnement
+                {texts['hero-title'] || 'Notre accompagnement'}
               </h1>
               <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
-                Chez Audire, <strong>vous n'êtes pas un numéro</strong>. Nous prenons le temps
-                de comprendre votre quotidien, vos difficultés et vos attentes pour vous proposer
-                un accompagnement vraiment personnalisé.
+                {texts['hero-description'] || 'Chez Audire, vous n\'êtes pas un numéro. Nous prenons le temps de comprendre votre quotidien, vos difficultés et vos attentes pour vous proposer un accompagnement vraiment personnalisé.'}
               </p>
             </div>
           </div>
@@ -41,11 +56,11 @@ export default function NotreAccompagnement() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <span className="inline-block bg-secondary text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                Étape par étape
+                {texts['section-1-kicker'] || 'Étape par étape'}
               </span>
-              <h2 className="text-4xl font-bold mb-4">Comment ça se passe ?</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-1-title'] || 'Comment ça se passe ?'}</h2>
               <p className="text-xl text-text-light max-w-3xl mx-auto">
-                Un accompagnement en plusieurs étapes, à votre rythme et sans pression.
+                {texts['section-1-description'] || 'Un accompagnement en plusieurs étapes, à votre rythme et sans pression.'}
               </p>
             </div>
 
@@ -54,43 +69,43 @@ export default function NotreAccompagnement() {
                 {
                   cardKey: 'approach-step-contact',
                   step: '1',
-                  title: 'Premier contact',
-                  desc: 'Vous nous appelez ou vous venez nous voir. On discute de votre situation, sans engagement. Parfois la meilleure réponse est "pas maintenant" — et on vous le dira.',
+                  title: texts['step-1-title'] || 'Premier contact',
+                  desc: texts['step-1-desc'] || 'Vous nous appelez ou vous venez nous voir. On discute de votre situation, sans engagement. Parfois la meilleure réponse est "pas maintenant" — et on vous le dira.',
                   icon: '👋'
                 },
                 {
                   cardKey: 'approach-step-test',
                   step: '2',
-                  title: 'Test auditif gratuit',
-                  desc: 'Un test complet de 30 minutes pour comprendre votre audition. On vous explique les résultats avec des mots simples, pas du jargon médical.',
+                  title: texts['step-2-title'] || 'Test auditif gratuit',
+                  desc: texts['step-2-desc'] || 'Un test complet de 30 minutes pour comprendre votre audition. On vous explique les résultats avec des mots simples, pas du jargon médical.',
                   icon: '🎧'
                 },
                 {
                   cardKey: 'approach-step-conseil',
                   step: '3',
-                  title: 'Conseil personnalisé',
-                  desc: 'On vous propose une ou plusieurs solutions adaptées à votre situation et à votre budget. Pas de vente forcée, juste des conseils honnêtes.',
+                  title: texts['step-3-title'] || 'Conseil personnalisé',
+                  desc: texts['step-3-desc'] || 'On vous propose une ou plusieurs solutions adaptées à votre situation et à votre budget. Pas de vente forcée, juste des conseils honnêtes.',
                   icon: '💬'
                 },
                 {
                   cardKey: 'approach-step-essai',
                   step: '4',
-                  title: 'Essai sans engagement',
-                  desc: 'Vous testez les appareils dans votre quotidien. Au travail, en famille, dans le bruit... C\'est comme ça qu\'on sait si ça marche vraiment.',
+                  title: texts['step-4-title'] || 'Essai sans engagement',
+                  desc: texts['step-4-desc'] || 'Vous testez les appareils dans votre quotidien. Au travail, en famille, dans le bruit... C\'est comme ça qu\'on sait si ça marche vraiment.',
                   icon: '🔍'
                 },
                 {
                   cardKey: 'approach-step-reglages',
                   step: '5',
-                  title: 'Réglages progressifs',
-                  desc: 'L\'adaptation prend du temps. On se voit régulièrement pour affiner les réglages jusqu\'à ce que ce soit parfait pour vous.',
+                  title: texts['step-5-title'] || 'Réglages progressifs',
+                  desc: texts['step-5-desc'] || 'L\'adaptation prend du temps. On se voit régulièrement pour affiner les réglages jusqu\'à ce que ce soit parfait pour vous.',
                   icon: '🔧'
                 },
                 {
                   cardKey: 'approach-step-suivi',
                   step: '6',
-                  title: 'Suivi dans la durée',
-                  desc: 'Même après l\'achat, on reste là. Entretien, nettoyage, petits réglages... On vous accompagne aussi longtemps que nécessaire.',
+                  title: texts['step-6-title'] || 'Suivi dans la durée',
+                  desc: texts['step-6-desc'] || 'Même après l\'achat, on reste là. Entretien, nettoyage, petits réglages... On vous accompagne aussi longtemps que nécessaire.',
                   icon: '🤝'
                 },
               ].map((item) => (
@@ -117,9 +132,9 @@ export default function NotreAccompagnement() {
         <section data-section="valeurs" className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4">Ce qui nous différencie</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-2-title'] || 'Ce qui nous différencie'}</h2>
               <p className="text-xl text-text-light max-w-3xl mx-auto">
-                Pourquoi nos clients nous recommandent à leurs proches ?
+                {texts['section-2-description'] || 'Pourquoi nos clients nous recommandent à leurs proches ?'}
               </p>
             </div>
 
@@ -127,26 +142,26 @@ export default function NotreAccompagnement() {
               {[
                 {
                   cardKey: 'approach-independance',
-                  title: 'Indépendance',
-                  desc: 'Nous sommes un centre indépendant, sans objectifs de vente imposés. Notre seul but : vous aider à mieux entendre.',
+                  title: texts['value-1-title'] || 'Indépendance',
+                  desc: texts['value-1-desc'] || 'Nous sommes un centre indépendant, sans objectifs de vente imposés. Notre seul but : vous aider à mieux entendre.',
                   icon: '🎯'
                 },
                 {
                   cardKey: 'approach-transparence',
-                  title: 'Transparence',
-                  desc: 'Prix clairs, remboursements expliqués, pas de frais cachés. Vous savez exactement ce que vous payez.',
+                  title: texts['value-2-title'] || 'Transparence',
+                  desc: texts['value-2-desc'] || 'Prix clairs, remboursements expliqués, pas de frais cachés. Vous savez exactement ce que vous payez.',
                   icon: '💎'
                 },
                 {
                   cardKey: 'approach-disponibilite',
-                  title: 'Disponibilité',
-                  desc: 'Un problème ? Une question ? On est là. Pas besoin d\'attendre 3 semaines pour un rendez-vous.',
+                  title: texts['value-3-title'] || 'Disponibilité',
+                  desc: texts['value-3-desc'] || 'Un problème ? Une question ? On est là. Pas besoin d\'attendre 3 semaines pour un rendez-vous.',
                   icon: '⚡'
                 },
                 {
                   cardKey: 'approach-proximite',
-                  title: 'Proximité',
-                  desc: 'On prend le temps de vous écouter, de comprendre vos besoins et de vous accompagner vraiment.',
+                  title: texts['value-4-title'] || 'Proximité',
+                  desc: texts['value-4-desc'] || 'On prend le temps de vous écouter, de comprendre vos besoins et de vous accompagner vraiment.',
                   icon: '💙'
                 },
               ].map((item) => (
@@ -169,11 +184,9 @@ export default function NotreAccompagnement() {
               <div className="bg-secondary border-l-4 border-primary p-8 rounded-xl">
                 <div className="text-5xl mb-4">💬</div>
                 <blockquote className="text-xl text-text-light italic mb-4 leading-relaxed">
-                  "Ce que j'ai apprécié chez Audire, c'est qu'on a pris le temps de m'écouter.
-                  Pas de pression, pas de vente forcée. Juste des conseils honnêtes et un suivi
-                  régulier pour adapter mes appareils. Aujourd'hui je recommande Audire à tous mes amis."
+                  {texts['testimonial-quote'] || '"Ce que j\'ai apprécié chez Audire, c\'est qu\'on a pris le temps de m\'écouter. Pas de pression, pas de vente forcée. Juste des conseils honnêtes et un suivi régulier pour adapter mes appareils. Aujourd\'hui je recommande Audire à tous mes amis."'}
                 </blockquote>
-                <p className="font-semibold">— Marie, 68 ans, Liège</p>
+                <p className="font-semibold">{texts['testimonial-author'] || '— Marie, 68 ans, Liège'}</p>
               </div>
             </div>
           </div>
@@ -182,9 +195,9 @@ export default function NotreAccompagnement() {
         {/* CTA */}
         <section className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-4xl font-bold mb-4">Prêt à commencer ?</h2>
+            <h2 className="text-4xl font-bold mb-4">{texts['cta-title'] || 'Prêt à commencer ?'}</h2>
             <p className="text-xl text-text-light mb-8 max-w-2xl mx-auto">
-              Prenez rendez-vous pour un test auditif gratuit et sans engagement.
+              {texts['cta-description'] || 'Prenez rendez-vous pour un test auditif gratuit et sans engagement.'}
             </p>
             <a
               href="/test-auditif-gratuit"

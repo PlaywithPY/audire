@@ -1,16 +1,33 @@
+'use client';
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContactInfo from "@/components/ContactInfo";
 import ContactHours from "@/components/ContactHours";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
-import { Metadata } from "next";
+import { useState, useEffect } from "react";
 
-export const metadata: Metadata = {
-  title: "Contact — Audire",
-  description: "Contactez Audire à Jemeppe-sur-Meuse. Téléphone, email, horaires et plan d'accès.",
-};
+interface PageTexts {
+  [key: string]: string;
+}
 
 export default function Contact() {
+  const [texts, setTexts] = useState<PageTexts>({});
+
+  useEffect(() => {
+    async function loadTexts() {
+      try {
+        const res = await fetch('/api/page-texts?pageKey=contact');
+        if (res.ok) {
+          const data = await res.json();
+          setTexts(data);
+        }
+      } catch (error) {
+        console.error('Error loading page texts:', error);
+      }
+    }
+    loadTexts();
+  }, []);
   return (
     <>
       <Header />
@@ -20,13 +37,13 @@ export default function Contact() {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <span className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
-                Nous contacter
+                {texts['hero-kicker'] || 'Nous contacter'}
               </span>
               <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                Contact
+                {texts['hero-title'] || 'Contact'}
               </h1>
               <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
-                Une question ? Envie de prendre rendez-vous ? Nous sommes là pour vous accompagner.
+                {texts['hero-description'] || 'Une question ? Envie de prendre rendez-vous ? Nous sommes là pour vous accompagner.'}
               </p>
             </div>
           </div>
@@ -43,9 +60,9 @@ export default function Contact() {
         <section className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">Horaires d'ouverture</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-hours-title'] || 'Horaires d\'ouverture'}</h2>
               <p className="text-xl text-text-light">
-                Nous sommes ouverts du lundi au vendredi. Le samedi sur rendez-vous uniquement.
+                {texts['section-hours-description'] || 'Nous sommes ouverts du lundi au vendredi. Le samedi sur rendez-vous uniquement.'}
               </p>
             </div>
 
@@ -57,9 +74,9 @@ export default function Contact() {
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">Envoyez-nous un message</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-form-title'] || 'Envoyez-nous un message'}</h2>
               <p className="text-xl text-text-light">
-                Vous avez une question ? Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais.
+                {texts['section-form-description'] || 'Vous avez une question ? Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais.'}
               </p>
             </div>
 

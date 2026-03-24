@@ -7,22 +7,35 @@ import AllPageImageEffects from "@/components/AllPageImageEffects";
 import { useState, useEffect } from "react";
 import { CardData } from "@/lib/card-helpers";
 
+interface PageTexts {
+  [key: string]: string;
+}
+
 export default function PartenairesPharmaciens() {
   const [featureCards, setFeatureCards] = useState<CardData[]>([]);
+  const [texts, setTexts] = useState<PageTexts>({});
 
   useEffect(() => {
-    async function loadCards() {
+    async function loadData() {
       try {
-        const res = await fetch('/api/card-images?pageKey=partenaires-pharmaciens');
-        if (res.ok) {
-          const cards = await res.json();
+        // Charger les cards
+        const cardsRes = await fetch('/api/card-images?pageKey=partenaires-pharmaciens');
+        if (cardsRes.ok) {
+          const cards = await cardsRes.json();
           setFeatureCards(cards);
         }
+
+        // Charger les textes
+        const textsRes = await fetch('/api/page-texts?pageKey=partenaires-pharmaciens');
+        if (textsRes.ok) {
+          const textsData = await textsRes.json();
+          setTexts(textsData);
+        }
       } catch (error) {
-        console.error('Error loading cards:', error);
+        console.error('Error loading page data:', error);
       }
     }
-    loadCards();
+    loadData();
   }, []);
   return (
     <>
@@ -33,14 +46,13 @@ export default function PartenairesPharmaciens() {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <span className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
-                Professionnels de santé
+                {texts['hero-kicker'] || 'Professionnels de santé'}
               </span>
               <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                Partenaires pharmaciens
+                {texts['hero-title'] || 'Partenaires pharmaciens'}
               </h1>
               <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
-                Vous êtes pharmacien en province de Liège ? Orientez vos patients vers
-                <strong> un accompagnement de qualité</strong> pour leurs besoins auditifs.
+                {texts['hero-description'] || 'Vous êtes pharmacien en province de Liège ? Orientez vos patients vers un accompagnement de qualité pour leurs besoins auditifs.'}
               </p>
             </div>
           </div>
@@ -51,11 +63,11 @@ export default function PartenairesPharmaciens() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <span className="inline-block bg-secondary text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                Notre engagement
+                {texts['section-1-kicker'] || 'Notre engagement'}
               </span>
-              <h2 className="text-4xl font-bold mb-4">Pourquoi nous recommander ?</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-1-title'] || 'Pourquoi nous recommander ?'}</h2>
               <p className="text-xl text-text-light max-w-3xl mx-auto">
-                Un partenariat basé sur la confiance et l'excellence du service.
+                {texts['section-1-description'] || 'Un partenariat basé sur la confiance et l\'excellence du service.'}
               </p>
             </div>
 
@@ -80,9 +92,9 @@ export default function PartenairesPharmaciens() {
         <section className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4">Comment orienter vos patients ?</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-2-title'] || 'Comment orienter vos patients ?'}</h2>
               <p className="text-xl text-text-light max-w-3xl mx-auto">
-                Un processus simple et efficace pour vos patients.
+                {texts['section-2-description'] || 'Un processus simple et efficace pour vos patients.'}
               </p>
             </div>
 
@@ -134,9 +146,9 @@ export default function PartenairesPharmaciens() {
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-4xl font-bold mb-4">Matériel de communication</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-3-title'] || 'Matériel de communication'}</h2>
               <p className="text-xl text-text-light mb-8">
-                Nous mettons à votre disposition du matériel pour informer vos patients.
+                {texts['section-3-description'] || 'Nous mettons à votre disposition du matériel pour informer vos patients.'}
               </p>
 
               <div className="grid md:grid-cols-3 gap-6">
@@ -159,10 +171,9 @@ export default function PartenairesPharmaciens() {
         {/* CTA */}
         <section className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-4xl font-bold mb-4">Devenons partenaires</h2>
+            <h2 className="text-4xl font-bold mb-4">{texts['cta-title'] || 'Devenons partenaires'}</h2>
             <p className="text-xl text-text-light mb-8 max-w-2xl mx-auto">
-              Vous souhaitez devenir partenaire ou obtenir plus d'informations ?
-              Contactez-nous dès maintenant.
+              {texts['cta-description'] || 'Vous souhaitez devenir partenaire ou obtenir plus d\'informations ? Contactez-nous dès maintenant.'}
             </p>
             <a
               href="/contact"

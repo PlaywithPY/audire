@@ -7,26 +7,37 @@ import AllPageImageEffects from "@/components/AllPageImageEffects";
 import { useState, useEffect } from "react";
 import { CardData } from "@/lib/card-helpers";
 
+interface PageTexts {
+  [key: string]: string;
+}
+
 export default function TestAuditifGratuit() {
   const [whyTestCards, setWhyTestCards] = useState<CardData[]>([]);
   const [stepCards, setStepCards] = useState<CardData[]>([]);
+  const [texts, setTexts] = useState<PageTexts>({});
 
   useEffect(() => {
-    async function loadCards() {
+    async function loadData() {
       try {
-        const res = await fetch('/api/card-images?pageKey=test-auditif-gratuit');
-        if (res.ok) {
-          const allCards: CardData[] = await res.json();
-
-          // Séparer les cards en 2 groupes
+        // Charger les cards
+        const cardsRes = await fetch('/api/card-images?pageKey=test-auditif-gratuit');
+        if (cardsRes.ok) {
+          const allCards: CardData[] = await cardsRes.json();
           setWhyTestCards(allCards.filter(card => ['test-signs', 'test-benefits'].includes(card.cardKey)));
           setStepCards(allCards.filter(card => card.cardKey.startsWith('test-step-')));
         }
+
+        // Charger les textes
+        const textsRes = await fetch('/api/page-texts?pageKey=test-auditif-gratuit');
+        if (textsRes.ok) {
+          const textsData = await textsRes.json();
+          setTexts(textsData);
+        }
       } catch (error) {
-        console.error('Error loading cards:', error);
+        console.error('Error loading page data:', error);
       }
     }
-    loadCards();
+    loadData();
   }, []);
 
   return (
@@ -38,14 +49,13 @@ export default function TestAuditifGratuit() {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <span className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
-                Sans engagement
+                {texts['hero-kicker'] || 'Sans engagement'}
               </span>
               <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                Test auditif gratuit
+                {texts['hero-title'] || 'Test auditif gratuit'}
               </h1>
               <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
-                Un test complet de <strong>30 minutes</strong> pour comprendre votre audition.
-                Gratuit, sans engagement, et expliqué avec des mots simples.
+                {texts['hero-description'] || 'Un test complet de 30 minutes pour comprendre votre audition. Gratuit, sans engagement, et expliqué avec des mots simples.'}
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
                 {['100% gratuit', 'Sans engagement', '30 minutes', 'Résultats immédiats'].map((chip) => (
@@ -66,11 +76,11 @@ export default function TestAuditifGratuit() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <span className="inline-block bg-secondary text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                Prévention
+                {texts['section-1-kicker'] || 'Prévention'}
               </span>
-              <h2 className="text-4xl font-bold mb-4">Pourquoi faire un test auditif ?</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-1-title'] || 'Pourquoi faire un test auditif ?'}</h2>
               <p className="text-xl text-text-light max-w-3xl mx-auto">
-                La perte auditive est progressive et souvent difficile à détecter soi-même.
+                {texts['section-1-description'] || 'La perte auditive est progressive et souvent difficile à détecter soi-même.'}
               </p>
             </div>
 
@@ -95,9 +105,9 @@ export default function TestAuditifGratuit() {
         <section className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4">Comment se déroule le test ?</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-2-title'] || 'Comment se déroule le test ?'}</h2>
               <p className="text-xl text-text-light max-w-3xl mx-auto">
-                Un test simple, indolore et complet en 30 minutes.
+                {texts['section-2-description'] || 'Un test simple, indolore et complet en 30 minutes.'}
               </p>
             </div>
 
@@ -126,9 +136,9 @@ export default function TestAuditifGratuit() {
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">Réservez votre test gratuit</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-form-title'] || 'Réservez votre test gratuit'}</h2>
               <p className="text-xl text-text-light">
-                Remplissez le formulaire ci-dessous et nous vous recontactons rapidement pour fixer un rendez-vous.
+                {texts['section-form-description'] || 'Remplissez le formulaire ci-dessous et nous vous recontactons rapidement pour fixer un rendez-vous.'}
               </p>
             </div>
 
@@ -221,9 +231,9 @@ export default function TestAuditifGratuit() {
         {/* Contact direct */}
         <section className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-4xl font-bold mb-4">Ou contactez-nous directement</h2>
+            <h2 className="text-4xl font-bold mb-4">{texts['cta-title'] || 'Ou contactez-nous directement'}</h2>
             <p className="text-xl text-text-light mb-8">
-              Vous préférez nous appeler ? Nous sommes là pour vous.
+              {texts['cta-description'] || 'Vous préférez nous appeler ? Nous sommes là pour vous.'}
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <a
