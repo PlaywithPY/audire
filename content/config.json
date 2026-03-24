@@ -59,5 +59,10 @@
       "Oticon",
       "Bernafon"
     ]
+  },
+  "footer": {
+    "description": "Centre auditif indépendant à Jemeppe-sur-Meuse. Test auditif gratuit, accompagnement humain, solutions Oticon & Bernafon, réglages et suivi personnalisé.",
+    "copyright": "Audire — Tous droits réservés",
+    "tagline": "Made with 💚 in Liège"
   }
 }
