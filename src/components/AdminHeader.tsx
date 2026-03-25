@@ -1,13 +1,14 @@
 import Link from 'next/link';
 
 interface AdminHeaderProps {
-  currentPage?: 'dashboard' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'settings' | 'testimonials';
+  currentPage?: 'dashboard' | 'centres' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'settings' | 'testimonials';
   title?: string;
 }
 
 export default function AdminHeader({ currentPage = 'dashboard', title }: AdminHeaderProps) {
   const links = [
     { href: '/admin', label: '🏠 Dashboard', key: 'dashboard' },
+    { href: '/admin/centres', label: '🏢 Centres', key: 'centres' },
     { href: '/admin/settings', label: '⚙️ Paramètres', key: 'settings' },
     { href: '/admin/testimonials', label: '⭐ Avis clients', key: 'testimonials' },
     { href: '/admin/feature-cards', label: '🎨 Feature Cards', key: 'feature-cards' },
@@ -26,12 +27,16 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
           <h1 className="text-2xl font-bold text-primary">
             {title || '🛠️ Admin Audire'}
           </h1>
-          <div className="flex gap-4 mt-2 text-sm">
-            {links.filter(link => link.key !== currentPage).map((link) => (
+          <div className="flex gap-4 mt-2 text-sm flex-wrap">
+            {links.map((link) => (
               <Link
                 key={link.key}
                 href={link.href}
-                className="text-gray-600 hover:text-primary hover:underline transition-colors"
+                className={`transition-colors ${
+                  link.key === currentPage
+                    ? 'text-primary font-bold underline'
+                    : 'text-gray-600 hover:text-primary hover:underline'
+                }`}
               >
                 {link.label}
               </Link>
