@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 
@@ -8,7 +6,7 @@ const execAsync = promisify(exec);
 
 export async function POST() {
   try {
-    // Vérifier l'authentification (optionnel - décommenter si nécessaire)
+    // TODO: Ajouter l'authentification si nécessaire
     // const session = await getServerSession(authOptions);
     // if (!session?.user) {
     //   return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
