@@ -1,144 +1,158 @@
-# Configuration de la base de données
+# 🗄️ Configuration de la Base de Données
 
-## 🚨 Problème résolu
+## ⚠️ Problème Actuel
 
-Le build échouait car il essayait de se connecter à la base de données pendant le build Vercel (timeout Neon).
+Vous avez une **incohérence** entre votre schéma Prisma et votre configuration :
 
-## ✅ Solution appliquée
+- **`prisma/schema.prisma`** : `provider = "postgresql"` (attend PostgreSQL)
+- **`.env`** : `DATABASE_URL="file:./dev.db"` (pointe vers SQLite)
 
-Le script de build a été simplifié :
-- **Avant** : `prisma generate && prisma migrate deploy && npx tsx prisma/seed.ts && next build`
-- **Maintenant** : `next build`
+C'est pour cela que vous obtenez des erreurs 500 sur les routes `/api/admin/page-texts` et `/api/admin/populate-texts`.
 
-Les migrations et le seed doivent être faits **manuellement** après le premier déploiement.
+## 📋 Solutions
 
-## 📋 Scripts disponibles
+### Option 1 : Utiliser SQLite en développement (Recommandé pour débuter)
 
-| Script | Description |
-|--------|-------------|
-| `npm run build` | Build Next.js (pour Vercel) |
-| `npm run build:full` | Build complet avec migrations + seed (local uniquement) |
-| `npm run db:migrate` | Exécuter les migrations Prisma |
-| `npm run db:seed` | Remplir la DB avec les données de test |
-| `npm run db:setup` | Migrations + seed en une commande |
+Si vous voulez travailler en local avec SQLite :
 
-## 🛠️ Setup initial de la base de données (après premier déploiement)
-
-### Option 1 : Via Vercel CLI (recommandé)
-
-1. **Installer Vercel CLI** (si pas déjà fait)
-   ```bash
-   npm i -g vercel
+1. **Modifier `prisma/schema.prisma`** :
+   ```prisma
+   datasource db {
+     provider = "sqlite"  // ← Changer de "postgresql" à "sqlite"
+     url      = env("DATABASE_URL")
+   }
    ```
 
-2. **Se connecter**
+2. **Appliquer le schéma** :
    ```bash
-   vercel login
+   npx prisma db push
    ```
 
-3. **Lier le projet**
+3. **Générer le client Prisma** :
    ```bash
-   cd next-app
-   vercel link
+   npx prisma generate
    ```
 
-4. **Exécuter les migrations**
+4. **Peupler la table PageText** :
+   - Via l'interface web : http://localhost:3000/admin/database
+   - OU via CLI : `npx tsx scripts/populate-page-texts.ts`
+
+### Option 2 : Utiliser PostgreSQL (Production)
+
+Si vous voulez utiliser PostgreSQL (recommandé pour production) :
+
+1. **Créer une base PostgreSQL** :
+   - Localement : Installer PostgreSQL et créer une DB
+   - En ligne : Utiliser [Neon](https://neon.tech/), [Supabase](https://supabase.com/), ou [Railway](https://railway.app/)
+
+2. **Configurer l'URL dans `.env.local`** :
    ```bash
-   vercel env pull .env.local  # Télécharger les variables d'env
-   npm run db:migrate
+   DATABASE_URL="postgresql://user:password@host:5432/database_name"
    ```
 
-5. **Seeder la base de données**
+3. **Appliquer les migrations** :
    ```bash
-   npm run db:seed
+   npx prisma migrate dev
    ```
 
-### Option 2 : Via Neon Dashboard
+4. **Peupler la base** :
+   - Via l'interface web : http://localhost:3000/admin/database
+   - OU via CLI : `npx tsx scripts/populate-page-texts.ts`
 
-1. **Aller sur** [Neon Console](https://console.neon.tech/)
-2. **Sélectionner** votre projet
-3. **SQL Editor** → Exécuter les migrations SQL manuellement
-4. Copier le contenu de `prisma/migrations/*/migration.sql`
-5. Exécuter dans l'éditeur SQL
+### Option 3 : Configuration Hybride (Recommandé)
 
-### Option 3 : En local avec connexion à Neon
+SQLite en dev, PostgreSQL en production :
 
-1. **Copier DATABASE_URL** depuis Vercel
-   - Vercel Dashboard → Settings → Environment Variables
-   - Copier la valeur de `DATABASE_URL`
-
-2. **Créer .env.local**
+1. **Créer `.env.local`** (pour le développement local, non versionné) :
    ```bash
-   echo 'DATABASE_URL="postgresql://..."' > .env.local
+   DATABASE_URL="file:./dev.db"
    ```
 
-3. **Exécuter le setup**
-   ```bash
-   npm run db:setup
-   ```
+2. **Modifier le schéma pour supporter les deux** :
 
-## 📊 Vérifier que la DB est bien configurée
+   Le problème : Prisma ne peut pas changer de provider dynamiquement.
 
-### Via Prisma Studio (local)
+   **Solution A** : Créer deux schémas différents (compliqué)
 
-```bash
-npx prisma studio
+   **Solution B** : Utiliser uniquement PostgreSQL partout
+   - Installer PostgreSQL localement
+   - Ou utiliser un service cloud gratuit (Neon, Supabase)
+
+## 🔧 Tests de Diagnostic
+
+Utilisez la page admin pour diagnostiquer :
+
+**http://localhost:3000/admin/database**
+
+1. Cliquez sur "🔍 Tester la connexion à la DB"
+2. Vérifiez les logs pour voir le problème exact
+3. Suivez les suggestions affichées
+
+## 📊 Quelle Table Sera Remplie ?
+
+Le script de peuplement remplit la table **`PageText`** définie dans `prisma/schema.prisma` :
+
+```prisma
+model PageText {
+  id        Int      @id @default(autoincrement())
+  pageKey   String   // Page (ex: "home", "about", "solutions", "contact")
+  textKey   String   // Identifiant du texte (ex: "hero-title", "hero-subtitle")
+  content   String   @db.Text // Contenu du texte
+  label     String?  // Label descriptif pour l'admin
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@unique([pageKey, textKey])
+  @@index([pageKey])
+}
 ```
 
-Cela ouvrira une interface graphique pour voir vos données.
+### Textes qui seront créés :
 
-### Via code (dans l'admin)
+Le fichier `PAGE_DEFINITIONS.ts` contient **tous les textes** des pages suivantes :
+- 🏠 **Home** (7 textes : hero-title, section-1-title, descriptions, etc.)
+- 👂 **Test Auditif Gratuit** (9 textes)
+- 🤝 **Notre Accompagnement** (textes d'accompagnement)
+- 🦻 **Solutions Auditives** (descriptions des appareils)
+- 📞 **Contact** (formulaire et infos)
+- 💬 **Témoignages** (avis clients)
+- ℹ️ **À propos** (qui sommes-nous)
 
-1. Connectez-vous à `/admin/login`
-2. Si vous voyez les centres et les données → ✅ DB configurée
-3. Sinon → Exécutez le seed
+**Total : environ 40-60 textes** selon les pages définies.
 
-## 🔄 Après chaque changement du schéma Prisma
+## ✅ Procédure Recommandée (Démarrage Rapide)
 
-Si vous modifiez `prisma/schema.prisma` :
+Pour démarrer rapidement :
 
-1. **Créer une migration**
-   ```bash
-   npx prisma migrate dev --name nom_de_la_migration
-   ```
-
-2. **Déployer en production**
-   ```bash
-   vercel env pull .env.local
-   npm run db:migrate
-   ```
-
-## ⚠️ Important
-
-- Les migrations sont **déjà créées** dans `prisma/migrations/`
-- Vous devez juste les **appliquer** avec `db:migrate` ou `db:setup`
-- Le seed créera :
-  - 2 centres (Jemeppe ⭐, Liège Centre)
-  - Horaires d'ouverture pour chaque centre
-  - 3 témoignages exemple
-  - Couleurs par défaut du thème
-
-## 🐛 Dépannage
-
-### Erreur "Table already exists"
-
-La migration a déjà été appliquée. Ignorez l'erreur ou utilisez :
 ```bash
-npx prisma migrate resolve --applied <migration_name>
+# 1. Modifier le provider pour SQLite
+# Éditez prisma/schema.prisma et changez "postgresql" en "sqlite"
+
+# 2. Appliquer le schéma
+npx prisma db push
+
+# 3. Générer le client
+npx prisma generate
+
+# 4. Redémarrer le serveur Next.js
+npm run dev
+
+# 5. Aller sur http://localhost:3000/admin/database
+# 6. Cliquer sur "Test de connexion DB" (devrait être ✅)
+# 7. Cliquer sur "Exécuter le peuplement"
 ```
 
-### Timeout lors de la connexion
+## 🚨 Note Importante
 
-Neon peut être en veille. Attendez 30 secondes et réessayez.
+- **Les textes existants ne seront JAMAIS écrasés** par le script de peuplement
+- Seuls les textes manquants seront créés
+- La table doit d'abord exister (via `prisma db push` ou `prisma migrate`)
+- Sans migration, la table PageText n'existe pas = erreur 500
 
-### "No such table" dans l'admin
+## 📝 Vérifier que tout fonctionne
 
-La migration n'a pas été appliquée. Exécutez `npm run db:migrate`.
+Après le peuplement, allez sur :
+- **http://localhost:3000/admin/text-editor** pour éditer les textes
+- **http://localhost:3000/** pour voir les textes sur le site
 
-## 📝 Résumé : Ordre des opérations
-
-1. ✅ **Déployer sur Vercel** (le build fonctionne maintenant)
-2. ✅ **Configurer les variables d'environnement** (voir VERCEL_SETUP.md)
-3. ✅ **Appliquer les migrations** (avec l'une des options ci-dessus)
-4. ✅ **Seeder la DB** (optionnel, crée des données de test)
-5. ✅ **Se connecter à l'admin** et vérifier que tout fonctionne
+Les textes seront chargés dynamiquement depuis la base de données !
