@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
+import { PrismaClient } from '@prisma/client';
+import { seedDatabase } from '../../../../../prisma/seed-function';
 
 export async function POST() {
+  const prisma = new PrismaClient();
+  const logs: string[] = [];
+
   try {
     // TODO: Ajouter l'authentification si nécessaire
     // const session = await getServerSession(authOptions);
@@ -13,25 +14,24 @@ export async function POST() {
     // }
 
     // Exécuter le seed
-    const { stdout, stderr } = await execAsync('npx tsx prisma/seed.ts');
-
-    console.log('Seed output:', stdout);
-    if (stderr) {
-      console.error('Seed errors:', stderr);
-    }
+    await seedDatabase(prisma, logs);
 
     return NextResponse.json({
       success: true,
       message: 'Base de données initialisée avec succès',
-      output: stdout
+      output: logs.join('\n')
     });
   } catch (error: unknown) {
     console.error('Error seeding database:', error);
     const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
+    logs.push(`❌ Erreur: ${errorMessage}`);
     return NextResponse.json({
       success: false,
       error: 'Erreur lors de l\'initialisation de la base de données',
-      details: errorMessage
+      details: errorMessage,
+      logs: logs.join('\n')
     }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
