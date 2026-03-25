@@ -13,7 +13,7 @@ export async function POST() {
     // }
 
     // Exécuter le seed
-    const { stdout, stderr } = await execAsync('cd /home/user/audire/next-app && npx tsx prisma/seed.ts');
+    const { stdout, stderr } = await execAsync('npx tsx prisma/seed.ts');
 
     console.log('Seed output:', stdout);
     if (stderr) {
