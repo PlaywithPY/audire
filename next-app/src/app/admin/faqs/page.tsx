@@ -17,6 +17,8 @@ export default function AdminFAQs() {
   const [isLoading, setIsLoading] = useState(true);
   const [editingFAQ, setEditingFAQ] = useState<FAQ | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [seedMessage, setSeedMessage] = useState<string>('');
 
   const [formData, setFormData] = useState({
     question: '',
@@ -165,6 +167,36 @@ export default function AdminFAQs() {
     }
   }
 
+  async function handleSeedDatabase() {
+    if (!confirm('Êtes-vous sûr de vouloir initialiser la base de données ? Cela va ajouter/mettre à jour les données par défaut.')) {
+      return;
+    }
+
+    setIsSeeding(true);
+    setSeedMessage('');
+
+    try {
+      const response = await fetch('/api/admin/seed', {
+        method: 'POST',
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSeedMessage('✅ Base de données initialisée avec succès !');
+        // Recharger les FAQs
+        loadFAQs();
+      } else {
+        setSeedMessage('❌ Erreur : ' + (data.error || 'Erreur inconnue'));
+      }
+    } catch (error) {
+      console.error('Error seeding database:', error);
+      setSeedMessage('❌ Erreur lors de l\'initialisation de la base de données');
+    } finally {
+      setIsSeeding(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminHeader />
@@ -172,13 +204,29 @@ export default function AdminFAQs() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Gestion des FAQs</h1>
-          <button
-            onClick={handleCreate}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-          >
-            ➕ Nouvelle FAQ
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={handleSeedDatabase}
+              disabled={isSeeding}
+              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSeeding ? '⏳ Initialisation...' : '🌱 Initialiser la base'}
+            </button>
+            <button
+              onClick={handleCreate}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+            >
+              ➕ Nouvelle FAQ
+            </button>
+          </div>
         </div>
+
+        {/* Message de seed */}
+        {seedMessage && (
+          <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-center font-medium">{seedMessage}</p>
+          </div>
+        )}
 
         {/* Formulaire de création/édition */}
         {(isCreating || editingFAQ) && (
