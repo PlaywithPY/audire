@@ -450,7 +450,7 @@ export default function AdminDashboard() {
     }
   }
 
-  async function saveCentre(centre: Centre) {
+  async function updateCentre(centre: Centre) {
     setSaving(true);
     try {
       await fetch('/api/admin/centres', {
@@ -2410,7 +2410,7 @@ export default function AdminDashboard() {
                           </div>
                           <div className="flex gap-2">
                             <button
-                              onClick={() => saveCentre(editingCentre)}
+                              onClick={() => updateCentre(editingCentre)}
                               disabled={saving}
                               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
                             >
