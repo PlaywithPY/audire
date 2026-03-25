@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "Solution" (
+CREATE TABLE IF NOT EXISTS "Solution" (
     "id" SERIAL NOT NULL,
     "solutionKey" TEXT NOT NULL,
     "fullDesc" TEXT NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE "Solution" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Solution_solutionKey_key" ON "Solution"("solutionKey");
+CREATE UNIQUE INDEX IF NOT EXISTS "Solution_solutionKey_key" ON "Solution"("solutionKey");
 
 -- CreateIndex
-CREATE INDEX "Solution_solutionKey_idx" ON "Solution"("solutionKey");
+CREATE INDEX IF NOT EXISTS "Solution_solutionKey_idx" ON "Solution"("solutionKey");
