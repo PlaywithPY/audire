@@ -156,9 +156,158 @@ async function main() {
     },
   });
 
+  // ==========================================
+  // FAQ - QUESTIONS FRÉQUENTES
+  // ==========================================
+
+  await prisma.fAQ.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      question: 'Comment savoir si j\'ai besoin d\'un appareil auditif ?',
+      answer: 'Plusieurs signes peuvent indiquer une perte auditive : difficulté à suivre les conversations dans un environnement bruyant, besoin d\'augmenter le volume de la télévision, difficulté à comprendre les conversations téléphoniques. Nous proposons un test auditif gratuit et sans engagement pour évaluer votre audition.',
+      order: 1,
+      isVisible: true,
+      category: 'tests',
+    },
+  });
+
+  await prisma.fAQ.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      question: 'Le test auditif est-il vraiment gratuit ?',
+      answer: 'Oui, le test auditif est totalement gratuit et sans engagement. Il dure environ 30 minutes et permet d\'établir un audiogramme complet de votre audition. Nous prenons le temps d\'expliquer les résultats et de répondre à toutes vos questions.',
+      order: 2,
+      isVisible: true,
+      category: 'tests',
+    },
+  });
+
+  await prisma.fAQ.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      question: 'Quel est le prix d\'un appareil auditif ?',
+      answer: 'Le prix varie selon le type d\'appareil et les technologies choisies. Les appareils auditifs commencent à partir de 800€ par oreille. Nous proposons des solutions adaptées à tous les budgets et vous informons sur les possibilités de remboursement par la mutuelle.',
+      order: 3,
+      isVisible: true,
+      category: 'appareils',
+    },
+  });
+
+  await prisma.fAQ.upsert({
+    where: { id: 4 },
+    update: {},
+    create: {
+      question: 'Quel est le remboursement de la mutuelle ?',
+      answer: 'En Belgique, l\'INAMI (mutuelle) intervient de manière différente selon votre situation. Pour les personnes de moins de 65 ans avec une perte moyenne à sévère, l\'intervention est de maximum 833€ par oreille. À partir de 65 ans avec une perte légère à moyenne, c\'est environ 720€ par oreille. Nous vous aidons dans toutes vos démarches administratives.',
+      order: 4,
+      isVisible: true,
+      category: 'remboursements',
+    },
+  });
+
+  await prisma.fAQ.upsert({
+    where: { id: 5 },
+    update: {},
+    create: {
+      question: 'Combien de temps dure la période d\'adaptation ?',
+      answer: 'La période d\'adaptation varie selon les personnes, généralement entre 2 et 3 mois. Pendant cette période, nous vous proposons plusieurs rendez-vous de réglage gratuits pour optimiser le confort et la performance de vos appareils. Votre cerveau a besoin de se réhabituer aux sons que vous n\'entendiez plus.',
+      order: 5,
+      isVisible: true,
+      category: 'appareils',
+    },
+  });
+
+  await prisma.fAQ.upsert({
+    where: { id: 6 },
+    update: {},
+    create: {
+      question: 'Puis-je essayer un appareil avant de l\'acheter ?',
+      answer: 'Absolument ! Nous proposons une période d\'essai gratuite de 30 jours pour que vous puissiez tester l\'appareil dans votre vie quotidienne. C\'est la meilleure façon de vous assurer que l\'appareil répond à vos besoins et attentes.',
+      order: 6,
+      isVisible: true,
+      category: 'appareils',
+    },
+  });
+
+  await prisma.fAQ.upsert({
+    where: { id: 7 },
+    update: {},
+    create: {
+      question: 'Quelle est la durée de vie d\'un appareil auditif ?',
+      answer: 'En moyenne, un appareil auditif dure entre 5 et 7 ans avec un entretien régulier. La durée de vie dépend de l\'utilisation, de l\'entretien et des conditions environnementales. Nous proposons un service d\'entretien et de nettoyage pour prolonger la durée de vie de vos appareils.',
+      order: 7,
+      isVisible: true,
+      category: 'appareils',
+    },
+  });
+
+  await prisma.fAQ.upsert({
+    where: { id: 8 },
+    update: {},
+    create: {
+      question: 'Faut-il une ordonnance médicale ?',
+      answer: 'Pour bénéficier de l\'intervention de l\'INAMI (mutuelle), vous aurez besoin d\'une prescription médicale d\'un médecin ORL. Cependant, pour effectuer un test auditif chez nous, aucune ordonnance n\'est nécessaire.',
+      order: 8,
+      isVisible: true,
+      category: 'remboursements',
+    },
+  });
+
+  await prisma.fAQ.upsert({
+    where: { id: 9 },
+    update: {},
+    create: {
+      question: 'Proposez-vous un service après-vente ?',
+      answer: 'Oui, notre service après-vente est compris dans votre achat. Nous assurons les réglages, l\'entretien, le nettoyage et les réparations mineures gratuitement. En cas de panne, nous disposons d\'appareils de prêt pour que vous ne soyez jamais sans appareil auditif.',
+      order: 9,
+      isVisible: true,
+      category: 'appareils',
+    },
+  });
+
+  await prisma.fAQ.upsert({
+    where: { id: 10 },
+    update: {},
+    create: {
+      question: 'Comment entretenir mon appareil auditif ?',
+      answer: 'L\'entretien quotidien est simple : nettoyez l\'appareil avec un chiffon sec, vérifiez que les ouvertures ne sont pas obstruées, et stockez-le dans un endroit sec la nuit (avec un déshumidificateur si possible). Nous vous montrons tous les gestes lors de la remise de votre appareil.',
+      order: 10,
+      isVisible: true,
+      category: 'appareils',
+    },
+  });
+
+  await prisma.fAQ.upsert({
+    where: { id: 11 },
+    update: {},
+    create: {
+      question: 'Les appareils auditifs sont-ils visibles ?',
+      answer: 'Aujourd\'hui, les appareils auditifs sont très discrets. Selon vos préférences et votre perte auditive, nous pouvons vous proposer des appareils intra-auriculaires (invisibles dans l\'oreille) ou des contours d\'oreille miniaturisés disponibles dans différentes couleurs pour s\'adapter à votre carnation.',
+      order: 11,
+      isVisible: true,
+      category: 'appareils',
+    },
+  });
+
+  await prisma.fAQ.upsert({
+    where: { id: 12 },
+    update: {},
+    create: {
+      question: 'Puis-je connecter mon appareil auditif à mon smartphone ?',
+      answer: 'Oui, la plupart des appareils auditifs modernes sont équipés de la technologie Bluetooth et peuvent se connecter à votre smartphone, tablette ou télévision. Vous pouvez ainsi recevoir des appels, écouter de la musique ou ajuster les réglages via une application mobile.',
+      order: 12,
+      isVisible: true,
+      category: 'appareils',
+    },
+  });
+
   console.log('✅ Database seeded!');
   console.log(`   - ${jemeppeHours.length} horaires créés pour ${centreJemeppe.name}`);
   console.log(`   - ${liegeHours.length} horaires créés pour ${centreLiege.name}`);
+  console.log('   - 12 questions FAQ ajoutées');
 }
 
 main()
