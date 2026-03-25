@@ -36,7 +36,7 @@ export default function AdminFAQs() {
       const res = await fetch('/api/admin/faqs');
       if (res.ok) {
         const data = await res.json();
-        setFAQs(data);
+        setFaqs(data);
       } else {
         alert('Erreur lors du chargement des FAQs');
       }
