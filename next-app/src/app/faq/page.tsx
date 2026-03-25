@@ -19,8 +19,6 @@ export default function FAQ() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [texts, setTexts] = useState<PageTexts>({});
   const [isLoading, setIsLoading] = useState(true);
-  const [isSeeding, setIsSeeding] = useState(false);
-  const [seedMessage, setSeedMessage] = useState<string>('');
 
   useEffect(() => {
     async function loadData() {
@@ -47,39 +45,6 @@ export default function FAQ() {
     loadData();
   }, []);
 
-  const handleSeedDatabase = async () => {
-    if (!confirm('Êtes-vous sûr de vouloir initialiser la base de données ? Cela va ajouter/mettre à jour les données par défaut.')) {
-      return;
-    }
-
-    setIsSeeding(true);
-    setSeedMessage('');
-
-    try {
-      const response = await fetch('/api/admin/seed', {
-        method: 'POST',
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setSeedMessage('✅ Base de données initialisée avec succès !');
-        // Recharger les FAQs
-        const faqsRes = await fetch('/api/faqs');
-        if (faqsRes.ok) {
-          const faqsData = await faqsRes.json();
-          setFaqs(faqsData);
-        }
-      } else {
-        setSeedMessage('❌ Erreur : ' + (data.error || 'Erreur inconnue'));
-      }
-    } catch (error) {
-      console.error('Error seeding database:', error);
-      setSeedMessage('❌ Erreur lors de l\'initialisation de la base de données');
-    } finally {
-      setIsSeeding(false);
-    }
-  };
   return (
     <>
       <Header />
@@ -110,17 +75,7 @@ export default function FAQ() {
               </div>
             ) : faqs.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-500 mb-6">Aucune question disponible pour le moment.</p>
-                <button
-                  onClick={handleSeedDatabase}
-                  disabled={isSeeding}
-                  className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSeeding ? '⏳ Initialisation en cours...' : '🌱 Initialiser la base de données'}
-                </button>
-                {seedMessage && (
-                  <p className="mt-4 text-lg font-medium">{seedMessage}</p>
-                )}
+                <p className="text-gray-500">Aucune question disponible pour le moment.</p>
               </div>
             ) : (
               <FAQAccordion faqs={faqs} />
@@ -141,22 +96,6 @@ export default function FAQ() {
             >
               📞 Nous contacter
             </a>
-
-            {/* Admin: Database Seed Button */}
-            <div className="mt-12 pt-12 border-t border-gray-200">
-              <h3 className="text-2xl font-bold mb-4">Administration</h3>
-              <p className="text-text-light mb-6">Initialiser ou mettre à jour les données de la base</p>
-              <button
-                onClick={handleSeedDatabase}
-                disabled={isSeeding}
-                className="bg-secondary text-primary px-6 py-3 rounded-lg font-semibold hover:bg-secondary/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed border-2 border-primary"
-              >
-                {isSeeding ? '⏳ Initialisation en cours...' : '🌱 Initialiser la base de données'}
-              </button>
-              {seedMessage && (
-                <p className="mt-4 text-lg font-medium">{seedMessage}</p>
-              )}
-            </div>
           </div>
         </section>
 
