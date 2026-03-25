@@ -18,11 +18,11 @@ export const metadata: Metadata = {
   keywords: "audioprothésiste, centre auditif, appareil auditif, test auditif gratuit, province de Liège",
   icons: {
     icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/icon.svg', type: 'image/svg+xml', sizes: 'any' }
+      { url: '/favicon.png', type: 'image/png' },
+      { url: '/favicon.png', type: 'image/png', sizes: '457x456' }
     ],
     apple: [
-      { url: '/apple-icon.svg', type: 'image/svg+xml' }
+      { url: '/apple-icon.png', type: 'image/png' }
     ],
   },
 };
