@@ -1,13 +1,15 @@
 import Link from 'next/link';
 
 interface AdminHeaderProps {
-  currentPage?: 'dashboard' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs';
+  currentPage?: 'dashboard' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'settings' | 'testimonials';
   title?: string;
 }
 
 export default function AdminHeader({ currentPage = 'dashboard', title }: AdminHeaderProps) {
   const links = [
     { href: '/admin', label: '🏠 Dashboard', key: 'dashboard' },
+    { href: '/admin/settings', label: '⚙️ Paramètres', key: 'settings' },
+    { href: '/admin/testimonials', label: '⭐ Avis clients', key: 'testimonials' },
     { href: '/admin/feature-cards', label: '🎨 Feature Cards', key: 'feature-cards' },
     { href: '/admin/solutions', label: '📋 Solutions', key: 'solutions' },
     { href: '/admin/faqs', label: '❓ FAQs', key: 'faqs' },
