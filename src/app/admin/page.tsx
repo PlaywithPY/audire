@@ -108,7 +108,7 @@ export default function AdminDashboard() {
     }
   }, [status, router]);
 
-  const [activeTab, setActiveTab] = useState<'settings' | 'content' | 'testimonials'>('content');
+  const [activeTab, setActiveTab] = useState<'settings' | 'content' | 'testimonials' | 'centres'>('content');
   const [colors, setColors] = useState<ThemeColors>({
     primary: '#42a4ff',
     primaryLight: '#5ab3ff',
@@ -156,6 +156,19 @@ export default function AdminDashboard() {
     cardKey: '',
     imageUrl: '',
     fallbackEmoji: '📷',
+  });
+  const [editingCentre, setEditingCentre] = useState<Centre | null>(null);
+  const [showNewCentreForm, setShowNewCentreForm] = useState(false);
+  const [newCentre, setNewCentre] = useState({
+    name: '',
+    slug: '',
+    phoneFixe: '',
+    phoneMobile: '',
+    email: '',
+    address: '',
+    postalCode: '',
+    city: '',
+    isDefault: false,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -397,6 +410,81 @@ export default function AdminDashboard() {
       fetchTestimonials();
     } catch (error) {
       console.error('Error deleting testimonial:', error);
+      alert('❌ Erreur lors de la suppression');
+    }
+  }
+
+  // Fonctions pour gérer les centres
+  async function createCentre() {
+    if (!newCentre.name || !newCentre.slug || !newCentre.phoneFixe || !newCentre.email || !newCentre.address || !newCentre.postalCode || !newCentre.city) {
+      alert('⚠️ Tous les champs obligatoires doivent être remplis !');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await fetch('/api/admin/centres', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCentre),
+      });
+      alert('✅ Centre créé !');
+      setShowNewCentreForm(false);
+      setNewCentre({
+        name: '',
+        slug: '',
+        phoneFixe: '',
+        phoneMobile: '',
+        email: '',
+        address: '',
+        postalCode: '',
+        city: '',
+        isDefault: false,
+      });
+      fetchData();
+    } catch (error) {
+      console.error('Error creating centre:', error);
+      alert('❌ Erreur lors de la création');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function updateCentre(centre: Centre) {
+    setSaving(true);
+    try {
+      await fetch('/api/admin/centres', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(centre),
+      });
+      alert('✅ Centre sauvegardé !');
+      setEditingCentre(null);
+      fetchData();
+    } catch (error) {
+      console.error('Error saving centre:', error);
+      alert('❌ Erreur lors de la sauvegarde');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function deleteCentre(id: number, isDefault: boolean) {
+    if (isDefault) {
+      alert('❌ Impossible de supprimer le centre par défaut !');
+      return;
+    }
+
+    if (!confirm('⚠️ Êtes-vous sûr de vouloir supprimer ce centre ? Cette action est irréversible.')) return;
+
+    try {
+      await fetch(`/api/admin/centres?id=${id}`, {
+        method: 'DELETE',
+      });
+      alert('✅ Centre supprimé !');
+      fetchData();
+    } catch (error) {
+      console.error('Error deleting centre:', error);
       alert('❌ Erreur lors de la suppression');
     }
   }
@@ -667,6 +755,16 @@ export default function AdminDashboard() {
               }`}
             >
               ⭐ Avis clients
+            </button>
+            <button
+              onClick={() => setActiveTab('centres')}
+              className={`flex-1 px-6 py-4 font-semibold transition ${
+                activeTab === 'centres'
+                  ? 'border-b-2 border-primary text-primary'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              📍 Centres
             </button>
           </div>
         </div>
@@ -2065,6 +2163,314 @@ export default function AdminDashboard() {
                           </div>
                           <div className="bg-gray-50 p-3 rounded border border-gray-200">
                             <p className="text-sm italic">"{testimonial.text}"</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          </>
+        )}
+
+        {activeTab === 'centres' && (
+          <>
+            <section className="bg-white rounded-lg shadow-md p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">📍 Gestion des centres</h2>
+                <button
+                  onClick={() => setShowNewCentreForm(!showNewCentreForm)}
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+                >
+                  + Nouveau centre
+                </button>
+              </div>
+
+              {/* Formulaire nouveau centre */}
+              {showNewCentreForm && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                  <h3 className="font-bold mb-3">Créer un nouveau centre</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">Nom du centre *</label>
+                      <input
+                        type="text"
+                        value={newCentre.name}
+                        onChange={(e) => setNewCentre({ ...newCentre, name: e.target.value })}
+                        placeholder="ex: Centre Audire Liège"
+                        className="w-full px-3 py-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">Slug (URL) *</label>
+                      <input
+                        type="text"
+                        value={newCentre.slug}
+                        onChange={(e) => setNewCentre({ ...newCentre, slug: e.target.value })}
+                        placeholder="ex: liege"
+                        className="w-full px-3 py-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">Téléphone fixe *</label>
+                      <input
+                        type="tel"
+                        value={newCentre.phoneFixe}
+                        onChange={(e) => setNewCentre({ ...newCentre, phoneFixe: e.target.value })}
+                        placeholder="+32 4 123 45 67"
+                        className="w-full px-3 py-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">Téléphone mobile</label>
+                      <input
+                        type="tel"
+                        value={newCentre.phoneMobile}
+                        onChange={(e) => setNewCentre({ ...newCentre, phoneMobile: e.target.value })}
+                        placeholder="+32 476 12 34 56"
+                        className="w-full px-3 py-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">Email *</label>
+                      <input
+                        type="email"
+                        value={newCentre.email}
+                        onChange={(e) => setNewCentre({ ...newCentre, email: e.target.value })}
+                        placeholder="centre@audire.be"
+                        className="w-full px-3 py-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">Adresse *</label>
+                      <textarea
+                        value={newCentre.address}
+                        onChange={(e) => setNewCentre({ ...newCentre, address: e.target.value })}
+                        placeholder="Rue de la Station, 4"
+                        rows={2}
+                        className="w-full px-3 py-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">Code postal *</label>
+                      <input
+                        type="text"
+                        value={newCentre.postalCode}
+                        onChange={(e) => setNewCentre({ ...newCentre, postalCode: e.target.value })}
+                        placeholder="4101"
+                        className="w-full px-3 py-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">Ville *</label>
+                      <input
+                        type="text"
+                        value={newCentre.city}
+                        onChange={(e) => setNewCentre({ ...newCentre, city: e.target.value })}
+                        placeholder="Jemeppe-sur-Meuse"
+                        className="w-full px-3 py-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="flex items-center gap-4 md:col-span-2">
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={newCentre.isDefault}
+                          onChange={(e) => setNewCentre({ ...newCentre, isDefault: e.target.checked })}
+                          className="w-5 h-5"
+                        />
+                        <span>⭐ Définir comme centre par défaut</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 mt-4">
+                    <button
+                      onClick={createCentre}
+                      disabled={saving}
+                      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:opacity-50"
+                    >
+                      ✅ Créer
+                    </button>
+                    <button
+                      onClick={() => setShowNewCentreForm(false)}
+                      className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Liste des centres */}
+              {centres.length === 0 ? (
+                <p className="text-gray-500 text-center py-8">
+                  Aucun centre pour le moment. Créez-en un !
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {centres.map((centre) => (
+                    <div key={centre.id} className="border border-gray-200 rounded-lg p-4">
+                      {editingCentre?.id === centre.id ? (
+                        // Mode édition
+                        <div>
+                          <div className="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                              <label className="block text-sm font-semibold mb-2">Nom du centre</label>
+                              <input
+                                type="text"
+                                value={editingCentre.name}
+                                onChange={(e) => setEditingCentre({ ...editingCentre, name: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-semibold mb-2">Slug (URL)</label>
+                              <input
+                                type="text"
+                                value={editingCentre.slug}
+                                onChange={(e) => setEditingCentre({ ...editingCentre, slug: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-semibold mb-2">Téléphone fixe</label>
+                              <input
+                                type="tel"
+                                value={editingCentre.phoneFixe}
+                                onChange={(e) => setEditingCentre({ ...editingCentre, phoneFixe: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-semibold mb-2">Téléphone mobile</label>
+                              <input
+                                type="tel"
+                                value={editingCentre.phoneMobile || ''}
+                                onChange={(e) => setEditingCentre({ ...editingCentre, phoneMobile: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-semibold mb-2">Email</label>
+                              <input
+                                type="email"
+                                value={editingCentre.email}
+                                onChange={(e) => setEditingCentre({ ...editingCentre, email: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-semibold mb-2">Adresse</label>
+                              <textarea
+                                value={editingCentre.address}
+                                onChange={(e) => setEditingCentre({ ...editingCentre, address: e.target.value })}
+                                rows={2}
+                                className="w-full px-3 py-2 border border-gray-300 rounded"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-semibold mb-2">Code postal</label>
+                              <input
+                                type="text"
+                                value={editingCentre.postalCode}
+                                onChange={(e) => setEditingCentre({ ...editingCentre, postalCode: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-semibold mb-2">Ville</label>
+                              <input
+                                type="text"
+                                value={editingCentre.city}
+                                onChange={(e) => setEditingCentre({ ...editingCentre, city: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded"
+                              />
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-4 mb-4">
+                            <label className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={editingCentre.isActive}
+                                onChange={(e) => setEditingCentre({ ...editingCentre, isActive: e.target.checked })}
+                                className="w-5 h-5"
+                              />
+                              <span>Actif</span>
+                            </label>
+                            <label className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={editingCentre.isDefault}
+                                onChange={(e) => setEditingCentre({ ...editingCentre, isDefault: e.target.checked })}
+                                className="w-5 h-5"
+                              />
+                              <span>⭐ Centre par défaut</span>
+                            </label>
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => updateCentre(editingCentre)}
+                              disabled={saving}
+                              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+                            >
+                              💾 Sauvegarder
+                            </button>
+                            <button
+                              onClick={() => setEditingCentre(null)}
+                              className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                            >
+                              Annuler
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        // Mode affichage
+                        <div>
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <h3 className="font-bold text-lg mb-1">
+                                {centre.name} {centre.isDefault && '⭐'}
+                              </h3>
+                              <p className="text-sm text-gray-600">Slug: {centre.slug}</p>
+                              <p className="text-sm">
+                                <span className={`inline-block px-2 py-1 rounded text-xs ${centre.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                  {centre.isActive ? '✅ Actif' : '❌ Inactif'}
+                                </span>
+                              </p>
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => setEditingCentre(centre)}
+                                className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                              >
+                                ✏️ Modifier
+                              </button>
+                              <button
+                                onClick={() => deleteCentre(centre.id, centre.isDefault)}
+                                className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                                disabled={centre.isDefault}
+                                title={centre.isDefault ? 'Impossible de supprimer le centre par défaut' : 'Supprimer'}
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                          </div>
+                          <div className="bg-gray-50 p-3 rounded border border-gray-200 grid md:grid-cols-2 gap-2 text-sm">
+                            <div>
+                              <strong>📞 Fixe:</strong> {centre.phoneFixe}
+                            </div>
+                            {centre.phoneMobile && (
+                              <div>
+                                <strong>📱 Mobile:</strong> {centre.phoneMobile}
+                              </div>
+                            )}
+                            <div>
+                              <strong>📧 Email:</strong> {centre.email}
+                            </div>
+                            <div>
+                              <strong>📍 Adresse:</strong> {centre.address}, {centre.postalCode} {centre.city}
+                            </div>
                           </div>
                         </div>
                       )}
