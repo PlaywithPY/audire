@@ -179,3 +179,18 @@ model PageText {
   @@unique([pageKey, textKey])
   @@index([pageKey])
 }
+
+// Questions fréquentes (FAQ)
+model FAQ {
+  id        Int      @id @default(autoincrement())
+  question  String   // Question
+  answer    String   // Réponse
+  order     Int      @default(0) // Ordre d'affichage
+  isVisible Boolean  @default(true) // Visible ou masqué
+  category  String?  // Catégorie optionnelle (ex: "remboursements", "appareils", "tests")
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@index([order, isVisible])
+  @@index([category])
+}

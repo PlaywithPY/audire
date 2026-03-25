@@ -7,6 +7,10 @@ import AllPageImageEffects from "@/components/AllPageImageEffects";
 import { useState, useEffect } from "react";
 import { CardData } from "@/lib/card-helpers";
 
+interface PageTexts {
+  [key: string]: string;
+}
+
 interface SolutionData {
   id: string;
   title: string;
@@ -154,6 +158,7 @@ export default function SolutionsAuditives() {
   const [brandCards, setBrandCards] = useState<CardData[]>([]);
   const [typeCards, setTypeCards] = useState<CardData[]>([]);
   const [solutionDetails, setSolutionDetails] = useState<SolutionDetail[]>([]);
+  const [texts, setTexts] = useState<PageTexts>({});
 
   // Charger les détails des solutions depuis l'API
   useEffect(() => {
@@ -171,32 +176,36 @@ export default function SolutionsAuditives() {
     loadSolutionDetails();
   }, []);
 
-  // Charger les cards depuis l'API
+  // Charger les cards et textes depuis l'API
   useEffect(() => {
-    async function loadCards() {
+    async function loadData() {
       try {
-        const res = await fetch('/api/card-images?pageKey=solutions-auditives');
-        if (res.ok) {
-          const allCards = await res.json();
-
-          // Séparer les cards par type
+        // Charger les cards
+        const cardsRes = await fetch('/api/card-images?pageKey=solutions-auditives');
+        if (cardsRes.ok) {
+          const allCards = await cardsRes.json();
           const brands = allCards.filter((c: any) => ['solution-oticon', 'solution-bernafon'].includes(c.cardKey));
           const types = allCards.filter((c: any) => ['solution-contour', 'solution-intra', 'solution-intent'].includes(c.cardKey));
-
           setBrandCards(brands.length > 0 ? brands : getDefaultBrands());
           setTypeCards(types.length > 0 ? types : getDefaultTypes());
         } else {
-          // Utiliser les valeurs par défaut
           setBrandCards(getDefaultBrands());
           setTypeCards(getDefaultTypes());
         }
+
+        // Charger les textes
+        const textsRes = await fetch('/api/page-texts?pageKey=solutions-auditives');
+        if (textsRes.ok) {
+          const textsData = await textsRes.json();
+          setTexts(textsData);
+        }
       } catch (error) {
-        console.error('Error loading cards:', error);
+        console.error('Error loading page data:', error);
         setBrandCards(getDefaultBrands());
         setTypeCards(getDefaultTypes());
       }
     }
-    loadCards();
+    loadData();
   }, []);
 
   function getDefaultBrands(): CardData[] {
@@ -349,15 +358,13 @@ export default function SolutionsAuditives() {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <span className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
-                Nos solutions
+                {texts['hero-kicker'] || 'Nos solutions'}
               </span>
               <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                Solutions auditives
+                {texts['hero-title'] || 'Solutions auditives'}
               </h1>
               <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
-                Chez Audire, nous proposons des solutions <strong>Oticon et Bernafon</strong>,
-                deux marques reconnues pour leur qualité et leur innovation. Nos appareils
-                sont discrets, performants et adaptés à votre quotidien.
+                {texts['hero-description'] || 'Chez Audire, nous proposons des solutions Oticon et Bernafon, deux marques reconnues pour leur qualité et leur innovation. Nos appareils sont discrets, performants et adaptés à votre quotidien.'}
               </p>
             </div>
           </div>
@@ -371,11 +378,11 @@ export default function SolutionsAuditives() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <span className="inline-block bg-secondary text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                Nos partenaires
+                {texts['section-1-kicker'] || 'Nos partenaires'}
               </span>
-              <h2 className="text-4xl font-bold mb-4">Oticon & Bernafon</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-1-title'] || 'Oticon & Bernafon'}</h2>
               <p className="text-xl text-text-light max-w-3xl mx-auto">
-                Deux marques de référence, reconnues dans le monde entier pour leur innovation et leur qualité.
+                {texts['section-1-description'] || 'Deux marques de référence, reconnues dans le monde entier pour leur innovation et leur qualité.'}
               </p>
             </div>
 
@@ -400,9 +407,9 @@ export default function SolutionsAuditives() {
         <section className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4">Types d'appareils</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-2-title'] || 'Types d\'appareils'}</h2>
               <p className="text-xl text-text-light max-w-3xl mx-auto">
-                Cliquez sur une carte pour découvrir tous les détails de chaque solution auditive.
+                {texts['section-2-description'] || 'Cliquez sur une carte pour découvrir tous les détails de chaque solution auditive.'}
               </p>
             </div>
 
@@ -435,10 +442,9 @@ export default function SolutionsAuditives() {
         {/* CTA */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-4xl font-bold mb-4">Trouvez votre solution</h2>
+            <h2 className="text-4xl font-bold mb-4">{texts['cta-title'] || 'Trouvez votre solution'}</h2>
             <p className="text-xl text-text-light mb-8 max-w-2xl mx-auto">
-              Chaque personne est unique. Nous prenons le temps de comprendre vos besoins
-              pour vous proposer la solution la plus adaptée.
+              {texts['cta-description'] || 'Chaque personne est unique. Nous prenons le temps de comprendre vos besoins pour vous proposer la solution la plus adaptée.'}
             </p>
             <a
               href="/test-auditif-gratuit"

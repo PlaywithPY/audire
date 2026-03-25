@@ -1,14 +1,31 @@
+'use client';
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
-import { Metadata } from "next";
+import { useState, useEffect } from "react";
 
-export const metadata: Metadata = {
-  title: "Remboursements — Audire",
-  description: "Tout savoir sur les remboursements des appareils auditifs en Belgique. Mutuelle, INAMI, aides financières.",
-};
+interface PageTexts {
+  [key: string]: string;
+}
 
 export default function Remboursements() {
+  const [texts, setTexts] = useState<PageTexts>({});
+
+  useEffect(() => {
+    async function loadTexts() {
+      try {
+        const res = await fetch('/api/page-texts?pageKey=remboursements');
+        if (res.ok) {
+          const data = await res.json();
+          setTexts(data);
+        }
+      } catch (error) {
+        console.error('Error loading page texts:', error);
+      }
+    }
+    loadTexts();
+  }, []);
   return (
     <>
       <Header />
@@ -18,14 +35,13 @@ export default function Remboursements() {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <span className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
-                Financement
+                {texts['hero-kicker'] || 'Financement'}
               </span>
               <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                Remboursements
+                {texts['hero-title'] || 'Remboursements'}
               </h1>
               <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
-                Chez Audire, nous vous accompagnons dans toutes les démarches administratives.
-                Vous comprenez <strong>exactement ce que vous allez payer</strong>, sans surprise.
+                {texts['hero-description'] || 'Chez Audire, nous vous accompagnons dans toutes les démarches administratives. Vous comprenez exactement ce que vous allez payer, sans surprise.'}
               </p>
             </div>
           </div>
@@ -36,11 +52,11 @@ export default function Remboursements() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <span className="inline-block bg-secondary text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                Simplicité
+                {texts['section-1-kicker'] || 'Simplicité'}
               </span>
-              <h2 className="text-4xl font-bold mb-4">Comment ça marche ?</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-1-title'] || 'Comment ça marche ?'}</h2>
               <p className="text-xl text-text-light max-w-3xl mx-auto">
-                Le système de remboursement belge est parfois complexe. Nous vous expliquons tout, étape par étape.
+                {texts['section-1-description'] || 'Le système de remboursement belge est parfois complexe. Nous vous expliquons tout, étape par étape.'}
               </p>
             </div>
 
@@ -48,18 +64,18 @@ export default function Remboursements() {
               {[
                 {
                   step: '1',
-                  title: 'Prescription médicale',
-                  desc: 'Votre médecin ORL vous prescrit un appareil auditif. Nous vous aidons à obtenir cette prescription si besoin.',
+                  title: texts['step-1-title'] || 'Prescription médicale',
+                  desc: texts['step-1-desc'] || 'Votre médecin ORL vous prescrit un appareil auditif. Nous vous aidons à obtenir cette prescription si besoin.',
                 },
                 {
                   step: '2',
-                  title: 'Intervention INAMI',
-                  desc: 'L\'INAMI rembourse une partie du coût de votre appareil auditif selon votre âge et votre perte auditive.',
+                  title: texts['step-2-title'] || 'Intervention INAMI',
+                  desc: texts['step-2-desc'] || 'L\'INAMI rembourse une partie du coût de votre appareil auditif selon votre âge et votre perte auditive.',
                 },
                 {
                   step: '3',
-                  title: 'Intervention mutuelle',
-                  desc: 'Votre mutuelle peut intervenir en complément pour réduire votre reste à charge.',
+                  title: texts['step-3-title'] || 'Intervention mutuelle',
+                  desc: texts['step-3-desc'] || 'Votre mutuelle peut intervenir en complément pour réduire votre reste à charge.',
                 },
               ].map((item) => (
                 <div key={item.step} className="bg-bg p-8 rounded-2xl hover:shadow-lg transition-all">
@@ -78,9 +94,9 @@ export default function Remboursements() {
         <section data-section="inami" className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4">Interventions INAMI</h2>
+              <h2 className="text-4xl font-bold mb-4">{texts['section-2-title'] || 'Interventions INAMI'}</h2>
               <p className="text-xl text-text-light max-w-3xl mx-auto">
-                L'INAMI intervient différemment selon votre âge et votre situation.
+                {texts['section-2-description'] || 'L\'INAMI intervient différemment selon votre âge et votre situation.'}
               </p>
             </div>
 
@@ -135,19 +151,18 @@ export default function Remboursements() {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="bg-secondary border-l-4 border-primary p-8 rounded-xl">
-                <h3 className="text-2xl font-bold mb-4">💙 Notre engagement : transparence totale</h3>
+                <h3 className="text-2xl font-bold mb-4">{texts['engagement-title'] || '💙 Notre engagement : transparence totale'}</h3>
                 <p className="text-text-light mb-4">
-                  Chez Audire, vous savez <strong>exactement ce que vous allez payer</strong> avant de vous engager.
-                  Nous vous fournissons un devis détaillé avec :
+                  {texts['engagement-intro'] || 'Chez Audire, vous savez exactement ce que vous allez payer avant de vous engager. Nous vous fournissons un devis détaillé avec :'}
                 </p>
                 <ul className="space-y-2 text-text-light">
-                  <li>✅ Le prix de l'appareil</li>
-                  <li>✅ L'intervention INAMI</li>
-                  <li>✅ L'intervention de votre mutuelle</li>
-                  <li>✅ Votre reste à charge final</li>
+                  <li>{texts['engagement-item-1'] || '✅ Le prix de l\'appareil'}</li>
+                  <li>{texts['engagement-item-2'] || '✅ L\'intervention INAMI'}</li>
+                  <li>{texts['engagement-item-3'] || '✅ L\'intervention de votre mutuelle'}</li>
+                  <li>{texts['engagement-item-4'] || '✅ Votre reste à charge final'}</li>
                 </ul>
                 <p className="text-text-light mt-4">
-                  <strong>Aucune surprise, aucun frais caché.</strong> C'est notre promesse.
+                  {texts['engagement-conclusion'] || 'Aucune surprise, aucun frais caché. C\'est notre promesse.'}
                 </p>
               </div>
             </div>
@@ -157,9 +172,9 @@ export default function Remboursements() {
         {/* CTA */}
         <section className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-4xl font-bold mb-4">Une question sur les remboursements ?</h2>
+            <h2 className="text-4xl font-bold mb-4">{texts['cta-title'] || 'Une question sur les remboursements ?'}</h2>
             <p className="text-xl text-text-light mb-8 max-w-2xl mx-auto">
-              Nous sommes là pour vous aider. Prenez rendez-vous et nous vous expliquerons tout en détail.
+              {texts['cta-description'] || 'Nous sommes là pour vous aider. Prenez rendez-vous et nous vous expliquerons tout en détail.'}
             </p>
             <a
               href="/contact"
