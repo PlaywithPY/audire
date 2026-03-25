@@ -16,6 +16,15 @@ export const metadata: Metadata = {
   title: "Audire — Centre auditif en province de Liège",
   description: "Centre auditif indépendant à Jemeppe-sur-Meuse. Test auditif gratuit, accompagnement humain, solutions Oticon & Bernafon.",
   keywords: "audioprothésiste, centre auditif, appareil auditif, test auditif gratuit, province de Liège",
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon.svg', type: 'image/svg+xml', sizes: 'any' }
+    ],
+    apple: [
+      { url: '/apple-icon.svg', type: 'image/svg+xml' }
+    ],
+  },
 };
 
 export default function RootLayout({
