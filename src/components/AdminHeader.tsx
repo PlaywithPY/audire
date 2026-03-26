@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 interface AdminHeaderProps {
-  currentPage?: 'dashboard' | 'centres' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'settings' | 'testimonials';
+  currentPage?: 'dashboard' | 'centres' | 'appareils' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'settings' | 'testimonials';
   title?: string;
 }
 
@@ -9,6 +9,7 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
   const links = [
     { href: '/admin', label: '🏠 Dashboard', key: 'dashboard' },
     { href: '/admin/centres', label: '🏢 Centres', key: 'centres' },
+    { href: '/admin/appareils', label: '🦻 Appareils', key: 'appareils' },
     { href: '/admin/settings', label: '⚙️ Paramètres', key: 'settings' },
     { href: '/admin/testimonials', label: '⭐ Avis clients', key: 'testimonials' },
     { href: '/admin/feature-cards', label: '🎨 Feature Cards', key: 'feature-cards' },
