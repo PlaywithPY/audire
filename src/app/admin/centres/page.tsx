@@ -104,9 +104,48 @@ export default function CentresPage() {
     try {
       const res = await fetch(`/api/admin/hours?centreId=${centreId}`);
       const data = await res.json();
-      setHours(data);
+
+      // Si le centre n'a pas d'horaires, créer les horaires par défaut
+      if (data.length === 0) {
+        await initializeDefaultHours(centreId);
+        // Recharger les horaires après initialisation
+        const res2 = await fetch(`/api/admin/hours?centreId=${centreId}`);
+        const data2 = await res2.json();
+        setHours(data2);
+      } else {
+        setHours(data);
+      }
     } catch (error) {
       console.error('Error loading hours:', error);
+    }
+  }
+
+  async function initializeDefaultHours(centreId: number) {
+    const defaultHours = [
+      // Dimanche - Fermé
+      { centreId, dayOfWeek: 0, isOpen: false, morningOpen: null, morningClose: null, afternoonOpen: null, afternoonClose: null },
+      // Lundi à Vendredi - 9h-12h, 13h-17h
+      { centreId, dayOfWeek: 1, isOpen: true, morningOpen: '9h', morningClose: '12h', afternoonOpen: '13h', afternoonClose: '17h' },
+      { centreId, dayOfWeek: 2, isOpen: true, morningOpen: '9h', morningClose: '12h', afternoonOpen: '13h', afternoonClose: '17h' },
+      { centreId, dayOfWeek: 3, isOpen: true, morningOpen: '9h', morningClose: '12h', afternoonOpen: '13h', afternoonClose: '17h' },
+      { centreId, dayOfWeek: 4, isOpen: true, morningOpen: '9h', morningClose: '12h', afternoonOpen: '13h', afternoonClose: '17h' },
+      { centreId, dayOfWeek: 5, isOpen: true, morningOpen: '9h', morningClose: '12h', afternoonOpen: '13h', afternoonClose: '17h' },
+      // Samedi - Sur rendez-vous
+      { centreId, dayOfWeek: 6, isOpen: true, morningOpen: null, morningClose: null, afternoonOpen: null, afternoonClose: null },
+    ];
+
+    try {
+      await Promise.all(
+        defaultHours.map((hour) =>
+          fetch('/api/admin/hours', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(hour),
+          })
+        )
+      );
+    } catch (error) {
+      console.error('Error initializing default hours:', error);
     }
   }
 

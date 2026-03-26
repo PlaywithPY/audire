@@ -108,7 +108,7 @@ export async function POST(request: Request) {
       });
     }
 
-    // Créer le centre
+    // Créer le centre avec ses horaires par défaut
     const newCentre = await prisma.centre.create({
       data: {
         name,
@@ -121,6 +121,24 @@ export async function POST(request: Request) {
         city,
         isActive: true,
         isDefault: isDefault || false,
+        // Créer automatiquement les horaires par défaut pour tous les jours
+        openingHours: {
+          create: [
+            // Dimanche - Fermé
+            { dayOfWeek: 0, isOpen: false, morningOpen: null, morningClose: null, afternoonOpen: null, afternoonClose: null },
+            // Lundi à Vendredi - 9h-12h, 13h-17h
+            { dayOfWeek: 1, isOpen: true, morningOpen: '9h', morningClose: '12h', afternoonOpen: '13h', afternoonClose: '17h' },
+            { dayOfWeek: 2, isOpen: true, morningOpen: '9h', morningClose: '12h', afternoonOpen: '13h', afternoonClose: '17h' },
+            { dayOfWeek: 3, isOpen: true, morningOpen: '9h', morningClose: '12h', afternoonOpen: '13h', afternoonClose: '17h' },
+            { dayOfWeek: 4, isOpen: true, morningOpen: '9h', morningClose: '12h', afternoonOpen: '13h', afternoonClose: '17h' },
+            { dayOfWeek: 5, isOpen: true, morningOpen: '9h', morningClose: '12h', afternoonOpen: '13h', afternoonClose: '17h' },
+            // Samedi - Sur rendez-vous
+            { dayOfWeek: 6, isOpen: true, morningOpen: null, morningClose: null, afternoonOpen: null, afternoonClose: null },
+          ],
+        },
+      },
+      include: {
+        openingHours: true,
       },
     });
 
