@@ -151,6 +151,33 @@ export default function HearingAidPage() {
             <div className="text-center">
               <h1 className="text-2xl font-bold text-gray-900 mb-4">Produit non trouvé</h1>
               <p className="text-gray-600 mb-6">{error || 'Ce produit n\'existe pas.'}</p>
+
+              {/* Dropdown pour choisir un produit existant */}
+              {allProducts.length > 0 && (
+                <div className="mb-6 max-w-md mx-auto">
+                  <label htmlFor="product-selector-error" className="block text-sm font-medium text-gray-700 mb-2">
+                    Choisir un appareil auditif :
+                  </label>
+                  <select
+                    id="product-selector-error"
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        router.push(`/appareils/${e.target.value}`);
+                      }
+                    }}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                    defaultValue=""
+                  >
+                    <option value="" disabled>Sélectionnez un appareil...</option>
+                    {allProducts.map((p) => (
+                      <option key={p.slug} value={p.slug}>
+                        {p.name} - {p.brand}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <Link href="/solutions-auditives" className="btn-primary">
                 Retour aux solutions
               </Link>
