@@ -193,3 +193,31 @@ model FAQ {
   @@index([order, isVisible])
   @@index([category])
 }
+
+// Appareils auditifs (produits)
+model HearingAid {
+  id              Int      @id @default(autoincrement())
+  slug            String   @unique // Identifiant unique pour l'URL (ex: "oticon-real", "phonak-virto-r-infinio")
+  name            String   // Nom du produit (ex: "Oticon Real", "Phonak Virto R Infinio")
+  brand           String   // Marque (ex: "Oticon", "Phonak", "Bernafon", "Signia", "Widex")
+  range           String?  // Gamme (ex: "Premium", "Confort", "Essentiel")
+  type            String?  // Type (ex: "Contour d'oreille", "Intra-auriculaire", "Intra-auriculaire sur mesure")
+  shortDesc       String?  // Description courte (pour la liste)
+  fullDesc        String?  // Description complète (pour la page produit)
+  mainImage       String?  // URL de l'image principale
+  gallery         String?  // URLs des images de la galerie (JSON array)
+  features        String?  // Caractéristiques (JSON array)
+  technicalSpecs  String?  // Spécifications techniques (JSON object)
+  price           String?  // Prix (ex: "2800€ - 3500€" ou "À partir de 2800€")
+  isHighlight     Boolean  @default(false) // Produit mis en avant
+  isVisible       Boolean  @default(true) // Visible sur le site
+  order           Int      @default(0) // Ordre d'affichage
+  seoTitle        String?  // Titre SEO
+  seoDescription  String?  // Description SEO
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+
+  @@index([slug])
+  @@index([brand])
+  @@index([isVisible, order])
+}
