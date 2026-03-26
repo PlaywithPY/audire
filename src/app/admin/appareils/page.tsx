@@ -98,6 +98,7 @@ export default function AppareilsPage() {
   // État pour la médiathèque
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
   const [mediaPickerField, setMediaPickerField] = useState<string | null>(null);
+  const [isAddingToArray, setIsAddingToArray] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -223,12 +224,60 @@ export default function AppareilsPage() {
 
   function openMediaPicker(fieldName: string) {
     setMediaPickerField(fieldName);
+    setIsAddingToArray(false);
     setMediaPickerOpen(true);
+  }
+
+  function openMediaPickerForArray(fieldName: string) {
+    setMediaPickerField(fieldName);
+    setIsAddingToArray(true);
+    setMediaPickerOpen(true);
+  }
+
+  function removeImageFromArray(fieldName: keyof HearingAid, imageUrl: string) {
+    if (!selectedAid) return;
+    const currentValue = selectedAid[fieldName] as string | null;
+    if (!currentValue) return;
+
+    try {
+      let currentArray = JSON.parse(currentValue);
+      if (!Array.isArray(currentArray)) return;
+
+      // Supprimer l'image
+      currentArray = currentArray.filter((url) => url !== imageUrl);
+      updateField(fieldName, JSON.stringify(currentArray));
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'image:', error);
+    }
   }
 
   function handleMediaSelect(mediaUrl: string) {
     if (!selectedAid || !mediaPickerField) return;
-    updateField(mediaPickerField as keyof HearingAid, mediaUrl);
+
+    // Si on ajoute à un tableau JSON
+    if (isAddingToArray) {
+      const currentValue = selectedAid[mediaPickerField as keyof HearingAid] as string | null;
+      let currentArray: string[] = [];
+
+      // Parser le JSON actuel si existe
+      if (currentValue) {
+        try {
+          currentArray = JSON.parse(currentValue);
+          if (!Array.isArray(currentArray)) currentArray = [];
+        } catch {
+          currentArray = [];
+        }
+      }
+
+      // Ajouter la nouvelle image
+      currentArray.push(mediaUrl);
+      updateField(mediaPickerField as keyof HearingAid, JSON.stringify(currentArray));
+      setIsAddingToArray(false);
+    } else {
+      // Comportement normal : remplacer le champ
+      updateField(mediaPickerField as keyof HearingAid, mediaUrl);
+    }
+
     setMediaPickerOpen(false);
     setMediaPickerField(null);
   }
@@ -528,13 +577,34 @@ export default function AppareilsPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-semibold mb-2">Image principale (URL)</label>
-                      <input
-                        type="text"
-                        value={selectedAid.mainImage || ''}
-                        onChange={(e) => updateField('mainImage', e.target.value || null)}
-                        placeholder="https://..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded"
-                      />
+                      <div className="flex gap-3">
+                        <div className="flex-1">
+                          <input
+                            type="text"
+                            value={selectedAid.mainImage || ''}
+                            onChange={(e) => updateField('mainImage', e.target.value || null)}
+                            placeholder="https://..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => openMediaPicker('mainImage')}
+                          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition whitespace-nowrap"
+                        >
+                          📁 Médiathèque
+                        </button>
+                      </div>
+                      {selectedAid.mainImage && (
+                        <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                          <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
+                          <img
+                            src={selectedAid.mainImage}
+                            alt="Prévisualisation"
+                            className="max-w-full h-40 object-contain rounded border border-gray-300"
+                          />
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center gap-4">
                       <label className="flex items-center gap-2">
@@ -614,13 +684,34 @@ export default function AppareilsPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-semibold mb-2">Image Hero (URL)</label>
-                      <input
-                        type="text"
-                        value={selectedAid.heroImage || ''}
-                        onChange={(e) => updateField('heroImage', e.target.value || null)}
-                        placeholder="https://..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded"
-                      />
+                      <div className="flex gap-3">
+                        <div className="flex-1">
+                          <input
+                            type="text"
+                            value={selectedAid.heroImage || ''}
+                            onChange={(e) => updateField('heroImage', e.target.value || null)}
+                            placeholder="https://..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => openMediaPicker('heroImage')}
+                          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition whitespace-nowrap"
+                        >
+                          📁 Médiathèque
+                        </button>
+                      </div>
+                      {selectedAid.heroImage && (
+                        <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                          <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
+                          <img
+                            src={selectedAid.heroImage}
+                            alt="Prévisualisation"
+                            className="max-w-full h-40 object-contain rounded border border-gray-300"
+                          />
+                        </div>
+                      )}
                     </div>
                     <div className="md:col-span-2">
                       <label className="block text-sm font-semibold mb-2">Description Hero</label>
@@ -949,13 +1040,34 @@ export default function AppareilsPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-semibold mb-2">Image (URL)</label>
-                        <input
-                          type="text"
-                          value={selectedAid.highlightBox1Image || ''}
-                          onChange={(e) => updateField('highlightBox1Image', e.target.value || null)}
-                          placeholder="https://..."
-                          className="w-full px-3 py-2 border border-gray-300 rounded"
-                        />
+                        <div className="flex gap-3">
+                          <div className="flex-1">
+                            <input
+                              type="text"
+                              value={selectedAid.highlightBox1Image || ''}
+                              onChange={(e) => updateField('highlightBox1Image', e.target.value || null)}
+                              placeholder="https://..."
+                              className="w-full px-3 py-2 border border-gray-300 rounded"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => openMediaPicker('highlightBox1Image')}
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition whitespace-nowrap"
+                          >
+                            📁 Médiathèque
+                          </button>
+                        </div>
+                        {selectedAid.highlightBox1Image && (
+                          <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                            <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
+                            <img
+                              src={selectedAid.highlightBox1Image}
+                              alt="Prévisualisation"
+                              className="max-w-full h-40 object-contain rounded border border-gray-300"
+                            />
+                          </div>
+                        )}
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-sm font-semibold mb-2">Description</label>
@@ -982,14 +1094,65 @@ export default function AppareilsPage() {
                         />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-semibold mb-2">Images (JSON array)</label>
-                        <textarea
-                          value={selectedAid.highlightBox2Images || ''}
-                          onChange={(e) => updateField('highlightBox2Images', e.target.value || null)}
-                          rows={2}
-                          placeholder='["https://...", "https://..."]'
-                          className="w-full px-3 py-2 border border-gray-300 rounded font-mono text-sm"
-                        />
+                        <label className="block text-sm font-semibold mb-2">Images</label>
+                        <button
+                          type="button"
+                          onClick={() => openMediaPickerForArray('highlightBox2Images')}
+                          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition whitespace-nowrap"
+                        >
+                          ➕ Ajouter une image
+                        </button>
+
+                        {/* Affichage des images actuelles */}
+                        {(() => {
+                          const imagesValue = selectedAid.highlightBox2Images;
+                          if (!imagesValue) return null;
+
+                          try {
+                            const imagesArray = JSON.parse(imagesValue);
+                            if (!Array.isArray(imagesArray) || imagesArray.length === 0) return null;
+
+                            return (
+                              <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-3">
+                                {imagesArray.map((imageUrl: string, index: number) => (
+                                  <div key={index} className="relative group">
+                                    <img
+                                      src={imageUrl}
+                                      alt={`Image ${index + 1}`}
+                                      className="w-full h-32 object-cover rounded border border-gray-300"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => removeImageFromArray('highlightBox2Images', imageUrl)}
+                                      className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition"
+                                      title="Supprimer cette image"
+                                    >
+                                      ❌
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          } catch {
+                            return (
+                              <p className="mt-2 text-sm text-red-500">Format JSON invalide</p>
+                            );
+                          }
+                        })()}
+
+                        {/* Input manuel pour le JSON (option avancée) */}
+                        <details className="mt-3">
+                          <summary className="text-xs text-gray-500 cursor-pointer hover:text-gray-700">
+                            ⚙️ Édition manuelle (JSON)
+                          </summary>
+                          <textarea
+                            value={selectedAid.highlightBox2Images || ''}
+                            onChange={(e) => updateField('highlightBox2Images', e.target.value || null)}
+                            rows={2}
+                            placeholder='["https://...", "https://..."]'
+                            className="w-full mt-2 px-3 py-2 border border-gray-300 rounded font-mono text-sm"
+                          />
+                        </details>
                       </div>
                     </div>
                   </div>
