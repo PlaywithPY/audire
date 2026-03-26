@@ -18,6 +18,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [savingReimbursement, setSavingReimbursement] = useState(false);
 
   const [colors, setColors] = useState<ThemeColors>({
     primary: '#42a4ff',
@@ -25,6 +26,8 @@ export default function SettingsPage() {
     primaryDark: '#2d87e6',
     secondary: '#EBF5FF',
   });
+
+  const [mutuelleReimbursement, setMutuelleReimbursement] = useState<number>(0);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -39,6 +42,13 @@ export default function SettingsPage() {
       const colorsRes = await fetch('/api/admin/colors');
       const colorsData = await colorsRes.json();
       setColors(colorsData);
+
+      // Charger le remboursement mutuelle
+      const settingsRes = await fetch('/api/admin/settings?key=mutuelle_reimbursement');
+      if (settingsRes.ok) {
+        const settingsData = await settingsRes.json();
+        setMutuelleReimbursement(parseFloat(settingsData.value || '0'));
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -64,6 +74,26 @@ export default function SettingsPage() {
     }
   }
 
+  async function saveReimbursement() {
+    setSavingReimbursement(true);
+    try {
+      await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          key: 'mutuelle_reimbursement',
+          value: mutuelleReimbursement.toString(),
+        }),
+      });
+      alert('✅ Remboursement mutuelle sauvegardé !');
+    } catch (error) {
+      console.error('Error saving reimbursement:', error);
+      alert('❌ Erreur lors de la sauvegarde');
+    } finally {
+      setSavingReimbursement(false);
+    }
+  }
+
 
   if (status === 'loading' || loading) {
     return (
@@ -82,6 +112,34 @@ export default function SettingsPage() {
       <AdminHeader currentPage="settings" title="⚙️ Paramètres" />
 
       <div className="container mx-auto px-6 py-8 max-w-6xl">
+        {/* Remboursement Mutuelle */}
+        <section className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h2 className="text-2xl font-bold mb-4">💰 Remboursement Mutuelle</h2>
+          <p className="text-gray-600 mb-4">
+            Définissez le montant du remboursement de la mutuelle pour 1 appareil auditif.
+            Ce montant sera affiché sur les badges des produits mis en avant.
+          </p>
+          <div className="max-w-md">
+            <label className="block text-sm font-semibold mb-2">Montant du remboursement (€)</label>
+            <input
+              type="number"
+              min="0"
+              step="1"
+              value={mutuelleReimbursement}
+              onChange={(e) => setMutuelleReimbursement(parseFloat(e.target.value) || 0)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+              placeholder="Ex: 500"
+            />
+          </div>
+          <button
+            onClick={saveReimbursement}
+            disabled={savingReimbursement}
+            className="mt-4 bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition disabled:opacity-50"
+          >
+            {savingReimbursement ? 'Sauvegarde...' : '💾 Sauvegarder le remboursement'}
+          </button>
+        </section>
+
         {/* Couleurs du thème */}
         <section className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-2xl font-bold mb-4">🎨 Couleurs du thème</h2>

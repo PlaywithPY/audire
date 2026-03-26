@@ -2,12 +2,29 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAuth } from '@/lib/auth-helpers';
 
-// GET - Récupérer tous les settings
-export async function GET() {
+// GET - Récupérer tous les settings ou un setting spécifique
+export async function GET(request: Request) {
   const { error } = await requireAuth();
   if (error) return error;
 
   try {
+    const { searchParams } = new URL(request.url);
+    const key = searchParams.get('key');
+
+    // Si une clé spécifique est demandée
+    if (key) {
+      const setting = await prisma.siteSettings.findUnique({
+        where: { key },
+      });
+
+      if (!setting) {
+        return NextResponse.json({ key, value: '' });
+      }
+
+      return NextResponse.json(setting);
+    }
+
+    // Sinon, retourner tous les settings
     const settings = await prisma.siteSettings.findMany();
 
     // Transformer en objet key/value
