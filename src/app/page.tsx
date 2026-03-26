@@ -28,6 +28,35 @@ export default function Home() {
   const [featureCards, setFeatureCards] = useState<CardData[]>([]);
   const [texts, setTexts] = useState<PageTexts>({});
   const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([]);
+  const [mutuelleReimbursement, setMutuelleReimbursement] = useState<number>(0);
+
+  // Fonction pour extraire le premier prix numérique d'une chaîne
+  const extractPrice = (priceString: string | null): number | null => {
+    if (!priceString) return null;
+    const match = priceString.match(/(\d+)/);
+    return match ? parseInt(match[1]) : null;
+  };
+
+  // Fonction pour formater l'affichage du prix avec remboursement
+  const formatPriceWithReimbursement = (priceString: string | null): JSX.Element | null => {
+    const price = extractPrice(priceString);
+    if (!price || !mutuelleReimbursement) {
+      return priceString ? <span>{priceString}</span> : null;
+    }
+
+    const finalPrice = price - mutuelleReimbursement;
+
+    return (
+      <div>
+        <div className="text-lg font-semibold text-primary">
+          {price}€
+        </div>
+        <div className="text-sm text-gray-600">
+          (-{mutuelleReimbursement}€ de la mutuelle donc {finalPrice}€)
+        </div>
+      </div>
+    );
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -51,6 +80,13 @@ export default function Home() {
         if (productsRes.ok) {
           const productsData = await productsRes.json();
           setFeaturedProducts(productsData);
+        }
+
+        // Charger le remboursement mutuelle
+        const settingsRes = await fetch('/api/settings?key=mutuelle_reimbursement');
+        if (settingsRes.ok) {
+          const settingsData = await settingsRes.json();
+          setMutuelleReimbursement(parseFloat(settingsData.value || '0'));
         }
       } catch (error) {
         console.error('Error loading page data:', error);
@@ -208,8 +244,8 @@ export default function Home() {
                       </p>
                     )}
                     {product.price && (
-                      <div className="text-lg font-semibold text-primary mb-4">
-                        {product.price}
+                      <div className="mb-4">
+                        {formatPriceWithReimbursement(product.price)}
                       </div>
                     )}
                     <div className="flex items-center gap-2 text-primary font-semibold text-sm">
