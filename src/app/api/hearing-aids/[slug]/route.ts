@@ -4,10 +4,10 @@ import { prisma } from '@/lib/prisma';
 // GET /api/hearing-aids/:slug - Récupère un appareil auditif par son slug
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = params;
+    const { slug } = await params;
 
     const hearingAid = await prisma.hearingAid.findUnique({
       where: {
