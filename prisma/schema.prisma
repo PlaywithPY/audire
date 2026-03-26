@@ -193,3 +193,108 @@ model FAQ {
   @@index([order, isVisible])
   @@index([category])
 }
+
+// Appareils auditifs (produits)
+model HearingAid {
+  id              Int      @id @default(autoincrement())
+  slug            String   @unique // Identifiant unique pour l'URL (ex: "oticon-real", "phonak-virto-r-infinio")
+  name            String   // Nom du produit (ex: "Oticon Real", "Phonak Virto R Infinio")
+  brand           String   // Marque (ex: "Oticon", "Phonak", "Bernafon", "Signia", "Widex")
+  range           String?  // Gamme (ex: "Premium", "Confort", "Essentiel")
+  type            String?  // Type (ex: "Contour d'oreille", "Intra-auriculaire", "Intra-auriculaire sur mesure")
+  shortDesc       String?  // Description courte (pour la liste)
+  fullDesc        String?  // Description complète (pour la page produit)
+  mainImage       String?  // URL de l'image principale
+  gallery         String?  // URLs des images de la galerie (JSON array)
+  features        String?  // Caractéristiques (JSON array)
+  technicalSpecs  String?  // Spécifications techniques (JSON object)
+  price           String?  // Prix (ex: "2800€ - 3500€" ou "À partir de 2800€")
+  isHighlight     Boolean  @default(false) // Produit mis en avant
+  isVisible       Boolean  @default(true) // Visible sur le site
+  order           Int      @default(0) // Ordre d'affichage
+  seoTitle        String?  // Titre SEO
+  seoDescription  String?  // Description SEO
+
+  // Hero Section
+  heroGradientFrom String?  @default("#42a4ff") // Couleur de départ du dégradé
+  heroGradientTo   String?  @default("#5ab3ff") // Couleur de fin du dégradé
+  heroImage        String?  // Image de fond du hero (côté droit)
+  heroDescription  String?  // Texte principal du hero
+
+  // Avantages (Section avec icônes/images)
+  advantages      String?  // JSON array: [{title, description, icon/imageUrl}]
+
+  // Section 1: Description détaillée + Vidéo/Image
+  section1Title       String?  // Titre de la section 1
+  section1Description String?  // Description longue
+  section1MediaUrl    String?  // URL de la vidéo ou image
+  section1MediaType   String?  @default("image") // "video" ou "image"
+
+  // Section 2: Image à gauche + Texte à droite
+  section2Title       String?  // Titre de la section 2
+  section2Description String?  // Description
+  section2Image       String?  // URL de l'image
+
+  // Encadré highlight 1
+  highlightBox1Title       String?  // Titre de l'encadré
+  highlightBox1Description String?  // Mini texte
+  highlightBox1Image       String?  // Photo de l'appareil pour l'encadré
+
+  // Section 3: Image à droite + Texte à gauche
+  section3Title       String?  // Titre de la section 3
+  section3Description String?  // Description
+  section3Image       String?  // URL de l'image
+
+  // Section 4: Vidéo/Image à gauche + Texte à droite
+  section4Title       String?  // Titre de la section 4
+  section4Description String?  // Description
+  section4MediaUrl    String?  // URL de la vidéo ou image
+  section4MediaType   String?  @default("video") // "video" ou "image"
+
+  // Encadré highlight 2
+  highlightBox2Images String?  // JSON array d'URLs d'images
+  highlightBox2Title  String?  // Titre de l'encadré 2
+
+  // FAQ spécifiques au produit
+  productFAQs     String?  // JSON array: [{question, answer}]
+
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+
+  @@index([slug])
+  @@index([brand])
+  @@index([isVisible, order])
+
+  // Relation vers les blocs de contenu flexibles
+  contentBlocks ProductContentBlock[]
+}
+
+// Blocs de contenu flexibles pour les pages produits
+// Permet d'ajouter autant de sections "image/vidéo + texte" que nécessaire
+model ProductContentBlock {
+  id              Int      @id @default(autoincrement())
+  hearingAidId    Int      // Lien vers le produit
+  hearingAid      HearingAid @relation(fields: [hearingAidId], references: [id], onDelete: Cascade)
+
+  order           Int      @default(0) // Ordre d'affichage dans la page
+  isVisible       Boolean  @default(true) // Visible ou masqué
+
+  // Contenu du bloc
+  title           String?  // Titre de la section
+  description     String?  // Description/texte (peut être long)
+
+  // Média (image ou vidéo)
+  mediaUrl        String?  // URL de l'image ou vidéo
+  mediaType       String   @default("image") // "image" ou "video"
+  mediaAlt        String?  // Texte alternatif pour l'image
+
+  // Layout
+  mediaPosition   String   @default("right") // "left" ou "right" - Position du média par rapport au texte
+  backgroundColor String?  // Couleur de fond de la section (optionnel, ex: "#f9fafb", "transparent")
+
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+
+  @@index([hearingAidId, order])
+  @@index([isVisible])
+}
