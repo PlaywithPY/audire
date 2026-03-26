@@ -8,14 +8,26 @@ import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 import ImageEffectsRenderer from "@/components/ImageEffectsRenderer";
 import { useState, useEffect } from "react";
 import { CardData } from "@/lib/card-helpers";
+import Link from "next/link";
 
 interface PageTexts {
   [key: string]: string;
 }
 
+interface FeaturedProduct {
+  id: number;
+  slug: string;
+  name: string;
+  brand: string;
+  shortDesc: string | null;
+  heroImage: string | null;
+  price: string | null;
+}
+
 export default function Home() {
   const [featureCards, setFeatureCards] = useState<CardData[]>([]);
   const [texts, setTexts] = useState<PageTexts>({});
+  const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([]);
 
   useEffect(() => {
     async function loadData() {
@@ -32,6 +44,13 @@ export default function Home() {
         if (textsRes.ok) {
           const textsData = await textsRes.json();
           setTexts(textsData);
+        }
+
+        // Charger les produits mis en avant
+        const productsRes = await fetch('/api/hearing-aids/featured');
+        if (productsRes.ok) {
+          const productsData = await productsRes.json();
+          setFeaturedProducts(productsData);
         }
       } catch (error) {
         console.error('Error loading page data:', error);
@@ -133,6 +152,88 @@ export default function Home() {
 
       {/* Testimonials Carousel */}
       <TestimonialsCarousel />
+
+      {/* Featured Products Section */}
+      {featuredProducts.length > 0 && (
+        <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <span className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                Nos solutions
+              </span>
+              <h2 className="text-4xl font-bold mb-4">Appareils auditifs mis en avant</h2>
+              <p className="text-xl text-text-light max-w-3xl mx-auto">
+                Découvrez nos appareils auditifs recommandés pour une meilleure audition
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {featuredProducts.map((product) => (
+                <Link
+                  key={product.id}
+                  href={`/appareils/${product.slug}`}
+                  className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+                >
+                  {/* Image du produit */}
+                  <div className="relative h-56 bg-gradient-to-br from-primary/10 to-primary-light/10 overflow-hidden">
+                    {product.heroImage ? (
+                      <img
+                        src={product.heroImage}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <span className="text-6xl">🎧</span>
+                      </div>
+                    )}
+                    {/* Badge "Mis en avant" */}
+                    <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                      <span>⭐</span>
+                      <span>Mis en avant</span>
+                    </div>
+                  </div>
+
+                  {/* Contenu */}
+                  <div className="p-6">
+                    <div className="text-sm text-primary font-semibold mb-2">
+                      {product.brand}
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">
+                      {product.name}
+                    </h3>
+                    {product.shortDesc && (
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                        {product.shortDesc}
+                      </p>
+                    )}
+                    {product.price && (
+                      <div className="text-lg font-semibold text-primary mb-4">
+                        {product.price}
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2 text-primary font-semibold text-sm">
+                      <span>En savoir plus</span>
+                      <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* Lien vers toutes les solutions */}
+            <div className="text-center mt-12">
+              <Link
+                href="/solutions-auditives"
+                className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
+              >
+                <span>Voir toutes nos solutions auditives</span>
+                <span>→</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-primary/10 to-primary-light/10">

@@ -212,10 +212,7 @@ export default function HearingAidPage() {
 
         {/* HERO SECTION avec dégradé + image */}
         <section className="relative overflow-hidden">
-          <div className="absolute inset-0" style={{
-            background: `linear-gradient(to right, ${product.heroGradientFrom || '#42a4ff'} 0%, ${product.heroGradientTo || '#5ab3ff'} 50%, transparent 80%)`,
-          }}></div>
-
+          {/* Image de fond */}
           {product.heroImage && (
             <div className="absolute inset-0">
               <img
@@ -227,7 +224,12 @@ export default function HearingAidPage() {
             </div>
           )}
 
-          <div className="relative container mx-auto px-4 py-20 md:py-32">
+          {/* Dégradé par-dessus l'image */}
+          <div className="absolute inset-0 z-10" style={{
+            background: `linear-gradient(to right, ${product.heroGradientFrom || '#42a4ff'} 0%, ${product.heroGradientTo || '#5ab3ff'} 50%, transparent 80%)`,
+          }}></div>
+
+          <div className="relative z-20 container mx-auto px-4 py-20 md:py-32">
             <div className="grid md:grid-cols-2 gap-12">
               <div className="flex flex-col justify-center">
                 <div className="flex items-center gap-3 mb-4">
