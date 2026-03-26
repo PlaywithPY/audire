@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import AdminHeader from '@/components/AdminHeader';
+import MediaPicker from '@/components/MediaPicker';
 
 type HearingAid = {
   id: number;
@@ -93,6 +94,10 @@ export default function AppareilsPage() {
     faqs: false,
     seo: false,
   });
+
+  // État pour la médiathèque
+  const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
+  const [mediaPickerField, setMediaPickerField] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -214,6 +219,18 @@ export default function AppareilsPage() {
 
   function toggleSection(section: string) {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  }
+
+  function openMediaPicker(fieldName: string) {
+    setMediaPickerField(fieldName);
+    setMediaPickerOpen(true);
+  }
+
+  function handleMediaSelect(mediaUrl: string) {
+    if (!selectedAid || !mediaPickerField) return;
+    updateField(mediaPickerField as keyof HearingAid, mediaUrl);
+    setMediaPickerOpen(false);
+    setMediaPickerField(null);
   }
 
   const selectedAid = hearingAids.find((a) => a.id === selectedAidId);
@@ -670,14 +687,43 @@ export default function AppareilsPage() {
                         />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-semibold mb-2">URL du média</label>
-                        <input
-                          type="text"
-                          value={selectedAid.section1MediaUrl || ''}
-                          onChange={(e) => updateField('section1MediaUrl', e.target.value || null)}
-                          placeholder="https://..."
-                          className="w-full px-3 py-2 border border-gray-300 rounded"
-                        />
+                        <label className="block text-sm font-semibold mb-2">Média</label>
+                        <div className="flex gap-3">
+                          <div className="flex-1">
+                            <input
+                              type="text"
+                              value={selectedAid.section1MediaUrl || ''}
+                              onChange={(e) => updateField('section1MediaUrl', e.target.value || null)}
+                              placeholder="https://..."
+                              className="w-full px-3 py-2 border border-gray-300 rounded"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => openMediaPicker('section1MediaUrl')}
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition whitespace-nowrap"
+                          >
+                            📁 Médiathèque
+                          </button>
+                        </div>
+                        {selectedAid.section1MediaUrl && (
+                          <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                            <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
+                            {selectedAid.section1MediaType === 'video' ? (
+                              <video
+                                src={selectedAid.section1MediaUrl}
+                                controls
+                                className="max-w-full h-40 rounded border border-gray-300"
+                              />
+                            ) : (
+                              <img
+                                src={selectedAid.section1MediaUrl}
+                                alt="Prévisualisation"
+                                className="max-w-full h-40 object-contain rounded border border-gray-300"
+                              />
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -695,15 +741,36 @@ export default function AppareilsPage() {
                           className="w-full px-3 py-2 border border-gray-300 rounded"
                         />
                       </div>
-                      <div>
-                        <label className="block text-sm font-semibold mb-2">Image (URL)</label>
-                        <input
-                          type="text"
-                          value={selectedAid.section2Image || ''}
-                          onChange={(e) => updateField('section2Image', e.target.value || null)}
-                          placeholder="https://..."
-                          className="w-full px-3 py-2 border border-gray-300 rounded"
-                        />
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-semibold mb-2">Image</label>
+                        <div className="flex gap-3">
+                          <div className="flex-1">
+                            <input
+                              type="text"
+                              value={selectedAid.section2Image || ''}
+                              onChange={(e) => updateField('section2Image', e.target.value || null)}
+                              placeholder="https://..."
+                              className="w-full px-3 py-2 border border-gray-300 rounded"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => openMediaPicker('section2Image')}
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition whitespace-nowrap"
+                          >
+                            📁 Médiathèque
+                          </button>
+                        </div>
+                        {selectedAid.section2Image && (
+                          <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                            <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
+                            <img
+                              src={selectedAid.section2Image}
+                              alt="Prévisualisation"
+                              className="max-w-full h-40 object-contain rounded border border-gray-300"
+                            />
+                          </div>
+                        )}
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-sm font-semibold mb-2">Description</label>
@@ -730,15 +797,36 @@ export default function AppareilsPage() {
                           className="w-full px-3 py-2 border border-gray-300 rounded"
                         />
                       </div>
-                      <div>
-                        <label className="block text-sm font-semibold mb-2">Image (URL)</label>
-                        <input
-                          type="text"
-                          value={selectedAid.section3Image || ''}
-                          onChange={(e) => updateField('section3Image', e.target.value || null)}
-                          placeholder="https://..."
-                          className="w-full px-3 py-2 border border-gray-300 rounded"
-                        />
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-semibold mb-2">Image</label>
+                        <div className="flex gap-3">
+                          <div className="flex-1">
+                            <input
+                              type="text"
+                              value={selectedAid.section3Image || ''}
+                              onChange={(e) => updateField('section3Image', e.target.value || null)}
+                              placeholder="https://..."
+                              className="w-full px-3 py-2 border border-gray-300 rounded"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => openMediaPicker('section3Image')}
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition whitespace-nowrap"
+                          >
+                            📁 Médiathèque
+                          </button>
+                        </div>
+                        {selectedAid.section3Image && (
+                          <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                            <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
+                            <img
+                              src={selectedAid.section3Image}
+                              alt="Prévisualisation"
+                              className="max-w-full h-40 object-contain rounded border border-gray-300"
+                            />
+                          </div>
+                        )}
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-sm font-semibold mb-2">Description</label>
@@ -786,14 +874,43 @@ export default function AppareilsPage() {
                         />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-semibold mb-2">URL du média</label>
-                        <input
-                          type="text"
-                          value={selectedAid.section4MediaUrl || ''}
-                          onChange={(e) => updateField('section4MediaUrl', e.target.value || null)}
-                          placeholder="https://..."
-                          className="w-full px-3 py-2 border border-gray-300 rounded"
-                        />
+                        <label className="block text-sm font-semibold mb-2">Média</label>
+                        <div className="flex gap-3">
+                          <div className="flex-1">
+                            <input
+                              type="text"
+                              value={selectedAid.section4MediaUrl || ''}
+                              onChange={(e) => updateField('section4MediaUrl', e.target.value || null)}
+                              placeholder="https://..."
+                              className="w-full px-3 py-2 border border-gray-300 rounded"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => openMediaPicker('section4MediaUrl')}
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition whitespace-nowrap"
+                          >
+                            📁 Médiathèque
+                          </button>
+                        </div>
+                        {selectedAid.section4MediaUrl && (
+                          <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                            <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
+                            {selectedAid.section4MediaType === 'video' ? (
+                              <video
+                                src={selectedAid.section4MediaUrl}
+                                controls
+                                className="max-w-full h-40 rounded border border-gray-300"
+                              />
+                            ) : (
+                              <img
+                                src={selectedAid.section4MediaUrl}
+                                alt="Prévisualisation"
+                                className="max-w-full h-40 object-contain rounded border border-gray-300"
+                              />
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -932,6 +1049,20 @@ export default function AppareilsPage() {
           </>
         )}
       </div>
+
+      {/* Médiathèque */}
+      {selectedAid && (
+        <MediaPicker
+          isOpen={mediaPickerOpen}
+          onClose={() => {
+            setMediaPickerOpen(false);
+            setMediaPickerField(null);
+          }}
+          onSelect={handleMediaSelect}
+          currentMedia={mediaPickerField ? selectedAid[mediaPickerField as keyof HearingAid] as string : undefined}
+          mediaType="all"
+        />
+      )}
     </div>
   );
 }
