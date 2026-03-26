@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 // GET /api/hearing-aids/:slug - Récupère un appareil auditif par son slug
 export async function GET(
@@ -13,6 +13,16 @@ export async function GET(
       where: {
         slug,
         isVisible: true,
+      },
+      include: {
+        contentBlocks: {
+          where: {
+            isVisible: true,
+          },
+          orderBy: {
+            order: 'asc',
+          },
+        },
       },
     });
 
