@@ -24,13 +24,19 @@ export async function GET() {
     console.log(`📦 Found ${blobs.length} blobs from Vercel`);
 
     // Transformer les blobs Vercel en format utilisable
-    const vercelImages = blobs.map(blob => ({
-      name: blob.pathname,
-      url: blob.url,
-      size: blob.size,
-      uploadedAt: blob.uploadedAt,
-      source: 'vercel-blob'
-    }));
+    const vercelImages = blobs.map(blob => {
+      const ext = blob.pathname.toLowerCase().split('.').pop() || '';
+      const isVideo = ['mp4', 'webm', 'ogg', 'mov'].includes(ext);
+
+      return {
+        name: blob.pathname,
+        url: blob.url,
+        size: blob.size,
+        uploadedAt: blob.uploadedAt,
+        source: 'vercel-blob',
+        type: isVideo ? 'video' : 'image'
+      };
+    });
 
     // Lister les images locales dans public/images
     const localImages: any[] = [];
@@ -42,8 +48,12 @@ export async function GET() {
 
         files.forEach(file => {
           const ext = path.extname(file).toLowerCase();
-          // Filtrer seulement les fichiers images
-          if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'].includes(ext)) {
+          // Filtrer les fichiers images et vidéos
+          const imageExts = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+          const videoExts = ['.mp4', '.webm', '.ogg', '.mov'];
+          const allExts = [...imageExts, ...videoExts];
+
+          if (allExts.includes(ext)) {
             const filePath = path.join(publicImagesPath, file);
             const stats = fs.statSync(filePath);
 
@@ -52,7 +62,8 @@ export async function GET() {
               url: `/images/${file}`,
               size: stats.size,
               uploadedAt: stats.mtime.toISOString(),
-              source: 'local'
+              source: 'local',
+              type: videoExts.includes(ext) ? 'video' : 'image'
             });
           }
         });
@@ -98,19 +109,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Vérifier le type de fichier
-    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+    // Vérifier le type de fichier (images + vidéos)
+    const validTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+      'image/svg+xml',
+      'video/mp4',
+      'video/webm',
+      'video/ogg',
+      'video/quicktime' // .mov
+    ];
     if (!validTypes.includes(file.type)) {
       return NextResponse.json(
-        { error: 'Invalid file type. Only JPEG, PNG, GIF, WebP, and SVG are allowed.' },
+        { error: 'Type de fichier non valide. Formats acceptés: JPEG, PNG, GIF, WebP, SVG, MP4, WebM, OGG, MOV' },
         { status: 400 }
       );
     }
 
-    // Vérifier la taille (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
+    // Vérifier la taille (max 50MB pour vidéos, 5MB pour images)
+    const isVideo = file.type.startsWith('video/');
+    const maxSize = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+    if (file.size > maxSize) {
       return NextResponse.json(
-        { error: 'File too large. Maximum size is 5MB.' },
+        { error: `Fichier trop volumineux. Taille max: ${isVideo ? '50MB' : '5MB'}` },
         { status: 400 }
       );
     }
