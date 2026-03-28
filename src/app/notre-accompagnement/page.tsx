@@ -200,7 +200,7 @@ export default function NotreAccompagnement() {
               {texts['cta-description'] || 'Prenez rendez-vous pour un test auditif gratuit et sans engagement.'}
             </p>
             <a
-              href="/test-auditif-gratuit"
+              href="/prendre-rendez-vous"
               className="inline-block bg-primary text-white px-8 py-4 rounded-xl font-semibold hover:bg-primary-dark transition-all shadow-lg"
             >
               📅 Réserver maintenant

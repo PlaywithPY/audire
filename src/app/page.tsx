@@ -140,12 +140,18 @@ export default function Home() {
             </div>
 
             <div className="flex flex-wrap gap-4 justify-center">
-              <button className="bg-white text-primary px-8 py-4 rounded-xl font-semibold hover:bg-white/90 transition-all shadow-lg">
+              <Link
+                href="/prendre-rendez-vous"
+                className="bg-white text-primary px-8 py-4 rounded-xl font-semibold hover:bg-white/90 transition-all shadow-lg"
+              >
                 📅 Prendre rendez-vous
-              </button>
-              <button className="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/20 transition-all">
+              </Link>
+              <Link
+                href="/contact"
+                className="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/20 transition-all"
+              >
                 📞 Nous contacter
-              </button>
+              </Link>
             </div>
 
             <p className="mt-6 text-sm text-white/70">

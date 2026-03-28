@@ -194,7 +194,7 @@ export default function NotreHistoire() {
               {texts['cta-description'] || 'Venez nous rencontrer pour découvrir notre approche et faire un test auditif gratuit.'}
             </p>
             <a
-              href="/test-auditif-gratuit"
+              href="/prendre-rendez-vous"
               className="inline-block bg-primary text-white px-8 py-4 rounded-xl font-semibold hover:bg-primary-dark transition-all shadow-lg"
             >
               📅 Prendre rendez-vous
