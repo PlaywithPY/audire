@@ -122,25 +122,37 @@ export default function RendezVousPage() {
 
     try {
       setSaving(true);
+
+      // Découper le créneau en sous-créneaux de 30 minutes
+      const halfHourSlots = splitIntoHalfHourSlots(newSlot.startTime, newSlot.endTime);
+
+      // Créer tous les sous-créneaux
+      const slots = halfHourSlots.map(slot => ({
+        date: newSlot.date,
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+      }));
+
       const res = await fetch('/api/admin/time-slots', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           centreId: selectedCentreId,
-          ...newSlot,
+          multiple: true,
+          slots,
         }),
       });
 
       if (!res.ok) {
-        throw new Error('Failed to create time slot');
+        throw new Error('Failed to create time slots');
       }
 
       setNewSlot({ date: '', startTime: '', endTime: '' });
       setShowAddSlotForm(false);
       fetchTimeSlots();
     } catch (error) {
-      console.error('Error creating time slot:', error);
-      alert('Erreur lors de la création du créneau');
+      console.error('Error creating time slots:', error);
+      alert('Erreur lors de la création des créneaux');
     } finally {
       setSaving(false);
     }
@@ -164,10 +176,15 @@ export default function RendezVousPage() {
         const dayOfWeek = d.getDay();
         if (bulkSlotData.daysOfWeek.includes(dayOfWeek)) {
           bulkSlotData.slots.forEach(slot => {
-            slots.push({
-              date: d.toISOString().split('T')[0],
-              startTime: slot.startTime,
-              endTime: slot.endTime,
+            // Découper chaque créneau en sous-créneaux de 30 minutes
+            const halfHourSlots = splitIntoHalfHourSlots(slot.startTime, slot.endTime);
+
+            halfHourSlots.forEach(halfSlot => {
+              slots.push({
+                date: d.toISOString().split('T')[0],
+                startTime: halfSlot.startTime,
+                endTime: halfSlot.endTime,
+              });
             });
           });
         }
@@ -271,6 +288,59 @@ export default function RendezVousPage() {
 
   const daysOfWeekLabels = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
+  /**
+   * Découpe un créneau en sous-créneaux de 30 minutes
+   * @param startTime Heure de début (format "HH:MM")
+   * @param endTime Heure de fin (format "HH:MM")
+   * @returns Array de sous-créneaux { startTime, endTime }
+   */
+  function splitIntoHalfHourSlots(startTime: string, endTime: string): { startTime: string; endTime: string }[] {
+    const slots: { startTime: string; endTime: string }[] = [];
+
+    // Parse start and end times
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
+
+    // Convert to minutes since midnight
+    let currentMinutes = startHour * 60 + startMinute;
+    const endMinutes = endHour * 60 + endMinute;
+
+    // Generate 30-minute slots
+    while (currentMinutes < endMinutes) {
+      const slotStartHour = Math.floor(currentMinutes / 60);
+      const slotStartMinute = currentMinutes % 60;
+
+      // Add 30 minutes
+      const nextMinutes = Math.min(currentMinutes + 30, endMinutes);
+      const slotEndHour = Math.floor(nextMinutes / 60);
+      const slotEndMinute = nextMinutes % 60;
+
+      slots.push({
+        startTime: `${String(slotStartHour).padStart(2, '0')}:${String(slotStartMinute).padStart(2, '0')}`,
+        endTime: `${String(slotEndHour).padStart(2, '0')}:${String(slotEndMinute).padStart(2, '0')}`,
+      });
+
+      currentMinutes = nextMinutes;
+    }
+
+    return slots;
+  }
+
+  /**
+   * Ouvre le picker natif pour un input de type date ou time
+   */
+  function openPicker(event: React.MouseEvent<HTMLInputElement>) {
+    const input = event.target as HTMLInputElement;
+    if (input && typeof input.showPicker === 'function') {
+      try {
+        input.showPicker();
+      } catch (error) {
+        // Fallback: certains navigateurs ne supportent pas showPicker
+        console.log('showPicker not supported');
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminHeader />
@@ -346,7 +416,8 @@ export default function RendezVousPage() {
                       type="date"
                       value={newSlot.date}
                       onChange={(e) => setNewSlot({ ...newSlot, date: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      onClick={openPicker}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg cursor-pointer"
                     />
                   </div>
                   <div>
@@ -355,7 +426,8 @@ export default function RendezVousPage() {
                       type="time"
                       value={newSlot.startTime}
                       onChange={(e) => setNewSlot({ ...newSlot, startTime: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      onClick={openPicker}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg cursor-pointer"
                     />
                   </div>
                   <div>
@@ -364,7 +436,8 @@ export default function RendezVousPage() {
                       type="time"
                       value={newSlot.endTime}
                       onChange={(e) => setNewSlot({ ...newSlot, endTime: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      onClick={openPicker}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg cursor-pointer"
                     />
                   </div>
                 </div>
@@ -390,7 +463,8 @@ export default function RendezVousPage() {
                       type="date"
                       value={bulkSlotData.startDate}
                       onChange={(e) => setBulkSlotData({ ...bulkSlotData, startDate: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      onClick={openPicker}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg cursor-pointer"
                     />
                   </div>
                   <div>
@@ -399,7 +473,8 @@ export default function RendezVousPage() {
                       type="date"
                       value={bulkSlotData.endDate}
                       onChange={(e) => setBulkSlotData({ ...bulkSlotData, endDate: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      onClick={openPicker}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg cursor-pointer"
                     />
                   </div>
                 </div>
@@ -431,14 +506,16 @@ export default function RendezVousPage() {
                         type="time"
                         value={slot.startTime}
                         onChange={(e) => updateBulkSlotTime(index, 'startTime', e.target.value)}
-                        className="px-3 py-2 border border-gray-300 rounded-lg"
+                        onClick={openPicker}
+                        className="px-3 py-2 border border-gray-300 rounded-lg cursor-pointer"
                       />
                       <span className="self-center">-</span>
                       <input
                         type="time"
                         value={slot.endTime}
                         onChange={(e) => updateBulkSlotTime(index, 'endTime', e.target.value)}
-                        className="px-3 py-2 border border-gray-300 rounded-lg"
+                        onClick={openPicker}
+                        className="px-3 py-2 border border-gray-300 rounded-lg cursor-pointer"
                       />
                       {bulkSlotData.slots.length > 1 && (
                         <button
