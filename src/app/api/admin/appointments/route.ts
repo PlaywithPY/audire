@@ -115,7 +115,7 @@ export async function PATCH(request: NextRequest) {
     });
 
     // Si annulé, libérer le créneau
-    if (status === 'cancelled') {
+    if (status === 'cancelled' && appointment.timeSlotId) {
       await prisma.timeSlot.update({
         where: { id: appointment.timeSlotId },
         data: { isBooked: false },
