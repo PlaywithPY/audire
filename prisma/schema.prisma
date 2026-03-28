@@ -37,6 +37,8 @@ model Centre {
   updatedAt    DateTime @updatedAt
 
   openingHours OpeningHours[]
+  timeSlots    TimeSlot[]
+  appointments Appointment[]
 
   @@index([postalCode])
   @@index([isActive])
@@ -297,4 +299,77 @@ model ProductContentBlock {
 
   @@index([hearingAidId, order])
   @@index([isVisible])
+}
+
+// Créneaux horaires pour les rendez-vous
+model TimeSlot {
+  id          Int      @id @default(autoincrement())
+  centreId    Int      // Lien vers le centre
+  centre      Centre   @relation(fields: [centreId], references: [id], onDelete: Cascade)
+  date        DateTime // Date du créneau (jour uniquement)
+  startTime   String   // Heure de début (format "HH:MM")
+  endTime     String   // Heure de fin (format "HH:MM")
+  isBooked    Boolean  @default(false) // Créneau réservé ou non
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  appointments Appointment[]
+
+  @@index([centreId, date, isBooked])
+  @@index([date])
+}
+
+// Rendez-vous pris par les clients
+model Appointment {
+  id                   Int      @id @default(autoincrement())
+  centreId             Int      // Lien vers le centre
+  centre               Centre   @relation(fields: [centreId], references: [id], onDelete: Cascade)
+  timeSlotId           Int      // Lien vers le créneau horaire
+  timeSlot             TimeSlot @relation(fields: [timeSlotId], references: [id], onDelete: Cascade)
+
+  // Informations du patient
+  firstName            String   // Prénom
+  lastName             String   // Nom
+  address              String   // Adresse complète
+  phone                String   // N° de GSM (obligatoire pour les rappels SMS)
+  email                String?  // Email (optionnel)
+
+  // Type de rendez-vous
+  appointmentType      String   // "premier-contact", "premier-rdv", "reglage"
+
+  // Message optionnel
+  message              String?  // Espace pour laisser un mot
+
+  // Prescription ORL (optionnelle)
+  hasPrescription      Boolean  @default(false) // Le patient a-t-il uploadé une prescription
+
+  // Intégration Google Calendar
+  googleCalendarEventId String? // ID de l'événement dans Google Calendar
+
+  // Statut
+  status               String   @default("confirmed") // "confirmed", "cancelled", "completed"
+
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  prescriptions        Prescription[]
+
+  @@index([centreId, timeSlotId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// Prescriptions uploadées (stockage temporaire)
+model Prescription {
+  id            Int      @id @default(autoincrement())
+  appointmentId Int      // Lien vers le rendez-vous
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  fileUrl       String   // URL du fichier uploadé
+  fileName      String   // Nom original du fichier
+  emailSent     Boolean  @default(false) // Email envoyé ou non
+  expiresAt     DateTime // Date d'expiration (1 mois après la création)
+  createdAt     DateTime @default(now())
+
+  @@index([appointmentId])
+  @@index([expiresAt])
 }

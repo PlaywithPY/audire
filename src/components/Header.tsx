@@ -59,8 +59,14 @@ export default function Header() {
                 </Link>
               ))}
               <Link
-                href="/test-auditif-gratuit"
+                href="/prendre-rendez-vous"
                 className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-all font-semibold whitespace-nowrap"
+              >
+                Prendre RDV
+              </Link>
+              <Link
+                href="/test-auditif-gratuit"
+                className="bg-white text-primary border-2 border-primary px-6 py-2 rounded-lg hover:bg-primary/5 transition-all font-semibold whitespace-nowrap"
               >
                 Test gratuit
               </Link>
@@ -103,8 +109,15 @@ export default function Header() {
                 </Link>
               ))}
               <Link
-                href="/test-auditif-gratuit"
+                href="/prendre-rendez-vous"
                 className="block mt-4 bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-all font-semibold text-center"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Prendre RDV
+              </Link>
+              <Link
+                href="/test-auditif-gratuit"
+                className="block mt-2 bg-white text-primary border-2 border-primary px-6 py-2 rounded-lg hover:bg-primary/5 transition-all font-semibold text-center"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Test gratuit
