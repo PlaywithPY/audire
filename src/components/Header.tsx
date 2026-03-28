@@ -23,6 +23,7 @@ export default function Header() {
     { name: 'Solutions auditives', href: '/solutions-auditives' },
     { name: 'Remboursements', href: '/remboursements' },
     { name: 'Notre accompagnement', href: '/notre-accompagnement' },
+    { name: 'Notre histoire', href: '/notre-histoire' },
     { name: 'Partenaires', href: '/partenaires-pharmaciens' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Contact', href: '/contact' },

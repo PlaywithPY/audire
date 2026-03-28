@@ -40,20 +40,25 @@ export default function Home() {
   // Fonction pour formater l'affichage du prix avec remboursement
   const formatPriceWithReimbursement = (priceString: string | null): JSX.Element | null => {
     const price = extractPrice(priceString);
-    if (!price || !mutuelleReimbursement) {
+    if (!price) {
       return priceString ? <span>{priceString}</span> : null;
     }
 
-    const finalPrice = price - mutuelleReimbursement;
+    const finalPrice = mutuelleReimbursement ? price - mutuelleReimbursement : price;
 
     return (
       <div>
+        <div className="text-sm text-gray-600 mb-1">
+          À partir de
+        </div>
         <div className="text-lg font-semibold text-primary">
           {price}€
         </div>
-        <div className="text-sm text-gray-600">
-          (-{mutuelleReimbursement}€ de la mutuelle donc {finalPrice}€)
-        </div>
+        {mutuelleReimbursement > 0 && (
+          <div className="text-sm text-gray-600">
+            (-{mutuelleReimbursement}€ de la mutuelle donc {finalPrice}€)
+          </div>
+        )}
       </div>
     );
   };
