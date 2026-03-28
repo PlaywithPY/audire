@@ -447,7 +447,7 @@ export default function SolutionsAuditives() {
               {texts['cta-description'] || 'Chaque personne est unique. Nous prenons le temps de comprendre vos besoins pour vous proposer la solution la plus adaptée.'}
             </p>
             <a
-              href="/test-auditif-gratuit"
+              href="/prendre-rendez-vous"
               className="inline-block bg-primary text-white px-8 py-4 rounded-xl font-semibold hover:bg-primary-dark transition-all shadow-lg"
             >
               📅 Prendre rendez-vous

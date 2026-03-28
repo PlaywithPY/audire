@@ -284,7 +284,7 @@ export default function HearingAidPage() {
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link
-                    href="/test-auditif-gratuit"
+                    href="/prendre-rendez-vous"
                     className="inline-flex items-center justify-center px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition-all shadow-lg"
                   >
                     Prendre rendez-vous
@@ -430,7 +430,7 @@ export default function HearingAidPage() {
                       </p>
                     )}
                     <Link
-                      href="/test-auditif-gratuit"
+                      href="/prendre-rendez-vous"
                       className="inline-block btn-primary"
                     >
                       Prendre rendez-vous
@@ -535,7 +535,7 @@ export default function HearingAidPage() {
                 </div>
                 <div className="text-center">
                   <Link
-                    href="/test-auditif-gratuit"
+                    href="/prendre-rendez-vous"
                     className="inline-block btn-primary"
                   >
                     Prendre rendez-vous
@@ -672,7 +672,7 @@ export default function HearingAidPage() {
                 Venez l'essayer gratuitement pendant 30 jours. Sans engagement.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/test-auditif-gratuit" className="btn-white">
+                <Link href="/prendre-rendez-vous" className="btn-white">
                   Réserver un test gratuit
                 </Link>
                 <Link href="/solutions-auditives" className="btn-outline-white">
