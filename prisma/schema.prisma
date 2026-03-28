@@ -321,16 +321,17 @@ model TimeSlot {
 
 // Rendez-vous pris par les clients
 model Appointment {
-  id                   Int      @id @default(autoincrement())
-  centreId             Int      // Lien vers le centre
-  centre               Centre   @relation(fields: [centreId], references: [id], onDelete: Cascade)
-  timeSlotId           Int      // Lien vers le créneau horaire
-  timeSlot             TimeSlot @relation(fields: [timeSlotId], references: [id], onDelete: Cascade)
+  id                   Int       @id @default(autoincrement())
+  centreId             Int       // Lien vers le centre
+  centre               Centre    @relation(fields: [centreId], references: [id], onDelete: Cascade)
+  timeSlotId           Int?      // Lien vers le créneau horaire (optionnel pour les demandes de contact)
+  timeSlot             TimeSlot? @relation(fields: [timeSlotId], references: [id], onDelete: Cascade)
 
   // Informations du patient
+  civilite             String?  // Civilité: "monsieur", "madame", "autre"
   firstName            String   // Prénom
   lastName             String   // Nom
-  address              String   // Adresse complète
+  address              String?  // Adresse complète (optionnelle pour les demandes de contact)
   phone                String   // N° de GSM (obligatoire pour les rappels SMS)
   email                String?  // Email (optionnel)
 

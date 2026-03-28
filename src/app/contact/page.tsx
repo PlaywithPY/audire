@@ -13,6 +13,8 @@ interface PageTexts {
 
 export default function Contact() {
   const [texts, setTexts] = useState<PageTexts>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<string>('');
 
   useEffect(() => {
     async function loadTexts() {
@@ -28,6 +30,44 @@ export default function Contact() {
     }
     loadTexts();
   }, []);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage('');
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      civilite: formData.get('civilite') as string,
+      firstName: formData.get('prenom') as string,
+      lastName: formData.get('nom') as string,
+      phone: formData.get('telephone') as string,
+      email: formData.get('email') as string,
+      message: formData.get('message') as string,
+      appointmentType: 'premier-contact',
+    };
+
+    try {
+      const res = await fetch('/api/contact-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        setSubmitMessage('✅ Votre message a bien été envoyé ! Nous vous répondrons dans les plus brefs délais.');
+        e.currentTarget.reset();
+      } else {
+        const error = await res.json();
+        setSubmitMessage(`❌ Erreur : ${error.error || 'Une erreur est survenue'}`);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitMessage('❌ Erreur lors de l\'envoi du formulaire. Veuillez réessayer.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
   return (
     <>
       <Header />
@@ -80,7 +120,24 @@ export default function Contact() {
               </p>
             </div>
 
-            <form className="max-w-2xl mx-auto bg-bg p-8 rounded-2xl">
+            <form onSubmit={handleSubmit} className="max-w-2xl mx-auto bg-bg p-8 rounded-2xl">
+              <div className="mb-6">
+                <label htmlFor="civilite" className="block text-sm font-semibold mb-2">
+                  Civilité *
+                </label>
+                <select
+                  id="civilite"
+                  name="civilite"
+                  required
+                  className="w-full px-4 py-3 rounded-lg border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                >
+                  <option value="">Sélectionnez...</option>
+                  <option value="monsieur">Monsieur</option>
+                  <option value="madame">Madame</option>
+                  <option value="autre">Autre</option>
+                </select>
+              </div>
+
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <label htmlFor="nom" className="block text-sm font-semibold mb-2">
@@ -154,10 +211,17 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="w-full bg-primary text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-dark transition-all shadow-lg"
+                disabled={isSubmitting}
+                className="w-full bg-primary text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-dark transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Envoyer le message
+                {isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}
               </button>
+
+              {submitMessage && (
+                <div className={`mt-4 p-4 rounded-lg text-center ${submitMessage.startsWith('✅') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  {submitMessage}
+                </div>
+              )}
 
               <p className="text-sm text-text-muted mt-4 text-center">
                 * Champs obligatoires

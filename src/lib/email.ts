@@ -8,6 +8,17 @@ export interface PrescriptionEmailOptions {
   prescriptionFileName: string;
 }
 
+export interface AppointmentRequestEmailOptions {
+  civilite: string | null;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string | null;
+  message: string | null;
+  appointmentType: string;
+  centreName: string;
+}
+
 class EmailService {
   private transporter;
 
@@ -155,6 +166,145 @@ class EmailService {
       return true;
     } catch (error) {
       console.error('Error sending prescription email:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Envoie un email de notification pour une nouvelle demande de rendez-vous
+   * @param options - Options de l'email
+   * @returns true si l'email a été envoyé avec succès, false sinon
+   */
+  async sendAppointmentRequestEmail(options: AppointmentRequestEmailOptions): Promise<boolean> {
+    if (!this.transporter) {
+      console.error('Email service not configured');
+      return false;
+    }
+
+    const typeLabels: Record<string, string> = {
+      'premier-contact': 'Premier contact / Prise d\'informations générales',
+      'premier-rdv': 'Premier RDV (avec prescription ORL)',
+      'reglage': 'Réglage',
+    };
+
+    const appointmentTypeLabel = typeLabels[options.appointmentType] || options.appointmentType;
+
+    const civiliteLabels: Record<string, string> = {
+      'monsieur': 'Monsieur',
+      'madame': 'Madame',
+      'autre': '',
+    };
+
+    const civiliteDisplay = options.civilite ? civiliteLabels[options.civilite] || '' : '';
+    const fullName = civiliteDisplay ? `${civiliteDisplay} ${options.lastName} ${options.firstName}` : `${options.lastName} ${options.firstName}`;
+
+    try {
+      const info = await this.transporter.sendMail({
+        from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+        to: process.env.EMAIL_TO || 'centre.audire@gmail.com',
+        subject: `Nouvelle demande de rendez-vous - ${fullName}`,
+        html: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  line-height: 1.6;
+                  color: #333;
+                }
+                .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+                }
+                .header {
+                  background-color: #42a4ff;
+                  color: white;
+                  padding: 20px;
+                  text-align: center;
+                  border-radius: 5px 5px 0 0;
+                }
+                .content {
+                  background-color: #f9f9f9;
+                  padding: 20px;
+                  border-radius: 0 0 5px 5px;
+                }
+                .info-row {
+                  margin: 10px 0;
+                  padding: 10px;
+                  background-color: white;
+                  border-radius: 3px;
+                }
+                .label {
+                  font-weight: bold;
+                  color: #42a4ff;
+                }
+                .footer {
+                  text-align: center;
+                  margin-top: 20px;
+                  color: #666;
+                  font-size: 12px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h2>📅 Nouvelle Demande de Rendez-vous</h2>
+                </div>
+                <div class="content">
+                  <p>Une nouvelle demande de rendez-vous a été soumise depuis le site web.</p>
+
+                  <div class="info-row">
+                    <span class="label">Patient :</span> ${fullName}
+                  </div>
+
+                  <div class="info-row">
+                    <span class="label">Type de demande :</span> ${appointmentTypeLabel}
+                  </div>
+
+                  <div class="info-row">
+                    <span class="label">Téléphone :</span> <a href="tel:${options.phone}">${options.phone}</a>
+                  </div>
+
+                  ${options.email ? `
+                  <div class="info-row">
+                    <span class="label">Email :</span> <a href="mailto:${options.email}">${options.email}</a>
+                  </div>
+                  ` : ''}
+
+                  <div class="info-row">
+                    <span class="label">Centre :</span> ${options.centreName}
+                  </div>
+
+                  ${options.message ? `
+                  <div class="info-row">
+                    <span class="label">Message :</span><br>
+                    <div style="margin-top: 10px; padding: 10px; background-color: #f0f0f0; border-left: 3px solid #42a4ff;">
+                      ${options.message.replace(/\n/g, '<br>')}
+                    </div>
+                  </div>
+                  ` : ''}
+
+                  <p style="margin-top: 20px; padding: 15px; background-color: #d1ecf1; border-left: 4px solid #0c5460; border-radius: 3px;">
+                    💡 <strong>Action requise :</strong> Contactez ce patient pour confirmer et planifier son rendez-vous.
+                  </p>
+                </div>
+                <div class="footer">
+                  <p>Cet email a été envoyé automatiquement depuis le site Audire.</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `,
+      });
+
+      console.log('Appointment request email sent:', info.messageId);
+      return true;
+    } catch (error) {
+      console.error('Error sending appointment request email:', error);
       return false;
     }
   }

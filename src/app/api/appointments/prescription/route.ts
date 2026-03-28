@@ -40,6 +40,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!appointment.timeSlot) {
+      return NextResponse.json(
+        { error: 'Appointment time slot not found' },
+        { status: 400 }
+      );
+    }
+
     // Valider le type de fichier
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
     if (!allowedTypes.includes(file.type)) {
