@@ -172,10 +172,12 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Libérer le créneau
-    await prisma.timeSlot.update({
-      where: { id: appointment.timeSlotId },
-      data: { isBooked: false },
-    });
+    if (appointment.timeSlotId) {
+      await prisma.timeSlot.update({
+        where: { id: appointment.timeSlotId },
+        data: { isBooked: false },
+      });
+    }
 
     // Supprimer le rendez-vous
     await prisma.appointment.delete({
