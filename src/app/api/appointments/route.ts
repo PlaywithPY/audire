@@ -73,6 +73,7 @@ export async function POST(request: NextRequest) {
     const {
       centreId,
       timeSlotId,
+      civilite,
       firstName,
       lastName,
       address,
@@ -120,7 +121,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Créer l'événement dans Google Calendar
-    const patientName = `M/Mme ${lastName}`;
+    let title = '';
+    if (civilite === 'monsieur') {
+      title = 'Monsieur';
+    } else if (civilite === 'madame') {
+      title = 'Madame';
+    } else if (civilite === 'autre') {
+      title = '';
+    } else {
+      title = 'M/Mme';
+    }
+    const patientName = title ? `${title} ${lastName}` : lastName;
     const startDateTime = new Date(`${timeSlot.date.toISOString().split('T')[0]}T${timeSlot.startTime}:00`);
     const endDateTime = new Date(`${timeSlot.date.toISOString().split('T')[0]}T${timeSlot.endTime}:00`);
 
@@ -136,6 +147,7 @@ export async function POST(request: NextRequest) {
       data: {
         centreId,
         timeSlotId,
+        civilite: civilite || null,
         firstName,
         lastName,
         address,
