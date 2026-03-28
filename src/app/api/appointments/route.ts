@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { googleCalendar } from '@/lib/google-calendar';
+import { emailService } from '@/lib/email';
 
 const prisma = new PrismaClient();
 
@@ -168,6 +169,18 @@ export async function POST(request: NextRequest) {
     await prisma.timeSlot.update({
       where: { id: timeSlotId },
       data: { isBooked: true },
+    });
+
+    // Envoyer l'email de notification de demande de rendez-vous
+    await emailService.sendAppointmentRequestEmail({
+      civilite: civilite || null,
+      firstName,
+      lastName,
+      phone,
+      email: email || null,
+      message: message || null,
+      appointmentType,
+      centreName: appointment.centre.name,
     });
 
     return NextResponse.json(
