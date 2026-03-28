@@ -74,10 +74,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { centreId, date, startTime, endTime, multiple } = body;
 
-    // Validation
-    if (!centreId || !date || !startTime || !endTime) {
+    // Validation du centreId
+    if (!centreId) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Missing centreId' },
         { status: 400 }
       );
     }
@@ -96,6 +96,13 @@ export async function POST(request: NextRequest) {
 
     // Si c'est une création multiple, on crée plusieurs créneaux
     if (multiple && Array.isArray(body.slots)) {
+      if (body.slots.length === 0) {
+        return NextResponse.json(
+          { error: 'No slots provided' },
+          { status: 400 }
+        );
+      }
+
       const timeSlots = await prisma.timeSlot.createMany({
         data: body.slots.map((slot: any) => ({
           centreId,
@@ -107,6 +114,14 @@ export async function POST(request: NextRequest) {
       });
 
       return NextResponse.json(timeSlots, { status: 201 });
+    }
+
+    // Validation pour création d'un seul créneau
+    if (!date || !startTime || !endTime) {
+      return NextResponse.json(
+        { error: 'Missing required fields: date, startTime, endTime' },
+        { status: 400 }
+      );
     }
 
     // Création d'un seul créneau
