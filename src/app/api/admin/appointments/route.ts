@@ -131,8 +131,9 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    // Si le statut passe à "confirmed", envoyer l'email de notification
+    // Si le statut passe à "confirmed", envoyer les emails de notification
     if (status === 'confirmed' && currentAppointment.status !== 'confirmed') {
+      // Email de notification au centre
       await emailService.sendAppointmentRequestEmail({
         civilite: appointment.civilite,
         firstName: appointment.firstName,
@@ -143,6 +144,31 @@ export async function PATCH(request: NextRequest) {
         appointmentType: appointment.appointmentType,
         centreName: appointment.centre.name,
       });
+
+      // Email de confirmation finale au client (si email fourni)
+      if (appointment.email && appointment.timeSlot) {
+        const appointmentDate = new Date(appointment.timeSlot.date).toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+        const appointmentTime = `${appointment.timeSlot.startTime} - ${appointment.timeSlot.endTime}`;
+        const centreAddress = `${appointment.centre.address}, ${appointment.centre.postalCode} ${appointment.centre.city}`;
+
+        await emailService.sendClientFinalConfirmation({
+          email: appointment.email,
+          civilite: appointment.civilite,
+          firstName: appointment.firstName,
+          lastName: appointment.lastName,
+          appointmentDate,
+          appointmentTime,
+          centreName: appointment.centre.name,
+          centreAddress,
+          centrePhone: appointment.centre.phoneFixe,
+          appointmentType: appointment.appointmentType,
+        });
+      }
     }
 
     // Si annulé, libérer le créneau

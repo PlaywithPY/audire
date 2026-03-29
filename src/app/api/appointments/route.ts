@@ -171,7 +171,29 @@ export async function POST(request: NextRequest) {
       data: { isBooked: true },
     });
 
-    // L'email sera envoyé uniquement quand l'admin confirmera le rendez-vous
+    // Envoyer un email au client pour lui dire que son RDV est en attente de confirmation
+    if (email) {
+      const appointmentDate = new Date(timeSlot.date).toLocaleDateString('fr-FR', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+      const appointmentTime = `${timeSlot.startTime} - ${timeSlot.endTime}`;
+
+      await emailService.sendClientPendingConfirmation({
+        email,
+        civilite: civilite || null,
+        firstName,
+        lastName,
+        appointmentDate,
+        appointmentTime,
+        centreName: appointment.centre.name,
+        appointmentType,
+      });
+    }
+
+    // L'email au centre sera envoyé uniquement quand l'admin confirmera le rendez-vous
     // (passage du statut de "pending" à "confirmed")
 
     return NextResponse.json(
