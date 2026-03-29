@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { emailService } from '@/lib/email';
 
 const prisma = new PrismaClient();
 
@@ -95,11 +96,27 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const validStatuses = ['confirmed', 'cancelled', 'completed'];
+    const validStatuses = ['pending', 'confirmed', 'cancelled', 'completed'];
     if (status && !validStatuses.includes(status)) {
       return NextResponse.json(
         { error: 'Invalid status' },
         { status: 400 }
+      );
+    }
+
+    // Récupérer le rendez-vous avant la mise à jour pour comparer le statut
+    const currentAppointment = await prisma.appointment.findUnique({
+      where: { id },
+      include: {
+        centre: true,
+        timeSlot: true,
+      },
+    });
+
+    if (!currentAppointment) {
+      return NextResponse.json(
+        { error: 'Appointment not found' },
+        { status: 404 }
       );
     }
 
@@ -113,6 +130,20 @@ export async function PATCH(request: NextRequest) {
         timeSlot: true,
       },
     });
+
+    // Si le statut passe à "confirmed", envoyer l'email de notification
+    if (status === 'confirmed' && currentAppointment.status !== 'confirmed') {
+      await emailService.sendAppointmentRequestEmail({
+        civilite: appointment.civilite,
+        firstName: appointment.firstName,
+        lastName: appointment.lastName,
+        phone: appointment.phone,
+        email: appointment.email,
+        message: appointment.message,
+        appointmentType: appointment.appointmentType,
+        centreName: appointment.centre.name,
+      });
+    }
 
     // Si annulé, libérer le créneau
     if (status === 'cancelled' && appointment.timeSlotId) {

@@ -171,17 +171,8 @@ export async function POST(request: NextRequest) {
       data: { isBooked: true },
     });
 
-    // Envoyer l'email de notification de demande de rendez-vous
-    await emailService.sendAppointmentRequestEmail({
-      civilite: civilite || null,
-      firstName,
-      lastName,
-      phone,
-      email: email || null,
-      message: message || null,
-      appointmentType,
-      centreName: appointment.centre.name,
-    });
+    // L'email sera envoyé uniquement quand l'admin confirmera le rendez-vous
+    // (passage du statut de "pending" à "confirmed")
 
     return NextResponse.json(
       {

@@ -149,6 +149,8 @@ export default function AdminAppointments() {
 
   function getStatusBadge(status: string): string {
     switch (status) {
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
       case 'confirmed':
         return 'bg-green-100 text-green-800';
       case 'cancelled':
@@ -162,6 +164,8 @@ export default function AdminAppointments() {
 
   function getStatusDisplay(status: string): string {
     switch (status) {
+      case 'pending':
+        return 'En attente';
       case 'confirmed':
         return 'Confirmé';
       case 'cancelled':
@@ -198,6 +202,7 @@ export default function AdminAppointments() {
                 className="px-4 py-2 border rounded-lg"
               >
                 <option value="all">Tous</option>
+                <option value="pending">En attente</option>
                 <option value="confirmed">Confirmés</option>
                 <option value="cancelled">Annulés</option>
                 <option value="completed">Terminés</option>
@@ -271,7 +276,15 @@ export default function AdminAppointments() {
 
                   {/* Actions */}
                   <div className="flex gap-2 pt-4 border-t">
-                    {appointment.status !== 'completed' && (
+                    {appointment.status === 'pending' && (
+                      <button
+                        onClick={() => handleStatusChange(appointment.id, 'confirmed')}
+                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold"
+                      >
+                        ✓ Confirmer et envoyer l'email
+                      </button>
+                    )}
+                    {appointment.status !== 'completed' && appointment.status !== 'pending' && (
                       <button
                         onClick={() => handleStatusChange(appointment.id, 'completed')}
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
@@ -287,7 +300,7 @@ export default function AdminAppointments() {
                         Annuler
                       </button>
                     )}
-                    {appointment.status !== 'confirmed' && (
+                    {appointment.status === 'cancelled' && (
                       <button
                         onClick={() => handleStatusChange(appointment.id, 'confirmed')}
                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
