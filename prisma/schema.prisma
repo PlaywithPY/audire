@@ -334,6 +334,7 @@ model Appointment {
   address              String?  // Adresse complète (optionnelle pour les demandes de contact)
   phone                String   // N° de GSM (obligatoire pour les rappels SMS)
   email                String?  // Email (optionnel)
+  emailConsent         Boolean  @default(false) // Consentement pour recevoir des emails
 
   // Type de rendez-vous
   appointmentType      String   // "premier-contact", "premier-rdv", "reglage"

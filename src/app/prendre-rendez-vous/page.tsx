@@ -29,6 +29,7 @@ type FormData = {
   address: string;
   phone: string;
   email: string;
+  emailConsent: boolean;
   appointmentType: string;
   message: string;
   prescription: File | null;
@@ -71,6 +72,7 @@ export default function PrendreRendezVous() {
     address: '',
     phone: '',
     email: '',
+    emailConsent: false,
     appointmentType: '',
     message: '',
     prescription: null,
@@ -188,6 +190,7 @@ export default function PrendreRendezVous() {
           address: formData.address,
           phone: formData.phone,
           email: formData.email || null,
+          emailConsent: formData.emailConsent,
           appointmentType: formData.appointmentType,
           message: formData.message || null,
         }),
@@ -234,7 +237,12 @@ export default function PrendreRendezVous() {
               </div>
               <h1 className="text-3xl font-bold mb-4">Rendez-vous confirmé !</h1>
               <p className="text-xl text-gray-600 mb-8">
-                Votre rendez-vous a été enregistré avec succès. Vous recevrez un SMS de rappel avant votre rendez-vous.
+                Votre rendez-vous a été enregistré avec succès.
+                {formData.emailConsent && formData.email ? (
+                  <> Vous recevrez un email de confirmation et un SMS de rappel avant votre rendez-vous.</>
+                ) : (
+                  <> Vous recevrez un SMS de rappel avant votre rendez-vous.</>
+                )}
               </p>
               <div className="bg-blue-50 rounded-lg p-6 mb-8">
                 <h3 className="font-semibold mb-2">Détails de votre rendez-vous</h3>
@@ -497,6 +505,26 @@ export default function PrendreRendezVous() {
                       />
                     </div>
                   </div>
+
+                  {/* Consentement email */}
+                  {formData.email && (
+                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                      <label className="flex items-start cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.emailConsent}
+                          onChange={(e) => setFormData({ ...formData, emailConsent: e.target.checked })}
+                          className="mt-1 mr-3 w-5 h-5 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary/20"
+                        />
+                        <span className="text-sm text-gray-700">
+                          J'accepte de recevoir un email de confirmation pour ce rendez-vous.
+                          <span className="block mt-1 text-xs text-gray-600">
+                            En réservant ce rendez-vous, vous acceptez que nous utilisions votre numéro de téléphone pour vous envoyer des messages SMS concernant uniquement ce rendez-vous.
+                          </span>
+                        </span>
+                      </label>
+                    </div>
+                  )}
 
                   <div>
                     <label className="block text-sm font-semibold mb-2">Type de rendez-vous *</label>

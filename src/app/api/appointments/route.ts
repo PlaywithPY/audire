@@ -80,6 +80,7 @@ export async function POST(request: NextRequest) {
       address,
       phone,
       email,
+      emailConsent,
       appointmentType,
       message,
     } = body;
@@ -154,6 +155,7 @@ export async function POST(request: NextRequest) {
         address,
         phone,
         email: email || null,
+        emailConsent: emailConsent || false,
         appointmentType,
         message: message || null,
         hasPrescription: false,
@@ -172,7 +174,8 @@ export async function POST(request: NextRequest) {
     });
 
     // Envoyer un email au client pour lui dire que son RDV est en attente de confirmation
-    if (email) {
+    // uniquement si le consentement a été donné
+    if (email && emailConsent) {
       const appointmentDate = new Date(timeSlot.date).toLocaleDateString('fr-FR', {
         weekday: 'long',
         year: 'numeric',
