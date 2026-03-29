@@ -348,7 +348,7 @@ model Appointment {
   googleCalendarEventId String? // ID de l'événement dans Google Calendar
 
   // Statut
-  status               String   @default("confirmed") // "confirmed", "cancelled", "completed"
+  status               String   @default("pending") // "pending", "confirmed", "cancelled", "completed"
 
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt

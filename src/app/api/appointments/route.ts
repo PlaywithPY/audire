@@ -171,17 +171,30 @@ export async function POST(request: NextRequest) {
       data: { isBooked: true },
     });
 
-    // Envoyer l'email de notification de demande de rendez-vous
-    await emailService.sendAppointmentRequestEmail({
-      civilite: civilite || null,
-      firstName,
-      lastName,
-      phone,
-      email: email || null,
-      message: message || null,
-      appointmentType,
-      centreName: appointment.centre.name,
-    });
+    // Envoyer un email au client pour lui dire que son RDV est en attente de confirmation
+    if (email) {
+      const appointmentDate = new Date(timeSlot.date).toLocaleDateString('fr-FR', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+      const appointmentTime = `${timeSlot.startTime} - ${timeSlot.endTime}`;
+
+      await emailService.sendClientPendingConfirmation({
+        email,
+        civilite: civilite || null,
+        firstName,
+        lastName,
+        appointmentDate,
+        appointmentTime,
+        centreName: appointment.centre.name,
+        appointmentType,
+      });
+    }
+
+    // L'email au centre sera envoyé uniquement quand l'admin confirmera le rendez-vous
+    // (passage du statut de "pending" à "confirmed")
 
     return NextResponse.json(
       {

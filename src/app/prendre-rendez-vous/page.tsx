@@ -23,6 +23,7 @@ type TimeSlot = {
 type FormData = {
   centreId: number | null;
   timeSlotId: number | null;
+  civilite: string;
   firstName: string;
   lastName: string;
   address: string;
@@ -64,6 +65,7 @@ export default function PrendreRendezVous() {
   const [formData, setFormData] = useState<FormData>({
     centreId: null,
     timeSlotId: null,
+    civilite: '',
     firstName: '',
     lastName: '',
     address: '',
@@ -140,7 +142,7 @@ export default function PrendreRendezVous() {
     }
 
     if (step === 2) {
-      if (!formData.firstName || !formData.lastName || !formData.address || !formData.phone || !formData.appointmentType) {
+      if (!formData.civilite || !formData.firstName || !formData.lastName || !formData.address || !formData.phone || !formData.appointmentType) {
         alert('Veuillez remplir tous les champs obligatoires');
         return;
       }
@@ -180,6 +182,7 @@ export default function PrendreRendezVous() {
         body: JSON.stringify({
           centreId: formData.centreId,
           timeSlotId: formData.timeSlotId,
+          civilite: formData.civilite,
           firstName: formData.firstName,
           lastName: formData.lastName,
           address: formData.address,
@@ -396,6 +399,45 @@ export default function PrendreRendezVous() {
               {step === 2 && (
                 <div className="space-y-6">
                   <h2 className="text-2xl font-bold mb-6">Vos informations</h2>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Civilité *</label>
+                    <div className="flex gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, civilite: 'monsieur' })}
+                        className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all ${
+                          formData.civilite === 'monsieur'
+                            ? 'border-primary bg-primary text-white'
+                            : 'border-gray-300 hover:border-primary/50'
+                        }`}
+                      >
+                        Monsieur
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, civilite: 'madame' })}
+                        className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all ${
+                          formData.civilite === 'madame'
+                            ? 'border-primary bg-primary text-white'
+                            : 'border-gray-300 hover:border-primary/50'
+                        }`}
+                      >
+                        Madame
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, civilite: 'autre' })}
+                        className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all ${
+                          formData.civilite === 'autre'
+                            ? 'border-primary bg-primary text-white'
+                            : 'border-gray-300 hover:border-primary/50'
+                        }`}
+                      >
+                        Autre
+                      </button>
+                    </div>
+                  </div>
 
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
