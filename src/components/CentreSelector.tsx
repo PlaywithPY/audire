@@ -2,12 +2,77 @@
 
 import { useState } from 'react';
 import { useCentre } from '@/contexts/CentreContext';
+import { getUserLocation } from '@/lib/geolocation';
 
 export default function CentreSelector() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFindingNearest, setIsFindingNearest] = useState(false);
+  const [showPostalCodeInput, setShowPostalCodeInput] = useState(false);
+  const [postalCode, setPostalCode] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const { currentCentre, allCentres, setCentre } = useCentre();
 
   if (!currentCentre) return null;
+
+  const handleFindNearest = async () => {
+    setIsFindingNearest(true);
+    setError(null);
+
+    try {
+      // Essayer d'obtenir la géolocalisation
+      const location = await getUserLocation();
+
+      // Rechercher le centre le plus proche
+      const response = await fetch(
+        `/api/centres/nearest?lat=${location.latitude}&lon=${location.longitude}`
+      );
+
+      if (!response.ok) {
+        throw new Error('Impossible de trouver le centre le plus proche');
+      }
+
+      const nearestCentre = await response.json();
+      setCentre(nearestCentre.slug);
+      setIsOpen(false);
+    } catch (err) {
+      // Si la géolocalisation échoue, afficher le champ code postal
+      console.error('Erreur géolocalisation:', err);
+      setShowPostalCodeInput(true);
+      setError('Géolocalisation refusée. Veuillez entrer votre code postal.');
+    } finally {
+      setIsFindingNearest(false);
+    }
+  };
+
+  const handleFindByPostalCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!postalCode || postalCode.length < 4) {
+      setError('Veuillez entrer un code postal valide');
+      return;
+    }
+
+    setIsFindingNearest(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/centres/nearest?postalCode=${postalCode}`);
+
+      if (!response.ok) {
+        throw new Error('Impossible de trouver le centre le plus proche');
+      }
+
+      const nearestCentre = await response.json();
+      setCentre(nearestCentre.slug);
+      setIsOpen(false);
+      setShowPostalCodeInput(false);
+      setPostalCode('');
+    } catch (err) {
+      setError('Erreur lors de la recherche du centre le plus proche');
+    } finally {
+      setIsFindingNearest(false);
+    }
+  };
 
   return (
     <>
@@ -24,11 +89,11 @@ export default function CentreSelector() {
       {/* Modal de sélection */}
       {isOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setIsOpen(false)}>
-          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h2 className="text-2xl font-bold mb-2">Choisir un centre Audire</h2>
-                <p className="text-gray-600">Sélectionnez le centre le plus proche de chez vous</p>
+                <p className="text-gray-600">Trouvez le centre le plus proche de chez vous</p>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
@@ -38,6 +103,69 @@ export default function CentreSelector() {
               </button>
             </div>
 
+            {/* Bouton trouver le centre le plus proche */}
+            <div className="mb-6">
+              <button
+                onClick={handleFindNearest}
+                disabled={isFindingNearest}
+                className="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isFindingNearest ? (
+                  <>
+                    <span className="animate-spin">⏳</span>
+                    <span>Recherche en cours...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>📍</span>
+                    <span>Trouver le centre le plus proche</span>
+                  </>
+                )}
+              </button>
+
+              {/* Afficher le message d'erreur et le champ code postal si nécessaire */}
+              {showPostalCodeInput && (
+                <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-gray-700 mb-3">
+                    Pour trouver le centre le plus proche, veuillez entrer votre code postal :
+                  </p>
+                  <form onSubmit={handleFindByPostalCode} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={postalCode}
+                      onChange={(e) => setPostalCode(e.target.value)}
+                      placeholder="Ex: 4101"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      maxLength={4}
+                      pattern="[0-9]{4}"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isFindingNearest}
+                      className="bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-6 rounded-lg transition disabled:opacity-50"
+                    >
+                      Rechercher
+                    </button>
+                  </form>
+                </div>
+              )}
+
+              {error && !showPostalCodeInput && (
+                <p className="mt-2 text-sm text-red-600">{error}</p>
+              )}
+            </div>
+
+            {/* Séparateur */}
+            <div className="relative mb-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-white text-gray-500">ou choisissez manuellement</span>
+              </div>
+            </div>
+
+            {/* Liste des centres */}
             <div className="space-y-4">
               {allCentres.map((centre) => (
                 <button
