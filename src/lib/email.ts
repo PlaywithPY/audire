@@ -427,6 +427,10 @@ class EmailService {
                     ℹ️ <strong>Prochaines étapes :</strong> Notre équipe va examiner votre demande et vous enverra un email de confirmation dès que votre rendez-vous sera validé. Vous pouvez nous contacter si vous avez des questions.
                   </p>
 
+                  <p style="margin-top: 20px; padding: 15px; background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 3px;">
+                    ⚠️ <strong>Annulation :</strong> En cas d'empêchement, merci de nous prévenir au minimum 24 heures avant votre rendez-vous.
+                  </p>
+
                   <p style="margin-top: 20px;">
                     Merci de votre confiance,<br>
                     <strong>L'équipe Audire</strong>
