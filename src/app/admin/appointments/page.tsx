@@ -105,6 +105,42 @@ export default function AdminAppointments() {
     }
   }
 
+  async function handleCancelAndDelete(appointmentId: number) {
+    if (!confirm('Êtes-vous sûr de vouloir annuler et supprimer ce rendez-vous ? Le créneau sera libéré et l\'événement sera retiré du calendrier Google.')) {
+      return;
+    }
+
+    try {
+      // D'abord annuler pour libérer le créneau et supprimer du calendrier Google
+      const cancelRes = await fetch('/api/admin/appointments', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: appointmentId, status: 'cancelled' }),
+      });
+
+      if (!cancelRes.ok) {
+        alert('Erreur lors de l\'annulation du rendez-vous');
+        return;
+      }
+
+      // Ensuite supprimer de la base de données
+      const deleteRes = await fetch(`/api/admin/appointments?id=${appointmentId}`, {
+        method: 'DELETE',
+      });
+
+      if (deleteRes.ok) {
+        alert('Rendez-vous annulé et supprimé avec succès');
+        loadAppointments();
+      } else {
+        alert('Le rendez-vous a été annulé mais n\'a pas pu être supprimé');
+        loadAppointments();
+      }
+    } catch (error) {
+      console.error('Error cancelling and deleting appointment:', error);
+      alert('Erreur lors de l\'annulation et suppression du rendez-vous');
+    }
+  }
+
   function formatDate(dateString: string): string {
     const date = new Date(dateString);
     return date.toLocaleDateString('fr-BE', {
@@ -275,7 +311,7 @@ export default function AdminAppointments() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex gap-2 pt-4 border-t">
+                  <div className="flex gap-2 pt-4 border-t flex-wrap">
                     {appointment.status === 'pending' && (
                       <button
                         onClick={() => handleStatusChange(appointment.id, 'confirmed')}
@@ -293,12 +329,20 @@ export default function AdminAppointments() {
                       </button>
                     )}
                     {appointment.status !== 'cancelled' && (
-                      <button
-                        onClick={() => handleStatusChange(appointment.id, 'cancelled')}
-                        className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
-                      >
-                        Annuler
-                      </button>
+                      <>
+                        <button
+                          onClick={() => handleStatusChange(appointment.id, 'cancelled')}
+                          className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
+                        >
+                          Annuler
+                        </button>
+                        <button
+                          onClick={() => handleCancelAndDelete(appointment.id)}
+                          className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm"
+                        >
+                          🗑️ Annuler et supprimer
+                        </button>
+                      </>
                     )}
                     {appointment.status === 'cancelled' && (
                       <button
