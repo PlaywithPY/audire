@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
       where.date.lte = new Date(endDate);
     }
 
-    const availableSlots = await prisma.timeSlot.findMany({
+    const allSlots = await prisma.timeSlot.findMany({
       where,
       orderBy: [
         { date: 'asc' },
@@ -52,6 +52,20 @@ export async function GET(request: NextRequest) {
           },
         },
       },
+    });
+
+    // Filtrer les créneaux à moins de 24h
+    const now = new Date();
+    const in24Hours = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+    const availableSlots = allSlots.filter((slot) => {
+      // Créer un datetime complet en combinant date et heure de début
+      const slotDate = new Date(slot.date);
+      const [hours, minutes] = slot.startTime.split(':').map(Number);
+      slotDate.setHours(hours, minutes, 0, 0);
+
+      // Le créneau doit être à plus de 24h dans le futur
+      return slotDate >= in24Hours;
     });
 
     return NextResponse.json(availableSlots);

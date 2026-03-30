@@ -133,7 +133,7 @@ export async function PATCH(request: NextRequest) {
     });
 
     // Si le statut passe à "confirmed", créer l'événement Google Calendar et envoyer l'email de confirmation
-    if (status === 'confirmed' && currentAppointment.status !== 'confirmed') {
+    if (status === 'confirmed' && currentAppointment.status !== 'confirmed' && appointment.timeSlot) {
       // Créer l'événement dans Google Calendar
       let title = '';
       if (appointment.civilite === 'monsieur') {
@@ -165,7 +165,7 @@ export async function PATCH(request: NextRequest) {
       }
 
       // Email de confirmation finale au client (si email fourni ET consentement donné)
-      if (appointment.email && appointment.emailConsent && appointment.timeSlot) {
+      if (appointment.email && appointment.emailConsent) {
         const appointmentDate = new Date(appointment.timeSlot.date).toLocaleDateString('fr-FR', {
           weekday: 'long',
           year: 'numeric',
