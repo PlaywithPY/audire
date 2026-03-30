@@ -616,6 +616,123 @@ class EmailService {
   }
 
   /**
+   * Envoie un email de rappel à l'admin pour les RDV non confirmés
+   * @param pendingCount - Nombre de RDV en attente
+   * @returns true si l'email a été envoyé avec succès, false sinon
+   */
+  async sendPendingAppointmentsReminder(pendingCount: number): Promise<boolean> {
+    if (!this.transporter) {
+      console.error('Email service not configured');
+      return false;
+    }
+
+    try {
+      const info = await this.transporter.sendMail({
+        from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+        to: process.env.EMAIL_TO || 'centre.audire@gmail.com',
+        subject: `⚠️ Rappel : ${pendingCount} rendez-vous en attente de confirmation`,
+        html: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  line-height: 1.6;
+                  color: #333;
+                }
+                .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+                }
+                .header {
+                  background-color: #ff9800;
+                  color: white;
+                  padding: 20px;
+                  text-align: center;
+                  border-radius: 5px 5px 0 0;
+                }
+                .content {
+                  background-color: #f9f9f9;
+                  padding: 20px;
+                  border-radius: 0 0 5px 5px;
+                }
+                .alert-box {
+                  margin: 20px 0;
+                  padding: 20px;
+                  background-color: #fff3cd;
+                  border-left: 4px solid #ffc107;
+                  border-radius: 3px;
+                }
+                .button {
+                  display: inline-block;
+                  padding: 12px 24px;
+                  background-color: #42a4ff;
+                  color: white;
+                  text-decoration: none;
+                  border-radius: 5px;
+                  margin: 20px 0;
+                }
+                .footer {
+                  text-align: center;
+                  margin-top: 20px;
+                  color: #666;
+                  font-size: 12px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h2>⏰ Rappel de Rendez-vous en Attente</h2>
+                </div>
+                <div class="content">
+                  <p>Bonjour,</p>
+
+                  <div class="alert-box">
+                    <h3 style="margin-top: 0; color: #856404;">⚠️ Action requise</h3>
+                    <p style="margin-bottom: 0;">
+                      Vous avez actuellement <strong>${pendingCount} rendez-vous en attente de confirmation</strong>
+                      qui nécessitent votre attention.
+                    </p>
+                  </div>
+
+                  <p>
+                    Ces rendez-vous ont été demandés par des patients mais n'ont pas encore été confirmés.
+                    Merci de vous connecter à l'interface d'administration pour les traiter.
+                  </p>
+
+                  <div style="text-align: center;">
+                    <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://audire.be'}/admin/appointments" class="button">
+                      📋 Voir les rendez-vous en attente
+                    </a>
+                  </div>
+
+                  <p style="margin-top: 20px; padding: 15px; background-color: #d1ecf1; border-left: 4px solid #0c5460; border-radius: 3px;">
+                    💡 <strong>Conseil :</strong> Il est recommandé de traiter les demandes de rendez-vous dans les 24 heures pour offrir la meilleure expérience patient.
+                  </p>
+                </div>
+                <div class="footer">
+                  <p>Cet email a été envoyé automatiquement depuis le système de gestion Audire.</p>
+                  <p>Email envoyé le ${new Date().toLocaleDateString('fr-FR')} à ${new Date().toLocaleTimeString('fr-FR')}</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `,
+      });
+
+      console.log('Pending appointments reminder email sent:', info.messageId);
+      return true;
+    } catch (error) {
+      console.error('Error sending pending appointments reminder:', error);
+      return false;
+    }
+  }
+
+  /**
    * Teste la connexion au serveur email
    * @returns true si la connexion est réussie, false sinon
    */

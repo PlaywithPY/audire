@@ -132,8 +132,38 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    // Si le statut passe à "confirmed", envoyer l'email de confirmation finale au client
+    // Si le statut passe à "confirmed", créer l'événement Google Calendar et envoyer l'email de confirmation
     if (status === 'confirmed' && currentAppointment.status !== 'confirmed') {
+      // Créer l'événement dans Google Calendar
+      let title = '';
+      if (appointment.civilite === 'monsieur') {
+        title = 'Monsieur';
+      } else if (appointment.civilite === 'madame') {
+        title = 'Madame';
+      } else if (appointment.civilite === 'autre') {
+        title = '';
+      } else {
+        title = 'M/Mme';
+      }
+      const patientName = title ? `${title} ${appointment.lastName}` : appointment.lastName;
+      const startDateTime = new Date(`${appointment.timeSlot.date.toISOString().split('T')[0]}T${appointment.timeSlot.startTime}:00`);
+      const endDateTime = new Date(`${appointment.timeSlot.date.toISOString().split('T')[0]}T${appointment.timeSlot.endTime}:00`);
+
+      const googleCalendarEventId = await googleCalendar.createAppointmentEvent(
+        patientName,
+        appointment.appointmentType,
+        startDateTime.toISOString(),
+        endDateTime.toISOString()
+      );
+
+      // Mettre à jour le RDV avec l'ID de l'événement Google Calendar
+      if (googleCalendarEventId) {
+        await prisma.appointment.update({
+          where: { id: appointment.id },
+          data: { googleCalendarEventId },
+        });
+      }
+
       // Email de confirmation finale au client (si email fourni ET consentement donné)
       if (appointment.email && appointment.emailConsent && appointment.timeSlot) {
         const appointmentDate = new Date(appointment.timeSlot.date).toLocaleDateString('fr-FR', {

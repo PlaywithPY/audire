@@ -94,6 +94,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Vérifier qu'au moins un consentement est donné (email ou SMS)
+    if (!emailConsent && !smsConsent) {
+      return NextResponse.json(
+        { error: 'At least one consent (email or SMS) is required' },
+        { status: 400 }
+      );
+    }
+
+    // Si consentement email donné, l'email doit être renseigné
+    if (emailConsent && !email) {
+      return NextResponse.json(
+        { error: 'Email is required when email consent is given' },
+        { status: 400 }
+      );
+    }
+
     // Vérifier que le type de RDV est valide
     const validTypes = ['premier-contact', 'premier-rdv', 'reglage'];
     if (!validTypes.includes(appointmentType)) {
@@ -123,29 +139,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Créer l'événement dans Google Calendar
-    let title = '';
-    if (civilite === 'monsieur') {
-      title = 'Monsieur';
-    } else if (civilite === 'madame') {
-      title = 'Madame';
-    } else if (civilite === 'autre') {
-      title = '';
-    } else {
-      title = 'M/Mme';
-    }
-    const patientName = title ? `${title} ${lastName}` : lastName;
-    const startDateTime = new Date(`${timeSlot.date.toISOString().split('T')[0]}T${timeSlot.startTime}:00`);
-    const endDateTime = new Date(`${timeSlot.date.toISOString().split('T')[0]}T${timeSlot.endTime}:00`);
-
-    const googleCalendarEventId = await googleCalendar.createAppointmentEvent(
-      patientName,
-      appointmentType,
-      startDateTime.toISOString(),
-      endDateTime.toISOString()
-    );
-
-    // Créer le rendez-vous dans la base de données
+    // Créer le rendez-vous dans la base de données (sans ajouter au calendrier Google pour l'instant)
+    // L'événement Google Calendar sera créé uniquement lors de la confirmation par l'admin
     const appointment = await prisma.appointment.create({
       data: {
         centreId,
@@ -161,7 +156,7 @@ export async function POST(request: NextRequest) {
         appointmentType,
         message: message || null,
         hasPrescription: false,
-        googleCalendarEventId: googleCalendarEventId || null,
+        googleCalendarEventId: null, // Sera ajouté lors de la confirmation
       },
       include: {
         centre: true,

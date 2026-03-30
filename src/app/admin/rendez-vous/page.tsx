@@ -57,6 +57,7 @@ export default function RendezVousPage() {
 
   // Gestion des créneaux
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
+  const [selectedSlotIds, setSelectedSlotIds] = useState<number[]>([]);
   const [showAddSlotForm, setShowAddSlotForm] = useState(false);
   const [newSlot, setNewSlot] = useState({
     date: '',
@@ -120,7 +121,18 @@ export default function RendezVousPage() {
       setLoading(true);
       const res = await fetch(`/api/admin/time-slots?centreId=${selectedCentreId}`);
       const data = await res.json();
-      setTimeSlots(data);
+
+      // Filtrer les créneaux passés (ne garder que les créneaux futurs ou d'aujourd'hui)
+      const now = new Date();
+      now.setHours(0, 0, 0, 0); // Début de la journée
+      const filteredSlots = data.filter((slot: TimeSlot) => {
+        const slotDate = new Date(slot.date);
+        slotDate.setHours(0, 0, 0, 0);
+        return slotDate >= now;
+      });
+
+      setTimeSlots(filteredSlots);
+      setSelectedSlotIds([]); // Réinitialiser la sélection
     } catch (error) {
       console.error('Error fetching time slots:', error);
     } finally {
@@ -318,6 +330,69 @@ export default function RendezVousPage() {
     } catch (error: any) {
       console.error('Error deleting time slot:', error);
       alert(error.message || 'Erreur lors de la suppression du créneau');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function toggleSlotSelection(slotId: number) {
+    setSelectedSlotIds((prev) =>
+      prev.includes(slotId)
+        ? prev.filter((id) => id !== slotId)
+        : [...prev, slotId]
+    );
+  }
+
+  function toggleAllSlots() {
+    const availableSlots = timeSlots.filter((slot) => !slot.isBooked);
+    if (selectedSlotIds.length === availableSlots.length) {
+      setSelectedSlotIds([]);
+    } else {
+      setSelectedSlotIds(availableSlots.map((slot) => slot.id));
+    }
+  }
+
+  async function handleDeleteSelectedSlots() {
+    if (selectedSlotIds.length === 0) {
+      alert('Veuillez sélectionner au moins un créneau');
+      return;
+    }
+
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer ${selectedSlotIds.length} créneau(x) ?`)) {
+      return;
+    }
+
+    try {
+      setSaving(true);
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (const id of selectedSlotIds) {
+        try {
+          const res = await fetch(`/api/admin/time-slots?id=${id}`, {
+            method: 'DELETE',
+          });
+
+          if (res.ok) {
+            successCount++;
+          } else {
+            errorCount++;
+          }
+        } catch (error) {
+          errorCount++;
+        }
+      }
+
+      if (successCount > 0) {
+        alert(`${successCount} créneau(x) supprimé(s) avec succès${errorCount > 0 ? `, ${errorCount} échec(s)` : ''}`);
+      } else {
+        alert('Erreur lors de la suppression des créneaux');
+      }
+
+      fetchTimeSlots();
+    } catch (error) {
+      console.error('Error deleting slots:', error);
+      alert('Erreur lors de la suppression des créneaux');
     } finally {
       setSaving(false);
     }
@@ -696,11 +771,45 @@ export default function RendezVousPage() {
               </div>
             )}
 
+            {/* Bouton de suppression multiple */}
+            {timeSlots.filter((slot) => !slot.isBooked).length > 0 && (
+              <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-gray-600">
+                    {selectedSlotIds.length > 0
+                      ? `${selectedSlotIds.length} créneau(x) sélectionné(s)`
+                      : 'Aucun créneau sélectionné'}
+                  </span>
+                </div>
+                {selectedSlotIds.length > 0 && (
+                  <button
+                    onClick={handleDeleteSelectedSlots}
+                    disabled={saving}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 transition-colors"
+                  >
+                    🗑️ Supprimer la sélection
+                  </button>
+                )}
+              </div>
+            )}
+
             {/* Liste des créneaux */}
             <div className="bg-white rounded-lg shadow overflow-hidden">
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <input
+                        type="checkbox"
+                        checked={
+                          timeSlots.filter((slot) => !slot.isBooked).length > 0 &&
+                          selectedSlotIds.length === timeSlots.filter((slot) => !slot.isBooked).length
+                        }
+                        onChange={toggleAllSlots}
+                        className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                        disabled={timeSlots.filter((slot) => !slot.isBooked).length === 0}
+                      />
+                    </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Heure</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
@@ -710,13 +819,25 @@ export default function RendezVousPage() {
                 <tbody className="divide-y divide-gray-200">
                   {timeSlots.length === 0 ? (
                     <tr>
-                      <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
+                      <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
                         Aucun créneau disponible
                       </td>
                     </tr>
                   ) : (
                     timeSlots.map((slot) => (
                       <tr key={slot.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {!slot.isBooked ? (
+                            <input
+                              type="checkbox"
+                              checked={selectedSlotIds.includes(slot.id)}
+                              onChange={() => toggleSlotSelection(slot.id)}
+                              className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                            />
+                          ) : (
+                            <span className="inline-block w-4"></span>
+                          )}
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {new Date(slot.date).toLocaleDateString('fr-FR', {
                             weekday: 'short',

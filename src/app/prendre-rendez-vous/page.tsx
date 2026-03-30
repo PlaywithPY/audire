@@ -166,6 +166,18 @@ export default function PrendreRendezVous() {
           return;
         }
       }
+
+      // Vérifier qu'au moins un consentement est coché (email ou SMS)
+      if (!formData.emailConsent && !formData.smsConsent) {
+        alert('Veuillez accepter de recevoir au moins une confirmation (email ou SMS) pour pouvoir être contacté concernant votre rendez-vous.');
+        return;
+      }
+
+      // Si email consent est coché, l'email doit être renseigné
+      if (formData.emailConsent && !formData.email) {
+        alert('Veuillez renseigner votre adresse email pour recevoir la confirmation par email.');
+        return;
+      }
     }
 
     setStep(step + 1);
@@ -238,13 +250,17 @@ export default function PrendreRendezVous() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h1 className="text-3xl font-bold mb-4">Rendez-vous confirmé !</h1>
+              <h1 className="text-3xl font-bold mb-4">Demande de rendez-vous enregistrée !</h1>
               <p className="text-xl text-gray-600 mb-8">
-                Votre rendez-vous a été enregistré avec succès.
-                {formData.emailConsent && formData.email ? (
-                  <> Vous recevrez un email de confirmation et un SMS de rappel avant votre rendez-vous.</>
+                Votre demande de rendez-vous a été enregistrée avec succès et est en attente de confirmation par notre équipe.
+                {formData.emailConsent && formData.email && formData.smsConsent ? (
+                  <> Vous recevrez un email et un SMS de confirmation dès que votre rendez-vous sera validé.</>
+                ) : formData.emailConsent && formData.email ? (
+                  <> Vous recevrez un email de confirmation dès que votre rendez-vous sera validé.</>
+                ) : formData.smsConsent ? (
+                  <> Vous recevrez un SMS de confirmation dès que votre rendez-vous sera validé.</>
                 ) : (
-                  <> Vous recevrez un SMS de rappel avant votre rendez-vous.</>
+                  <> Notre équipe vous contactera prochainement pour confirmer votre rendez-vous.</>
                 )}
               </p>
               <div className="bg-blue-50 rounded-lg p-6 mb-8">
