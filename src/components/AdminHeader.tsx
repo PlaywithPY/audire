@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import AutoSendReminders from './AutoSendReminders';
 
 interface AdminHeaderProps {
   currentPage?: 'dashboard' | 'centres' | 'appareils' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'settings' | 'testimonials' | 'rendez-vous' | 'mediatheque' | 'sms' | 'sms-templates';
@@ -26,7 +27,9 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
   ];
 
   return (
-    <header className="bg-white border-b border-gray-200 py-4 px-6 sticky top-0 z-50 shadow-sm">
+    <>
+      <AutoSendReminders />
+      <header className="bg-white border-b border-gray-200 py-4 px-6 sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-primary">
@@ -56,5 +59,6 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
         </Link>
       </div>
     </header>
+    </>
   );
 }
