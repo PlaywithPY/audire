@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
       headers['Authorization'] = `Basic ${authString}`;
     }
 
-    const response = await fetch(`${gatewayUrl}/message`, {
+    const response = await fetch(gatewayUrl, {
       method: 'POST',
       headers: headers,
       body: JSON.stringify(smsPayload),
