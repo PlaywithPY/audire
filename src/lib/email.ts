@@ -1,5 +1,47 @@
 import nodemailer from 'nodemailer';
 
+/**
+ * Génère un fichier ICS (iCalendar) pour ajouter l'événement au calendrier
+ */
+function generateICS(options: {
+  summary: string;
+  description: string;
+  location: string;
+  startDate: Date;
+  endDate: Date;
+}): string {
+  const formatDate = (date: Date): string => {
+    return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  };
+
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Audire//Appointment//FR',
+    'CALSCALE:GREGORIAN',
+    'METHOD:REQUEST',
+    'BEGIN:VEVENT',
+    `UID:${Date.now()}@audire.be`,
+    `DTSTAMP:${formatDate(new Date())}`,
+    `DTSTART:${formatDate(options.startDate)}`,
+    `DTEND:${formatDate(options.endDate)}`,
+    `SUMMARY:${options.summary}`,
+    `DESCRIPTION:${options.description}`,
+    `LOCATION:${options.location}`,
+    'STATUS:CONFIRMED',
+    'SEQUENCE:0',
+    'BEGIN:VALARM',
+    'TRIGGER:-PT24H',
+    'ACTION:DISPLAY',
+    'DESCRIPTION:Rappel: Rendez-vous Audire demain',
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n');
+
+  return ics;
+}
+
 export interface PrescriptionEmailOptions {
   patientName: string;
   appointmentDate: string;
@@ -469,6 +511,8 @@ class EmailService {
     centreAddress: string;
     centrePhone: string;
     appointmentType: string;
+    startDateTime?: Date;
+    endDateTime?: Date;
   }): Promise<boolean> {
     if (!this.transporter) {
       console.error('Email service not configured');
@@ -491,9 +535,28 @@ class EmailService {
 
     const civiliteDisplay = options.civilite ? civiliteLabels[options.civilite] || '' : '';
     const greeting = civiliteDisplay ? `${civiliteDisplay} ${options.lastName}` : `${options.firstName} ${options.lastName}`;
+    const patientName = civiliteDisplay ? `${civiliteDisplay} ${options.lastName} ${options.firstName}` : `${options.firstName} ${options.lastName}`;
+
+    // Générer le fichier ICS si les dates sont fournies
+    let icsAttachment = null;
+    if (options.startDateTime && options.endDateTime) {
+      const icsContent = generateICS({
+        summary: `Rendez-vous Audire - ${appointmentTypeLabel}`,
+        description: `Rendez-vous chez Audire\nType: ${appointmentTypeLabel}\nPatient: ${patientName}\nCentre: ${options.centreName}\nAdresse: ${options.centreAddress}\nTéléphone: ${options.centrePhone}`,
+        location: `${options.centreName}, ${options.centreAddress}`,
+        startDate: options.startDateTime,
+        endDate: options.endDateTime,
+      });
+
+      icsAttachment = {
+        filename: 'rendez-vous-audire.ics',
+        content: icsContent,
+        contentType: 'text/calendar',
+      };
+    }
 
     try {
-      const info = await this.transporter.sendMail({
+      const mailOptions: any = {
         from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
         to: options.email,
         subject: `✅ Votre rendez-vous chez Audire est confirmé`,
@@ -592,6 +655,12 @@ class EmailService {
                     ⏰ <strong>Rappel important :</strong> Merci de vous présenter 5 minutes avant l'heure de votre rendez-vous. En cas d'empêchement, veuillez nous contacter au plus vite.
                   </p>
 
+                  ${icsAttachment ? `
+                  <p style="margin-top: 20px; padding: 15px; background-color: #e7f3ff; border-left: 4px solid #42a4ff; border-radius: 3px;">
+                    📅 <strong>Ajoutez à votre agenda :</strong> Un fichier d'invitation calendrier est joint à cet email. Ouvrez-le pour ajouter automatiquement ce rendez-vous à votre agenda (Google Calendar, Outlook, Apple Calendar, etc.).
+                  </p>
+                  ` : ''}
+
                   <p style="margin-top: 20px;">
                     Nous avons hâte de vous accueillir,<br>
                     <strong>L'équipe Audire</strong>
@@ -605,12 +674,162 @@ class EmailService {
             </body>
           </html>
         `,
-      });
+      };
+
+      // Ajouter la pièce jointe ICS si disponible
+      if (icsAttachment) {
+        mailOptions.attachments = [icsAttachment];
+      }
+
+      const info = await this.transporter.sendMail(mailOptions);
 
       console.log('Client final confirmation email sent:', info.messageId);
       return true;
     } catch (error) {
       console.error('Error sending client final confirmation email:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Envoie un email d'annulation au client quand un RDV est annulé
+   * @param options - Options de l'email
+   * @returns true si l'email a été envoyé avec succès, false sinon
+   */
+  async sendClientCancellationEmail(options: {
+    email: string;
+    civilite: string | null;
+    firstName: string;
+    lastName: string;
+    appointmentDate: string;
+    appointmentTime: string;
+    centreName: string;
+    centrePhone: string;
+    appointmentType: string;
+  }): Promise<boolean> {
+    if (!this.transporter) {
+      console.error('Email service not configured');
+      return false;
+    }
+
+    const typeLabels: Record<string, string> = {
+      'premier-contact': 'Premier contact / Prise d\'informations générales',
+      'premier-rdv': 'Premier RDV (avec prescription ORL)',
+      'reglage': 'Réglage',
+    };
+
+    const appointmentTypeLabel = typeLabels[options.appointmentType] || options.appointmentType;
+
+    const civiliteLabels: Record<string, string> = {
+      'monsieur': 'Monsieur',
+      'madame': 'Madame',
+      'autre': '',
+    };
+
+    const civiliteDisplay = options.civilite ? civiliteLabels[options.civilite] || '' : '';
+    const greeting = civiliteDisplay ? `${civiliteDisplay} ${options.lastName}` : `${options.firstName} ${options.lastName}`;
+
+    try {
+      const info = await this.transporter.sendMail({
+        from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+        to: options.email,
+        subject: `❌ Annulation de votre rendez-vous chez Audire`,
+        html: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  line-height: 1.6;
+                  color: #333;
+                }
+                .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+                }
+                .header {
+                  background-color: #dc3545;
+                  color: white;
+                  padding: 20px;
+                  text-align: center;
+                  border-radius: 5px 5px 0 0;
+                }
+                .content {
+                  background-color: #f9f9f9;
+                  padding: 20px;
+                  border-radius: 0 0 5px 5px;
+                }
+                .info-row {
+                  margin: 10px 0;
+                  padding: 10px;
+                  background-color: white;
+                  border-radius: 3px;
+                }
+                .label {
+                  font-weight: bold;
+                  color: #dc3545;
+                }
+                .footer {
+                  text-align: center;
+                  margin-top: 20px;
+                  color: #666;
+                  font-size: 12px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h2>❌ Rendez-vous Annulé</h2>
+                </div>
+                <div class="content">
+                  <p>Bonjour ${greeting},</p>
+
+                  <p>Nous vous informons que votre rendez-vous chez Audire a été <strong>annulé</strong>.</p>
+
+                  <div class="info-row">
+                    <span class="label">Type de rendez-vous :</span> ${appointmentTypeLabel}
+                  </div>
+
+                  <div class="info-row">
+                    <span class="label">Date :</span> ${options.appointmentDate}
+                  </div>
+
+                  <div class="info-row">
+                    <span class="label">Heure :</span> ${options.appointmentTime}
+                  </div>
+
+                  <div class="info-row">
+                    <span class="label">Centre :</span> ${options.centreName}
+                  </div>
+
+                  <p style="margin-top: 20px; padding: 15px; background-color: #d1ecf1; border-left: 4px solid #0c5460; border-radius: 3px;">
+                    📞 <strong>Vous souhaitez reprendre rendez-vous ?</strong><br>
+                    N'hésitez pas à nous contacter au <a href="tel:${options.centrePhone}">${options.centrePhone}</a> ou à prendre rendez-vous directement sur notre site web.
+                  </p>
+
+                  <p style="margin-top: 20px;">
+                    Nous restons à votre disposition,<br>
+                    <strong>L'équipe Audire</strong>
+                  </p>
+                </div>
+                <div class="footer">
+                  <p>Cet email a été envoyé automatiquement. Merci de ne pas y répondre.</p>
+                  <p>Pour toute question, contactez-nous au ${options.centrePhone}</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `,
+      });
+
+      console.log('Client cancellation email sent:', info.messageId);
+      return true;
+    } catch (error) {
+      console.error('Error sending client cancellation email:', error);
       return false;
     }
   }

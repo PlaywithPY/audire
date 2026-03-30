@@ -186,12 +186,14 @@ export async function PATCH(request: NextRequest) {
           centreAddress,
           centrePhone: appointment.centre.phoneFixe,
           appointmentType: appointment.appointmentType,
+          startDateTime: startDateTime,
+          endDateTime: endDateTime,
         });
       }
     }
 
     // Si annulé, libérer le créneau et supprimer l'événement Google Calendar
-    if (status === 'cancelled' && appointment.timeSlotId) {
+    if (status === 'cancelled' && currentAppointment.status !== 'cancelled' && appointment.timeSlotId) {
       await prisma.timeSlot.update({
         where: { id: appointment.timeSlotId },
         data: { isBooked: false },
@@ -200,6 +202,29 @@ export async function PATCH(request: NextRequest) {
       // Supprimer l'événement du calendrier Google
       if (appointment.googleCalendarEventId) {
         await googleCalendar.deleteEvent(appointment.googleCalendarEventId);
+      }
+
+      // Envoyer un email d'annulation au client (si email fourni ET consentement donné)
+      if (appointment.email && appointment.emailConsent && appointment.timeSlot) {
+        const appointmentDate = new Date(appointment.timeSlot.date).toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+        const appointmentTime = `${appointment.timeSlot.startTime} - ${appointment.timeSlot.endTime}`;
+
+        await emailService.sendClientCancellationEmail({
+          email: appointment.email,
+          civilite: appointment.civilite,
+          firstName: appointment.firstName,
+          lastName: appointment.lastName,
+          appointmentDate,
+          appointmentTime,
+          centreName: appointment.centre.name,
+          centrePhone: appointment.centre.phoneFixe,
+          appointmentType: appointment.appointmentType,
+        });
       }
     }
 
