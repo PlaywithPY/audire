@@ -145,8 +145,8 @@ export async function PATCH(request: NextRequest) {
         centreName: appointment.centre.name,
       });
 
-      // Email de confirmation finale au client (si email fourni)
-      if (appointment.email && appointment.timeSlot) {
+      // Email de confirmation finale au client (si email fourni ET consentement donné)
+      if (appointment.email && appointment.emailConsent && appointment.timeSlot) {
         const appointmentDate = new Date(appointment.timeSlot.date).toLocaleDateString('fr-FR', {
           weekday: 'long',
           year: 'numeric',

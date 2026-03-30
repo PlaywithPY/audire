@@ -20,21 +20,21 @@ model SiteSettings {
 
 // Centres Audire (multi-centres)
 model Centre {
-  id           Int      @id @default(autoincrement())
-  name         String   // Nom du centre (ex: "Audire Jemeppe")
-  slug         String   @unique // Identifiant unique (ex: "jemeppe", "liege")
-  phoneFixe    String   // Téléphone fixe
-  phoneMobile  String?  // Téléphone mobile (GSM)
-  email        String   // Email du centre
-  address      String   // Adresse complète
-  postalCode   String   // Code postal
-  city         String   // Ville
-  isActive     Boolean  @default(true) // Centre actif ou non
-  isDefault    Boolean  @default(false) // Centre par défaut
-  latitude     Float?   // Latitude pour la recherche géographique (future fonctionnalité)
-  longitude    Float?   // Longitude pour la recherche géographique
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  name        String // Nom du centre (ex: "Audire Jemeppe")
+  slug        String   @unique // Identifiant unique (ex: "jemeppe", "liege")
+  phoneFixe   String // Téléphone fixe
+  phoneMobile String? // Téléphone mobile (GSM)
+  email       String // Email du centre
+  address     String // Adresse complète
+  postalCode  String // Code postal
+  city        String // Ville
+  isActive    Boolean  @default(true) // Centre actif ou non
+  isDefault   Boolean  @default(false) // Centre par défaut
+  latitude    Float? // Latitude pour la recherche géographique (future fonctionnalité)
+  longitude   Float? // Longitude pour la recherche géographique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   openingHours OpeningHours[]
   timeSlots    TimeSlot[]
@@ -46,16 +46,16 @@ model Centre {
 
 // Horaires d'ouverture par jour (liés à un centre)
 model OpeningHours {
-  id            Int     @id @default(autoincrement())
-  centreId      Int     // Lien vers le centre
-  centre        Centre  @relation(fields: [centreId], references: [id], onDelete: Cascade)
-  dayOfWeek     Int     // 0 = dimanche, 1 = lundi, ..., 6 = samedi
-  isOpen        Boolean @default(true)
-  morningOpen   String? // Format "HH:MM"
-  morningClose  String? // Format "HH:MM"
-  afternoonOpen String? // Format "HH:MM"
+  id             Int      @id @default(autoincrement())
+  centreId       Int // Lien vers le centre
+  centre         Centre   @relation(fields: [centreId], references: [id], onDelete: Cascade)
+  dayOfWeek      Int // 0 = dimanche, 1 = lundi, ..., 6 = samedi
+  isOpen         Boolean  @default(true)
+  morningOpen    String? // Format "HH:MM"
+  morningClose   String? // Format "HH:MM"
+  afternoonOpen  String? // Format "HH:MM"
   afternoonClose String? // Format "HH:MM"
-  updatedAt     DateTime @updatedAt
+  updatedAt      DateTime @updatedAt
 
   @@unique([centreId, dayOfWeek])
   @@index([centreId])
@@ -75,14 +75,14 @@ model ThemeColors {
 model CardImage {
   id            Int      @id @default(autoincrement())
   pageKey       String   @default("home") // Page où se trouve la card (ex: "home", "notre-accompagnement")
-  cardKey       String   // Identifiant unique de la card (ex: "solutions-oticon")
-  imageUrl      String   // URL de l'image
+  cardKey       String // Identifiant unique de la card (ex: "solutions-oticon")
+  imageUrl      String // URL de l'image
   fallbackEmoji String   @default("📷") // Emoji de fallback
   imagePosition String   @default("center center") // Position de l'image (object-position CSS)
-  href          String?  // Lien vers une page
-  title         String?  // Titre de la card
-  description   String?  // Description de la card
-  imageAlt      String?  // Texte alternatif pour l'image
+  href          String? // Lien vers une page
+  title         String? // Titre de la card
+  description   String? // Description de la card
+  imageAlt      String? // Texte alternatif pour l'image
   updatedAt     DateTime @updatedAt
 
   @@unique([pageKey, cardKey])
@@ -91,24 +91,24 @@ model CardImage {
 
 // Sections avec images de fond
 model SectionBackground {
-  id          Int      @id @default(autoincrement())
-  sectionKey  String   @unique // Identifiant de la section (ex: "hero-home")
-  imageUrl    String?  // URL de l'image de fond (null = utiliser le gradient par défaut)
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  sectionKey String   @unique // Identifiant de la section (ex: "hero-home")
+  imageUrl   String? // URL de l'image de fond (null = utiliser le gradient par défaut)
+  updatedAt  DateTime @updatedAt
 }
 
 // Blocs de contenu éditables (WYSIWYG)
 model ContentBlock {
-  id          Int      @id @default(autoincrement())
-  pageKey     String   // Page où se trouve le bloc (ex: "home", "contact")
-  blockKey    String   // Identifiant unique du bloc (ex: "hero-title", "about-text")
-  blockType   String   // Type de bloc: "title", "text", "image", "button", "html"
-  content     String   // Contenu du bloc (texte, URL, HTML, etc.)
-  metadata    String?  // Métadonnées JSON (style, position, etc.)
-  order       Int      @default(0) // Ordre d'affichage
-  isVisible   Boolean  @default(true)
-  updatedAt   DateTime @updatedAt
-  createdAt   DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  pageKey   String // Page où se trouve le bloc (ex: "home", "contact")
+  blockKey  String // Identifiant unique du bloc (ex: "hero-title", "about-text")
+  blockType String // Type de bloc: "title", "text", "image", "button", "html"
+  content   String // Contenu du bloc (texte, URL, HTML, etc.)
+  metadata  String? // Métadonnées JSON (style, position, etc.)
+  order     Int      @default(0) // Ordre d'affichage
+  isVisible Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 
   @@unique([pageKey, blockKey])
   @@index([pageKey, order])
@@ -116,52 +116,52 @@ model ContentBlock {
 
 // Solutions auditives détaillées (panneau déroulant)
 model Solution {
-  id            Int      @id @default(autoincrement())
-  solutionKey   String   @unique // Identifiant unique (ex: "contour", "intra", "intent")
-  fullDesc      String   // Description complète
-  detailImage   String?  // URL de l'image pour le panneau détaillé (optionnel)
-  detailEmoji   String   @default("🎧") // Emoji de fallback pour l'image détaillée
-  pros          String   // Avantages (JSON array)
-  cons          String   // Inconvénients (JSON array)
-  updatedAt     DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  solutionKey String   @unique // Identifiant unique (ex: "contour", "intra", "intent")
+  fullDesc    String // Description complète
+  detailImage String? // URL de l'image pour le panneau détaillé (optionnel)
+  detailEmoji String   @default("🎧") // Emoji de fallback pour l'image détaillée
+  pros        String // Avantages (JSON array)
+  cons        String // Inconvénients (JSON array)
+  updatedAt   DateTime @updatedAt
 
   @@index([solutionKey])
 }
 
 // Avis clients
 model Testimonial {
-  id          Int      @id @default(autoincrement())
-  name        String   // Nom du client (ou initiales)
-  text        String   // Texte de l'avis
-  rating      Int      @default(5) // Note sur 5
-  location    String?  // Ville (ex: "Liège")
-  isVisible   Boolean  @default(true)
-  isFeatured  Boolean  @default(false) // Mettre en avant sur la page d'accueil
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  name       String // Nom du client (ou initiales)
+  text       String // Texte de l'avis
+  rating     Int      @default(5) // Note sur 5
+  location   String? // Ville (ex: "Liège")
+  isVisible  Boolean  @default(true)
+  isFeatured Boolean  @default(false) // Mettre en avant sur la page d'accueil
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@index([isVisible, isFeatured])
 }
 
 // Images avec effets CSS entre les sections
 model ImageEffect {
-  id               Int      @id @default(autoincrement())
-  imageUrl         String   // URL de l'image
-  effectType       String   @default("none") // Type d'effet: "parallax", "zoom", "fade", "fixed", "slide", "none"
-  effectSpeed      Float    @default(0.5) // Vitesse de l'effet parallax (0.1 à 1.0)
-  effectScale      Float    @default(1.2) // Scale pour l'effet zoom (1.0 à 1.5)
-  effectDirection  String   @default("down") // Direction de l'effet: up, down, left, right
-  effectIntensity  Float    @default(1.0) // Intensité de l'effet (0.1 = très subtil, 2.0 = très prononcé)
-  imagePosition    String   @default("center center") // Position de l'image (object-position CSS)
-  pageKey          String   // Page où se trouve l'effet (ex: "home", "solutions-auditives")
-  sectionKey       String   // Identifiant de la section (ex: "hero-services", "about-team")
-  order            Int      @default(0) // Ordre d'affichage dans la page
-  isVisible        Boolean  @default(true)
-  alt              String?  // Texte alternatif pour l'image
-  overlayColor     String?  // Couleur de l'overlay (ex: "rgba(0,0,0,0.3)")
-  minHeight        String   @default("400px") // Hauteur minimale (ex: "400px", "50vh")
-  updatedAt        DateTime @updatedAt
-  createdAt        DateTime @default(now())
+  id              Int      @id @default(autoincrement())
+  imageUrl        String // URL de l'image
+  effectType      String   @default("none") // Type d'effet: "parallax", "zoom", "fade", "fixed", "slide", "none"
+  effectSpeed     Float    @default(0.5) // Vitesse de l'effet parallax (0.1 à 1.0)
+  effectScale     Float    @default(1.2) // Scale pour l'effet zoom (1.0 à 1.5)
+  effectDirection String   @default("down") // Direction de l'effet: up, down, left, right
+  effectIntensity Float    @default(1.0) // Intensité de l'effet (0.1 = très subtil, 2.0 = très prononcé)
+  imagePosition   String   @default("center center") // Position de l'image (object-position CSS)
+  pageKey         String // Page où se trouve l'effet (ex: "home", "solutions-auditives")
+  sectionKey      String // Identifiant de la section (ex: "hero-services", "about-team")
+  order           Int      @default(0) // Ordre d'affichage dans la page
+  isVisible       Boolean  @default(true)
+  alt             String? // Texte alternatif pour l'image
+  overlayColor    String? // Couleur de l'overlay (ex: "rgba(0,0,0,0.3)")
+  minHeight       String   @default("400px") // Hauteur minimale (ex: "400px", "50vh")
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
 
   @@unique([pageKey, sectionKey])
   @@index([pageKey, order])
@@ -170,10 +170,10 @@ model ImageEffect {
 // Textes éditables des pages
 model PageText {
   id        Int      @id @default(autoincrement())
-  pageKey   String   // Page (ex: "home", "about", "solutions", "contact")
-  textKey   String   // Identifiant du texte (ex: "hero-title", "hero-subtitle", "description")
-  content   String   // Contenu du texte
-  label     String?  // Label descriptif pour l'admin (ex: "Titre de la section héro")
+  pageKey   String // Page (ex: "home", "about", "solutions", "contact")
+  textKey   String // Identifiant du texte (ex: "hero-title", "hero-subtitle", "description")
+  content   String // Contenu du texte
+  label     String? // Label descriptif pour l'admin (ex: "Titre de la section héro")
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
@@ -184,11 +184,11 @@ model PageText {
 // Questions fréquentes (FAQ)
 model FAQ {
   id        Int      @id @default(autoincrement())
-  question  String   // Question
-  answer    String   // Réponse
+  question  String // Question
+  answer    String // Réponse
   order     Int      @default(0) // Ordre d'affichage
   isVisible Boolean  @default(true) // Visible ou masqué
-  category  String?  // Catégorie optionnelle (ex: "remboursements", "appareils", "tests")
+  category  String? // Catégorie optionnelle (ex: "remboursements", "appareils", "tests")
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
@@ -198,104 +198,104 @@ model FAQ {
 
 // Appareils auditifs (produits)
 model HearingAid {
-  id              Int      @id @default(autoincrement())
-  slug            String   @unique // Identifiant unique pour l'URL (ex: "oticon-real", "phonak-virto-r-infinio")
-  name            String   // Nom du produit (ex: "Oticon Real", "Phonak Virto R Infinio")
-  brand           String   // Marque (ex: "Oticon", "Phonak", "Bernafon", "Signia", "Widex")
-  range           String?  // Gamme (ex: "Premium", "Confort", "Essentiel")
-  type            String?  // Type (ex: "Contour d'oreille", "Intra-auriculaire", "Intra-auriculaire sur mesure")
-  shortDesc       String?  // Description courte (pour la liste)
-  fullDesc        String?  // Description complète (pour la page produit)
-  mainImage       String?  // URL de l'image principale
-  gallery         String?  // URLs des images de la galerie (JSON array)
-  features        String?  // Caractéristiques (JSON array)
-  technicalSpecs  String?  // Spécifications techniques (JSON object)
-  price           String?  // Prix (ex: "2800€ - 3500€" ou "À partir de 2800€")
-  isHighlight     Boolean  @default(false) // Produit mis en avant
-  isVisible       Boolean  @default(true) // Visible sur le site
-  order           Int      @default(0) // Ordre d'affichage
-  seoTitle        String?  // Titre SEO
-  seoDescription  String?  // Description SEO
+  id             Int     @id @default(autoincrement())
+  slug           String  @unique // Identifiant unique pour l'URL (ex: "oticon-real", "phonak-virto-r-infinio")
+  name           String // Nom du produit (ex: "Oticon Real", "Phonak Virto R Infinio")
+  brand          String // Marque (ex: "Oticon", "Phonak", "Bernafon", "Signia", "Widex")
+  range          String? // Gamme (ex: "Premium", "Confort", "Essentiel")
+  type           String? // Type (ex: "Contour d'oreille", "Intra-auriculaire", "Intra-auriculaire sur mesure")
+  shortDesc      String? // Description courte (pour la liste)
+  fullDesc       String? // Description complète (pour la page produit)
+  mainImage      String? // URL de l'image principale
+  gallery        String? // URLs des images de la galerie (JSON array)
+  features       String? // Caractéristiques (JSON array)
+  technicalSpecs String? // Spécifications techniques (JSON object)
+  price          String? // Prix (ex: "2800€ - 3500€" ou "À partir de 2800€")
+  isHighlight    Boolean @default(false) // Produit mis en avant
+  isVisible      Boolean @default(true) // Visible sur le site
+  order          Int     @default(0) // Ordre d'affichage
+  seoTitle       String? // Titre SEO
+  seoDescription String? // Description SEO
 
   // Hero Section
-  heroGradientFrom String?  @default("#42a4ff") // Couleur de départ du dégradé
-  heroGradientTo   String?  @default("#5ab3ff") // Couleur de fin du dégradé
-  heroImage        String?  // Image de fond du hero (côté droit)
-  heroDescription  String?  // Texte principal du hero
+  heroGradientFrom String? @default("#42a4ff") // Couleur de départ du dégradé
+  heroGradientTo   String? @default("#5ab3ff") // Couleur de fin du dégradé
+  heroImage        String? // Image de fond du hero (côté droit)
+  heroDescription  String? // Texte principal du hero
 
   // Avantages (Section avec icônes/images)
-  advantages      String?  // JSON array: [{title, description, icon/imageUrl}]
+  advantages String? // JSON array: [{title, description, icon/imageUrl}]
 
   // Section 1: Description détaillée + Vidéo/Image
-  section1Title       String?  // Titre de la section 1
-  section1Description String?  // Description longue
-  section1MediaUrl    String?  // URL de la vidéo ou image
-  section1MediaType   String?  @default("image") // "video" ou "image"
+  section1Title       String? // Titre de la section 1
+  section1Description String? // Description longue
+  section1MediaUrl    String? // URL de la vidéo ou image
+  section1MediaType   String? @default("image") // "video" ou "image"
 
   // Section 2: Image à gauche + Texte à droite
-  section2Title       String?  // Titre de la section 2
-  section2Description String?  // Description
-  section2Image       String?  // URL de l'image
+  section2Title       String? // Titre de la section 2
+  section2Description String? // Description
+  section2Image       String? // URL de l'image
 
   // Encadré highlight 1
-  highlightBox1Title       String?  // Titre de l'encadré
-  highlightBox1Description String?  // Mini texte
-  highlightBox1Image       String?  // Photo de l'appareil pour l'encadré
+  highlightBox1Title       String? // Titre de l'encadré
+  highlightBox1Description String? // Mini texte
+  highlightBox1Image       String? // Photo de l'appareil pour l'encadré
 
   // Section 3: Image à droite + Texte à gauche
-  section3Title       String?  // Titre de la section 3
-  section3Description String?  // Description
-  section3Image       String?  // URL de l'image
+  section3Title       String? // Titre de la section 3
+  section3Description String? // Description
+  section3Image       String? // URL de l'image
 
   // Section 4: Vidéo/Image à gauche + Texte à droite
-  section4Title       String?  // Titre de la section 4
-  section4Description String?  // Description
-  section4MediaUrl    String?  // URL de la vidéo ou image
-  section4MediaType   String?  @default("video") // "video" ou "image"
+  section4Title       String? // Titre de la section 4
+  section4Description String? // Description
+  section4MediaUrl    String? // URL de la vidéo ou image
+  section4MediaType   String? @default("video") // "video" ou "image"
 
   // Encadré highlight 2
-  highlightBox2Images String?  // JSON array d'URLs d'images
-  highlightBox2Title  String?  // Titre de l'encadré 2
+  highlightBox2Images String? // JSON array d'URLs d'images
+  highlightBox2Title  String? // Titre de l'encadré 2
 
   // FAQ spécifiques au produit
-  productFAQs     String?  // JSON array: [{question, answer}]
+  productFAQs String? // JSON array: [{question, answer}]
 
-  updatedAt       DateTime @updatedAt
-  createdAt       DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  // Relation vers les blocs de contenu flexibles
+  contentBlocks ProductContentBlock[]
 
   @@index([slug])
   @@index([brand])
   @@index([isVisible, order])
-
-  // Relation vers les blocs de contenu flexibles
-  contentBlocks ProductContentBlock[]
 }
 
 // Blocs de contenu flexibles pour les pages produits
 // Permet d'ajouter autant de sections "image/vidéo + texte" que nécessaire
 model ProductContentBlock {
-  id              Int      @id @default(autoincrement())
-  hearingAidId    Int      // Lien vers le produit
-  hearingAid      HearingAid @relation(fields: [hearingAidId], references: [id], onDelete: Cascade)
+  id           Int        @id @default(autoincrement())
+  hearingAidId Int // Lien vers le produit
+  hearingAid   HearingAid @relation(fields: [hearingAidId], references: [id], onDelete: Cascade)
 
-  order           Int      @default(0) // Ordre d'affichage dans la page
-  isVisible       Boolean  @default(true) // Visible ou masqué
+  order     Int     @default(0) // Ordre d'affichage dans la page
+  isVisible Boolean @default(true) // Visible ou masqué
 
   // Contenu du bloc
-  title           String?  // Titre de la section
-  description     String?  // Description/texte (peut être long)
+  title       String? // Titre de la section
+  description String? // Description/texte (peut être long)
 
   // Média (image ou vidéo)
-  mediaUrl        String?  // URL de l'image ou vidéo
-  mediaType       String   @default("image") // "image" ou "video"
-  mediaAlt        String?  // Texte alternatif pour l'image
+  mediaUrl  String? // URL de l'image ou vidéo
+  mediaType String  @default("image") // "image" ou "video"
+  mediaAlt  String? // Texte alternatif pour l'image
 
   // Layout
-  mediaPosition   String   @default("right") // "left" ou "right" - Position du média par rapport au texte
-  backgroundColor String?  // Couleur de fond de la section (optionnel, ex: "#f9fafb", "transparent")
+  mediaPosition   String  @default("right") // "left" ou "right" - Position du média par rapport au texte
+  backgroundColor String? // Couleur de fond de la section (optionnel, ex: "#f9fafb", "transparent")
 
-  updatedAt       DateTime @updatedAt
-  createdAt       DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 
   @@index([hearingAidId, order])
   @@index([isVisible])
@@ -303,15 +303,15 @@ model ProductContentBlock {
 
 // Créneaux horaires pour les rendez-vous
 model TimeSlot {
-  id          Int      @id @default(autoincrement())
-  centreId    Int      // Lien vers le centre
-  centre      Centre   @relation(fields: [centreId], references: [id], onDelete: Cascade)
-  date        DateTime // Date du créneau (jour uniquement)
-  startTime   String   // Heure de début (format "HH:MM")
-  endTime     String   // Heure de fin (format "HH:MM")
-  isBooked    Boolean  @default(false) // Créneau réservé ou non
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  centreId  Int // Lien vers le centre
+  centre    Centre   @relation(fields: [centreId], references: [id], onDelete: Cascade)
+  date      DateTime // Date du créneau (jour uniquement)
+  startTime String // Heure de début (format "HH:MM")
+  endTime   String // Heure de fin (format "HH:MM")
+  isBooked  Boolean  @default(false) // Créneau réservé ou non
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   appointments Appointment[]
 
@@ -321,40 +321,41 @@ model TimeSlot {
 
 // Rendez-vous pris par les clients
 model Appointment {
-  id                   Int       @id @default(autoincrement())
-  centreId             Int       // Lien vers le centre
-  centre               Centre    @relation(fields: [centreId], references: [id], onDelete: Cascade)
-  timeSlotId           Int?      // Lien vers le créneau horaire (optionnel pour les demandes de contact)
-  timeSlot             TimeSlot? @relation(fields: [timeSlotId], references: [id], onDelete: Cascade)
+  id         Int       @id @default(autoincrement())
+  centreId   Int // Lien vers le centre
+  centre     Centre    @relation(fields: [centreId], references: [id], onDelete: Cascade)
+  timeSlotId Int? // Lien vers le créneau horaire (optionnel pour les demandes de contact)
+  timeSlot   TimeSlot? @relation(fields: [timeSlotId], references: [id], onDelete: Cascade)
 
   // Informations du patient
-  civilite             String?  // Civilité: "monsieur", "madame", "autre"
-  firstName            String   // Prénom
-  lastName             String   // Nom
-  address              String?  // Adresse complète (optionnelle pour les demandes de contact)
-  phone                String   // N° de GSM (obligatoire pour les rappels SMS)
-  email                String?  // Email (optionnel)
-  emailConsent         Boolean  @default(false) // Consentement pour recevoir des emails
+  civilite     String? // Civilité: "monsieur", "madame", "autre"
+  firstName    String // Prénom
+  lastName     String // Nom
+  address      String? // Adresse complète (optionnelle pour les demandes de contact)
+  phone        String // N° de GSM (obligatoire pour les rappels SMS)
+  email        String? // Email (optionnel)
+  emailConsent Boolean @default(false) // Consentement pour recevoir des emails
+  smsConsent   Boolean @default(false) // Consentement pour recevoir des SMS
 
   // Type de rendez-vous
-  appointmentType      String   // "premier-contact", "premier-rdv", "reglage"
+  appointmentType String // "premier-contact", "premier-rdv", "reglage"
 
   // Message optionnel
-  message              String?  // Espace pour laisser un mot
+  message String? // Espace pour laisser un mot
 
   // Prescription ORL (optionnelle)
-  hasPrescription      Boolean  @default(false) // Le patient a-t-il uploadé une prescription
+  hasPrescription Boolean @default(false) // Le patient a-t-il uploadé une prescription
 
   // Intégration Google Calendar
   googleCalendarEventId String? // ID de l'événement dans Google Calendar
 
   // Statut
-  status               String   @default("pending") // "pending", "confirmed", "cancelled", "completed"
+  status String @default("pending") // "pending", "confirmed", "cancelled", "completed"
 
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  prescriptions        Prescription[]
+  prescriptions Prescription[]
 
   @@index([centreId, timeSlotId])
   @@index([status])
@@ -363,14 +364,14 @@ model Appointment {
 
 // Prescriptions uploadées (stockage temporaire)
 model Prescription {
-  id            Int      @id @default(autoincrement())
-  appointmentId Int      // Lien vers le rendez-vous
+  id            Int         @id @default(autoincrement())
+  appointmentId Int // Lien vers le rendez-vous
   appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
-  fileUrl       String   // URL du fichier uploadé
-  fileName      String   // Nom original du fichier
-  emailSent     Boolean  @default(false) // Email envoyé ou non
+  fileUrl       String // URL du fichier uploadé
+  fileName      String // Nom original du fichier
+  emailSent     Boolean     @default(false) // Email envoyé ou non
   expiresAt     DateTime // Date d'expiration (1 mois après la création)
-  createdAt     DateTime @default(now())
+  createdAt     DateTime    @default(now())
 
   @@index([appointmentId])
   @@index([expiresAt])

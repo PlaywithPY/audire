@@ -81,6 +81,7 @@ export async function POST(request: NextRequest) {
       phone,
       email,
       emailConsent,
+      smsConsent,
       appointmentType,
       message,
     } = body;
@@ -156,6 +157,7 @@ export async function POST(request: NextRequest) {
         phone,
         email: email || null,
         emailConsent: emailConsent || false,
+        smsConsent: smsConsent || false,
         appointmentType,
         message: message || null,
         hasPrescription: false,
@@ -196,8 +198,17 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // L'email au centre sera envoyé uniquement quand l'admin confirmera le rendez-vous
-    // (passage du statut de "pending" à "confirmed")
+    // Envoyer immédiatement un email de notification au centre pour la nouvelle demande
+    await emailService.sendAppointmentRequestEmail({
+      civilite: appointment.civilite,
+      firstName: appointment.firstName,
+      lastName: appointment.lastName,
+      phone: appointment.phone,
+      email: appointment.email,
+      message: appointment.message,
+      appointmentType: appointment.appointmentType,
+      centreName: appointment.centre.name,
+    });
 
     return NextResponse.json(
       {

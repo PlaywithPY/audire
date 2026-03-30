@@ -30,6 +30,7 @@ type FormData = {
   phone: string;
   email: string;
   emailConsent: boolean;
+  smsConsent: boolean;
   appointmentType: string;
   message: string;
   prescription: File | null;
@@ -73,6 +74,7 @@ export default function PrendreRendezVous() {
     phone: '',
     email: '',
     emailConsent: false,
+    smsConsent: false,
     appointmentType: '',
     message: '',
     prescription: null,
@@ -191,6 +193,7 @@ export default function PrendreRendezVous() {
           phone: formData.phone,
           email: formData.email || null,
           emailConsent: formData.emailConsent,
+          smsConsent: formData.smsConsent,
           appointmentType: formData.appointmentType,
           message: formData.message || null,
         }),
@@ -506,25 +509,40 @@ export default function PrendreRendezVous() {
                     </div>
                   </div>
 
-                  {/* Consentement email */}
-                  {formData.email && (
+                  {/* Consentements */}
+                  <div className="space-y-3">
+                    {/* Consentement email - uniquement si email fourni */}
+                    {formData.email && (
+                      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                        <label className="flex items-start cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={formData.emailConsent}
+                            onChange={(e) => setFormData({ ...formData, emailConsent: e.target.checked })}
+                            className="mt-1 mr-3 w-5 h-5 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary/20"
+                          />
+                          <span className="text-sm text-gray-700">
+                            J'accepte de recevoir un email de confirmation pour ce rendez-vous.
+                          </span>
+                        </label>
+                      </div>
+                    )}
+
+                    {/* Consentement SMS - toujours affiché */}
                     <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
                       <label className="flex items-start cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={formData.emailConsent}
-                          onChange={(e) => setFormData({ ...formData, emailConsent: e.target.checked })}
+                          checked={formData.smsConsent}
+                          onChange={(e) => setFormData({ ...formData, smsConsent: e.target.checked })}
                           className="mt-1 mr-3 w-5 h-5 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary/20"
                         />
                         <span className="text-sm text-gray-700">
-                          J'accepte de recevoir un email de confirmation pour ce rendez-vous.
-                          <span className="block mt-1 text-xs text-gray-600">
-                            En réservant ce rendez-vous, vous acceptez que nous utilisions votre numéro de téléphone pour vous envoyer des messages SMS concernant uniquement ce rendez-vous.
-                          </span>
+                          J'accepte de recevoir des messages SMS concernant uniquement ce rendez-vous.
                         </span>
                       </label>
                     </div>
-                  )}
+                  </div>
 
                   <div>
                     <label className="block text-sm font-semibold mb-2">Type de rendez-vous *</label>
