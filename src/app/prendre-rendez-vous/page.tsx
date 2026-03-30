@@ -541,29 +541,54 @@ export default function PrendreRendezVous() {
                         )}
                       </div>
                     ) : (
-                      <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="font-semibold text-green-900">
-                              ✓ Centre sélectionné
-                            </div>
-                            <div className="text-sm text-green-700 mt-1">
-                              {centres.find((c) => c.id === formData.centreId)?.name} - {centres.find((c) => c.id === formData.centreId)?.city}
-                            </div>
+                      <div className="space-y-3">
+                        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-green-700">✓</span>
+                            <span className="text-sm text-green-800 font-medium">
+                              Centre le plus proche sélectionné par défaut
+                            </span>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setFormData({ ...formData, centreId: null, timeSlotId: null });
-                              setGeoError(null);
-                              setShowPostalInput(false);
-                              setPostalCode('');
-                            }}
-                            className="text-sm text-green-700 hover:text-green-900 underline"
-                          >
-                            Changer
-                          </button>
                         </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Choisissez votre centre
+                          </label>
+                          <select
+                            value={formData.centreId || ''}
+                            onChange={(e) => {
+                              setFormData({
+                                ...formData,
+                                centreId: parseInt(e.target.value),
+                                timeSlotId: null
+                              });
+                            }}
+                            className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-base"
+                          >
+                            {centres.map((centre) => (
+                              <option key={centre.id} value={centre.id}>
+                                {centre.name} - {centre.city} ({centre.postalCode})
+                              </option>
+                            ))}
+                          </select>
+                          <p className="mt-2 text-xs text-gray-500">
+                            Vous pouvez choisir un autre centre si vous le souhaitez
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormData({ ...formData, centreId: null, timeSlotId: null });
+                            setGeoError(null);
+                            setShowPostalInput(false);
+                            setPostalCode('');
+                          }}
+                          className="text-sm text-gray-600 hover:text-gray-900 underline"
+                        >
+                          ← Rechercher à nouveau
+                        </button>
                       </div>
                     )}
                   </div>
