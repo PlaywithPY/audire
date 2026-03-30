@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { googleCalendar } from '@/lib/google-calendar';
 import { emailService } from '@/lib/email';
+import { sendAppointmentRequestConfirmation } from '@/lib/sms-helpers';
 
 const prisma = new PrismaClient();
 
@@ -153,6 +154,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Calculer la date de rappel (par défaut 1 jour avant)
+    const timeSlotDate = new Date(timeSlot.date);
+    const [hours, minutes] = timeSlot.startTime.split(':').map(Number);
+    timeSlotDate.setHours(hours, minutes, 0, 0);
+
+    const reminderDate = new Date(timeSlotDate);
+    reminderDate.setDate(reminderDate.getDate() - 1); // 1 jour avant par défaut
+
     // Créer le rendez-vous dans la base de données (sans ajouter au calendrier Google pour l'instant)
     // L'événement Google Calendar sera créé uniquement lors de la confirmation par l'admin
     const appointment = await prisma.appointment.create({
@@ -171,6 +180,9 @@ export async function POST(request: NextRequest) {
         message: message || null,
         hasPrescription: false,
         googleCalendarEventId: null, // Sera ajouté lors de la confirmation
+        reminderDaysBefore: 1, // Par défaut 1 jour avant
+        reminderDate: reminderDate,
+        reminderSent: false,
       },
       include: {
         centre: true,
@@ -218,6 +230,16 @@ export async function POST(request: NextRequest) {
       appointmentType: appointment.appointmentType,
       centreName: appointment.centre.name,
     });
+
+    // Envoyer le SMS de confirmation de demande si le consentement a été donné
+    if (smsConsent) {
+      try {
+        await sendAppointmentRequestConfirmation(appointment.id);
+      } catch (error) {
+        console.error('Error sending SMS confirmation:', error);
+        // Ne pas bloquer la création du rendez-vous si l'envoi du SMS échoue
+      }
+    }
 
     return NextResponse.json(
       {

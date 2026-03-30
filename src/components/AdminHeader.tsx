@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 interface AdminHeaderProps {
-  currentPage?: 'dashboard' | 'centres' | 'appareils' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'settings' | 'testimonials' | 'rendez-vous' | 'mediatheque' | 'sms';
+  currentPage?: 'dashboard' | 'centres' | 'appareils' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'settings' | 'testimonials' | 'rendez-vous' | 'mediatheque' | 'sms' | 'sms-templates';
   title?: string;
 }
 
@@ -15,6 +15,7 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
     { href: '/admin/testimonials', label: '⭐ Avis clients', key: 'testimonials' },
     { href: '/admin/mediatheque', label: '📷 Médiathèque', key: 'mediatheque' },
     { href: '/admin/sms', label: '📱 SMS', key: 'sms' },
+    { href: '/admin/sms-templates', label: '📝 Modèles SMS', key: 'sms-templates' },
     { href: '/admin/feature-cards', label: '🎨 Feature Cards', key: 'feature-cards' },
     { href: '/admin/solutions', label: '📋 Solutions', key: 'solutions' },
     { href: '/admin/faqs', label: '❓ FAQs', key: 'faqs' },

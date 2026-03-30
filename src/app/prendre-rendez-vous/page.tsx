@@ -284,10 +284,13 @@ export default function PrendreRendezVous() {
         return;
       }
 
-      // Validation du téléphone (format français)
-      const phoneRegex = /^(?:(?:\+|00)32|0)[1-9](?:[\s.-]?\d{2}){4}$/;
-      if (!phoneRegex.test(formData.phone)) {
-        alert('Veuillez entrer un numéro de téléphone valide');
+      // Validation du téléphone (format belge)
+      // Normaliser le numéro en retirant les espaces, points et tirets
+      const normalizedPhone = formData.phone.replace(/[\s.-]/g, '');
+      // Vérifier le format : 0470123456 ou +32470123456 ou 0032470123456
+      const phoneRegex = /^(?:(?:\+|00)32|0)[1-9]\d{8}$/;
+      if (!phoneRegex.test(normalizedPhone)) {
+        alert('Veuillez entrer un numéro de téléphone belge valide (ex: 0470 12 34 56 ou 0470123456)');
         return;
       }
 

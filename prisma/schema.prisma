@@ -361,6 +361,11 @@ model Appointment {
   // Statut
   status String @default("pending") // "pending", "confirmed", "cancelled", "completed"
 
+  // Rappels SMS
+  reminderSent       Boolean   @default(false) // Le SMS de rappel a-t-il été envoyé
+  reminderDaysBefore Int       @default(1) // Nombre de jours avant le RDV pour le rappel (1-3)
+  reminderDate       DateTime? // Date et heure d'envoi du rappel (calculée automatiquement)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -369,6 +374,7 @@ model Appointment {
   @@index([centreId, timeSlotId])
   @@index([status])
   @@index([createdAt])
+  @@index([reminderDate, reminderSent])
 }
 
 // Prescriptions uploadées (stockage temporaire)
@@ -398,4 +404,20 @@ model SMSLog {
   @@index([recipient])
   @@index([sentAt])
   @@index([status])
+}
+
+// Modèles SMS préfabriqués
+model SMSTemplate {
+  id          Int      @id @default(autoincrement())
+  templateKey String   @unique // Identifiant unique (ex: "confirmation_demande", "confirmation_rdv", "rappel", "annulation")
+  name        String // Nom lisible pour l'admin (ex: "Confirmation de la demande")
+  content     String // Contenu du message avec des placeholders (ex: "Bonjour {firstName}, votre rendez-vous est confirmé...")
+  variables   String? // Variables disponibles (JSON array: ["firstName", "lastName", "date", "time", "centre"])
+  description String? // Description pour l'admin
+  isActive    Boolean  @default(true) // Modèle actif ou non
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([templateKey])
+  @@index([isActive])
 }
