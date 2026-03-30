@@ -80,9 +80,146 @@ export default function PrendreRendezVous() {
     prescription: null,
   });
 
+  const [geoError, setGeoError] = useState<string | null>(null);
+  const [showPostalInput, setShowPostalInput] = useState(false);
+  const [postalCode, setPostalCode] = useState('');
+  const [loadingGeo, setLoadingGeo] = useState(false);
+
   useEffect(() => {
     fetchCentres();
   }, []);
+
+  // Fonction pour calculer la distance entre deux points (formule de Haversine)
+  function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371; // Rayon de la Terre en km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  // Fonction pour trouver le centre le plus proche par géolocalisation
+  async function findNearestCentreByGeo() {
+    setLoadingGeo(true);
+    setGeoError(null);
+
+    if (!navigator.geolocation) {
+      setGeoError('La géolocalisation n\'est pas supportée par votre navigateur');
+      setShowPostalInput(true);
+      setLoadingGeo(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const userLat = position.coords.latitude;
+        const userLon = position.coords.longitude;
+
+        // Trouver le centre le plus proche
+        let nearestCentre = centres[0];
+        let minDistance = Infinity;
+
+        for (const centre of centres) {
+          // Utiliser une API de geocoding pour obtenir les coordonnées du centre
+          // Pour l'instant, on va utiliser une approximation basée sur le code postal
+          try {
+            const geocodeRes = await fetch(
+              `https://nominatim.openstreetmap.org/search?postalcode=${centre.postalCode}&country=BE&format=json&limit=1`
+            );
+            const geocodeData = await geocodeRes.json();
+
+            if (geocodeData.length > 0) {
+              const centreLat = parseFloat(geocodeData[0].lat);
+              const centreLon = parseFloat(geocodeData[0].lon);
+              const distance = calculateDistance(userLat, userLon, centreLat, centreLon);
+
+              if (distance < minDistance) {
+                minDistance = distance;
+                nearestCentre = centre;
+              }
+            }
+          } catch (error) {
+            console.error('Error geocoding centre:', error);
+          }
+        }
+
+        setFormData({ ...formData, centreId: nearestCentre.id });
+        setLoadingGeo(false);
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+        setGeoError('Impossible d\'accéder à votre position. Veuillez entrer votre code postal.');
+        setShowPostalInput(true);
+        setLoadingGeo(false);
+      }
+    );
+  }
+
+  // Fonction pour trouver le centre le plus proche par code postal
+  async function findNearestCentreByPostalCode() {
+    if (!postalCode || postalCode.length < 4) {
+      alert('Veuillez entrer un code postal valide');
+      return;
+    }
+
+    setLoadingGeo(true);
+    setGeoError(null);
+
+    try {
+      // Géocoder le code postal de l'utilisateur
+      const userGeocodeRes = await fetch(
+        `https://nominatim.openstreetmap.org/search?postalcode=${postalCode}&country=BE&format=json&limit=1`
+      );
+      const userGeocodeData = await userGeocodeRes.json();
+
+      if (userGeocodeData.length === 0) {
+        alert('Code postal introuvable. Veuillez vérifier.');
+        setLoadingGeo(false);
+        return;
+      }
+
+      const userLat = parseFloat(userGeocodeData[0].lat);
+      const userLon = parseFloat(userGeocodeData[0].lon);
+
+      // Trouver le centre le plus proche
+      let nearestCentre = centres[0];
+      let minDistance = Infinity;
+
+      for (const centre of centres) {
+        try {
+          const geocodeRes = await fetch(
+            `https://nominatim.openstreetmap.org/search?postalcode=${centre.postalCode}&country=BE&format=json&limit=1`
+          );
+          const geocodeData = await geocodeRes.json();
+
+          if (geocodeData.length > 0) {
+            const centreLat = parseFloat(geocodeData[0].lat);
+            const centreLon = parseFloat(geocodeData[0].lon);
+            const distance = calculateDistance(userLat, userLon, centreLat, centreLon);
+
+            if (distance < minDistance) {
+              minDistance = distance;
+              nearestCentre = centre;
+            }
+          }
+        } catch (error) {
+          console.error('Error geocoding centre:', error);
+        }
+      }
+
+      setFormData({ ...formData, centreId: nearestCentre.id });
+      setShowPostalInput(false);
+      setLoadingGeo(false);
+    } catch (error) {
+      console.error('Error finding nearest centre:', error);
+      alert('Une erreur est survenue. Veuillez réessayer.');
+      setLoadingGeo(false);
+    }
+  }
 
   useEffect(() => {
     if (formData.centreId) {
@@ -108,10 +245,6 @@ export default function PrendreRendezVous() {
       const res = await fetch('/api/centres');
       const data = await res.json();
       setCentres(data.filter((c: any) => c.isActive));
-
-      if (data.length > 0) {
-        setFormData((prev) => ({ ...prev, centreId: data[0].id }));
-      }
     } catch (error) {
       console.error('Error fetching centres:', error);
     } finally {
@@ -352,20 +485,112 @@ export default function PrendreRendezVous() {
                 <div className="space-y-6">
                   <h2 className="text-2xl font-bold mb-6">Choisissez votre créneau</h2>
 
-                  {/* Sélection du centre */}
+                  {/* Sélection du centre par géolocalisation */}
                   <div>
-                    <label className="block text-sm font-semibold mb-2">Centre Audire</label>
-                    <select
-                      value={formData.centreId || ''}
-                      onChange={(e) => setFormData({ ...formData, centreId: parseInt(e.target.value), timeSlotId: null })}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                    >
-                      {centres.map((centre) => (
-                        <option key={centre.id} value={centre.id}>
-                          {centre.name} - {centre.city}
-                        </option>
-                      ))}
-                    </select>
+                    <label className="block text-sm font-semibold mb-2">Trouver le centre le plus proche</label>
+
+                    {!formData.centreId ? (
+                      <div className="space-y-4">
+                        <button
+                          type="button"
+                          onClick={findNearestCentreByGeo}
+                          disabled={loadingGeo}
+                          className="w-full px-6 py-4 bg-primary text-white rounded-lg hover:bg-primary-dark transition-all font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                        >
+                          {loadingGeo ? (
+                            <>
+                              <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                              <span>Recherche en cours...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>📍</span>
+                              <span>Utiliser ma position actuelle</span>
+                            </>
+                          )}
+                        </button>
+
+                        {geoError && (
+                          <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 text-sm text-orange-800">
+                            {geoError}
+                          </div>
+                        )}
+
+                        {(showPostalInput || geoError) && (
+                          <div className="space-y-3">
+                            <div className="text-center text-sm text-gray-600">ou</div>
+                            <div className="flex gap-3">
+                              <input
+                                type="text"
+                                value={postalCode}
+                                onChange={(e) => setPostalCode(e.target.value)}
+                                placeholder="Votre code postal (ex: 4000)"
+                                className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                maxLength={4}
+                              />
+                              <button
+                                type="button"
+                                onClick={findNearestCentreByPostalCode}
+                                disabled={loadingGeo}
+                                className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-all font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed"
+                              >
+                                Rechercher
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-green-700">✓</span>
+                            <span className="text-sm text-green-800 font-medium">
+                              Centre le plus proche sélectionné par défaut
+                            </span>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Choisissez votre centre
+                          </label>
+                          <select
+                            value={formData.centreId || ''}
+                            onChange={(e) => {
+                              setFormData({
+                                ...formData,
+                                centreId: parseInt(e.target.value),
+                                timeSlotId: null
+                              });
+                            }}
+                            className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-base"
+                          >
+                            {centres.map((centre) => (
+                              <option key={centre.id} value={centre.id}>
+                                {centre.name} - {centre.city} ({centre.postalCode})
+                              </option>
+                            ))}
+                          </select>
+                          <p className="mt-2 text-xs text-gray-500">
+                            Vous pouvez choisir un autre centre si vous le souhaitez
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormData({ ...formData, centreId: null, timeSlotId: null });
+                            setGeoError(null);
+                            setShowPostalInput(false);
+                            setPostalCode('');
+                          }}
+                          className="text-sm text-gray-600 hover:text-gray-900 underline"
+                        >
+                          ← Rechercher à nouveau
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* Message informatif pour RDV de dernière minute */}

@@ -18,6 +18,15 @@ model SiteSettings {
   updatedAt DateTime @updatedAt
 }
 
+// Settings généraux (pour SMS et autres paramètres)
+model Setting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
 // Centres Audire (multi-centres)
 model Centre {
   id          Int      @id @default(autoincrement())
@@ -375,4 +384,18 @@ model Prescription {
 
   @@index([appointmentId])
   @@index([expiresAt])
+}
+
+// Logs des SMS envoyés
+model SMSLog {
+  id        Int      @id @default(autoincrement())
+  recipient String // Numéro de téléphone du destinataire
+  message   String // Contenu du message
+  status    String   @default("pending") // "sent", "failed", "pending"
+  error     String? // Message d'erreur si échec
+  sentAt    DateTime @default(now())
+
+  @@index([recipient])
+  @@index([sentAt])
+  @@index([status])
 }
