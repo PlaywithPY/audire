@@ -23,6 +23,8 @@ type Centre = {
   address: string;
   postalCode: string;
   city: string;
+  latitude: number | null;
+  longitude: number | null;
   isActive: boolean;
   isDefault: boolean;
   openingHours: OpeningHour[];
