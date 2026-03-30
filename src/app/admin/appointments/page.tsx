@@ -34,12 +34,27 @@ interface Appointment {
 
 export default function AdminAppointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [centres, setCentres] = useState<Centre[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterCentre, setFilterCentre] = useState<string>('all');
 
   useEffect(() => {
+    loadCentres();
     loadAppointments();
   }, []);
+
+  async function loadCentres() {
+    try {
+      const res = await fetch('/api/centres');
+      if (res.ok) {
+        const data = await res.json();
+        setCentres(data);
+      }
+    } catch (error) {
+      console.error('Error loading centres:', error);
+    }
+  }
 
   async function loadAppointments() {
     try {
@@ -214,9 +229,19 @@ export default function AdminAppointments() {
   }
 
   const filteredAppointments = appointments.filter((apt) => {
-    if (filterStatus === 'all') return true;
-    return apt.status === filterStatus;
+    if (filterStatus !== 'all' && apt.status !== filterStatus) return false;
+    if (filterCentre !== 'all' && apt.centre.id !== parseInt(filterCentre)) return false;
+    return true;
   });
+
+  // Calculer les statistiques pour les rendez-vous filtrés
+  const stats = {
+    total: filteredAppointments.length,
+    pending: filteredAppointments.filter(apt => apt.status === 'pending').length,
+    confirmed: filteredAppointments.filter(apt => apt.status === 'confirmed').length,
+    cancelled: filteredAppointments.filter(apt => apt.status === 'cancelled').length,
+    completed: filteredAppointments.filter(apt => apt.status === 'completed').length,
+  };
 
   return (
     <>
@@ -228,21 +253,62 @@ export default function AdminAppointments() {
             <p className="text-gray-600">Consultez et gérez les rendez-vous pris par les patients</p>
           </div>
 
+          {/* Statistiques */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+            <div className="bg-white p-4 rounded-lg shadow">
+              <div className="text-sm text-gray-600 mb-1">Total</div>
+              <div className="text-2xl font-bold text-gray-800">{stats.total}</div>
+            </div>
+            <div className="bg-yellow-50 p-4 rounded-lg shadow">
+              <div className="text-sm text-yellow-700 mb-1">En attente</div>
+              <div className="text-2xl font-bold text-yellow-800">{stats.pending}</div>
+            </div>
+            <div className="bg-green-50 p-4 rounded-lg shadow">
+              <div className="text-sm text-green-700 mb-1">Confirmés</div>
+              <div className="text-2xl font-bold text-green-800">{stats.confirmed}</div>
+            </div>
+            <div className="bg-red-50 p-4 rounded-lg shadow">
+              <div className="text-sm text-red-700 mb-1">Annulés</div>
+              <div className="text-2xl font-bold text-red-800">{stats.cancelled}</div>
+            </div>
+            <div className="bg-blue-50 p-4 rounded-lg shadow">
+              <div className="text-sm text-blue-700 mb-1">Terminés</div>
+              <div className="text-2xl font-bold text-blue-800">{stats.completed}</div>
+            </div>
+          </div>
+
           {/* Filtres */}
           <div className="bg-white p-4 rounded-lg shadow mb-6">
-            <div className="flex gap-4 items-center">
-              <label className="font-semibold">Filtrer par statut:</label>
-              <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                className="px-4 py-2 border rounded-lg"
-              >
-                <option value="all">Tous</option>
-                <option value="pending">En attente</option>
-                <option value="confirmed">Confirmés</option>
-                <option value="cancelled">Annulés</option>
-                <option value="completed">Terminés</option>
-              </select>
+            <div className="flex flex-wrap gap-4 items-center">
+              <div className="flex items-center gap-2">
+                <label className="font-semibold">Centre:</label>
+                <select
+                  value={filterCentre}
+                  onChange={(e) => setFilterCentre(e.target.value)}
+                  className="px-4 py-2 border rounded-lg"
+                >
+                  <option value="all">Tous les centres</option>
+                  {centres.map((centre) => (
+                    <option key={centre.id} value={centre.id.toString()}>
+                      {centre.name} - {centre.city}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-2">
+                <label className="font-semibold">Statut:</label>
+                <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="px-4 py-2 border rounded-lg"
+                >
+                  <option value="all">Tous</option>
+                  <option value="pending">En attente</option>
+                  <option value="confirmed">Confirmés</option>
+                  <option value="cancelled">Annulés</option>
+                  <option value="completed">Terminés</option>
+                </select>
+              </div>
             </div>
           </div>
 
