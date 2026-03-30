@@ -166,6 +166,18 @@ export default function PrendreRendezVous() {
           return;
         }
       }
+
+      // Vérifier qu'au moins un consentement est coché (email ou SMS)
+      if (!formData.emailConsent && !formData.smsConsent) {
+        alert('Veuillez accepter de recevoir au moins une confirmation (email ou SMS) pour pouvoir être contacté concernant votre rendez-vous.');
+        return;
+      }
+
+      // Si email consent est coché, l'email doit être renseigné
+      if (formData.emailConsent && !formData.email) {
+        alert('Veuillez renseigner votre adresse email pour recevoir la confirmation par email.');
+        return;
+      }
     }
 
     setStep(step + 1);
@@ -238,13 +250,17 @@ export default function PrendreRendezVous() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h1 className="text-3xl font-bold mb-4">Rendez-vous confirmé !</h1>
+              <h1 className="text-3xl font-bold mb-4">Demande de rendez-vous enregistrée !</h1>
               <p className="text-xl text-gray-600 mb-8">
-                Votre rendez-vous a été enregistré avec succès.
-                {formData.emailConsent && formData.email ? (
-                  <> Vous recevrez un email de confirmation et un SMS de rappel avant votre rendez-vous.</>
+                Votre demande de rendez-vous a été enregistrée avec succès et est en attente de confirmation par notre équipe.
+                {formData.emailConsent && formData.email && formData.smsConsent ? (
+                  <> Vous recevrez un email et un SMS de confirmation dès que votre rendez-vous sera validé.</>
+                ) : formData.emailConsent && formData.email ? (
+                  <> Vous recevrez un email de confirmation dès que votre rendez-vous sera validé.</>
+                ) : formData.smsConsent ? (
+                  <> Vous recevrez un SMS de confirmation dès que votre rendez-vous sera validé.</>
                 ) : (
-                  <> Vous recevrez un SMS de rappel avant votre rendez-vous.</>
+                  <> Notre équipe vous contactera prochainement pour confirmer votre rendez-vous.</>
                 )}
               </p>
               <div className="bg-blue-50 rounded-lg p-6 mb-8">
@@ -350,6 +366,24 @@ export default function PrendreRendezVous() {
                         </option>
                       ))}
                     </select>
+                  </div>
+
+                  {/* Message informatif pour RDV de dernière minute */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0">
+                        <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-blue-900 mb-1">Besoin d'un rendez-vous urgent ?</h4>
+                        <p className="text-sm text-blue-800">
+                          Les créneaux disponibles en ligne doivent être réservés au moins 24 heures à l'avance.
+                          Pour un rendez-vous dans les prochaines 24 heures, contactez-nous directement par téléphone.
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Créneaux disponibles */}
