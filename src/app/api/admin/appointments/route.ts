@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { emailService } from '@/lib/email';
 import { googleCalendar } from '@/lib/google-calendar';
+import { sendAppointmentConfirmation, sendAppointmentCancellation } from '@/lib/sms-helpers';
 
 const prisma = new PrismaClient();
 
@@ -190,6 +191,16 @@ export async function PATCH(request: NextRequest) {
           endDateTime: endDateTime,
         });
       }
+
+      // SMS de confirmation (si consentement donné)
+      if (appointment.smsConsent) {
+        try {
+          await sendAppointmentConfirmation(appointment.id);
+        } catch (error) {
+          console.error('Error sending SMS confirmation:', error);
+          // Ne pas bloquer la confirmation si l'envoi du SMS échoue
+        }
+      }
     }
 
     // Si annulé, libérer le créneau et supprimer l'événement Google Calendar
@@ -225,6 +236,16 @@ export async function PATCH(request: NextRequest) {
           centrePhone: appointment.centre.phoneFixe,
           appointmentType: appointment.appointmentType,
         });
+      }
+
+      // SMS d'annulation (si consentement donné)
+      if (appointment.smsConsent) {
+        try {
+          await sendAppointmentCancellation(appointment.id);
+        } catch (error) {
+          console.error('Error sending SMS cancellation:', error);
+          // Ne pas bloquer l'annulation si l'envoi du SMS échoue
+        }
       }
     }
 

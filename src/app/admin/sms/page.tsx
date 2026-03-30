@@ -42,12 +42,17 @@ export default function SMSAdmin() {
   const [smsLogs, setSmsLogs] = useState<SMSLog[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(true);
 
+  const [pendingReminders, setPendingReminders] = useState<any[]>([]);
+  const [loadingReminders, setLoadingReminders] = useState(false);
+  const [sendingReminders, setSendingReminders] = useState(false);
+
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/admin/login');
     } else if (status === 'authenticated') {
       fetchConfig();
       fetchSMSLogs();
+      fetchPendingReminders();
     }
   }, [status, router]);
 
@@ -75,6 +80,48 @@ export default function SMSAdmin() {
       console.error('Error fetching SMS logs:', error);
     } finally {
       setLoadingLogs(false);
+    }
+  }
+
+  async function fetchPendingReminders() {
+    try {
+      setLoadingReminders(true);
+      const res = await fetch('/api/admin/sms-reminders');
+      if (res.ok) {
+        const data = await res.json();
+        setPendingReminders(data.reminders || []);
+      }
+    } catch (error) {
+      console.error('Error fetching pending reminders:', error);
+    } finally {
+      setLoadingReminders(false);
+    }
+  }
+
+  async function sendAllReminders() {
+    if (!confirm('Êtes-vous sûr de vouloir envoyer tous les rappels en attente ?')) {
+      return;
+    }
+
+    try {
+      setSendingReminders(true);
+      const res = await fetch('/api/admin/sms-reminders', {
+        method: 'POST',
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        alert(`${data.sent} rappel(s) envoyé(s) avec succès. ${data.failed} échec(s).`);
+        fetchPendingReminders();
+        fetchSMSLogs();
+      } else {
+        alert('Erreur lors de l\'envoi des rappels');
+      }
+    } catch (error) {
+      console.error('Error sending reminders:', error);
+      alert('Erreur lors de l\'envoi des rappels');
+    } finally {
+      setSendingReminders(false);
     }
   }
 
@@ -127,9 +174,12 @@ export default function SMSAdmin() {
     }
 
     // Validation du numéro de téléphone
-    const phoneRegex = /^(?:(?:\+|00)32|0)[1-9](?:[\s.-]?\d{2}){4}$/;
-    if (!phoneRegex.test(recipient)) {
-      alert('Veuillez entrer un numéro de téléphone belge valide');
+    // Normaliser le numéro en retirant les espaces, points et tirets
+    const normalizedPhone = recipient.replace(/[\s.-]/g, '');
+    // Vérifier le format : 0470123456 ou +32470123456 ou 0032470123456
+    const phoneRegex = /^(?:(?:\+|00)32|0)[1-9]\d{8}$/;
+    if (!phoneRegex.test(normalizedPhone)) {
+      alert('Veuillez entrer un numéro de téléphone belge valide (ex: 0470 12 34 56 ou 0470123456)');
       return;
     }
 
@@ -355,6 +405,72 @@ export default function SMSAdmin() {
                 {sending ? 'Envoi en cours...' : 'Envoyer le SMS'}
               </button>
             </div>
+          </div>
+        )}
+
+        {/* Pending Reminders Section */}
+        {config.isConfigured && (
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">Rappels SMS en attente</h2>
+              {pendingReminders.length > 0 && (
+                <button
+                  onClick={sendAllReminders}
+                  disabled={sendingReminders}
+                  className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed font-semibold"
+                >
+                  {sendingReminders ? 'Envoi en cours...' : `Envoyer tous les rappels (${pendingReminders.length})`}
+                </button>
+              )}
+            </div>
+
+            {loadingReminders ? (
+              <div className="text-center py-8 text-gray-500">Chargement...</div>
+            ) : pendingReminders.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                Aucun rappel en attente
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {pendingReminders.map((reminder) => (
+                  <div
+                    key={reminder.id}
+                    className="border border-blue-200 rounded-lg p-4 bg-blue-50 hover:bg-blue-100 transition-colors"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="font-semibold">
+                            {reminder.firstName} {reminder.lastName}
+                          </span>
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                            {reminder.reminderDaysBefore} jour(s) avant
+                          </span>
+                        </div>
+                        <div className="text-sm text-gray-700 mb-2">
+                          <strong>Centre:</strong> {reminder.centre?.name}
+                        </div>
+                        {reminder.timeSlot && (
+                          <div className="text-sm text-gray-700 mb-2">
+                            <strong>Rendez-vous:</strong>{' '}
+                            {new Date(reminder.timeSlot.date).toLocaleDateString('fr-FR')} à{' '}
+                            {reminder.timeSlot.startTime}
+                          </div>
+                        )}
+                        <div className="text-sm text-gray-600">
+                          <strong>Téléphone:</strong> {reminder.phone}
+                        </div>
+                        {reminder.reminderDate && (
+                          <div className="text-xs text-gray-500 mt-2">
+                            Rappel prévu: {new Date(reminder.reminderDate).toLocaleString('fr-FR')}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
