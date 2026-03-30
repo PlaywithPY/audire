@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'SMS Gateway not configured' }, { status: 400 });
     }
 
-    // Tester la connexion
+    // Tester la connexion en vérifiant l'accessibilité du serveur
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
     };
@@ -38,12 +38,14 @@ export async function POST(req: NextRequest) {
       headers['Authorization'] = `Basic ${authString}`;
     }
 
-    const response = await fetch(`${gatewayUrl}/api/v1/health`, {
+    // Test de connexion : faire un GET sur la racine du serveur
+    const response = await fetch(gatewayUrl, {
       method: 'GET',
       headers: headers,
     });
 
-    if (!response.ok) {
+    if (!response.ok && response.status !== 404) {
+      // 404 est acceptable car le serveur répond (juste pas de route GET /)
       return NextResponse.json(
         { error: `Connection failed: ${response.status} ${response.statusText}` },
         { status: 500 }

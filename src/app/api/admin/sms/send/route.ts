@@ -35,9 +35,12 @@ export async function POST(req: NextRequest) {
     }
 
     // Envoyer le SMS via SMS Gateway
+    // Format selon la documentation SMS Gateway: { textMessage: { text: "..." }, phoneNumbers: [...] }
     const smsPayload = {
+      textMessage: {
+        text: message,
+      },
       phoneNumbers: [recipient],
-      message: message,
     };
 
     const headers: HeadersInit = {
@@ -49,7 +52,7 @@ export async function POST(req: NextRequest) {
       headers['Authorization'] = `Basic ${authString}`;
     }
 
-    const response = await fetch(`${gatewayUrl}/api/v1/message`, {
+    const response = await fetch(`${gatewayUrl}/message`, {
       method: 'POST',
       headers: headers,
       body: JSON.stringify(smsPayload),
