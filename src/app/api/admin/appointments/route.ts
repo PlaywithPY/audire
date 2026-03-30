@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { emailService } from '@/lib/email';
+import { googleCalendar } from '@/lib/google-calendar';
 
 const prisma = new PrismaClient();
 
@@ -131,20 +132,8 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    // Si le statut passe à "confirmed", envoyer les emails de notification
+    // Si le statut passe à "confirmed", envoyer l'email de confirmation finale au client
     if (status === 'confirmed' && currentAppointment.status !== 'confirmed') {
-      // Email de notification au centre
-      await emailService.sendAppointmentRequestEmail({
-        civilite: appointment.civilite,
-        firstName: appointment.firstName,
-        lastName: appointment.lastName,
-        phone: appointment.phone,
-        email: appointment.email,
-        message: appointment.message,
-        appointmentType: appointment.appointmentType,
-        centreName: appointment.centre.name,
-      });
-
       // Email de confirmation finale au client (si email fourni ET consentement donné)
       if (appointment.email && appointment.emailConsent && appointment.timeSlot) {
         const appointmentDate = new Date(appointment.timeSlot.date).toLocaleDateString('fr-FR', {
@@ -171,12 +160,17 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
-    // Si annulé, libérer le créneau
+    // Si annulé, libérer le créneau et supprimer l'événement Google Calendar
     if (status === 'cancelled' && appointment.timeSlotId) {
       await prisma.timeSlot.update({
         where: { id: appointment.timeSlotId },
         data: { isBooked: false },
       });
+
+      // Supprimer l'événement du calendrier Google
+      if (appointment.googleCalendarEventId) {
+        await googleCalendar.deleteEvent(appointment.googleCalendarEventId);
+      }
     }
 
     return NextResponse.json({
@@ -234,6 +228,11 @@ export async function DELETE(request: NextRequest) {
         where: { id: appointment.timeSlotId },
         data: { isBooked: false },
       });
+    }
+
+    // Supprimer l'événement du calendrier Google
+    if (appointment.googleCalendarEventId) {
+      await googleCalendar.deleteEvent(appointment.googleCalendarEventId);
     }
 
     // Supprimer le rendez-vous
