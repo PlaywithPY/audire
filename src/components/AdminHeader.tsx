@@ -5,7 +5,7 @@ import AutoSendReminders from './AutoSendReminders';
 import { useState } from 'react';
 
 interface AdminHeaderProps {
-  currentPage?: 'dashboard' | 'centres' | 'appareils' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'settings' | 'testimonials' | 'rendez-vous' | 'mediatheque' | 'sms' | 'sms-templates' | 'content-manager';
+  currentPage?: 'dashboard' | 'centres' | 'appareils' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'settings' | 'testimonials' | 'rendez-vous' | 'mediatheque' | 'sms' | 'sms-templates' | 'content-manager' | 'linear-content-editor';
   title?: string;
 }
 
@@ -34,6 +34,7 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
       label: '✏️ Edition',
       key: 'edition',
       subItems: [
+        { href: '/admin/linear-content-editor', label: '📋 Éditeur Linéaire (NOUVEAU)', key: 'linear-content-editor' },
         { href: '/admin/feature-cards', label: '🎨 Feature Cards', key: 'feature-cards' },
         { href: '/admin/solutions', label: '📋 Solutions', key: 'solutions' },
         { href: '/admin/faqs', label: '❓ FAQs', key: 'faqs' },
@@ -45,7 +46,7 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
     { href: '/admin/database', label: '🗄️ Base de données', key: 'database' },
   ];
 
-  const editionKeys = ['feature-cards', 'solutions', 'faqs', 'image-effects', 'text-editor', 'content-manager'];
+  const editionKeys = ['feature-cards', 'solutions', 'faqs', 'image-effects', 'text-editor', 'content-manager', 'linear-content-editor'];
   const isEditionActive = editionKeys.includes(currentPage);
 
   return (
