@@ -1,7 +1,5 @@
 'use client';
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import ImageFeatureCard from "@/components/ImageFeatureCard";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
@@ -101,7 +99,6 @@ export default function Home() {
   }, []);
   return (
     <>
-      <Header />
       <main className="min-h-screen relative">
         {/* Couche d'overlay pour les blocs en position absolue uniquement */}
         <DynamicBlockRenderer
@@ -299,7 +296,6 @@ export default function Home() {
       </section>
 
     </main>
-      <Footer />
     </>
   );
 }

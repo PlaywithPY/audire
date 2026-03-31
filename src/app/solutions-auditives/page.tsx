@@ -1,7 +1,5 @@
 'use client';
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import ImageFeatureCard from "@/components/ImageFeatureCard";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
 import { useState, useEffect } from "react";
@@ -351,7 +349,6 @@ export default function SolutionsAuditives() {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-primary to-primary-dark text-white py-20">
@@ -455,7 +452,6 @@ export default function SolutionsAuditives() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

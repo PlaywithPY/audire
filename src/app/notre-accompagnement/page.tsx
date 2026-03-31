@@ -1,7 +1,5 @@
 'use client';
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import CardIcon from "@/components/CardIcon";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
 import { useState, useEffect } from "react";
@@ -29,7 +27,6 @@ export default function NotreAccompagnement() {
   }, []);
   return (
     <>
-      <Header />
       <main className="min-h-screen">
         {/* Hero Section */}
         <section data-section="hero" className="relative bg-gradient-to-br from-primary to-primary-dark text-white py-20">
@@ -208,7 +205,6 @@ export default function NotreAccompagnement() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

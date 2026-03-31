@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import ProductContentBlock from '@/components/ProductContentBlock';
 import Link from 'next/link';
 
@@ -128,7 +126,6 @@ export default function HearingAidPage() {
   if (loading) {
     return (
       <>
-        <Header />
         <main className="min-h-screen bg-gray-50 py-20">
           <div className="container mx-auto px-4">
             <div className="text-center">
@@ -137,7 +134,6 @@ export default function HearingAidPage() {
             </div>
           </div>
         </main>
-        <Footer />
       </>
     );
   }
@@ -145,7 +141,6 @@ export default function HearingAidPage() {
   if (error || !product) {
     return (
       <>
-        <Header />
         <main className="min-h-screen bg-gray-50 py-20">
           <div className="container mx-auto px-4">
             <div className="text-center">
@@ -184,7 +179,6 @@ export default function HearingAidPage() {
             </div>
           </div>
         </main>
-        <Footer />
       </>
     );
   }
@@ -195,7 +189,6 @@ export default function HearingAidPage() {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-white">
         {/* 🚧 DROPDOWN TEMPORAIRE - À RETIRER PLUS TARD */}
         <div className="bg-yellow-100 border-b-2 border-yellow-300 py-3">
@@ -683,7 +676,6 @@ export default function HearingAidPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

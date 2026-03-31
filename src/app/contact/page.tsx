@@ -1,7 +1,5 @@
 'use client';
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import ContactInfo from "@/components/ContactInfo";
 import ContactHours from "@/components/ContactHours";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
@@ -102,7 +100,6 @@ export default function Contact() {
   }
   return (
     <>
-      <Header />
       <main className="min-h-screen">
         {/* Hero Section */}
         <section data-section="hero" className="relative bg-gradient-to-br from-primary to-primary-dark text-white py-20">
@@ -282,7 +279,6 @@ export default function Contact() {
         {/* Image Effects */}
         <AllPageImageEffects pageKey="contact" />
       </main>
-      <Footer />
     </>
   );
 }
