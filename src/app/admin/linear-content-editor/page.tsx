@@ -188,14 +188,10 @@ export default function LinearContentEditor() {
   async function saveField(field: ContentField, value: any) {
     setSaving(true);
     try {
-      // Pour l'instant, on sauvegarde via l'ancienne API
-      // TODO: Créer une nouvelle API pour la structure linéaire
-
       if (field.type === 'array-pills') {
         // Sauvegarder chaque pill individuellement
         for (let i = 0; i < value.length; i++) {
-          // Essayer de mettre à jour d'abord
-          const updateRes = await fetch('/api/admin/page-texts', {
+          const res = await fetch('/api/admin/page-texts', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -206,74 +202,28 @@ export default function LinearContentEditor() {
             })
           });
 
-          // Si ça échoue, créer
-          if (!updateRes.ok) {
-            await fetch('/api/admin/page-texts', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                pageKey: activePageKey,
-                textKey: `chip-${i + 1}`,
-                content: value[i],
-                label: `Capsule ${i + 1}`
-              })
-            });
+          if (!res.ok) {
+            throw new Error(`Failed to save pill ${i + 1}`);
           }
         }
       } else {
         // Mapping vers l'ancienne structure
         const oldKey = getOldKeyFromNew(activePageKey, field.key);
-        if (oldKey) {
-          // Essayer de mettre à jour d'abord
-          const updateRes = await fetch('/api/admin/page-texts', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              pageKey: activePageKey,
-              textKey: oldKey,
-              content: value,
-              label: field.label
-            })
-          });
+        const textKey = oldKey || field.key;
 
-          // Si ça échoue, créer
-          if (!updateRes.ok) {
-            await fetch('/api/admin/page-texts', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                pageKey: activePageKey,
-                textKey: oldKey,
-                content: value,
-                label: field.label
-              })
-            });
-          }
-        } else {
-          // Nouveau champ sans mapping ancien - utiliser directement field.key
-          const updateRes = await fetch('/api/admin/page-texts', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              pageKey: activePageKey,
-              textKey: field.key,
-              content: value,
-              label: field.label
-            })
-          });
+        const res = await fetch('/api/admin/page-texts', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            pageKey: activePageKey,
+            textKey: textKey,
+            content: value,
+            label: field.label
+          })
+        });
 
-          if (!updateRes.ok) {
-            await fetch('/api/admin/page-texts', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                pageKey: activePageKey,
-                textKey: field.key,
-                content: value,
-                label: field.label
-              })
-            });
-          }
+        if (!res.ok) {
+          throw new Error('Failed to save field');
         }
       }
 
@@ -689,6 +639,9 @@ export default function LinearContentEditor() {
 
               {field.type === 'image' && (
                 <button
+                  onClick={() => {
+                    window.open('/admin/mediatheque', '_blank');
+                  }}
                   className="w-full bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors font-medium"
                 >
                   🖼️ Gérer l'image
