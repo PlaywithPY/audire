@@ -54,6 +54,33 @@ const appointmentTypes = [
   },
 ];
 
+/**
+ * Normalise un numéro de téléphone belge au format international +32xxxxxxxxx
+ * Accepte différents formats d'entrée et les convertit automatiquement
+ */
+function normalizePhoneNumber(phone: string): string {
+  if (!phone) return phone;
+
+  // Retirer tous les espaces, points, tirets et parenthèses
+  let normalized = phone.replace(/[\s.\-()]/g, '');
+
+  // Si le numéro commence par 0032, le remplacer par +32
+  if (normalized.startsWith('0032')) {
+    normalized = '+32' + normalized.substring(4);
+  }
+  // Si le numéro commence par 0 (format national belge)
+  else if (normalized.startsWith('0') && !normalized.startsWith('00')) {
+    // Retirer le 0 initial et ajouter +32
+    normalized = '+32' + normalized.substring(1);
+  }
+  // Si le numéro commence par 32 (sans le +)
+  else if (normalized.startsWith('32') && !normalized.startsWith('+')) {
+    normalized = '+' + normalized;
+  }
+
+  return normalized;
+}
+
 export default function PrendreRendezVous() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -327,6 +354,9 @@ export default function PrendreRendezVous() {
     try {
       setSubmitting(true);
 
+      // Normaliser le numéro de téléphone avant l'envoi
+      const normalizedPhone = normalizePhoneNumber(formData.phone);
+
       // Créer le rendez-vous
       const appointmentRes = await fetch('/api/appointments', {
         method: 'POST',
@@ -338,7 +368,7 @@ export default function PrendreRendezVous() {
           firstName: formData.firstName,
           lastName: formData.lastName,
           address: formData.address,
-          phone: formData.phone,
+          phone: normalizedPhone, // Toujours au format +32xxxxxxxxx
           email: formData.email || null,
           emailConsent: formData.emailConsent,
           smsConsent: formData.smsConsent,

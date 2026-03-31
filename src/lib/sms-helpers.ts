@@ -43,10 +43,54 @@ export function replaceSMSVariables(content: string, variables: SMSVariables): s
 }
 
 /**
- * Normalise un numéro de téléphone en retirant les espaces, points et tirets
+ * Normalise un numéro de téléphone belge au format international +32xxxxxxxxx
+ * Accepte les formats suivants :
+ * - 0470123456
+ * - 04 70 12 34 56
+ * - 04.70.12.34.56
+ * - 04-70-12-34-56
+ * - +32470123456
+ * - 0032470123456
+ * - +32 470 12 34 56
+ *
+ * @param phone - Le numéro de téléphone à normaliser
+ * @returns Le numéro au format +32xxxxxxxxx
+ * @throws Error si le numéro n'est pas valide
  */
 export function normalizePhoneNumber(phone: string): string {
-  return phone.replace(/[\s.-]/g, '');
+  if (!phone) {
+    throw new Error('Phone number is required');
+  }
+
+  // Retirer tous les espaces, points, tirets et parenthèses
+  let normalized = phone.replace(/[\s.\-()]/g, '');
+
+  // Si le numéro commence par 0032, le remplacer par +32
+  if (normalized.startsWith('0032')) {
+    normalized = '+32' + normalized.substring(4);
+  }
+  // Si le numéro commence par 0 (format national belge)
+  else if (normalized.startsWith('0') && !normalized.startsWith('00')) {
+    // Retirer le 0 initial et ajouter +32
+    normalized = '+32' + normalized.substring(1);
+  }
+  // Si le numéro commence par 32 (sans le +)
+  else if (normalized.startsWith('32') && !normalized.startsWith('+')) {
+    normalized = '+' + normalized;
+  }
+  // Si le numéro ne commence pas par +32, c'est probablement invalide
+  else if (!normalized.startsWith('+32')) {
+    throw new Error('Invalid Belgian phone number format');
+  }
+
+  // Vérifier que le numéro final a le bon format : +32 suivi de 9 chiffres
+  // Format attendu : +32XXXXXXXXX (où X est un chiffre)
+  const phoneRegex = /^\+32[1-9]\d{8}$/;
+  if (!phoneRegex.test(normalized)) {
+    throw new Error('Invalid Belgian phone number: must be +32 followed by 9 digits (first digit cannot be 0)');
+  }
+
+  return normalized;
 }
 
 /**
