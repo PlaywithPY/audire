@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import AdminHeader from '@/components/AdminHeader';
+import MediaPicker from '@/components/MediaPicker';
 import {
   getAllPageStructures,
   getPageStructure,
@@ -28,6 +29,8 @@ export default function LinearContentEditor() {
   const [saving, setSaving] = useState(false);
   const [editingField, setEditingField] = useState<ContentField | null>(null);
   const [editingValue, setEditingValue] = useState<any>(null);
+  const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
+  const [selectedFieldForImage, setSelectedFieldForImage] = useState<ContentField | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -640,7 +643,8 @@ export default function LinearContentEditor() {
               {field.type === 'image' && (
                 <button
                   onClick={() => {
-                    window.open('/admin/mediatheque', '_blank');
+                    setSelectedFieldForImage(field);
+                    setIsMediaPickerOpen(true);
                   }}
                   className="w-full bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors font-medium"
                 >
@@ -654,6 +658,24 @@ export default function LinearContentEditor() {
 
       {/* Modal d'édition */}
       {renderEditModal()}
+
+      {/* MediaPicker pour sélectionner/uploader des images */}
+      <MediaPicker
+        isOpen={isMediaPickerOpen}
+        onClose={() => {
+          setIsMediaPickerOpen(false);
+          setSelectedFieldForImage(null);
+        }}
+        onSelect={(mediaUrl) => {
+          if (selectedFieldForImage) {
+            saveField(selectedFieldForImage, mediaUrl);
+          }
+          setIsMediaPickerOpen(false);
+          setSelectedFieldForImage(null);
+        }}
+        currentMedia={selectedFieldForImage ? contentValues[selectedFieldForImage.key] : undefined}
+        mediaType="image"
+      />
     </div>
   );
 }
