@@ -6,13 +6,14 @@ import { useRouter } from 'next/navigation';
 import AdminHeader from '@/components/AdminHeader';
 
 // Import the existing page components as sections
+import HomeSection from './HomeSection';
 import FeatureCardsSection from './FeatureCardsSection';
 import SolutionsSection from './SolutionsSection';
 import FAQsSection from './FAQsSection';
 import ImageEffectsSection from './ImageEffectsSection';
 import TextsSection from './TextsSection';
 
-type TabKey = 'feature-cards' | 'solutions' | 'faqs' | 'image-effects' | 'texts';
+type TabKey = 'home' | 'feature-cards' | 'solutions' | 'faqs' | 'image-effects' | 'texts';
 
 type Tab = {
   key: TabKey;
@@ -21,6 +22,7 @@ type Tab = {
 };
 
 const tabs: Tab[] = [
+  { key: 'home', label: 'Accueil', icon: '🏠' },
   { key: 'feature-cards', label: 'Feature Cards', icon: '🎨' },
   { key: 'solutions', label: 'Solutions', icon: '📋' },
   { key: 'faqs', label: 'FAQs', icon: '❓' },
@@ -31,7 +33,7 @@ const tabs: Tab[] = [
 export default function ContentManager() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<TabKey>('feature-cards');
+  const [activeTab, setActiveTab] = useState<TabKey>('home');
 
   if (status === 'loading') {
     return (
@@ -86,6 +88,7 @@ export default function ContentManager() {
 
           {/* Tab Content */}
           <div className="p-8">
+            {activeTab === 'home' && <HomeSection />}
             {activeTab === 'feature-cards' && <FeatureCardsSection />}
             {activeTab === 'solutions' && <SolutionsSection />}
             {activeTab === 'faqs' && <FAQsSection />}
