@@ -111,15 +111,54 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, content, label } = body;
+    const { id, pageKey, textKey, content, label } = body;
 
-    const pageText = await prisma.pageText.update({
-      where: { id },
-      data: {
-        content,
-        label: label || null,
-      },
-    });
+    let pageText;
+
+    // Si pageKey et textKey sont fournis, chercher d'abord l'enregistrement
+    if (pageKey && textKey) {
+      const existingText = await prisma.pageText.findFirst({
+        where: {
+          pageKey,
+          textKey,
+        },
+      });
+
+      if (existingText) {
+        // Mettre à jour l'enregistrement existant
+        pageText = await prisma.pageText.update({
+          where: { id: existingText.id },
+          data: {
+            content,
+            label: label || null,
+          },
+        });
+      } else {
+        // Créer un nouvel enregistrement
+        pageText = await prisma.pageText.create({
+          data: {
+            pageKey,
+            textKey,
+            content,
+            label: label || null,
+          },
+        });
+      }
+    } else if (id) {
+      // Sinon, utiliser l'ID directement
+      pageText = await prisma.pageText.update({
+        where: { id },
+        data: {
+          content,
+          label: label || null,
+        },
+      });
+    } else {
+      return NextResponse.json({
+        error: 'Missing required parameters',
+        details: 'Either provide id, or both pageKey and textKey'
+      }, { status: 400 });
+    }
 
     return NextResponse.json(pageText);
   } catch (error: any) {
@@ -145,6 +184,13 @@ export async function PUT(request: NextRequest) {
         error: 'Text not found',
         details: 'The text with this ID does not exist.'
       }, { status: 404 });
+    }
+
+    if (error?.code === 'P2002') {
+      return NextResponse.json({
+        error: 'A text with this pageKey and textKey already exists.',
+        details: 'This should not happen in PUT. Please contact support.'
+      }, { status: 409 });
     }
 
     return NextResponse.json({
