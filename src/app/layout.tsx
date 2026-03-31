@@ -4,8 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { CentreProvider } from "@/contexts/CentreContext";
 import Providers from "@/components/Providers";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import ConditionalLayout from "@/components/ConditionalLayout";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({
@@ -42,9 +41,9 @@ export default function RootLayout({
       <body className={`${inter.variable} ${playfair.variable} antialiased`}>
         <Providers>
           <CentreProvider>
-            <Header />
-            {children}
-            <Footer />
+            <ConditionalLayout>
+              {children}
+            </ConditionalLayout>
           </CentreProvider>
         </Providers>
       </body>
