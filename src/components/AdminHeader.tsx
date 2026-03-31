@@ -5,7 +5,7 @@ import AutoSendReminders from './AutoSendReminders';
 import { useState } from 'react';
 
 interface AdminHeaderProps {
-  currentPage?: 'dashboard' | 'centres' | 'appareils' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'settings' | 'testimonials' | 'rendez-vous' | 'mediatheque' | 'sms' | 'sms-templates';
+  currentPage?: 'dashboard' | 'centres' | 'appareils' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'settings' | 'testimonials' | 'rendez-vous' | 'mediatheque' | 'sms' | 'sms-templates' | 'content-manager';
   title?: string;
 }
 
@@ -29,6 +29,7 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
     { href: '/admin/mediatheque', label: '📷 Médiathèque', key: 'mediatheque' },
     { href: '/admin/sms', label: '📱 SMS', key: 'sms' },
     { href: '/admin/sms-templates', label: '📝 Modèles SMS', key: 'sms-templates' },
+    { href: '/admin/content-manager', label: '📦 Gestionnaire de Contenu', key: 'content-manager' },
     {
       label: '✏️ Edition',
       key: 'edition',
@@ -44,7 +45,7 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
     { href: '/admin/database', label: '🗄️ Base de données', key: 'database' },
   ];
 
-  const editionKeys = ['feature-cards', 'solutions', 'faqs', 'image-effects', 'text-editor'];
+  const editionKeys = ['feature-cards', 'solutions', 'faqs', 'image-effects', 'text-editor', 'content-manager'];
   const isEditionActive = editionKeys.includes(currentPage);
 
   return (
