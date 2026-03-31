@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 type Centre = {
   id: number;
@@ -407,7 +405,6 @@ export default function PrendreRendezVous() {
   if (success) {
     return (
       <>
-        <Header />
         <main className="min-h-screen bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4 py-20">
             <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8 text-center">
@@ -453,14 +450,12 @@ export default function PrendreRendezVous() {
             </div>
           </div>
         </main>
-        <Footer />
       </>
     );
   }
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-gradient-to-br from-primary/5 to-primary-light/5">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-primary to-primary-dark text-white py-20">
@@ -963,7 +958,6 @@ export default function PrendreRendezVous() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }
