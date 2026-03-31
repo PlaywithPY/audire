@@ -220,7 +220,7 @@ export default function SMSTemplatesAdmin() {
                   <strong>{'{{time}}'}</strong> - Heure du rendez-vous (format: 14h30)
                 </li>
                 <li>
-                  <strong>{'{{address}}'}</strong> - Adresse du centre
+                  <strong>{'{{address}}'}</strong> ou <strong>{'{{adresse}}'}</strong> - Adresse complète du centre
                 </li>
                 <li>
                   <strong>{'{{daysBefore}}'}</strong> - Nombre de jours avant le RDV (pour les
