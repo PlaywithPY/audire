@@ -34,6 +34,7 @@ export function replaceSMSVariables(content: string, variables: SMSVariables): s
   }
   if (variables.address) {
     result = result.replace(/{address}/g, variables.address);
+    result = result.replace(/{adresse}/g, variables.address);
   }
   if (variables.daysBefore !== undefined) {
     result = result.replace(/{daysBefore}/g, variables.daysBefore.toString());
