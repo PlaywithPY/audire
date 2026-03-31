@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { googleCalendar } from '@/lib/google-calendar';
 import { emailService } from '@/lib/email';
-import { sendAppointmentRequestConfirmation } from '@/lib/sms-helpers';
+import { sendAppointmentRequestConfirmation, normalizePhoneNumber } from '@/lib/sms-helpers';
 
 const prisma = new PrismaClient();
 
@@ -125,6 +125,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Normaliser le numéro de téléphone au format +32xxxxxxxxx
+    let normalizedPhone: string;
+    try {
+      normalizedPhone = normalizePhoneNumber(phone);
+    } catch (error) {
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : 'Invalid phone number format' },
+        { status: 400 }
+      );
+    }
+
     // Vérifier que le type de RDV est valide
     const validTypes = ['premier-contact', 'premier-rdv', 'reglage'];
     if (!validTypes.includes(appointmentType)) {
@@ -172,7 +183,7 @@ export async function POST(request: NextRequest) {
         firstName,
         lastName,
         address,
-        phone,
+        phone: normalizedPhone, // Toujours au format +32xxxxxxxxx
         email: email || null,
         emailConsent: emailConsent || false,
         smsConsent: smsConsent || false,
@@ -224,7 +235,7 @@ export async function POST(request: NextRequest) {
       civilite: appointment.civilite,
       firstName: appointment.firstName,
       lastName: appointment.lastName,
-      phone: appointment.phone,
+      phone: appointment.phone, // Déjà normalisé en +32xxxxxxxxx
       email: appointment.email,
       message: appointment.message,
       appointmentType: appointment.appointmentType,

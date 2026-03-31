@@ -11,6 +11,33 @@ interface PageTexts {
   [key: string]: string;
 }
 
+/**
+ * Normalise un numéro de téléphone belge au format international +32xxxxxxxxx
+ * Accepte différents formats d'entrée et les convertit automatiquement
+ */
+function normalizePhoneNumber(phone: string): string {
+  if (!phone) return phone;
+
+  // Retirer tous les espaces, points, tirets et parenthèses
+  let normalized = phone.replace(/[\s.\-()]/g, '');
+
+  // Si le numéro commence par 0032, le remplacer par +32
+  if (normalized.startsWith('0032')) {
+    normalized = '+32' + normalized.substring(4);
+  }
+  // Si le numéro commence par 0 (format national belge)
+  else if (normalized.startsWith('0') && !normalized.startsWith('00')) {
+    // Retirer le 0 initial et ajouter +32
+    normalized = '+32' + normalized.substring(1);
+  }
+  // Si le numéro commence par 32 (sans le +)
+  else if (normalized.startsWith('32') && !normalized.startsWith('+')) {
+    normalized = '+' + normalized;
+  }
+
+  return normalized;
+}
+
 export default function TestAuditifGratuit() {
   const [whyTestCards, setWhyTestCards] = useState<CardData[]>([]);
   const [stepCards, setStepCards] = useState<CardData[]>([]);
@@ -48,11 +75,16 @@ export default function TestAuditifGratuit() {
     setSubmitMessage('');
 
     const formData = new FormData(e.currentTarget);
+
+    // Normaliser le numéro de téléphone avant l'envoi
+    const rawPhone = formData.get('telephone') as string;
+    const normalizedPhone = rawPhone ? normalizePhoneNumber(rawPhone) : '';
+
     const data = {
       civilite: formData.get('civilite') as string,
       firstName: formData.get('prenom') as string,
       lastName: formData.get('nom') as string,
-      phone: formData.get('telephone') as string,
+      phone: normalizedPhone, // Toujours au format +32xxxxxxxxx si fourni
       email: formData.get('email') as string,
       message: formData.get('message') as string,
       appointmentType: 'premier-contact',

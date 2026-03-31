@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { emailService } from '@/lib/email';
+import { normalizePhoneNumber } from '@/lib/sms-helpers';
 
 const prisma = new PrismaClient();
 
@@ -26,6 +27,17 @@ export async function POST(request: NextRequest) {
     if (!firstName || !lastName || !phone) {
       return NextResponse.json(
         { error: 'Prénom, nom et téléphone sont obligatoires' },
+        { status: 400 }
+      );
+    }
+
+    // Normaliser le numéro de téléphone au format +32xxxxxxxxx
+    let normalizedPhone: string;
+    try {
+      normalizedPhone = normalizePhoneNumber(phone);
+    } catch (error) {
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : 'Invalid phone number format' },
         { status: 400 }
       );
     }
@@ -56,7 +68,7 @@ export async function POST(request: NextRequest) {
           firstName,
           lastName,
           address: address || null,
-          phone,
+          phone: normalizedPhone, // Toujours au format +32xxxxxxxxx
           email: email || null,
           appointmentType: appointmentType || 'premier-contact',
           message: message || null,
@@ -73,7 +85,7 @@ export async function POST(request: NextRequest) {
         civilite: civilite || null,
         firstName,
         lastName,
-        phone,
+        phone: normalizedPhone, // Toujours au format +32xxxxxxxxx
         email: email || null,
         message: message || null,
         appointmentType: appointmentType || 'premier-contact',
@@ -97,7 +109,7 @@ export async function POST(request: NextRequest) {
         firstName,
         lastName,
         address: address || null,
-        phone,
+        phone: normalizedPhone, // Toujours au format +32xxxxxxxxx
         email: email || null,
         appointmentType: appointmentType || 'premier-contact',
         message: message || null,
@@ -114,7 +126,7 @@ export async function POST(request: NextRequest) {
       civilite: civilite || null,
       firstName,
       lastName,
-      phone,
+      phone: normalizedPhone, // Toujours au format +32xxxxxxxxx
       email: email || null,
       message: message || null,
       appointmentType: appointmentType || 'premier-contact',
