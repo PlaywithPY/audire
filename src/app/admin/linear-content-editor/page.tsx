@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import AdminHeader from '@/components/AdminHeader';
 import MediaPicker from '@/components/MediaPicker';
+import ImageEffectEditorModal from '@/components/ImageEffectEditorModal';
 import {
   getAllPageStructures,
   getPageStructure,
@@ -31,6 +32,9 @@ export default function LinearContentEditor() {
   const [editingValue, setEditingValue] = useState<any>(null);
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
   const [selectedFieldForImage, setSelectedFieldForImage] = useState<ContentField | null>(null);
+  const [isImageEffectEditorOpen, setIsImageEffectEditorOpen] = useState(false);
+  const [editingImageField, setEditingImageField] = useState<ContentField | null>(null);
+  const [currentImageEffect, setCurrentImageEffect] = useState<any>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -229,6 +233,27 @@ export default function LinearContentEditor() {
       alert('Erreur lors de la sauvegarde');
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function loadImageEffect(pageKey: string, sectionKey: string) {
+    try {
+      const res = await fetch(`/api/admin/image-effects?pageKey=${pageKey}&sectionKey=${sectionKey}`);
+      if (res.ok) {
+        const data = await res.json();
+        // L'API peut renvoyer un tableau, on prend le premier élément
+        if (Array.isArray(data) && data.length > 0) {
+          return data[0];
+        }
+        // Ou peut-être un objet unique
+        if (data && !Array.isArray(data)) {
+          return data;
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error('Error loading image effect:', error);
+      return null;
     }
   }
 
@@ -658,23 +683,26 @@ export default function LinearContentEditor() {
                 {field.type === 'image' && (
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <button
-                      onClick={() => {
-                        setSelectedFieldForImage(field);
-                        setIsMediaPickerOpen(true);
+                      onClick={async () => {
+                        setEditingImageField(field);
+                        // Charger l'effet d'image existant
+                        const effect = await loadImageEffect(activePageKey, field.key);
+                        setCurrentImageEffect(effect);
+                        setIsImageEffectEditorOpen(true);
                       }}
                       className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-all text-sm font-semibold flex items-center gap-1.5"
                     >
                       <span>🖼️</span>
                       <span>Modifier</span>
                     </button>
-                    <a
-                      href="/admin/image-effects"
+                    <button
+                      onClick={() => setIsMediaPickerOpen(true)}
                       className="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium flex items-center gap-1"
-                      title="Aller à images & effets"
+                      title="Ouvrir la médiathèque"
                     >
                       <span>📷</span>
-                      <span>→</span>
-                    </a>
+                      <span>Médiathèque</span>
+                    </button>
                   </div>
                 )}
               </div>
@@ -721,6 +749,46 @@ export default function LinearContentEditor() {
         currentMedia={selectedFieldForImage ? contentValues[selectedFieldForImage.key] : undefined}
         mediaType="image"
       />
+
+      {/* Modal d'édition d'image avec effets */}
+      {editingImageField && (
+        <ImageEffectEditorModal
+          isOpen={isImageEffectEditorOpen}
+          onClose={() => {
+            setIsImageEffectEditorOpen(false);
+            setEditingImageField(null);
+            setCurrentImageEffect(null);
+          }}
+          onSave={async (effect) => {
+            // Sauvegarder l'effet d'image via l'API
+            try {
+              const res = await fetch('/api/admin/image-effects', {
+                method: effect.id ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(effect),
+              });
+
+              if (!res.ok) {
+                throw new Error('Failed to save image effect');
+              }
+
+              // Sauvegarder aussi l'URL de l'image dans le champ
+              if (editingImageField) {
+                await saveField(editingImageField, effect.imageUrl);
+              }
+
+              alert('✅ Image et effets sauvegardés !');
+            } catch (error) {
+              console.error('Error saving image effect:', error);
+              alert('❌ Erreur lors de la sauvegarde');
+              throw error;
+            }
+          }}
+          currentEffect={currentImageEffect}
+          pageKey={activePageKey}
+          sectionKey={editingImageField.key}
+        />
+      )}
     </div>
   );
 }
