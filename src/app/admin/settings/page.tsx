@@ -19,6 +19,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savingReimbursement, setSavingReimbursement] = useState(false);
+  const [savingDesign, setSavingDesign] = useState(false);
 
   const [colors, setColors] = useState<ThemeColors>({
     primary: '#42a4ff',
@@ -28,6 +29,7 @@ export default function SettingsPage() {
   });
 
   const [mutuelleReimbursement, setMutuelleReimbursement] = useState<number>(0);
+  const [useModernDesign, setUseModernDesign] = useState<boolean>(true);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -48,6 +50,13 @@ export default function SettingsPage() {
       if (settingsRes.ok) {
         const settingsData = await settingsRes.json();
         setMutuelleReimbursement(parseFloat(settingsData.value || '0'));
+      }
+
+      // Charger le setting pour le design moderne
+      const designRes = await fetch('/api/admin/settings?key=use_modern_homepage_design');
+      if (designRes.ok) {
+        const designData = await designRes.json();
+        setUseModernDesign(designData.value === 'true' || designData.value === '1');
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -94,6 +103,26 @@ export default function SettingsPage() {
     }
   }
 
+  async function saveDesignSetting() {
+    setSavingDesign(true);
+    try {
+      await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          key: 'use_modern_homepage_design',
+          value: useModernDesign ? 'true' : 'false',
+        }),
+      });
+      alert('✅ Préférence de design sauvegardée ! Rechargez la page d\'accueil pour voir les changements.');
+    } catch (error) {
+      console.error('Error saving design setting:', error);
+      alert('❌ Erreur lors de la sauvegarde');
+    } finally {
+      setSavingDesign(false);
+    }
+  }
+
 
   if (status === 'loading' || loading) {
     return (
@@ -112,6 +141,43 @@ export default function SettingsPage() {
       <AdminHeader currentPage="settings" title="⚙️ Paramètres" />
 
       <div className="container mx-auto px-6 py-8 max-w-6xl">
+        {/* Design de la page d'accueil */}
+        <section className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h2 className="text-2xl font-bold mb-4">🎨 Design de la page d&apos;accueil</h2>
+          <p className="text-gray-600 mb-4">
+            Choisissez entre le design moderne (avec animations et effets visuels) ou le design classique (plus sobre et simple).
+          </p>
+          <div className="flex items-center gap-4 mb-4">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="radio"
+                name="design"
+                checked={useModernDesign}
+                onChange={() => setUseModernDesign(true)}
+                className="w-5 h-5 text-primary"
+              />
+              <span className="font-medium">Design Moderne (avec animations)</span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="radio"
+                name="design"
+                checked={!useModernDesign}
+                onChange={() => setUseModernDesign(false)}
+                className="w-5 h-5 text-primary"
+              />
+              <span className="font-medium">Design Classique (simple)</span>
+            </label>
+          </div>
+          <button
+            onClick={saveDesignSetting}
+            disabled={savingDesign}
+            className="bg-primary text-white px-6 py-2 rounded hover:bg-primary-dark transition disabled:opacity-50"
+          >
+            {savingDesign ? 'Sauvegarde...' : '💾 Sauvegarder la préférence'}
+          </button>
+        </section>
+
         {/* Remboursement Mutuelle */}
         <section className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-2xl font-bold mb-4">💰 Remboursement Mutuelle</h2>

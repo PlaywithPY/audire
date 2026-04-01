@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     }
 
     // Liste des settings publics accessibles sans authentification
-    const publicSettings = ['mutuelle_reimbursement'];
+    const publicSettings = ['mutuelle_reimbursement', 'use_modern_homepage_design'];
 
     if (!publicSettings.includes(key)) {
       return NextResponse.json({ error: 'Setting not found' }, { status: 404 });
