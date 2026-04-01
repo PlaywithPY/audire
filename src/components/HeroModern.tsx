@@ -15,6 +15,25 @@ export default function HeroModern({ texts }: HeroModernProps) {
         <div className="bubble w-80 h-80 bottom-10 right-1/4 animate-float delay-100 opacity-10"></div>
       </div>
 
+      {/* Vague décorative en bas */}
+      <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
+        <svg
+          className="w-full h-24 md:h-32"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0,80 Q300,20 600,80 T1200,80"
+            stroke="white"
+            strokeWidth="3"
+            fill="none"
+            opacity="0.3"
+            className="animate-pulse-slow"
+          />
+        </svg>
+      </div>
+
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           {/* Kicker avec animation */}
