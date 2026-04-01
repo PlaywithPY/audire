@@ -27,8 +27,14 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
     { href: '/admin/settings', label: '⚙️ Paramètres', key: 'settings' },
     { href: '/admin/testimonials', label: '⭐ Avis clients', key: 'testimonials' },
     { href: '/admin/mediatheque', label: '📷 Médiathèque', key: 'mediatheque' },
-    { href: '/admin/sms', label: '📱 SMS', key: 'sms' },
-    { href: '/admin/sms-templates', label: '📝 Modèles SMS', key: 'sms-templates' },
+    {
+      label: '📱 SMS',
+      key: 'sms-menu',
+      subItems: [
+        { href: '/admin/sms', label: '📱 SMS', key: 'sms' },
+        { href: '/admin/sms-templates', label: '📝 Modèles SMS', key: 'sms-templates' },
+      ],
+    },
     { href: '/admin/content-manager', label: '📦 Gestionnaire de Contenu', key: 'content-manager' },
     {
       label: '✏️ Edition',
@@ -48,6 +54,8 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
 
   const editionKeys = ['feature-cards', 'solutions', 'faqs', 'image-effects', 'text-editor', 'content-manager', 'linear-content-editor'];
   const isEditionActive = editionKeys.includes(currentPage);
+  const smsKeys = ['sms', 'sms-templates'];
+  const isSmsActive = smsKeys.includes(currentPage);
 
   return (
     <>
@@ -70,7 +78,7 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
                     >
                       <button
                         className={`transition-colors cursor-pointer ${
-                          isEditionActive
+                          (item.key === 'edition' && isEditionActive) || (item.key === 'sms-menu' && isSmsActive)
                             ? 'text-primary font-bold underline'
                             : 'text-gray-600 hover:text-primary hover:underline'
                         }`}

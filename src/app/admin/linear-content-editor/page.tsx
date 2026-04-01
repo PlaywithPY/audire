@@ -347,6 +347,17 @@ export default function LinearContentEditor() {
     return icons[type] || '📋';
   }
 
+  function getReferenceAdminLink(referenceType?: string): string {
+    const links: Record<string, string> = {
+      'card-images': '/admin/feature-cards',
+      'testimonials': '/admin/testimonials',
+      'solutions': '/admin/solutions',
+      'faqs': '/admin/faqs',
+      'hearing-aids-featured': '/admin/appareils',
+    };
+    return links[referenceType || ''] || '/admin';
+  }
+
   function renderFieldPreview(field: ContentField) {
     const value = contentValues[field.key] ?? field.defaultValue;
 
@@ -645,16 +656,26 @@ export default function LinearContentEditor() {
                 )}
 
                 {field.type === 'image' && (
-                  <button
-                    onClick={() => {
-                      setSelectedFieldForImage(field);
-                      setIsMediaPickerOpen(true);
-                    }}
-                    className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-all text-sm font-semibold flex items-center gap-1.5 flex-shrink-0"
-                  >
-                    <span>🖼️</span>
-                    <span>Image</span>
-                  </button>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button
+                      onClick={() => {
+                        setSelectedFieldForImage(field);
+                        setIsMediaPickerOpen(true);
+                      }}
+                      className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-all text-sm font-semibold flex items-center gap-1.5"
+                    >
+                      <span>🖼️</span>
+                      <span>Modifier</span>
+                    </button>
+                    <a
+                      href="/admin/mediatheque"
+                      className="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium flex items-center gap-1"
+                      title="Aller à la médiathèque"
+                    >
+                      <span>📷</span>
+                      <span>→</span>
+                    </a>
+                  </div>
                 )}
               </div>
 
@@ -664,9 +685,15 @@ export default function LinearContentEditor() {
               </div>
 
               {field.type === 'reference' && (
-                <div className="ml-11 mt-2 text-sm text-teal-700 bg-teal-50 rounded px-3 py-1.5 inline-flex items-center gap-1.5">
-                  <span>🔧</span>
-                  <span>Géré via {field.config?.referenceType}</span>
+                <div className="ml-11 mt-2">
+                  <a
+                    href={getReferenceAdminLink(field.config?.referenceType)}
+                    className="text-sm text-teal-700 bg-teal-50 rounded px-3 py-1.5 inline-flex items-center gap-1.5 hover:bg-teal-100 hover:text-teal-800 transition-all"
+                  >
+                    <span>🔧</span>
+                    <span>Géré via {field.config?.referenceType}</span>
+                    <span className="ml-1">→</span>
+                  </a>
                 </div>
               )}
             </div>
