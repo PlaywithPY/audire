@@ -668,9 +668,9 @@ export default function LinearContentEditor() {
                       <span>Modifier</span>
                     </button>
                     <a
-                      href="/admin/mediatheque"
+                      href="/admin/image-effects"
                       className="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium flex items-center gap-1"
-                      title="Aller à la médiathèque"
+                      title="Aller à images & effets"
                     >
                       <span>📷</span>
                       <span>→</span>
