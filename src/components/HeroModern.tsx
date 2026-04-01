@@ -15,20 +15,23 @@ export default function HeroModern({ texts }: HeroModernProps) {
         <div className="bubble w-80 h-80 bottom-10 right-1/4 animate-float delay-100 opacity-10"></div>
       </div>
 
-      {/* Vague décorative en bas */}
+      {/* Vague décorative en bas avec dégradé transparent */}
       <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
         <svg
-          className="w-full h-24 md:h-32"
+          className="w-full h-32 md:h-40"
           viewBox="0 0 1200 120"
           preserveAspectRatio="none"
           xmlns="http://www.w3.org/2000/svg"
         >
+          <defs>
+            <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="rgb(37, 99, 235)" stopOpacity="1" />
+              <stop offset="100%" stopColor="rgb(37, 99, 235)" stopOpacity="0" />
+            </linearGradient>
+          </defs>
           <path
-            d="M0,80 Q300,20 600,80 T1200,80"
-            stroke="white"
-            strokeWidth="3"
-            fill="none"
-            opacity="0.1"
+            d="M0,40 C300,80 600,0 900,40 C1050,60 1150,40 1200,40 L1200,0 L0,0 Z"
+            fill="url(#wave-gradient)"
             className="animate-pulse-slow"
           />
         </svg>
