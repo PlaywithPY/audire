@@ -35,6 +35,7 @@ export default function LinearContentEditor() {
   const [isImageEffectEditorOpen, setIsImageEffectEditorOpen] = useState(false);
   const [editingImageField, setEditingImageField] = useState<ContentField | null>(null);
   const [currentImageEffect, setCurrentImageEffect] = useState<any>(null);
+  const [imageEffects, setImageEffects] = useState<Record<string, any>>({});
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -45,6 +46,7 @@ export default function LinearContentEditor() {
   useEffect(() => {
     if (status === 'authenticated') {
       loadContentValues();
+      loadAllImageEffects();
     }
   }, [status, activePageKey]);
 
@@ -233,6 +235,25 @@ export default function LinearContentEditor() {
       alert('Erreur lors de la sauvegarde');
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function loadAllImageEffects() {
+    try {
+      const res = await fetch(`/api/admin/image-effects?pageKey=${activePageKey}`);
+      if (res.ok) {
+        const data = await res.json();
+        // Construire un mapping sectionKey -> effect
+        const effectsMap: Record<string, any> = {};
+        if (Array.isArray(data)) {
+          data.forEach((effect: any) => {
+            effectsMap[effect.sectionKey] = effect;
+          });
+        }
+        setImageEffects(effectsMap);
+      }
+    } catch (error) {
+      console.error('Error loading image effects:', error);
     }
   }
 
@@ -441,8 +462,34 @@ export default function LinearContentEditor() {
         );
 
       case 'image':
+        const imageEffect = imageEffects[field.key];
+        if (imageEffect && imageEffect.imageUrl) {
+          return (
+            <div className="rounded-lg overflow-hidden border-2 border-gray-200 shadow-sm">
+              <div className="relative" style={{ height: '200px' }}>
+                <img
+                  src={imageEffect.imageUrl}
+                  alt={imageEffect.alt || 'Preview'}
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: imageEffect.imagePosition || 'center center' }}
+                />
+                {imageEffect.overlayColor && (
+                  <div
+                    className="absolute inset-0"
+                    style={{ backgroundColor: imageEffect.overlayColor }}
+                  />
+                )}
+                {imageEffect.effectType && imageEffect.effectType !== 'none' && (
+                  <div className="absolute top-2 right-2 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
+                    ✨ {imageEffect.effectType}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        }
         return (
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 border border-dashed border-gray-300 rounded-lg p-4">
             <span>🖼️</span>
             <span>{field.helpText}</span>
           </div>
@@ -626,12 +673,12 @@ export default function LinearContentEditor() {
 
         {/* Onglets des pages */}
         <div className="bg-white rounded-2xl shadow-xl mb-8 overflow-hidden border border-purple-100">
-          <div className="flex border-b-2 border-purple-100 overflow-x-auto bg-gradient-to-r from-purple-50 to-pink-50">
+          <div className="flex flex-wrap border-b-2 border-purple-100 bg-gradient-to-r from-purple-50 to-pink-50">
             {pageStructures.map((pageStruct) => (
               <button
                 key={pageStruct.pageKey}
                 onClick={() => setActivePageKey(pageStruct.pageKey)}
-                className={`px-6 py-4 font-bold whitespace-nowrap transition-all transform hover:scale-105 ${
+                className={`px-4 py-3 font-bold whitespace-nowrap transition-all transform hover:scale-105 text-sm ${
                   activePageKey === pageStruct.pageKey
                     ? 'border-b-4 border-purple-500 text-purple-700 bg-white shadow-lg -mb-0.5'
                     : 'text-gray-600 hover:text-purple-600 hover:bg-white/50'
@@ -776,6 +823,9 @@ export default function LinearContentEditor() {
               if (editingImageField) {
                 await saveField(editingImageField, effect.imageUrl);
               }
+
+              // Recharger les effets pour mettre à jour l'aperçu
+              await loadAllImageEffects();
 
               alert('✅ Image et effets sauvegardés !');
             } catch (error) {
