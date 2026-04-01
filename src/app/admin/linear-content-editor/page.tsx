@@ -67,122 +67,105 @@ export default function LinearContentEditor() {
     const mapped: Record<string, any> = {};
 
     if (pageKey === 'home') {
-      mapped.topBadge = oldData['hero-kicker'] || '';
-      mapped.heroTitle = oldData['hero-title'] || '';
-      mapped.heroDescription = oldData['description-1'] || '';
-      mapped.heroPills = [
-        oldData['chip-1'] || '',
-        oldData['chip-2'] || '',
-        oldData['chip-3'] || '',
-        oldData['chip-4'] || ''
-      ];
-      mapped.heroFooterText = 'Vous hésitez ? Venez juste faire le point. Parfois la meilleure réponse est "pas maintenant" — et on vous le dira.';
-      mapped.approachBadge = 'Notre approche';
-      mapped.approachTitle = oldData['section-1-title'] || '';
-      mapped.approachDescription = oldData['description-2'] || '';
-      mapped.productsBadge = 'Nos solutions';
-      mapped.productsTitle = 'Appareils auditifs mis en avant';
-      mapped.productsDescription = 'Découvrez nos appareils auditifs recommandés pour une meilleure audition';
-      mapped.productsLinkText = 'Voir toutes nos solutions auditives';
-      mapped.ctaTitle = oldData['section-2-title'] || '';
-      mapped.ctaDescription = oldData['description-3'] || '';
-      mapped.ctaButtonText = '📅 Réserver maintenant';
-      mapped.ctaFooterText = 'Test gratuit • Sans engagement • Conseils personnalisés';
+      if (oldData['hero-kicker']) mapped.topBadge = oldData['hero-kicker'];
+      if (oldData['hero-title']) mapped.heroTitle = oldData['hero-title'];
+      if (oldData['description-1']) mapped.heroDescription = oldData['description-1'];
+
+      // Pour les pills, on ne mappe que si au moins une valeur existe
+      const pills = [
+        oldData['chip-1'],
+        oldData['chip-2'],
+        oldData['chip-3'],
+        oldData['chip-4']
+      ].filter(p => p);
+      if (pills.length > 0) {
+        mapped.heroPills = [
+          oldData['chip-1'],
+          oldData['chip-2'],
+          oldData['chip-3'],
+          oldData['chip-4']
+        ];
+      }
+
+      if (oldData['section-1-title']) mapped.approachTitle = oldData['section-1-title'];
+      if (oldData['description-2']) mapped.approachDescription = oldData['description-2'];
+      if (oldData['section-2-title']) mapped.ctaTitle = oldData['section-2-title'];
+      if (oldData['description-3']) mapped.ctaDescription = oldData['description-3'];
     }
 
     if (pageKey === 'solutions-auditives') {
-      mapped.heroTitle = oldData['hero-title'] || '';
-      mapped.heroDescription = oldData['description-1'] || '';
-      mapped.brandsBadge = 'Nos marques';
-      mapped.brandsTitle = oldData['section-1-title'] || '';
-      mapped.brandsDescription = oldData['description-2'] || '';
-      mapped.typesBadge = 'Types d\'appareils';
-      mapped.typesTitle = oldData['section-2-title'] || '';
-      mapped.typesDescription = oldData['description-3'] || '';
-      mapped.ctaBadge = 'Besoin d\'aide ?';
-      mapped.ctaTitle = oldData['section-3-title'] || '';
-      mapped.ctaDescription = oldData['description-4'] || '';
+      if (oldData['hero-title']) mapped.heroTitle = oldData['hero-title'];
+      if (oldData['description-1']) mapped.heroDescription = oldData['description-1'];
+      if (oldData['section-1-title']) mapped.brandsTitle = oldData['section-1-title'];
+      if (oldData['description-2']) mapped.brandsDescription = oldData['description-2'];
+      if (oldData['section-2-title']) mapped.typesTitle = oldData['section-2-title'];
+      if (oldData['description-3']) mapped.typesDescription = oldData['description-3'];
+      if (oldData['section-3-title']) mapped.ctaTitle = oldData['section-3-title'];
+      if (oldData['description-4']) mapped.ctaDescription = oldData['description-4'];
     }
 
     if (pageKey === 'remboursements') {
-      mapped.heroTitle = oldData['hero-title'] || '';
-      mapped.heroDescription = oldData['description-1'] || '';
-      mapped.howBadge = 'Le système';
-      mapped.howTitle = oldData['section-1-title'] || '';
-      mapped.howDescription = oldData['description-2'] || '';
-      mapped.inamiBadge = 'INAMI';
-      mapped.inamiTitle = oldData['section-2-title'] || '';
-      mapped.inamiDescription = oldData['description-3'] || '';
-      mapped.ctaBadge = 'Besoin d\'aide ?';
-      mapped.ctaTitle = oldData['section-3-title'] || '';
-      mapped.ctaDescription = oldData['description-4'] || '';
+      if (oldData['hero-title']) mapped.heroTitle = oldData['hero-title'];
+      if (oldData['description-1']) mapped.heroDescription = oldData['description-1'];
+      if (oldData['section-1-title']) mapped.howTitle = oldData['section-1-title'];
+      if (oldData['description-2']) mapped.howDescription = oldData['description-2'];
+      if (oldData['section-2-title']) mapped.inamiTitle = oldData['section-2-title'];
+      if (oldData['description-3']) mapped.inamiDescription = oldData['description-3'];
+      if (oldData['section-3-title']) mapped.ctaTitle = oldData['section-3-title'];
+      if (oldData['description-4']) mapped.ctaDescription = oldData['description-4'];
     }
 
     if (pageKey === 'notre-accompagnement') {
-      mapped.heroTitle = oldData['hero-title'] || '';
-      mapped.heroDescription = oldData['description-1'] || '';
-      mapped.processBadge = 'Le processus';
-      mapped.processTitle = oldData['section-1-title'] || '';
-      mapped.processDescription = oldData['description-2'] || '';
-      mapped.differenceBadge = 'Nos atouts';
-      mapped.differenceTitle = oldData['section-2-title'] || '';
-      mapped.differenceDescription = oldData['description-3'] || '';
-      mapped.ctaBadge = 'C\'est parti !';
-      mapped.ctaTitle = oldData['section-3-title'] || '';
-      mapped.ctaDescription = oldData['description-4'] || '';
+      if (oldData['hero-title']) mapped.heroTitle = oldData['hero-title'];
+      if (oldData['description-1']) mapped.heroDescription = oldData['description-1'];
+      if (oldData['section-1-title']) mapped.processTitle = oldData['section-1-title'];
+      if (oldData['description-2']) mapped.processDescription = oldData['description-2'];
+      if (oldData['section-2-title']) mapped.differenceTitle = oldData['section-2-title'];
+      if (oldData['description-3']) mapped.differenceDescription = oldData['description-3'];
+      if (oldData['section-3-title']) mapped.ctaTitle = oldData['section-3-title'];
+      if (oldData['description-4']) mapped.ctaDescription = oldData['description-4'];
     }
 
     if (pageKey === 'test-auditif-gratuit') {
-      mapped.heroTitle = oldData['hero-title'] || '';
-      mapped.heroDescription = oldData['description-1'] || '';
-      mapped.whyBadge = 'Pourquoi ?';
-      mapped.whyTitle = oldData['section-1-title'] || '';
-      mapped.whyDescription = oldData['description-2'] || '';
-      mapped.howBadge = 'Le déroulement';
-      mapped.howTitle = oldData['section-2-title'] || '';
-      mapped.howDescription = oldData['description-3'] || '';
-      mapped.bookBadge = 'Réservez';
-      mapped.bookTitle = oldData['section-3-title'] || '';
-      mapped.bookDescription = oldData['description-4'] || '';
-      mapped.contactBadge = 'Contact';
-      mapped.contactTitle = oldData['section-4-title'] || '';
-      mapped.contactDescription = oldData['description-5'] || '';
+      if (oldData['hero-title']) mapped.heroTitle = oldData['hero-title'];
+      if (oldData['description-1']) mapped.heroDescription = oldData['description-1'];
+      if (oldData['section-1-title']) mapped.whyTitle = oldData['section-1-title'];
+      if (oldData['description-2']) mapped.whyDescription = oldData['description-2'];
+      if (oldData['section-2-title']) mapped.howTitle = oldData['section-2-title'];
+      if (oldData['description-3']) mapped.howDescription = oldData['description-3'];
+      if (oldData['section-3-title']) mapped.bookTitle = oldData['section-3-title'];
+      if (oldData['description-4']) mapped.bookDescription = oldData['description-4'];
+      if (oldData['section-4-title']) mapped.contactTitle = oldData['section-4-title'];
+      if (oldData['description-5']) mapped.contactDescription = oldData['description-5'];
     }
 
     if (pageKey === 'contact') {
-      mapped.heroTitle = oldData['hero-title'] || '';
-      mapped.heroDescription = oldData['description-1'] || '';
-      mapped.hoursBadge = 'Horaires';
-      mapped.hoursTitle = oldData['section-1-title'] || '';
-      mapped.hoursDescription = oldData['description-2'] || '';
-      mapped.formBadge = 'Message';
-      mapped.formTitle = oldData['section-2-title'] || '';
-      mapped.formDescription = oldData['description-3'] || '';
+      if (oldData['hero-title']) mapped.heroTitle = oldData['hero-title'];
+      if (oldData['description-1']) mapped.heroDescription = oldData['description-1'];
+      if (oldData['section-1-title']) mapped.hoursTitle = oldData['section-1-title'];
+      if (oldData['description-2']) mapped.hoursDescription = oldData['description-2'];
+      if (oldData['section-2-title']) mapped.formTitle = oldData['section-2-title'];
+      if (oldData['description-3']) mapped.formDescription = oldData['description-3'];
     }
 
     if (pageKey === 'faq') {
-      mapped.heroTitle = oldData['hero-title'] || '';
-      mapped.heroDescription = oldData['description-1'] || '';
-      mapped.ctaBadge = 'Besoin d\'aide ?';
-      mapped.ctaTitle = oldData['section-1-title'] || '';
-      mapped.ctaDescription = oldData['description-2'] || '';
+      if (oldData['hero-title']) mapped.heroTitle = oldData['hero-title'];
+      if (oldData['description-1']) mapped.heroDescription = oldData['description-1'];
+      if (oldData['section-1-title']) mapped.ctaTitle = oldData['section-1-title'];
+      if (oldData['description-2']) mapped.ctaDescription = oldData['description-2'];
     }
 
     if (pageKey === 'partenaires-pharmaciens') {
-      mapped.heroTitle = oldData['hero-title'] || '';
-      mapped.heroDescription = oldData['description-1'] || '';
-      mapped.whyBadge = 'Avantages';
-      mapped.whyTitle = oldData['section-1-title'] || '';
-      mapped.whyDescription = oldData['description-2'] || '';
-      mapped.howBadge = 'Processus';
-      mapped.howTitle = oldData['section-2-title'] || '';
-      mapped.howDescription = oldData['description-3'] || '';
-      mapped.materialBadge = 'Matériel';
-      mapped.materialTitle = oldData['section-3-title'] || '';
-      mapped.materialDescription = oldData['description-4'] || '';
-      mapped.ctaBadge = 'Rejoignez-nous';
-      mapped.ctaTitle = oldData['section-4-title'] || '';
-      mapped.ctaDescription = oldData['description-5'] || '';
+      if (oldData['hero-title']) mapped.heroTitle = oldData['hero-title'];
+      if (oldData['description-1']) mapped.heroDescription = oldData['description-1'];
+      if (oldData['section-1-title']) mapped.whyTitle = oldData['section-1-title'];
+      if (oldData['description-2']) mapped.whyDescription = oldData['description-2'];
+      if (oldData['section-2-title']) mapped.howTitle = oldData['section-2-title'];
+      if (oldData['description-3']) mapped.howDescription = oldData['description-3'];
+      if (oldData['section-3-title']) mapped.materialTitle = oldData['section-3-title'];
+      if (oldData['description-4']) mapped.materialDescription = oldData['description-4'];
+      if (oldData['section-4-title']) mapped.ctaTitle = oldData['section-4-title'];
+      if (oldData['description-5']) mapped.ctaDescription = oldData['description-5'];
     }
 
     return mapped;
