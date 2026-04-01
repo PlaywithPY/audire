@@ -587,40 +587,11 @@ export default function LinearContentEditor() {
       <AdminHeader currentPage="linear-content-editor" title="✨ Éditeur de Contenu Linéaire" />
 
       <div className="container mx-auto px-6 py-8">
-        {/* Instructions */}
-        <div className="bg-gradient-to-r from-purple-100 via-blue-100 to-pink-100 border-2 border-purple-200 rounded-2xl p-8 mb-8 shadow-lg">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-white rounded-full p-3 shadow-md">
-              <span className="text-3xl">🎨</span>
-            </div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Nouveau système d'édition
-            </h2>
-          </div>
-          <ul className="space-y-3 text-gray-700">
-            <li className="flex items-start gap-3 bg-white/60 backdrop-blur-sm rounded-lg p-3 hover:bg-white/80 transition-all">
-              <span className="text-xl flex-shrink-0">✨</span>
-              <span className="font-medium">Tous les éléments sont organisés dans l'ordre exact d'affichage</span>
-            </li>
-            <li className="flex items-start gap-3 bg-white/60 backdrop-blur-sm rounded-lg p-3 hover:bg-white/80 transition-all">
-              <span className="text-xl flex-shrink-0">🎯</span>
-              <span className="font-medium">Éditez chaque élément individuellement en suivant le flow de la page</span>
-            </li>
-            <li className="flex items-start gap-3 bg-white/60 backdrop-blur-sm rounded-lg p-3 hover:bg-white/80 transition-all">
-              <span className="text-xl flex-shrink-0">🔄</span>
-              <span className="font-medium">Les modifications sont sauvegardées immédiatement</span>
-            </li>
-            <li className="flex items-start gap-3 bg-white/60 backdrop-blur-sm rounded-lg p-3 hover:bg-white/80 transition-all">
-              <span className="text-xl flex-shrink-0">📝</span>
-              <span className="font-medium">Supporte textes, badges, capsules, boutons, images et références</span>
-            </li>
-          </ul>
-        </div>
 
         {/* Onglets des pages */}
         <div className="bg-white rounded-2xl shadow-xl mb-8 overflow-hidden border border-purple-100">
           <div className="flex border-b-2 border-purple-100 overflow-x-auto bg-gradient-to-r from-purple-50 to-pink-50">
-            {pageStructures.map((pageStruct, idx) => (
+            {pageStructures.map((pageStruct) => (
               <button
                 key={pageStruct.pageKey}
                 onClick={() => setActivePageKey(pageStruct.pageKey)}
@@ -630,10 +601,7 @@ export default function LinearContentEditor() {
                     : 'text-gray-600 hover:text-purple-600 hover:bg-white/50'
                 }`}
               >
-                <span className="flex items-center gap-2">
-                  <span className="text-xl">{['🏠', '🎧', '💰', '🤝', '📋', '📞', '❓', '🏥'][idx % 8]}</span>
-                  {pageStruct.pageLabel}
-                </span>
+                {pageStruct.pageLabel}
               </button>
             ))}
           </div>
