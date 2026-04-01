@@ -338,6 +338,32 @@ export default function LinearContentEditor() {
     setEditingValue(contentValues[field.key] ?? field.defaultValue);
   }
 
+  function getFieldTypeColor(type: string) {
+    const colors: Record<string, string> = {
+      'text': 'from-blue-400 to-blue-600',
+      'badge': 'from-purple-400 to-purple-600',
+      'textarea': 'from-green-400 to-green-600',
+      'array-pills': 'from-pink-400 to-pink-600',
+      'array-ctas': 'from-orange-400 to-orange-600',
+      'image': 'from-indigo-400 to-indigo-600',
+      'reference': 'from-teal-400 to-teal-600',
+    };
+    return colors[type] || 'from-gray-400 to-gray-600';
+  }
+
+  function getFieldTypeIcon(type: string) {
+    const icons: Record<string, string> = {
+      'text': '📝',
+      'badge': '🏷️',
+      'textarea': '📄',
+      'array-pills': '💊',
+      'array-ctas': '🔘',
+      'image': '🖼️',
+      'reference': '🔗',
+    };
+    return icons[type] || '📋';
+  }
+
   function renderFieldPreview(field: ContentField) {
     const value = contentValues[field.key] ?? field.defaultValue;
 
@@ -345,27 +371,27 @@ export default function LinearContentEditor() {
       case 'text':
       case 'badge':
         return (
-          <div className="bg-gray-50 rounded p-3 text-sm text-gray-700">
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 text-gray-800 border-2 border-blue-200">
             {value || <span className="text-gray-400 italic">Non défini</span>}
           </div>
         );
 
       case 'textarea':
         return (
-          <div className="bg-gray-50 rounded p-3 text-sm text-gray-700 whitespace-pre-wrap">
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 text-gray-800 whitespace-pre-wrap border-2 border-green-200">
             {value || <span className="text-gray-400 italic">Non défini</span>}
           </div>
         );
 
       case 'array-pills':
         return (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {(value || []).map((pill: string, idx: number) => (
               <span
                 key={idx}
-                className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm"
+                className="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-4 py-2 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
               >
-                {pill || <span className="text-gray-400 italic">Vide</span>}
+                {pill || <span className="text-white/70 italic">Vide</span>}
               </span>
             ))}
           </div>
@@ -373,14 +399,14 @@ export default function LinearContentEditor() {
 
       case 'array-ctas':
         return (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {(value || []).map((cta: any, idx: number) => (
               <button
                 key={idx}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold ${
+                className={`px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all transform hover:scale-105 ${
                   cta.style === 'primary'
-                    ? 'bg-primary text-white'
-                    : 'bg-gray-200 text-gray-700'
+                    ? 'bg-gradient-to-r from-orange-400 to-red-500 text-white'
+                    : 'bg-gradient-to-r from-gray-200 to-gray-300 text-gray-800'
                 }`}
               >
                 {cta.text}
@@ -391,9 +417,9 @@ export default function LinearContentEditor() {
 
       case 'image':
         return (
-          <div className="bg-gray-100 rounded p-6 text-center">
-            <div className="text-4xl mb-2">🖼️</div>
-            <p className="text-xs text-gray-500">
+          <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-xl p-8 text-center border-2 border-indigo-300 shadow-inner">
+            <div className="text-6xl mb-3 animate-bounce">🖼️</div>
+            <p className="text-sm text-indigo-700 font-semibold">
               {field.helpText}
             </p>
           </div>
@@ -401,12 +427,14 @@ export default function LinearContentEditor() {
 
       case 'reference':
         return (
-          <div className="bg-blue-50 border border-blue-200 rounded p-4">
-            <div className="flex items-center gap-2 text-blue-700">
-              <span className="text-2xl">🔗</span>
-              <div className="text-sm">
-                <div className="font-semibold">Contenu référencé</div>
-                <div className="text-xs text-blue-600">
+          <div className="bg-gradient-to-r from-teal-50 to-cyan-50 border-2 border-teal-300 rounded-xl p-5 shadow-lg">
+            <div className="flex items-center gap-3 text-teal-700">
+              <div className="bg-white rounded-full p-3 shadow-md">
+                <span className="text-3xl">🔗</span>
+              </div>
+              <div>
+                <div className="font-bold text-lg">Contenu référencé</div>
+                <div className="text-sm text-teal-600">
                   {field.helpText}
                 </div>
               </div>
@@ -416,7 +444,7 @@ export default function LinearContentEditor() {
 
       default:
         return (
-          <div className="text-sm text-gray-500 italic">
+          <div className="text-sm text-gray-500 italic bg-gray-100 rounded-lg p-4">
             Type de champ non supporté: {field.type}
           </div>
         );
@@ -427,31 +455,40 @@ export default function LinearContentEditor() {
     if (!editingField) return null;
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-lg p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold mb-2">✏️ {editingField.label}</h2>
-              <p className="text-sm text-gray-600">{editingField.helpText}</p>
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+        <div className="bg-gradient-to-br from-white via-purple-50 to-pink-50 rounded-3xl p-10 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border-4 border-purple-200 transform animate-slide-up">
+          <div className="flex items-start justify-between mb-8">
+            <div className="flex items-start gap-4">
+              <div className="bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-2xl p-4 shadow-lg">
+                <span className="text-4xl">{getFieldTypeIcon(editingField.type)}</span>
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                  {editingField.label}
+                </h2>
+                <p className="text-gray-600 bg-white/70 backdrop-blur-sm rounded-lg px-3 py-2 border border-purple-200">
+                  💡 {editingField.helpText}
+                </p>
+              </div>
             </div>
             <button
               onClick={() => {
                 setEditingField(null);
                 setEditingValue(null);
               }}
-              className="text-gray-400 hover:text-gray-600 text-2xl"
+              className="text-gray-400 hover:text-red-500 text-4xl hover:rotate-90 transition-all transform hover:scale-110"
             >
               ×
             </button>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             {editingField.type === 'text' && (
               <input
                 type="text"
                 value={editingValue || ''}
                 onChange={(e) => setEditingValue(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border-3 border-purple-300 rounded-xl px-6 py-4 focus:outline-none focus:ring-4 focus:ring-purple-400 focus:border-purple-500 bg-white shadow-lg text-lg transition-all"
                 placeholder={editingField.placeholder}
               />
             )}
@@ -461,7 +498,7 @@ export default function LinearContentEditor() {
                 type="text"
                 value={editingValue || ''}
                 onChange={(e) => setEditingValue(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border-3 border-purple-300 rounded-xl px-6 py-4 focus:outline-none focus:ring-4 focus:ring-purple-400 focus:border-purple-500 bg-white shadow-lg text-lg transition-all"
                 placeholder={editingField.placeholder}
               />
             )}
@@ -470,16 +507,19 @@ export default function LinearContentEditor() {
               <textarea
                 value={editingValue || ''}
                 onChange={(e) => setEditingValue(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border-3 border-green-300 rounded-xl px-6 py-4 focus:outline-none focus:ring-4 focus:ring-green-400 focus:border-green-500 bg-white shadow-lg text-lg transition-all"
                 rows={editingField.rows || 5}
                 placeholder={editingField.placeholder}
               />
             )}
 
             {editingField.type === 'array-pills' && (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {(editingValue || []).map((pill: string, idx: number) => (
-                  <div key={idx} className="flex gap-2">
+                  <div key={idx} className="flex gap-3 items-center bg-white rounded-xl p-2 shadow-lg border-2 border-pink-200 hover:border-pink-400 transition-all">
+                    <div className="bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-md">
+                      {idx + 1}
+                    </div>
                     <input
                       type="text"
                       value={pill}
@@ -488,7 +528,7 @@ export default function LinearContentEditor() {
                         newPills[idx] = e.target.value;
                         setEditingValue(newPills);
                       }}
-                      className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="flex-1 border-2 border-pink-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-4 focus:ring-pink-400 bg-white text-lg"
                       placeholder={`Capsule ${idx + 1}`}
                     />
                     <button
@@ -496,7 +536,7 @@ export default function LinearContentEditor() {
                         const newPills = editingValue.filter((_: any, i: number) => i !== idx);
                         setEditingValue(newPills);
                       }}
-                      className="text-red-500 hover:text-red-700 px-3"
+                      className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-4 py-3 transition-all transform hover:scale-110 shadow-lg"
                     >
                       🗑️
                     </button>
@@ -506,7 +546,7 @@ export default function LinearContentEditor() {
                   onClick={() => {
                     setEditingValue([...(editingValue || []), '']);
                   }}
-                  className="w-full border-2 border-dashed border-gray-300 rounded-lg px-4 py-2 text-gray-600 hover:border-primary hover:text-primary"
+                  className="w-full border-3 border-dashed border-pink-400 rounded-xl px-6 py-4 text-pink-600 hover:border-pink-600 hover:text-pink-700 hover:bg-pink-50 transition-all font-bold text-lg shadow-lg"
                 >
                   ➕ Ajouter une capsule
                 </button>
@@ -514,22 +554,24 @@ export default function LinearContentEditor() {
             )}
           </div>
 
-          <div className="flex gap-4 mt-6 pt-6 border-t border-gray-200">
+          <div className="flex gap-4 mt-8 pt-8 border-t-4 border-purple-200">
             <button
               onClick={() => saveField(editingField, editingValue)}
               disabled={saving}
-              className="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark disabled:opacity-50"
+              className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-5 rounded-2xl font-bold hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 text-lg flex items-center justify-center gap-3"
             >
-              {saving ? 'Sauvegarde...' : '💾 Sauvegarder'}
+              <span className="text-2xl">{saving ? '⏳' : '💾'}</span>
+              <span>{saving ? 'Sauvegarde en cours...' : 'Sauvegarder les modifications'}</span>
             </button>
             <button
               onClick={() => {
                 setEditingField(null);
                 setEditingValue(null);
               }}
-              className="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300"
+              className="flex-1 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800 px-8 py-5 rounded-2xl font-bold hover:from-gray-400 hover:to-gray-500 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 text-lg flex items-center justify-center gap-3"
             >
-              Annuler
+              <span className="text-2xl">❌</span>
+              <span>Annuler</span>
             </button>
           </div>
         </div>
@@ -539,10 +581,17 @@ export default function LinearContentEditor() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100">
         <div className="text-center">
-          <div className="animate-spin text-6xl mb-4">⏳</div>
-          <p className="text-text-light">Chargement...</p>
+          <div className="relative">
+            <div className="animate-spin text-8xl mb-6">🎨</div>
+            <div className="absolute inset-0 animate-ping opacity-50">
+              <div className="text-8xl">✨</div>
+            </div>
+          </div>
+          <p className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Chargement de la magie...
+          </p>
         </div>
       </div>
     );
@@ -556,35 +605,57 @@ export default function LinearContentEditor() {
   const activeStructure = getPageStructure(activePageKey);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <AdminHeader currentPage="linear-content-editor" title="📋 Éditeur de Contenu Linéaire" />
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50">
+      <AdminHeader currentPage="linear-content-editor" title="✨ Éditeur de Contenu Linéaire" />
 
       <div className="container mx-auto px-6 py-8">
         {/* Instructions */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-          <h2 className="text-lg font-bold mb-2">📖 Nouveau système d'édition</h2>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li>✨ Tous les éléments sont organisés dans l'ordre exact d'affichage</li>
-            <li>🎯 Éditez chaque élément individuellement en suivant le flow de la page</li>
-            <li>🔄 Les modifications sont sauvegardées immédiatement</li>
-            <li>📝 Supporte textes, badges, capsules, boutons, images et références</li>
+        <div className="bg-gradient-to-r from-purple-100 via-blue-100 to-pink-100 border-2 border-purple-200 rounded-2xl p-8 mb-8 shadow-lg">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="bg-white rounded-full p-3 shadow-md">
+              <span className="text-3xl">🎨</span>
+            </div>
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Nouveau système d'édition
+            </h2>
+          </div>
+          <ul className="space-y-3 text-gray-700">
+            <li className="flex items-start gap-3 bg-white/60 backdrop-blur-sm rounded-lg p-3 hover:bg-white/80 transition-all">
+              <span className="text-xl flex-shrink-0">✨</span>
+              <span className="font-medium">Tous les éléments sont organisés dans l'ordre exact d'affichage</span>
+            </li>
+            <li className="flex items-start gap-3 bg-white/60 backdrop-blur-sm rounded-lg p-3 hover:bg-white/80 transition-all">
+              <span className="text-xl flex-shrink-0">🎯</span>
+              <span className="font-medium">Éditez chaque élément individuellement en suivant le flow de la page</span>
+            </li>
+            <li className="flex items-start gap-3 bg-white/60 backdrop-blur-sm rounded-lg p-3 hover:bg-white/80 transition-all">
+              <span className="text-xl flex-shrink-0">🔄</span>
+              <span className="font-medium">Les modifications sont sauvegardées immédiatement</span>
+            </li>
+            <li className="flex items-start gap-3 bg-white/60 backdrop-blur-sm rounded-lg p-3 hover:bg-white/80 transition-all">
+              <span className="text-xl flex-shrink-0">📝</span>
+              <span className="font-medium">Supporte textes, badges, capsules, boutons, images et références</span>
+            </li>
           </ul>
         </div>
 
         {/* Onglets des pages */}
-        <div className="bg-white rounded-lg shadow-md mb-8">
-          <div className="flex border-b border-gray-200 overflow-x-auto">
-            {pageStructures.map((pageStruct) => (
+        <div className="bg-white rounded-2xl shadow-xl mb-8 overflow-hidden border border-purple-100">
+          <div className="flex border-b-2 border-purple-100 overflow-x-auto bg-gradient-to-r from-purple-50 to-pink-50">
+            {pageStructures.map((pageStruct, idx) => (
               <button
                 key={pageStruct.pageKey}
                 onClick={() => setActivePageKey(pageStruct.pageKey)}
-                className={`px-6 py-4 font-semibold whitespace-nowrap transition-colors ${
+                className={`px-6 py-4 font-bold whitespace-nowrap transition-all transform hover:scale-105 ${
                   activePageKey === pageStruct.pageKey
-                    ? 'border-b-2 border-primary text-primary bg-blue-50'
-                    : 'text-gray-600 hover:text-primary hover:bg-gray-50'
+                    ? 'border-b-4 border-purple-500 text-purple-700 bg-white shadow-lg -mb-0.5'
+                    : 'text-gray-600 hover:text-purple-600 hover:bg-white/50'
                 }`}
               >
-                {pageStruct.pageLabel}
+                <span className="flex items-center gap-2">
+                  <span className="text-xl">{['🏠', '🎧', '💰', '🤝', '📋', '📞', '❓', '🏥'][idx % 8]}</span>
+                  {pageStruct.pageLabel}
+                </span>
               </button>
             ))}
           </div>
@@ -595,32 +666,42 @@ export default function LinearContentEditor() {
           {activeStructure?.fields.map((field, index) => (
             <div
               key={field.key}
-              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+              className="bg-white rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all transform hover:scale-[1.02] border-l-8 border-gradient-to-b"
+              style={{
+                borderLeftColor: `hsl(${(index * 40) % 360}, 70%, 60%)`
+              }}
             >
-              <div className="flex items-start justify-between mb-4">
+              <div className="flex items-start justify-between mb-6">
                 <div className="flex-grow">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-2xl font-bold text-gray-300">
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg shadow-lg">
                       {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <h3 className="text-lg font-bold text-gray-800">{field.label}</h3>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl">{getFieldTypeIcon(field.type)}</span>
+                      <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                        {field.label}
+                      </h3>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 ml-12">
-                    <code className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600">
+                  <div className="flex items-center gap-3 ml-16">
+                    <code className="text-xs bg-gray-100 px-3 py-1.5 rounded-full text-gray-700 font-mono border border-gray-300">
                       {field.key}
                     </code>
-                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                    <span className={`text-xs bg-gradient-to-r ${getFieldTypeColor(field.type)} text-white px-3 py-1.5 rounded-full font-bold shadow-md`}>
                       {field.type}
                     </span>
                   </div>
                   {field.helpText && (
-                    <p className="text-sm text-gray-500 mt-2 ml-12">{field.helpText}</p>
+                    <p className="text-sm text-gray-600 mt-3 ml-16 bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
+                      💡 {field.helpText}
+                    </p>
                   )}
                 </div>
               </div>
 
               {/* Preview du contenu */}
-              <div className="mb-4">
+              <div className="mb-6">
                 {renderFieldPreview(field)}
               </div>
 
@@ -628,15 +709,18 @@ export default function LinearContentEditor() {
               {!['reference', 'image'].includes(field.type) && (
                 <button
                   onClick={() => openEditModal(field)}
-                  className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                  className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-4 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all font-bold shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2"
                 >
-                  ✏️ Modifier
+                  <span className="text-xl">✏️</span>
+                  <span>Modifier ce champ</span>
                 </button>
               )}
 
               {field.type === 'reference' && (
-                <div className="text-sm text-gray-500 italic text-center">
-                  Géré via {field.config?.referenceType}
+                <div className="text-center bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl p-4 border-2 border-teal-200">
+                  <span className="text-teal-700 font-semibold">
+                    🔧 Géré via {field.config?.referenceType}
+                  </span>
                 </div>
               )}
 
@@ -646,9 +730,10 @@ export default function LinearContentEditor() {
                     setSelectedFieldForImage(field);
                     setIsMediaPickerOpen(true);
                   }}
-                  className="w-full bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors font-medium"
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-4 rounded-xl hover:from-purple-600 hover:to-pink-700 transition-all font-bold shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2"
                 >
-                  🖼️ Gérer l'image
+                  <span className="text-xl">🖼️</span>
+                  <span>Gérer l'image</span>
                 </button>
               )}
             </div>
