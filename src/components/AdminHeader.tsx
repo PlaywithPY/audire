@@ -26,7 +26,7 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
     { href: '/admin/appareils', label: '🦻 Appareils', key: 'appareils' },
     { href: '/admin/settings', label: '⚙️ Paramètres', key: 'settings' },
     { href: '/admin/testimonials', label: '⭐ Avis clients', key: 'testimonials' },
-    { href: '/admin/mediatheque', label: '📷 Médiathèque', key: 'mediatheque' },
+    { href: '/admin/image-effects', label: '📷 Médiathèque', key: 'mediatheque' },
     {
       label: '📱 SMS',
       key: 'sms-menu',
