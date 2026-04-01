@@ -175,10 +175,13 @@ export default function TextsSection() {
                   <div className="mb-3 p-3 bg-gray-50 rounded text-sm">
                     {existing.content.length > 200
                       ? existing.content.substring(0, 200) + '...'
-                      : existing.content}
+                      : existing.content || <span className="text-gray-400 italic">{textDef.defaultContent}</span>}
                   </div>
                   <button
-                    onClick={() => setEditingText(existing)}
+                    onClick={() => setEditingText({
+                      ...existing,
+                      content: existing.content || textDef.defaultContent
+                    })}
                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                   >
                     ✏️ Modifier

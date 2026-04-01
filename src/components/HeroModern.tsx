@@ -95,19 +95,6 @@ export default function HeroModern({ texts }: HeroModernProps) {
           </div>
         </div>
       </div>
-
-      {/* Vague décorative en bas avec dégradé vers transparent */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-          <defs>
-            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" style={{ stopColor: '#1e40af', stopOpacity: 0.3 }} />
-              <stop offset="100%" style={{ stopColor: '#1e40af', stopOpacity: 0 }} />
-            </linearGradient>
-          </defs>
-          <path d="M0 50L60 45C120 40 240 30 360 35C480 40 600 60 720 65C840 70 960 60 1080 50C1200 40 1320 30 1380 25L1440 20V100H1380C1320 100 1200 100 1080 100C960 100 840 100 720 100C600 100 480 100 360 100C240 100 120 100 60 100H0V50Z" fill="url(#waveGradient)"/>
-        </svg>
-      </div>
     </section>
   );
 }
