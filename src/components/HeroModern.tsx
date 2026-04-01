@@ -28,7 +28,7 @@ export default function HeroModern({ texts }: HeroModernProps) {
             stroke="white"
             strokeWidth="3"
             fill="none"
-            opacity="0.3"
+            opacity="0.1"
             className="animate-pulse-slow"
           />
         </svg>
