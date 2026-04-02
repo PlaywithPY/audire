@@ -10,10 +10,22 @@ interface FAQ {
   order: number;
   isVisible: boolean;
   category: string | null;
+  categoryId: number | null;
+  faqCategory?: {
+    id: number;
+    name: string;
+  };
+}
+
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
 }
 
 export default function AdminFAQs() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingFAQ, setEditingFAQ] = useState<FAQ | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -26,11 +38,25 @@ export default function AdminFAQs() {
     order: 0,
     isVisible: true,
     category: '',
+    categoryId: null as number | null,
   });
 
   useEffect(() => {
     loadFAQs();
+    loadCategories();
   }, []);
+
+  async function loadCategories() {
+    try {
+      const res = await fetch('/api/admin/categories');
+      if (res.ok) {
+        const data = await res.json();
+        setCategories(data);
+      }
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    }
+  }
 
   async function loadFAQs() {
     try {
@@ -58,6 +84,7 @@ export default function AdminFAQs() {
       order: faq.order,
       isVisible: faq.isVisible,
       category: faq.category || '',
+      categoryId: faq.categoryId,
     });
     setIsCreating(false);
   }
@@ -71,6 +98,7 @@ export default function AdminFAQs() {
       order: faqs.length,
       isVisible: true,
       category: '',
+      categoryId: null,
     });
   }
 
@@ -83,6 +111,7 @@ export default function AdminFAQs() {
       order: 0,
       isVisible: true,
       category: '',
+      categoryId: null,
     });
   }
 
@@ -277,15 +306,24 @@ export default function AdminFAQs() {
 
                 <div>
                   <label className="block text-sm font-semibold mb-2">
-                    Catégorie (optionnel)
+                    Catégorie
                   </label>
-                  <input
-                    type="text"
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  <select
+                    value={formData.categoryId || ''}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      categoryId: e.target.value ? parseInt(e.target.value) : null,
+                      category: e.target.value ? categories.find(c => c.id === parseInt(e.target.value))?.name || '' : ''
+                    })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="remboursements, tests..."
-                  />
+                  >
+                    <option value="">-- Aucune catégorie --</option>
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
@@ -344,9 +382,14 @@ export default function AdminFAQs() {
                         <span className="text-xs bg-gray-200 px-2 py-1 rounded">
                           Ordre: {faq.order}
                         </span>
-                        {faq.category && (
+                        {faq.faqCategory && (
                           <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
-                            {faq.category}
+                            {faq.faqCategory.name}
+                          </span>
+                        )}
+                        {faq.category && !faq.faqCategory && (
+                          <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
+                            {faq.category} (texte libre)
                           </span>
                         )}
                         {!faq.isVisible && (

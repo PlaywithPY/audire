@@ -5,7 +5,7 @@ import AutoSendReminders from './AutoSendReminders';
 import { useState } from 'react';
 
 interface AdminHeaderProps {
-  currentPage?: 'dashboard' | 'centres' | 'appareils' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'settings' | 'testimonials' | 'rendez-vous' | 'mediatheque' | 'sms' | 'sms-templates' | 'content-manager' | 'linear-content-editor';
+  currentPage?: 'dashboard' | 'centres' | 'appareils' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'categories' | 'settings' | 'testimonials' | 'rendez-vous' | 'mediatheque' | 'sms' | 'sms-templates' | 'content-manager' | 'linear-content-editor';
   title?: string;
 }
 
@@ -44,6 +44,7 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
         { href: '/admin/feature-cards', label: '🎨 Feature Cards', key: 'feature-cards' },
         { href: '/admin/solutions', label: '📋 Solutions', key: 'solutions' },
         { href: '/admin/faqs', label: '❓ FAQs', key: 'faqs' },
+        { href: '/admin/categories', label: '📁 Catégories FAQ', key: 'categories' },
         { href: '/admin/image-effects', label: '🖼️ Images & Effets', key: 'image-effects' },
         { href: '/admin/text-editor', label: '📝 Textes', key: 'text-editor' },
       ],
@@ -52,7 +53,7 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
     { href: '/admin/database', label: '🗄️ Base de données', key: 'database' },
   ];
 
-  const editionKeys = ['feature-cards', 'solutions', 'faqs', 'image-effects', 'text-editor', 'content-manager', 'linear-content-editor'];
+  const editionKeys = ['feature-cards', 'solutions', 'faqs', 'categories', 'image-effects', 'text-editor', 'content-manager', 'linear-content-editor'];
   const isEditionActive = editionKeys.includes(currentPage);
   const smsKeys = ['sms', 'sms-templates'];
   const isSmsActive = smsKeys.includes(currentPage);

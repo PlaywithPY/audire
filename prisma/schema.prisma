@@ -194,19 +194,39 @@ model PageText {
   @@index([pageKey])
 }
 
+// Catégories pour les FAQs
+model FAQCategory {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique // Nom de la catégorie (ex: "Remboursements", "Appareils auditifs")
+  slug        String   @unique // Slug pour l'URL (ex: "remboursements", "appareils")
+  imageUrl    String? // URL de l'image de la catégorie
+  description String? // Description courte de la catégorie
+  order       Int      @default(0) // Ordre d'affichage
+  isVisible   Boolean  @default(true) // Visible ou masqué
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  faqs FAQ[] // Relation avec les FAQs
+
+  @@index([order, isVisible])
+}
+
 // Questions fréquentes (FAQ)
 model FAQ {
-  id        Int      @id @default(autoincrement())
-  question  String // Question
-  answer    String // Réponse
-  order     Int      @default(0) // Ordre d'affichage
-  isVisible Boolean  @default(true) // Visible ou masqué
-  category  String? // Catégorie optionnelle (ex: "remboursements", "appareils", "tests")
-  updatedAt DateTime @updatedAt
-  createdAt DateTime @default(now())
+  id         Int           @id @default(autoincrement())
+  question   String // Question
+  answer     String // Réponse
+  order      Int           @default(0) // Ordre d'affichage
+  isVisible  Boolean       @default(true) // Visible ou masqué
+  category   String? // Catégorie optionnelle (texte libre pour rétrocompatibilité)
+  categoryId Int? // Lien vers la catégorie structurée (optionnel)
+  faqCategory FAQCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  updatedAt  DateTime      @updatedAt
+  createdAt  DateTime      @default(now())
 
   @@index([order, isVisible])
   @@index([category])
+  @@index([categoryId])
 }
 
 // Appareils auditifs (produits)
