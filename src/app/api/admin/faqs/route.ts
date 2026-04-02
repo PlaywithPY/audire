@@ -24,7 +24,16 @@ export async function GET(request: NextRequest) {
       orderBy: [
         { order: 'asc' },
         { createdAt: 'asc' }
-      ]
+      ],
+      include: {
+        faqCategory: {
+          select: {
+            id: true,
+            name: true,
+            slug: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(faqs);
@@ -46,7 +55,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { question, answer, order, isVisible, category } = body;
+    const { question, answer, order, isVisible, category, categoryId } = body;
 
     if (!question || !answer) {
       return NextResponse.json(
@@ -62,7 +71,17 @@ export async function POST(request: NextRequest) {
         order: order || 0,
         isVisible: isVisible !== undefined ? isVisible : true,
         category: category || null,
+        categoryId: categoryId || null,
       },
+      include: {
+        faqCategory: {
+          select: {
+            id: true,
+            name: true,
+            slug: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(faq);
@@ -84,7 +103,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, question, answer, order, isVisible, category } = body;
+    const { id, question, answer, order, isVisible, category, categoryId } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'FAQ ID is required' }, { status: 400 });
@@ -98,7 +117,17 @@ export async function PUT(request: NextRequest) {
         order,
         isVisible,
         category: category || null,
+        categoryId: categoryId || null,
       },
+      include: {
+        faqCategory: {
+          select: {
+            id: true,
+            name: true,
+            slug: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(faq);

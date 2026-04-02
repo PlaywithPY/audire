@@ -1,12 +1,25 @@
 'use client';
 
 import FAQAccordion from "@/components/FAQAccordion";
+import CategoryGrid from "@/components/CategoryGrid";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
 import { useState, useEffect } from "react";
 
 interface FAQ {
+  id: number;
   question: string;
   answer: string;
+  order: number;
+}
+
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  imageUrl: string | null;
+  description: string | null;
+  order: number;
+  faqs: FAQ[];
 }
 
 interface PageTexts {
@@ -14,18 +27,40 @@ interface PageTexts {
 }
 
 export default function FAQ() {
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [allFaqs, setAllFaqs] = useState<FAQ[]>([]);
+  const [displayedFaqs, setDisplayedFaqs] = useState<FAQ[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [texts, setTexts] = useState<PageTexts>({});
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
       try {
-        // Charger les FAQs depuis l'API
+        // Charger les catégories avec leurs FAQs
+        const categoriesRes = await fetch('/api/categories');
+        if (categoriesRes.ok) {
+          const categoriesData = await categoriesRes.json();
+          setCategories(categoriesData);
+
+          // Extraire toutes les FAQs de toutes les catégories
+          const allFaqsFromCategories = categoriesData.flatMap((cat: Category) => cat.faqs);
+          setAllFaqs(allFaqsFromCategories);
+          setDisplayedFaqs(allFaqsFromCategories);
+        }
+
+        // Charger aussi les FAQs sans catégorie
         const faqsRes = await fetch('/api/faqs');
         if (faqsRes.ok) {
           const faqsData = await faqsRes.json();
-          setFaqs(faqsData);
+          // Si on a des FAQs qui ne sont pas dans les catégories, les ajouter
+          const uncategorizedFaqs = faqsData.filter(
+            (faq: FAQ) => !allFaqs.some((f: FAQ) => f.id === faq.id)
+          );
+          if (uncategorizedFaqs.length > 0) {
+            setAllFaqs(prev => [...prev, ...uncategorizedFaqs]);
+            setDisplayedFaqs(prev => [...prev, ...uncategorizedFaqs]);
+          }
         }
 
         // Charger les textes de la page
@@ -42,6 +77,18 @@ export default function FAQ() {
     }
     loadData();
   }, []);
+
+  const handleCategorySelect = (categoryId: number | null) => {
+    setSelectedCategory(categoryId);
+    if (categoryId === null) {
+      // Afficher toutes les FAQs
+      setDisplayedFaqs(allFaqs);
+    } else {
+      // Afficher seulement les FAQs de la catégorie sélectionnée
+      const category = categories.find(cat => cat.id === categoryId);
+      setDisplayedFaqs(category?.faqs || []);
+    }
+  };
 
   return (
     <>
@@ -63,19 +110,39 @@ export default function FAQ() {
           </div>
         </section>
 
-        {/* FAQ Accordion */}
+        {/* Categories et FAQ Accordion */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             {isLoading ? (
               <div className="text-center py-12">
                 <p className="text-gray-500">Chargement des questions...</p>
               </div>
-            ) : faqs.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-gray-500">Aucune question disponible pour le moment.</p>
-              </div>
             ) : (
-              <FAQAccordion faqs={faqs} />
+              <>
+                {/* Grille de catégories */}
+                {categories.length > 0 && (
+                  <CategoryGrid
+                    categories={categories}
+                    onSelectCategory={handleCategorySelect}
+                  />
+                )}
+
+                {/* FAQ Accordion */}
+                {displayedFaqs.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-gray-500">Aucune question disponible pour le moment.</p>
+                  </div>
+                ) : (
+                  <>
+                    {selectedCategory !== null && (
+                      <h3 className="text-2xl font-bold mb-6 text-center">
+                        {categories.find(cat => cat.id === selectedCategory)?.name}
+                      </h3>
+                    )}
+                    <FAQAccordion faqs={displayedFaqs} />
+                  </>
+                )}
+              </>
             )}
           </div>
         </section>
