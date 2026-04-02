@@ -44,7 +44,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { solutionKey, fullDesc, detailImage, detailEmoji, pros, cons, deviceLinks, showDeviceLinks, accessoryLinks, showAccessoryLinks } = body;
+    const { solutionKey, fullDesc, detailImage, detailEmoji, backgroundColor, pros, cons, deviceLinks, showDeviceLinks, accessoryLinks, showAccessoryLinks } = body;
 
     const solution = await prisma.solution.create({
       data: {
@@ -52,6 +52,7 @@ export async function POST(request: Request) {
         fullDesc,
         detailImage: detailImage || null,
         detailEmoji: detailEmoji || '🎧',
+        backgroundColor: backgroundColor || null,
         pros: JSON.stringify(pros || []),
         cons: JSON.stringify(cons || []),
         deviceLinks: JSON.stringify(deviceLinks || []),
@@ -85,7 +86,7 @@ export async function PUT(request: Request) {
 
   try {
     const body = await request.json();
-    const { id, fullDesc, detailImage, detailEmoji, pros, cons, deviceLinks, showDeviceLinks, accessoryLinks, showAccessoryLinks } = body;
+    const { id, fullDesc, detailImage, detailEmoji, backgroundColor, pros, cons, deviceLinks, showDeviceLinks, accessoryLinks, showAccessoryLinks } = body;
 
     const solution = await prisma.solution.update({
       where: { id },
@@ -93,6 +94,7 @@ export async function PUT(request: Request) {
         fullDesc,
         detailImage: detailImage || null,
         detailEmoji: detailEmoji || '🎧',
+        backgroundColor: backgroundColor || null,
         pros: JSON.stringify(pros || []),
         cons: JSON.stringify(cons || []),
         deviceLinks: JSON.stringify(deviceLinks || []),

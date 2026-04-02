@@ -130,11 +130,12 @@ model Solution {
   fullDesc           String // Description complète
   detailImage        String? // URL de l'image pour le panneau détaillé (optionnel)
   detailEmoji        String   @default("🎧") // Emoji de fallback pour l'image détaillée
+  backgroundColor    String? // Couleur de fond de la section (ex: "#f9fafb", "transparent")
   pros               String // Avantages (JSON array)
   cons               String // Inconvénients (JSON array)
-  deviceLinks        String? // Liens vers les appareils de ce type (JSON array: [{name, url}])
+  deviceLinks        String? // Liens vers les appareils de ce type (JSON array: [{name, url, imageUrl}])
   showDeviceLinks    Boolean  @default(true) // Afficher ou cacher la section liens vers appareils
-  accessoryLinks     String? // Liens vers les accessoires disponibles (JSON array: [{name, url}])
+  accessoryLinks     String? // Liens vers les accessoires disponibles (JSON array: [{name, url, imageUrl}])
   showAccessoryLinks Boolean  @default(true) // Afficher ou cacher la section liens vers accessoires
   updatedAt          DateTime @updatedAt
 
