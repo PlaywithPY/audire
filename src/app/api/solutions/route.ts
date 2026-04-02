@@ -10,11 +10,13 @@ export async function GET() {
       orderBy: { solutionKey: 'asc' }
     });
 
-    // Parser les JSON strings pour pros et cons
+    // Parser les JSON strings pour pros, cons, deviceLinks et accessoryLinks
     const parsedSolutions = solutions.map(s => ({
       ...s,
       pros: JSON.parse(s.pros),
       cons: JSON.parse(s.cons),
+      deviceLinks: s.deviceLinks ? JSON.parse(s.deviceLinks) : [],
+      accessoryLinks: s.accessoryLinks ? JSON.parse(s.accessoryLinks) : [],
     }));
 
     return NextResponse.json(parsedSolutions);

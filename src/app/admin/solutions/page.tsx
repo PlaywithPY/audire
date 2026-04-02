@@ -7,6 +7,11 @@ import Link from 'next/link';
 import ImageUploadModal from '@/components/ImageUploadModal';
 import AdminHeader from '@/components/AdminHeader';
 
+type DeviceLink = {
+  name: string;
+  url: string;
+};
+
 type Solution = {
   id: number;
   solutionKey: string;
@@ -15,6 +20,10 @@ type Solution = {
   detailEmoji: string;
   pros: string[];
   cons: string[];
+  deviceLinks: DeviceLink[];
+  showDeviceLinks: boolean;
+  accessoryLinks: DeviceLink[];
+  showAccessoryLinks: boolean;
   updatedAt: string;
 };
 
@@ -194,6 +203,60 @@ export default function SolutionsAdmin() {
       const newCons = [...editingSolution.cons];
       newCons[index] = value;
       setEditingSolution({ ...editingSolution, cons: newCons });
+    }
+  }
+
+  // Gestion des liens vers appareils
+  function addDeviceLink() {
+    if (editingSolution) {
+      setEditingSolution({
+        ...editingSolution,
+        deviceLinks: [...(editingSolution.deviceLinks || []), { name: '', url: '' }]
+      });
+    }
+  }
+
+  function removeDeviceLink(index: number) {
+    if (editingSolution) {
+      setEditingSolution({
+        ...editingSolution,
+        deviceLinks: editingSolution.deviceLinks.filter((_, i) => i !== index)
+      });
+    }
+  }
+
+  function updateDeviceLink(index: number, field: 'name' | 'url', value: string) {
+    if (editingSolution) {
+      const newLinks = [...editingSolution.deviceLinks];
+      newLinks[index][field] = value;
+      setEditingSolution({ ...editingSolution, deviceLinks: newLinks });
+    }
+  }
+
+  // Gestion des liens vers accessoires
+  function addAccessoryLink() {
+    if (editingSolution) {
+      setEditingSolution({
+        ...editingSolution,
+        accessoryLinks: [...(editingSolution.accessoryLinks || []), { name: '', url: '' }]
+      });
+    }
+  }
+
+  function removeAccessoryLink(index: number) {
+    if (editingSolution) {
+      setEditingSolution({
+        ...editingSolution,
+        accessoryLinks: editingSolution.accessoryLinks.filter((_, i) => i !== index)
+      });
+    }
+  }
+
+  function updateAccessoryLink(index: number, field: 'name' | 'url', value: string) {
+    if (editingSolution) {
+      const newLinks = [...editingSolution.accessoryLinks];
+      newLinks[index][field] = value;
+      setEditingSolution({ ...editingSolution, accessoryLinks: newLinks });
     }
   }
 
@@ -412,6 +475,112 @@ export default function SolutionsAdmin() {
                       </button>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* Liens vers les appareils */}
+              <div className="border-t border-gray-200 pt-6">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <label className="font-semibold">🔗 Liens vers les appareils de ce type</label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={editingSolution.showDeviceLinks}
+                        onChange={(e) => setEditingSolution({ ...editingSolution, showDeviceLinks: e.target.checked })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-gray-600">Afficher cette section</span>
+                    </label>
+                  </div>
+                  <button
+                    onClick={addDeviceLink}
+                    className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  >
+                    ➕ Ajouter un appareil
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {(editingSolution.deviceLinks || []).map((link, index) => (
+                    <div key={index} className="flex gap-2">
+                      <input
+                        type="text"
+                        value={link.name}
+                        onChange={(e) => updateDeviceLink(index, 'name', e.target.value)}
+                        className="flex-1 border border-gray-300 rounded px-4 py-2"
+                        placeholder="Nom de l'appareil"
+                      />
+                      <input
+                        type="text"
+                        value={link.url}
+                        onChange={(e) => updateDeviceLink(index, 'url', e.target.value)}
+                        className="flex-1 border border-gray-300 rounded px-4 py-2"
+                        placeholder="Lien vers l'appareil (Oticon)"
+                      />
+                      <button
+                        onClick={() => removeDeviceLink(index)}
+                        className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600"
+                      >
+                        ❌
+                      </button>
+                    </div>
+                  ))}
+                  {(!editingSolution.deviceLinks || editingSolution.deviceLinks.length === 0) && (
+                    <p className="text-sm text-gray-500 italic">Aucun lien vers un appareil pour le moment</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Liens vers les accessoires */}
+              <div className="border-t border-gray-200 pt-6">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <label className="font-semibold">🎧 Accessoires disponibles</label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={editingSolution.showAccessoryLinks}
+                        onChange={(e) => setEditingSolution({ ...editingSolution, showAccessoryLinks: e.target.checked })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-gray-600">Afficher cette section</span>
+                    </label>
+                  </div>
+                  <button
+                    onClick={addAccessoryLink}
+                    className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  >
+                    ➕ Ajouter un accessoire
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {(editingSolution.accessoryLinks || []).map((link, index) => (
+                    <div key={index} className="flex gap-2">
+                      <input
+                        type="text"
+                        value={link.name}
+                        onChange={(e) => updateAccessoryLink(index, 'name', e.target.value)}
+                        className="flex-1 border border-gray-300 rounded px-4 py-2"
+                        placeholder="Nom de l'accessoire"
+                      />
+                      <input
+                        type="text"
+                        value={link.url}
+                        onChange={(e) => updateAccessoryLink(index, 'url', e.target.value)}
+                        className="flex-1 border border-gray-300 rounded px-4 py-2"
+                        placeholder="Lien vers l'accessoire"
+                      />
+                      <button
+                        onClick={() => removeAccessoryLink(index)}
+                        className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600"
+                      >
+                        ❌
+                      </button>
+                    </div>
+                  ))}
+                  {(!editingSolution.accessoryLinks || editingSolution.accessoryLinks.length === 0) && (
+                    <p className="text-sm text-gray-500 italic">Aucun lien vers un accessoire pour le moment</p>
+                  )}
                 </div>
               </div>
 

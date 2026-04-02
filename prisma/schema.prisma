@@ -125,14 +125,18 @@ model ContentBlock {
 
 // Solutions auditives détaillées (panneau déroulant)
 model Solution {
-  id          Int      @id @default(autoincrement())
-  solutionKey String   @unique // Identifiant unique (ex: "contour", "intra", "intent")
-  fullDesc    String // Description complète
-  detailImage String? // URL de l'image pour le panneau détaillé (optionnel)
-  detailEmoji String   @default("🎧") // Emoji de fallback pour l'image détaillée
-  pros        String // Avantages (JSON array)
-  cons        String // Inconvénients (JSON array)
-  updatedAt   DateTime @updatedAt
+  id                 Int      @id @default(autoincrement())
+  solutionKey        String   @unique // Identifiant unique (ex: "contour", "intra", "intent")
+  fullDesc           String // Description complète
+  detailImage        String? // URL de l'image pour le panneau détaillé (optionnel)
+  detailEmoji        String   @default("🎧") // Emoji de fallback pour l'image détaillée
+  pros               String // Avantages (JSON array)
+  cons               String // Inconvénients (JSON array)
+  deviceLinks        String? // Liens vers les appareils de ce type (JSON array: [{name, url}])
+  showDeviceLinks    Boolean  @default(true) // Afficher ou cacher la section liens vers appareils
+  accessoryLinks     String? // Liens vers les accessoires disponibles (JSON array: [{name, url}])
+  showAccessoryLinks Boolean  @default(true) // Afficher ou cacher la section liens vers accessoires
+  updatedAt          DateTime @updatedAt
 
   @@index([solutionKey])
 }
