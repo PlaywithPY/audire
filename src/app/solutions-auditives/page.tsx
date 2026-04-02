@@ -16,6 +16,7 @@ interface SolutionData {
   shortDesc: string;
   fullDesc: string;
   image: string;
+  backgroundColor?: string;
   pros: string[];
   cons: string[];
   deviceLinks?: DeviceLink[];
@@ -27,6 +28,7 @@ interface SolutionData {
 interface DeviceLink {
   name: string;
   url: string;
+  imageUrl?: string;
 }
 
 interface SolutionDetail {
@@ -35,6 +37,7 @@ interface SolutionDetail {
   fullDesc: string;
   detailImage: string | null;
   detailEmoji: string;
+  backgroundColor: string | null;
   pros: string[];
   cons: string[];
   deviceLinks: DeviceLink[];
@@ -103,7 +106,10 @@ function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
     >
       <div className="overflow-hidden">
         {solution && (
-          <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+          <div
+            className="rounded-2xl shadow-lg p-8 md:p-12"
+            style={{ backgroundColor: solution.backgroundColor || '#ffffff' }}
+          >
             {/* Image ou Emoji */}
             <div className="mb-8 rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary-light/10 aspect-video flex items-center justify-center max-w-2xl mx-auto">
               {isImageUrl ? (
@@ -166,17 +172,29 @@ function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
                     <span className="text-3xl">🔗</span>
                     Liens vers les appareils de ce type
                   </h4>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {solution.deviceLinks.map((link, idx) => (
                       <a
                         key={idx}
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-between bg-white rounded-lg p-4 hover:shadow-md transition-shadow group"
+                        className="flex flex-col items-center text-center bg-white rounded-lg p-4 hover:shadow-lg transition-all hover:-translate-y-1 group"
                       >
-                        <span className="text-text font-medium">{link.name}</span>
-                        <span className="text-primary text-xl group-hover:translate-x-1 transition-transform">→</span>
+                        {link.imageUrl ? (
+                          <div className="w-full aspect-square mb-3 rounded-lg overflow-hidden bg-gray-100">
+                            <img
+                              src={link.imageUrl}
+                              alt={link.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-full aspect-square mb-3 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                            <span className="text-4xl">🎧</span>
+                          </div>
+                        )}
+                        <span className="text-text font-medium text-sm leading-tight">{link.name}</span>
                       </a>
                     ))}
                   </div>
@@ -192,17 +210,29 @@ function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
                     <span className="text-3xl">🎧</span>
                     Accessoires disponibles
                   </h4>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {solution.accessoryLinks.map((link, idx) => (
                       <a
                         key={idx}
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-between bg-white rounded-lg p-4 hover:shadow-md transition-shadow group"
+                        className="flex flex-col items-center text-center bg-white rounded-lg p-4 hover:shadow-lg transition-all hover:-translate-y-1 group"
                       >
-                        <span className="text-text font-medium">{link.name}</span>
-                        <span className="text-primary text-xl group-hover:translate-x-1 transition-transform">→</span>
+                        {link.imageUrl ? (
+                          <div className="w-full aspect-square mb-3 rounded-lg overflow-hidden bg-gray-100">
+                            <img
+                              src={link.imageUrl}
+                              alt={link.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-full aspect-square mb-3 rounded-lg bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
+                            <span className="text-4xl">🔌</span>
+                          </div>
+                        )}
+                        <span className="text-text font-medium text-sm leading-tight">{link.name}</span>
                       </a>
                     ))}
                   </div>
@@ -401,6 +431,7 @@ export default function SolutionsAuditives() {
         ...sol,
         fullDesc: detail.fullDesc,
         image: detail.detailImage || detail.detailEmoji,
+        backgroundColor: detail.backgroundColor || undefined,
         pros: detail.pros,
         cons: detail.cons,
         deviceLinks: detail.deviceLinks || [],

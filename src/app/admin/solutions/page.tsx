@@ -10,6 +10,7 @@ import AdminHeader from '@/components/AdminHeader';
 type DeviceLink = {
   name: string;
   url: string;
+  imageUrl?: string;
 };
 
 type Solution = {
@@ -18,6 +19,7 @@ type Solution = {
   fullDesc: string;
   detailImage: string | null;
   detailEmoji: string;
+  backgroundColor: string | null;
   pros: string[];
   cons: string[];
   deviceLinks: DeviceLink[];
@@ -35,6 +37,8 @@ export default function SolutionsAdmin() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [uploadTarget, setUploadTarget] = useState<'detail' | 'deviceLink' | 'accessoryLink'>('detail');
+  const [uploadTargetIndex, setUploadTargetIndex] = useState<number>(-1);
 
   // Définitions des solutions par défaut
   const defaultSolutions = [
@@ -361,7 +365,17 @@ export default function SolutionsAdmin() {
         onClose={() => setUploadModalOpen(false)}
         onImageSelected={(imageUrl) => {
           if (editingSolution) {
-            setEditingSolution({ ...editingSolution, detailImage: imageUrl });
+            if (uploadTarget === 'detail') {
+              setEditingSolution({ ...editingSolution, detailImage: imageUrl });
+            } else if (uploadTarget === 'deviceLink' && uploadTargetIndex >= 0) {
+              const newLinks = [...editingSolution.deviceLinks];
+              newLinks[uploadTargetIndex] = { ...newLinks[uploadTargetIndex], imageUrl };
+              setEditingSolution({ ...editingSolution, deviceLinks: newLinks });
+            } else if (uploadTarget === 'accessoryLink' && uploadTargetIndex >= 0) {
+              const newLinks = [...editingSolution.accessoryLinks];
+              newLinks[uploadTargetIndex] = { ...newLinks[uploadTargetIndex], imageUrl };
+              setEditingSolution({ ...editingSolution, accessoryLinks: newLinks });
+            }
           }
           setUploadModalOpen(false);
         }}
@@ -386,7 +400,11 @@ export default function SolutionsAdmin() {
                     placeholder="/images/solution-detail.jpg"
                   />
                   <button
-                    onClick={() => setUploadModalOpen(true)}
+                    onClick={() => {
+                      setUploadTarget('detail');
+                      setUploadTargetIndex(-1);
+                      setUploadModalOpen(true);
+                    }}
                     className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
                   >
                     📸
@@ -400,6 +418,37 @@ export default function SolutionsAdmin() {
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
                   Laissez vide pour afficher l'emoji {editingSolution.detailEmoji}
+                </p>
+              </div>
+
+              {/* Couleur de fond */}
+              <div>
+                <label className="block font-semibold mb-2">🎨 Couleur de fond de la section</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={editingSolution.backgroundColor || ''}
+                    onChange={(e) => setEditingSolution({ ...editingSolution, backgroundColor: e.target.value })}
+                    className="flex-1 border border-gray-300 rounded px-4 py-2"
+                    placeholder="Ex: #f9fafb, rgb(249, 250, 251), transparent"
+                  />
+                  <input
+                    type="color"
+                    value={editingSolution.backgroundColor && editingSolution.backgroundColor.startsWith('#') ? editingSolution.backgroundColor : '#ffffff'}
+                    onChange={(e) => setEditingSolution({ ...editingSolution, backgroundColor: e.target.value })}
+                    className="w-16 h-10 border border-gray-300 rounded cursor-pointer"
+                    title="Sélecteur de couleur"
+                  />
+                  <button
+                    onClick={() => setEditingSolution({ ...editingSolution, backgroundColor: null })}
+                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                    title="Réinitialiser"
+                  >
+                    ↺
+                  </button>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Laissez vide pour utiliser la couleur par défaut (blanc)
                 </p>
               </div>
 
@@ -500,29 +549,73 @@ export default function SolutionsAdmin() {
                     ➕ Ajouter un appareil
                   </button>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {(editingSolution.deviceLinks || []).map((link, index) => (
-                    <div key={index} className="flex gap-2">
-                      <input
-                        type="text"
-                        value={link.name}
-                        onChange={(e) => updateDeviceLink(index, 'name', e.target.value)}
-                        className="flex-1 border border-gray-300 rounded px-4 py-2"
-                        placeholder="Nom de l'appareil"
-                      />
-                      <input
-                        type="text"
-                        value={link.url}
-                        onChange={(e) => updateDeviceLink(index, 'url', e.target.value)}
-                        className="flex-1 border border-gray-300 rounded px-4 py-2"
-                        placeholder="Lien vers l'appareil (Oticon)"
-                      />
-                      <button
-                        onClick={() => removeDeviceLink(index)}
-                        className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600"
-                      >
-                        ❌
-                      </button>
+                    <div key={index} className="border border-gray-200 rounded-lg p-3 space-y-2">
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={link.name}
+                          onChange={(e) => updateDeviceLink(index, 'name', e.target.value)}
+                          className="flex-1 border border-gray-300 rounded px-4 py-2"
+                          placeholder="Nom de l'appareil"
+                        />
+                        <input
+                          type="text"
+                          value={link.url}
+                          onChange={(e) => updateDeviceLink(index, 'url', e.target.value)}
+                          className="flex-1 border border-gray-300 rounded px-4 py-2"
+                          placeholder="Lien vers l'appareil"
+                        />
+                        <button
+                          onClick={() => removeDeviceLink(index)}
+                          className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600"
+                        >
+                          ❌
+                        </button>
+                      </div>
+                      <div className="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          value={link.imageUrl || ''}
+                          onChange={(e) => {
+                            const newLinks = [...editingSolution.deviceLinks];
+                            newLinks[index] = { ...newLinks[index], imageUrl: e.target.value };
+                            setEditingSolution({ ...editingSolution, deviceLinks: newLinks });
+                          }}
+                          className="flex-1 border border-gray-300 rounded px-4 py-2 text-sm"
+                          placeholder="URL de l'image (optionnel)"
+                        />
+                        <button
+                          onClick={() => {
+                            setUploadTarget('deviceLink');
+                            setUploadTargetIndex(index);
+                            setUploadModalOpen(true);
+                          }}
+                          className="bg-green-500 text-white px-3 py-2 rounded hover:bg-green-600"
+                          title="Uploader une image"
+                        >
+                          📸
+                        </button>
+                        {link.imageUrl && (
+                          <button
+                            onClick={() => {
+                              const newLinks = [...editingSolution.deviceLinks];
+                              newLinks[index] = { ...newLinks[index], imageUrl: undefined };
+                              setEditingSolution({ ...editingSolution, deviceLinks: newLinks });
+                            }}
+                            className="bg-orange-500 text-white px-3 py-2 rounded hover:bg-orange-600"
+                            title="Retirer l'image"
+                          >
+                            🗑️
+                          </button>
+                        )}
+                      </div>
+                      {link.imageUrl && (
+                        <div className="mt-2">
+                          <img src={link.imageUrl} alt={link.name} className="h-16 w-16 object-cover rounded border" />
+                        </div>
+                      )}
                     </div>
                   ))}
                   {(!editingSolution.deviceLinks || editingSolution.deviceLinks.length === 0) && (
@@ -553,29 +646,73 @@ export default function SolutionsAdmin() {
                     ➕ Ajouter un accessoire
                   </button>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {(editingSolution.accessoryLinks || []).map((link, index) => (
-                    <div key={index} className="flex gap-2">
-                      <input
-                        type="text"
-                        value={link.name}
-                        onChange={(e) => updateAccessoryLink(index, 'name', e.target.value)}
-                        className="flex-1 border border-gray-300 rounded px-4 py-2"
-                        placeholder="Nom de l'accessoire"
-                      />
-                      <input
-                        type="text"
-                        value={link.url}
-                        onChange={(e) => updateAccessoryLink(index, 'url', e.target.value)}
-                        className="flex-1 border border-gray-300 rounded px-4 py-2"
-                        placeholder="Lien vers l'accessoire"
-                      />
-                      <button
-                        onClick={() => removeAccessoryLink(index)}
-                        className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600"
-                      >
-                        ❌
-                      </button>
+                    <div key={index} className="border border-gray-200 rounded-lg p-3 space-y-2">
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={link.name}
+                          onChange={(e) => updateAccessoryLink(index, 'name', e.target.value)}
+                          className="flex-1 border border-gray-300 rounded px-4 py-2"
+                          placeholder="Nom de l'accessoire"
+                        />
+                        <input
+                          type="text"
+                          value={link.url}
+                          onChange={(e) => updateAccessoryLink(index, 'url', e.target.value)}
+                          className="flex-1 border border-gray-300 rounded px-4 py-2"
+                          placeholder="Lien vers l'accessoire"
+                        />
+                        <button
+                          onClick={() => removeAccessoryLink(index)}
+                          className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600"
+                        >
+                          ❌
+                        </button>
+                      </div>
+                      <div className="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          value={link.imageUrl || ''}
+                          onChange={(e) => {
+                            const newLinks = [...editingSolution.accessoryLinks];
+                            newLinks[index] = { ...newLinks[index], imageUrl: e.target.value };
+                            setEditingSolution({ ...editingSolution, accessoryLinks: newLinks });
+                          }}
+                          className="flex-1 border border-gray-300 rounded px-4 py-2 text-sm"
+                          placeholder="URL de l'image (optionnel)"
+                        />
+                        <button
+                          onClick={() => {
+                            setUploadTarget('accessoryLink');
+                            setUploadTargetIndex(index);
+                            setUploadModalOpen(true);
+                          }}
+                          className="bg-green-500 text-white px-3 py-2 rounded hover:bg-green-600"
+                          title="Uploader une image"
+                        >
+                          📸
+                        </button>
+                        {link.imageUrl && (
+                          <button
+                            onClick={() => {
+                              const newLinks = [...editingSolution.accessoryLinks];
+                              newLinks[index] = { ...newLinks[index], imageUrl: undefined };
+                              setEditingSolution({ ...editingSolution, accessoryLinks: newLinks });
+                            }}
+                            className="bg-orange-500 text-white px-3 py-2 rounded hover:bg-orange-600"
+                            title="Retirer l'image"
+                          >
+                            🗑️
+                          </button>
+                        )}
+                      </div>
+                      {link.imageUrl && (
+                        <div className="mt-2">
+                          <img src={link.imageUrl} alt={link.name} className="h-16 w-16 object-cover rounded border" />
+                        </div>
+                      )}
                     </div>
                   ))}
                   {(!editingSolution.accessoryLinks || editingSolution.accessoryLinks.length === 0) && (
