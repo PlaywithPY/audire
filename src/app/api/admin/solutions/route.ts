@@ -17,11 +17,13 @@ export async function GET() {
       orderBy: { solutionKey: 'asc' }
     });
 
-    // Parser les JSON strings pour pros et cons
+    // Parser les JSON strings pour pros, cons, deviceLinks et accessoryLinks
     const parsedSolutions = solutions.map(s => ({
       ...s,
       pros: JSON.parse(s.pros),
       cons: JSON.parse(s.cons),
+      deviceLinks: s.deviceLinks ? JSON.parse(s.deviceLinks) : [],
+      accessoryLinks: s.accessoryLinks ? JSON.parse(s.accessoryLinks) : [],
     }));
 
     return NextResponse.json(parsedSolutions);
@@ -42,7 +44,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { solutionKey, fullDesc, detailImage, detailEmoji, pros, cons } = body;
+    const { solutionKey, fullDesc, detailImage, detailEmoji, pros, cons, deviceLinks, showDeviceLinks, accessoryLinks, showAccessoryLinks } = body;
 
     const solution = await prisma.solution.create({
       data: {
@@ -52,6 +54,10 @@ export async function POST(request: Request) {
         detailEmoji: detailEmoji || '🎧',
         pros: JSON.stringify(pros || []),
         cons: JSON.stringify(cons || []),
+        deviceLinks: JSON.stringify(deviceLinks || []),
+        showDeviceLinks: showDeviceLinks !== undefined ? showDeviceLinks : true,
+        accessoryLinks: JSON.stringify(accessoryLinks || []),
+        showAccessoryLinks: showAccessoryLinks !== undefined ? showAccessoryLinks : true,
       }
     });
 
@@ -59,6 +65,8 @@ export async function POST(request: Request) {
       ...solution,
       pros: JSON.parse(solution.pros),
       cons: JSON.parse(solution.cons),
+      deviceLinks: JSON.parse(solution.deviceLinks || '[]'),
+      accessoryLinks: JSON.parse(solution.accessoryLinks || '[]'),
     });
   } catch (error) {
     console.error('Error creating solution:', error);
@@ -77,7 +85,7 @@ export async function PUT(request: Request) {
 
   try {
     const body = await request.json();
-    const { id, fullDesc, detailImage, detailEmoji, pros, cons } = body;
+    const { id, fullDesc, detailImage, detailEmoji, pros, cons, deviceLinks, showDeviceLinks, accessoryLinks, showAccessoryLinks } = body;
 
     const solution = await prisma.solution.update({
       where: { id },
@@ -87,6 +95,10 @@ export async function PUT(request: Request) {
         detailEmoji: detailEmoji || '🎧',
         pros: JSON.stringify(pros || []),
         cons: JSON.stringify(cons || []),
+        deviceLinks: JSON.stringify(deviceLinks || []),
+        showDeviceLinks: showDeviceLinks !== undefined ? showDeviceLinks : true,
+        accessoryLinks: JSON.stringify(accessoryLinks || []),
+        showAccessoryLinks: showAccessoryLinks !== undefined ? showAccessoryLinks : true,
       }
     });
 
@@ -94,6 +106,8 @@ export async function PUT(request: Request) {
       ...solution,
       pros: JSON.parse(solution.pros),
       cons: JSON.parse(solution.cons),
+      deviceLinks: JSON.parse(solution.deviceLinks || '[]'),
+      accessoryLinks: JSON.parse(solution.accessoryLinks || '[]'),
     });
   } catch (error) {
     console.error('Error updating solution:', error);

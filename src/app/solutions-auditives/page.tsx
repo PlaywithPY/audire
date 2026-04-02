@@ -18,6 +18,15 @@ interface SolutionData {
   image: string;
   pros: string[];
   cons: string[];
+  deviceLinks?: DeviceLink[];
+  showDeviceLinks?: boolean;
+  accessoryLinks?: DeviceLink[];
+  showAccessoryLinks?: boolean;
+}
+
+interface DeviceLink {
+  name: string;
+  url: string;
 }
 
 interface SolutionDetail {
@@ -28,6 +37,10 @@ interface SolutionDetail {
   detailEmoji: string;
   pros: string[];
   cons: string[];
+  deviceLinks: DeviceLink[];
+  showDeviceLinks: boolean;
+  accessoryLinks: DeviceLink[];
+  showAccessoryLinks: boolean;
 }
 
 interface SolutionCardProps {
@@ -111,7 +124,7 @@ function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
             </div>
 
             {/* Tableau Avantages / Inconvénients - PLEINE LARGEUR */}
-            <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-8">
               {/* Avantages */}
               <div className="bg-green-50 rounded-xl p-8">
                 <h4 className="text-xl font-bold mb-6 text-green-700 flex items-center gap-3">
@@ -144,6 +157,58 @@ function SolutionDetailPanel({ solution }: { solution: SolutionData | null }) {
                 </ul>
               </div>
             </div>
+
+            {/* Liens vers les appareils de ce type */}
+            {solution.showDeviceLinks && solution.deviceLinks && solution.deviceLinks.length > 0 && (
+              <div className="max-w-6xl mx-auto mb-8">
+                <div className="bg-blue-50 rounded-xl p-8">
+                  <h4 className="text-xl font-bold mb-6 text-blue-700 flex items-center gap-3">
+                    <span className="text-3xl">🔗</span>
+                    Liens vers les appareils de ce type
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {solution.deviceLinks.map((link, idx) => (
+                      <a
+                        key={idx}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between bg-white rounded-lg p-4 hover:shadow-md transition-shadow group"
+                      >
+                        <span className="text-text font-medium">{link.name}</span>
+                        <span className="text-primary text-xl group-hover:translate-x-1 transition-transform">→</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Accessoires disponibles */}
+            {solution.showAccessoryLinks && solution.accessoryLinks && solution.accessoryLinks.length > 0 && (
+              <div className="max-w-6xl mx-auto mb-8">
+                <div className="bg-purple-50 rounded-xl p-8">
+                  <h4 className="text-xl font-bold mb-6 text-purple-700 flex items-center gap-3">
+                    <span className="text-3xl">🎧</span>
+                    Accessoires disponibles
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {solution.accessoryLinks.map((link, idx) => (
+                      <a
+                        key={idx}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between bg-white rounded-lg p-4 hover:shadow-md transition-shadow group"
+                      >
+                        <span className="text-text font-medium">{link.name}</span>
+                        <span className="text-primary text-xl group-hover:translate-x-1 transition-transform">→</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -338,9 +403,19 @@ export default function SolutionsAuditives() {
         image: detail.detailImage || detail.detailEmoji,
         pros: detail.pros,
         cons: detail.cons,
+        deviceLinks: detail.deviceLinks || [],
+        showDeviceLinks: detail.showDeviceLinks !== undefined ? detail.showDeviceLinks : true,
+        accessoryLinks: detail.accessoryLinks || [],
+        showAccessoryLinks: detail.showAccessoryLinks !== undefined ? detail.showAccessoryLinks : true,
       };
     }
-    return sol;
+    return {
+      ...sol,
+      deviceLinks: [],
+      showDeviceLinks: true,
+      accessoryLinks: [],
+      showAccessoryLinks: true,
+    };
   });
 
   const handleToggle = (id: string) => {
