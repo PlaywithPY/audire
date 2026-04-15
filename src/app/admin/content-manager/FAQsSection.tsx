@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface FAQ {
   id: number;
@@ -16,6 +16,7 @@ export default function FAQsSection() {
   const [isLoading, setIsLoading] = useState(true);
   const [editingFAQ, setEditingFAQ] = useState<FAQ | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
     question: '',
@@ -54,6 +55,11 @@ export default function FAQsSection() {
       category: faq.category || '',
     });
     setIsCreating(false);
+
+    // Scroll vers le formulaire après un court délai pour permettre le render
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   }
 
   function handleCreate() {
@@ -66,6 +72,11 @@ export default function FAQsSection() {
       isVisible: true,
       category: '',
     });
+
+    // Scroll vers le formulaire après un court délai pour permettre le render
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   }
 
   function handleCancel() {
@@ -123,7 +134,7 @@ export default function FAQsSection() {
 
   async function toggleVisibility(faq: FAQ) {
     try {
-      await fetch('/api/admin/faqs', {
+      const res = await fetch('/api/admin/faqs', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -135,7 +146,16 @@ export default function FAQsSection() {
           category: faq.category,
         }),
       });
-      loadFAQs();
+
+      if (res.ok) {
+        // Mettre à jour localement sans recharger toute la liste
+        // pour éviter de perdre l'état du formulaire
+        setFaqs(faqs.map(f =>
+          f.id === faq.id
+            ? { ...f, isVisible: !f.isVisible }
+            : f
+        ));
+      }
     } catch (error) {
       console.error('Error toggling visibility:', error);
     }
@@ -164,7 +184,7 @@ export default function FAQsSection() {
 
       {/* Create/Edit Form */}
       {(isCreating || editingFAQ) && (
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div ref={formRef} className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <h3 className="text-lg font-bold mb-4">
             {editingFAQ ? 'Modifier la FAQ' : 'Nouvelle FAQ'}
           </h3>
