@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import AdminHeader from '@/components/AdminHeader';
 import MediaPicker from '@/components/MediaPicker';
+import ImagePositionEditor from '@/components/ImagePositionEditor';
 
 type HearingAid = {
   id: number;
@@ -50,6 +51,7 @@ type HearingAid = {
   highlightBox2Images: string | null;
   highlightBox2Title: string | null;
   productFAQs: string | null;
+  imagePositions: string | null;
 };
 
 // Fonction pour générer un slug à partir du nom
@@ -62,6 +64,34 @@ function generateSlug(name: string): string {
     .trim()
     .replace(/\s+/g, '-') // Remplacer les espaces par des tirets
     .replace(/-+/g, '-'); // Éviter les tirets multiples
+}
+
+// Fonctions helper pour gérer les positions d'images
+function getImagePosition(imagePositions: string | null, fieldName: string): { x: number; y: number } {
+  if (!imagePositions) return { x: 50, y: 50 };
+  try {
+    const positions = JSON.parse(imagePositions);
+    return positions[fieldName] || { x: 50, y: 50 };
+  } catch {
+    return { x: 50, y: 50 };
+  }
+}
+
+function setImagePosition(
+  imagePositions: string | null,
+  fieldName: string,
+  position: { x: number; y: number }
+): string {
+  let positions: any = {};
+  if (imagePositions) {
+    try {
+      positions = JSON.parse(imagePositions);
+    } catch {
+      positions = {};
+    }
+  }
+  positions[fieldName] = position;
+  return JSON.stringify(positions);
 }
 
 export default function AppareilsPage() {
@@ -596,14 +626,19 @@ export default function AppareilsPage() {
                         </button>
                       </div>
                       {selectedAid.mainImage && (
-                        <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                          <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
-                          <img
-                            src={selectedAid.mainImage}
-                            alt="Prévisualisation"
-                            className="max-w-full h-40 object-contain rounded border border-gray-300"
-                          />
-                        </div>
+                        <ImagePositionEditor
+                          imageUrl={selectedAid.mainImage}
+                          initialPosition={getImagePosition(selectedAid.imagePositions, 'mainImage')}
+                          onPositionChange={(position) => {
+                            const newPositions = setImagePosition(
+                              selectedAid.imagePositions,
+                              'mainImage',
+                              position
+                            );
+                            updateField('imagePositions', newPositions);
+                          }}
+                          alt="Image principale"
+                        />
                       )}
                     </div>
                     <div className="flex items-center gap-4">
@@ -703,14 +738,19 @@ export default function AppareilsPage() {
                         </button>
                       </div>
                       {selectedAid.heroImage && (
-                        <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                          <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
-                          <img
-                            src={selectedAid.heroImage}
-                            alt="Prévisualisation"
-                            className="max-w-full h-40 object-contain rounded border border-gray-300"
-                          />
-                        </div>
+                        <ImagePositionEditor
+                          imageUrl={selectedAid.heroImage}
+                          initialPosition={getImagePosition(selectedAid.imagePositions, 'heroImage')}
+                          onPositionChange={(position) => {
+                            const newPositions = setImagePosition(
+                              selectedAid.imagePositions,
+                              'heroImage',
+                              position
+                            );
+                            updateField('imagePositions', newPositions);
+                          }}
+                          alt="Image Hero"
+                        />
                       )}
                     </div>
                     <div className="md:col-span-2">
@@ -798,22 +838,32 @@ export default function AppareilsPage() {
                           </button>
                         </div>
                         {selectedAid.section1MediaUrl && (
-                          <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                            <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
+                          <>
                             {selectedAid.section1MediaType === 'video' ? (
-                              <video
-                                src={selectedAid.section1MediaUrl}
-                                controls
-                                className="max-w-full h-40 rounded border border-gray-300"
-                              />
+                              <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                                <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
+                                <video
+                                  src={selectedAid.section1MediaUrl}
+                                  controls
+                                  className="max-w-full h-40 rounded border border-gray-300"
+                                />
+                              </div>
                             ) : (
-                              <img
-                                src={selectedAid.section1MediaUrl}
-                                alt="Prévisualisation"
-                                className="max-w-full h-40 object-contain rounded border border-gray-300"
+                              <ImagePositionEditor
+                                imageUrl={selectedAid.section1MediaUrl}
+                                initialPosition={getImagePosition(selectedAid.imagePositions, 'section1MediaUrl')}
+                                onPositionChange={(position) => {
+                                  const newPositions = setImagePosition(
+                                    selectedAid.imagePositions,
+                                    'section1MediaUrl',
+                                    position
+                                  );
+                                  updateField('imagePositions', newPositions);
+                                }}
+                                alt="Section 1 Media"
                               />
                             )}
-                          </div>
+                          </>
                         )}
                       </div>
                     </div>
@@ -853,14 +903,19 @@ export default function AppareilsPage() {
                           </button>
                         </div>
                         {selectedAid.section2Image && (
-                          <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                            <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
-                            <img
-                              src={selectedAid.section2Image}
-                              alt="Prévisualisation"
-                              className="max-w-full h-40 object-contain rounded border border-gray-300"
-                            />
-                          </div>
+                          <ImagePositionEditor
+                            imageUrl={selectedAid.section2Image}
+                            initialPosition={getImagePosition(selectedAid.imagePositions, 'section2Image')}
+                            onPositionChange={(position) => {
+                              const newPositions = setImagePosition(
+                                selectedAid.imagePositions,
+                                'section2Image',
+                                position
+                              );
+                              updateField('imagePositions', newPositions);
+                            }}
+                            alt="Section 2 Image"
+                          />
                         )}
                       </div>
                       <div className="md:col-span-2">
@@ -909,14 +964,19 @@ export default function AppareilsPage() {
                           </button>
                         </div>
                         {selectedAid.section3Image && (
-                          <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                            <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
-                            <img
-                              src={selectedAid.section3Image}
-                              alt="Prévisualisation"
-                              className="max-w-full h-40 object-contain rounded border border-gray-300"
-                            />
-                          </div>
+                          <ImagePositionEditor
+                            imageUrl={selectedAid.section3Image}
+                            initialPosition={getImagePosition(selectedAid.imagePositions, 'section3Image')}
+                            onPositionChange={(position) => {
+                              const newPositions = setImagePosition(
+                                selectedAid.imagePositions,
+                                'section3Image',
+                                position
+                              );
+                              updateField('imagePositions', newPositions);
+                            }}
+                            alt="Section 3 Image"
+                          />
                         )}
                       </div>
                       <div className="md:col-span-2">
@@ -985,22 +1045,32 @@ export default function AppareilsPage() {
                           </button>
                         </div>
                         {selectedAid.section4MediaUrl && (
-                          <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                            <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
+                          <>
                             {selectedAid.section4MediaType === 'video' ? (
-                              <video
-                                src={selectedAid.section4MediaUrl}
-                                controls
-                                className="max-w-full h-40 rounded border border-gray-300"
-                              />
+                              <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                                <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
+                                <video
+                                  src={selectedAid.section4MediaUrl}
+                                  controls
+                                  className="max-w-full h-40 rounded border border-gray-300"
+                                />
+                              </div>
                             ) : (
-                              <img
-                                src={selectedAid.section4MediaUrl}
-                                alt="Prévisualisation"
-                                className="max-w-full h-40 object-contain rounded border border-gray-300"
+                              <ImagePositionEditor
+                                imageUrl={selectedAid.section4MediaUrl}
+                                initialPosition={getImagePosition(selectedAid.imagePositions, 'section4MediaUrl')}
+                                onPositionChange={(position) => {
+                                  const newPositions = setImagePosition(
+                                    selectedAid.imagePositions,
+                                    'section4MediaUrl',
+                                    position
+                                  );
+                                  updateField('imagePositions', newPositions);
+                                }}
+                                alt="Section 4 Media"
                               />
                             )}
-                          </div>
+                          </>
                         )}
                       </div>
                     </div>
@@ -1059,14 +1129,19 @@ export default function AppareilsPage() {
                           </button>
                         </div>
                         {selectedAid.highlightBox1Image && (
-                          <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                            <p className="text-xs text-gray-600 mb-2 font-semibold">Prévisualisation :</p>
-                            <img
-                              src={selectedAid.highlightBox1Image}
-                              alt="Prévisualisation"
-                              className="max-w-full h-40 object-contain rounded border border-gray-300"
-                            />
-                          </div>
+                          <ImagePositionEditor
+                            imageUrl={selectedAid.highlightBox1Image}
+                            initialPosition={getImagePosition(selectedAid.imagePositions, 'highlightBox1Image')}
+                            onPositionChange={(position) => {
+                              const newPositions = setImagePosition(
+                                selectedAid.imagePositions,
+                                'highlightBox1Image',
+                                position
+                              );
+                              updateField('imagePositions', newPositions);
+                            }}
+                            alt="Highlight Box 1 Image"
+                          />
                         )}
                       </div>
                       <div className="md:col-span-2">
