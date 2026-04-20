@@ -294,6 +294,9 @@ model HearingAid {
   // FAQ spécifiques au produit
   productFAQs String? // JSON array: [{question, answer}]
 
+  // Positions des images (object-position CSS)
+  imagePositions String? // JSON object: {"mainImage": {"x": 50, "y": 50}, "heroImage": {...}, ...}
+
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
