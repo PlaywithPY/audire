@@ -3,6 +3,7 @@
 import FAQAccordion from "@/components/FAQAccordion";
 import CategoryGrid from "@/components/CategoryGrid";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
+import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 import { useState, useEffect } from "react";
 
 interface FAQ {
@@ -163,6 +164,7 @@ export default function FAQ() {
           </div>
         </section>
 
+        <DynamicBlockRenderer pageKey="faq" />
         {/* Image Effects */}
         <AllPageImageEffects pageKey="faq" />
       </main>

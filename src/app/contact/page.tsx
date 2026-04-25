@@ -3,6 +3,7 @@
 import ContactInfo from "@/components/ContactInfo";
 import ContactHours from "@/components/ContactHours";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
+import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 import { useState, useEffect } from "react";
 
 interface PageTexts {
@@ -276,6 +277,7 @@ export default function Contact() {
           </div>
         </section>
 
+        <DynamicBlockRenderer pageKey="contact" />
         {/* Image Effects */}
         <AllPageImageEffects pageKey="contact" />
       </main>

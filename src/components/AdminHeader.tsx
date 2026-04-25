@@ -5,7 +5,7 @@ import AutoSendReminders from './AutoSendReminders';
 import { useState } from 'react';
 
 interface AdminHeaderProps {
-  currentPage?: 'dashboard' | 'centres' | 'appareils' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'categories' | 'settings' | 'testimonials' | 'rendez-vous' | 'mediatheque' | 'sms' | 'sms-templates' | 'content-manager' | 'linear-content-editor' | 'constructeur-visuel';
+  currentPage?: 'dashboard' | 'centres' | 'appareils' | 'feature-cards' | 'solutions' | 'image-effects' | 'text-editor' | 'footer' | 'database' | 'setup-page-texts' | 'faqs' | 'categories' | 'settings' | 'testimonials' | 'rendez-vous' | 'mediatheque' | 'sms' | 'sms-templates' | 'content-manager' | 'linear-content-editor' | 'constructeur-visuel' | 'editeur-visuel';
   title?: string;
 }
 
@@ -21,6 +21,7 @@ export default function AdminHeader({ currentPage = 'dashboard', title }: AdminH
 
   const menuItems: MenuItem[] = [
     { href: '/admin', label: '🏠 Dashboard', key: 'dashboard' },
+    { href: '/admin/editeur-visuel', label: '✨ Éditeur Visuel', key: 'editeur-visuel' },
     { href: '/admin/constructeur-visuel', label: '🏗️ Constructeur', key: 'constructeur-visuel' },
     { href: '/admin/centres', label: '🏢 Centres', key: 'centres' },
     { href: '/admin/rendez-vous', label: '📅 Rendez-vous', key: 'rendez-vous' },

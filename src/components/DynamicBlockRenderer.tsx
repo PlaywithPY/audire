@@ -39,14 +39,24 @@ export default function DynamicBlockRenderer({
       // Filtrer les blocs
       let filteredBlocks = data.filter((b: ContentBlock) => b.isVisible);
 
-      // Si absoluteOnly, ne garder que les blocs en position absolue
       if (absoluteOnly) {
+        // Garder uniquement les blocs en position absolue (pour l'overlay)
         filteredBlocks = filteredBlocks.filter((b: ContentBlock) => {
           try {
             const meta = b.metadata ? JSON.parse(b.metadata) : {};
             return meta.position?.type === 'absolute';
           } catch {
             return false;
+          }
+        });
+      } else {
+        // Exclure les blocs en position absolue (déjà gérés par l'overlay)
+        filteredBlocks = filteredBlocks.filter((b: ContentBlock) => {
+          try {
+            const meta = b.metadata ? JSON.parse(b.metadata) : {};
+            return meta.position?.type !== 'absolute';
+          } catch {
+            return true;
           }
         });
       }

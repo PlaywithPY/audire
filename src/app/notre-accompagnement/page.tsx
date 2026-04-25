@@ -2,6 +2,7 @@
 
 import CardIcon from "@/components/CardIcon";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
+import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 import { useState, useEffect } from "react";
 
 interface PageTexts {
@@ -204,6 +205,8 @@ export default function NotreAccompagnement() {
             </a>
           </div>
         </section>
+
+        <DynamicBlockRenderer pageKey="accompagnement" />
       </main>
     </>
   );

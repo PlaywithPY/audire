@@ -2,6 +2,7 @@
 
 import ImageFeatureCard from "@/components/ImageFeatureCard";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
+import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 import { useState, useEffect } from "react";
 import { CardData } from "@/lib/card-helpers";
 
@@ -344,6 +345,8 @@ export default function TestAuditifGratuit() {
             </div>
           </div>
         </section>
+
+        <DynamicBlockRenderer pageKey="test-auditif" />
       </main>
     </>
   );

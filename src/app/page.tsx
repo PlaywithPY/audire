@@ -347,6 +347,7 @@ export default function Home() {
         </div>
       </section>
 
+      <DynamicBlockRenderer pageKey="home" />
     </main>
     </>
   );
