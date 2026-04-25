@@ -1,6 +1,7 @@
 'use client';
 
 import AllPageImageEffects from "@/components/AllPageImageEffects";
+import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 import { useState, useEffect } from "react";
 
 interface PageTexts {
@@ -182,6 +183,7 @@ export default function Remboursements() {
           </div>
         </section>
 
+        <DynamicBlockRenderer pageKey="remboursements" />
         {/* Image Effects */}
         <AllPageImageEffects pageKey="remboursements" />
       </main>

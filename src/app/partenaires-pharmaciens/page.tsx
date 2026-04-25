@@ -2,6 +2,7 @@
 
 import ImageFeatureCard from "@/components/ImageFeatureCard";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
+import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 import { useState, useEffect } from "react";
 import { CardData } from "@/lib/card-helpers";
 
@@ -181,6 +182,7 @@ export default function PartenairesPharmaciens() {
           </div>
         </section>
 
+        <DynamicBlockRenderer pageKey="partenaires" />
         {/* Image Effects */}
         <AllPageImageEffects pageKey="partenaires-pharmaciens" />
       </main>
