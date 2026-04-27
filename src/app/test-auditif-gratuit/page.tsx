@@ -346,7 +346,7 @@ export default function TestAuditifGratuit() {
           </div>
         </section>
 
-        <DynamicBlockRenderer pageKey="test-auditif" />
+        <DynamicBlockRenderer pageKey="test-auditif-gratuit" />
       </main>
     </>
   );

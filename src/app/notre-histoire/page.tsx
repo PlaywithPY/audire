@@ -1,6 +1,7 @@
 'use client';
 
 import AllPageImageEffects from "@/components/AllPageImageEffects";
+import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 import { useState, useEffect } from "react";
 
 interface PageTexts {
@@ -198,6 +199,8 @@ export default function NotreHistoire() {
             </a>
           </div>
         </section>
+
+        <DynamicBlockRenderer pageKey="notre-histoire" />
       </main>
     </>
   );

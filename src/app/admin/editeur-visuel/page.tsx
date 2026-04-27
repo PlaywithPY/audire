@@ -60,14 +60,15 @@ type Page = {
 };
 
 const PREDEFINED_PAGES: Page[] = [
-  { key: 'home', label: 'Accueil', icon: '🏠', path: '/' },
-  { key: 'solutions', label: 'Solutions', icon: '🎯', path: '/solutions-auditives' },
-  { key: 'remboursements', label: 'Remboursements', icon: '💶', path: '/remboursements' },
-  { key: 'accompagnement', label: 'Accompagnement', icon: '🤝', path: '/notre-accompagnement' },
-  { key: 'test-auditif', label: 'Test Auditif', icon: '🦻', path: '/test-auditif-gratuit' },
-  { key: 'contact', label: 'Contact', icon: '📬', path: '/contact' },
-  { key: 'faq', label: 'FAQ', icon: '❓', path: '/faq' },
-  { key: 'partenaires', label: 'Partenaires', icon: '🤲', path: '/partenaires-pharmaciens' },
+  { key: 'home',                    label: 'Accueil',              icon: '🏠', path: '/' },
+  { key: 'solutions-auditives',     label: 'Solutions auditives',  icon: '🎯', path: '/solutions-auditives' },
+  { key: 'remboursements',          label: 'Remboursements',       icon: '💶', path: '/remboursements' },
+  { key: 'notre-accompagnement',    label: 'Notre accompagnement', icon: '🤝', path: '/notre-accompagnement' },
+  { key: 'notre-histoire',          label: 'Notre histoire',       icon: '📖', path: '/notre-histoire' },
+  { key: 'partenaires-pharmaciens', label: 'Partenaires',          icon: '🤲', path: '/partenaires-pharmaciens' },
+  { key: 'faq',                     label: 'FAQ',                  icon: '❓', path: '/faq' },
+  { key: 'contact',                 label: 'Contact',              icon: '📬', path: '/contact' },
+  { key: 'test-auditif-gratuit',    label: 'Test auditif gratuit', icon: '🦻', path: '/test-auditif-gratuit' },
 ];
 
 const BLOCK_TYPES = [
