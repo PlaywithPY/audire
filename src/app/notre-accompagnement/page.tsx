@@ -206,7 +206,7 @@ export default function NotreAccompagnement() {
           </div>
         </section>
 
-        <DynamicBlockRenderer pageKey="accompagnement" />
+        <DynamicBlockRenderer pageKey="notre-accompagnement" />
       </main>
     </>
   );

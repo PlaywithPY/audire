@@ -182,7 +182,7 @@ export default function PartenairesPharmaciens() {
           </div>
         </section>
 
-        <DynamicBlockRenderer pageKey="partenaires" />
+        <DynamicBlockRenderer pageKey="partenaires-pharmaciens" />
         {/* Image Effects */}
         <AllPageImageEffects pageKey="partenaires-pharmaciens" />
       </main>

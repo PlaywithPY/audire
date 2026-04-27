@@ -559,7 +559,7 @@ export default function SolutionsAuditives() {
           </div>
         </section>
 
-        <DynamicBlockRenderer pageKey="solutions" />
+        <DynamicBlockRenderer pageKey="solutions-auditives" />
       </main>
     </>
   );
