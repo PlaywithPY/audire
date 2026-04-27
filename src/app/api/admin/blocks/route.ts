@@ -120,7 +120,7 @@ export async function PUT(request: Request) {
   }
 }
 
-// DELETE - Supprimer un bloc
+// DELETE - Supprimer un bloc (par id) ou tous les blocs d'une page (par pageKey)
 export async function DELETE(request: Request) {
   const { error } = await requireAuth();
   if (error) return error;
@@ -128,9 +128,17 @@ export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
+    const pageKey = searchParams.get('pageKey');
+
+    if (pageKey && !id) {
+      // Suppression de tous les blocs d'une page custom
+      await prisma.contentBlock.deleteMany({ where: { pageKey } });
+      revalidatePath(`/${pageKey}`);
+      return NextResponse.json({ success: true });
+    }
 
     if (!id) {
-      return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing id or pageKey' }, { status: 400 });
     }
 
     const block = await prisma.contentBlock.delete({

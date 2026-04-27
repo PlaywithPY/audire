@@ -1094,7 +1094,7 @@ export default function EditeurVisuelPage() {
     showToast('success', 'Bloc supprimé');
   };
 
-  const handleAddPage = () => {
+  const handleAddPage = async () => {
     const key = newPageKey.trim().toLowerCase().replace(/\s+/g, '-');
     const label = newPageLabel.trim() || key;
     if (!key) return;
@@ -1103,6 +1103,19 @@ export default function EditeurVisuelPage() {
       showToast('error', 'Cette page existe déjà');
       return;
     }
+    // Créer un bloc sentinelle en DB pour que la page survive au rechargement
+    await fetch('/api/admin/blocks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        pageKey: key,
+        blockKey: `__page-label__`,
+        blockType: 'text',
+        content: label,
+        order: 0,
+        isVisible: false,
+      }),
+    });
     const newPage: Page = { key, label, icon: '📄', path: `/${key}` };
     setPages((prev) => [...prev, newPage]);
     setActivePage(newPage);
@@ -1110,6 +1123,15 @@ export default function EditeurVisuelPage() {
     setNewPageLabel('');
     setShowAddPage(false);
     showToast('success', `Page "${label}" créée`);
+  };
+
+  const handleDeletePage = async (page: Page) => {
+    if (!confirm(`Supprimer la page "${page.label}" et tous ses blocs ?`)) return;
+    await fetch(`/api/admin/blocks?pageKey=${page.key}`, { method: 'DELETE' });
+    const fallback = PREDEFINED_PAGES[0];
+    setPages((prev) => prev.filter((p) => p.key !== page.key));
+    setActivePage(fallback);
+    showToast('success', `Page "${page.label}" supprimée`);
   };
 
   if (status === 'loading') {
@@ -1131,21 +1153,32 @@ export default function EditeurVisuelPage() {
             <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Pages</h2>
           </div>
           <nav className="flex-1 overflow-y-auto py-2">
-            {pages.map((page) => (
-              <button
-                key={page.key}
-                onClick={() => setActivePage(page)}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors text-left ${
-                  activePage.key === page.key
-                    ? 'bg-primary/10 text-primary font-semibold'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <span className="text-base">{page.icon}</span>
-                <span className="flex-1 truncate">{page.label}</span>
-                {activePage.key === page.key && <ChevronRight size={14} className="text-primary" />}
-              </button>
-            ))}
+            {pages.map((page) => {
+              const isPredefined = PREDEFINED_PAGES.some((p) => p.key === page.key);
+              return (
+                <div key={page.key} className={`group flex items-center gap-1 pr-2 ${activePage.key === page.key ? 'bg-primary/10' : 'hover:bg-gray-50'}`}>
+                  <button
+                    onClick={() => setActivePage(page)}
+                    className={`flex-1 flex items-center gap-3 px-4 py-2.5 text-sm transition-colors text-left ${
+                      activePage.key === page.key ? 'text-primary font-semibold' : 'text-gray-700'
+                    }`}
+                  >
+                    <span className="text-base">{page.icon}</span>
+                    <span className="flex-1 truncate">{page.label}</span>
+                    {activePage.key === page.key && <ChevronRight size={14} className="text-primary flex-shrink-0" />}
+                  </button>
+                  {!isPredefined && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleDeletePage(page); }}
+                      title="Supprimer cette page"
+                      className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-red-500 rounded transition-all flex-shrink-0"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </nav>
 
           {/* Add page */}
@@ -1205,6 +1238,8 @@ export default function EditeurVisuelPage() {
               <p className="text-xs text-gray-400 mt-0.5">
                 {activePage.key === 'faq'
                   ? 'Questions / Réponses'
+                  : activePage.key === 'home'
+                  ? 'Hero · Fonctionnalités · Témoignages · CTA'
                   : `${blocks.length} bloc${blocks.length !== 1 ? 's' : ''} — drag pour réordonner`}
               </p>
             </div>
@@ -1217,7 +1252,7 @@ export default function EditeurVisuelPage() {
                 <ExternalLink size={14} />
                 Voir la page
               </Link>
-              {activePage.key !== 'faq' && (
+              {activePage.key !== 'faq' && activePage.key !== 'home' && (
                 <button
                   onClick={() => setShowAddBlock(true)}
                   className="inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-primary-dark transition-colors shadow-sm"
