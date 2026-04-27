@@ -347,6 +347,140 @@ function EditModal({
   );
 }
 
+// ── Shared FAQ types ──────────────────────────────────────────────────────────
+
+interface FAQCategory {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+// ── Add Category Modal ────────────────────────────────────────────────────────
+
+function AddCategoryModal({
+  onClose,
+  onCreated,
+}: {
+  onClose: () => void;
+  onCreated: (cat: FAQCategory) => void;
+}) {
+  const [name, setName] = useState('');
+  const [slug, setSlug] = useState('');
+  const [description, setDescription] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const handleNameChange = (val: string) => {
+    setName(val);
+    setSlug(
+      val
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+    );
+  };
+
+  const save = async () => {
+    if (!name.trim() || !slug.trim()) return;
+    setSaving(true);
+    try {
+      const res = await fetch('/api/admin/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, slug, description, imageUrl, order: 0, isVisible: true }),
+      });
+      if (res.ok) {
+        const created = await res.json();
+        onCreated(created);
+      } else {
+        const e = await res.json();
+        alert(e.error || 'Erreur lors de la création');
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="flex items-center justify-between px-6 py-4 border-b">
+          <h2 className="font-bold text-gray-900 text-lg">Nouvelle catégorie</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100">
+            <X size={20} />
+          </button>
+        </div>
+        <div className="px-6 py-5 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => handleNameChange(e.target.value)}
+              autoFocus
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+              placeholder="Ex : Remboursements"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Slug (URL)</label>
+            <input
+              type="text"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-mono text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+              placeholder="remboursements"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description <span className="text-gray-400">(optionnel)</span></label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+              placeholder="Courte description de la catégorie…"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Image <span className="text-gray-400">(optionnel)</span></label>
+            <input
+              type="text"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+              placeholder="https://…"
+            />
+            {imageUrl && (
+              <img src={imageUrl} alt="aperçu" className="mt-2 w-20 h-20 object-cover rounded-lg border border-gray-200" />
+            )}
+          </div>
+        </div>
+        <div className="px-6 py-4 border-t flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            Annuler
+          </button>
+          <button
+            onClick={save}
+            disabled={saving || !name.trim()}
+            className="px-5 py-2 text-sm rounded-xl bg-primary text-white font-semibold hover:bg-primary-dark transition-colors disabled:opacity-60 flex items-center gap-2"
+          >
+            {saving
+              ? <span className="animate-spin inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full" />
+              : <Check size={15} />}
+            Créer la catégorie
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── FAQ Panel ────────────────────────────────────────────────────────────────
 
 interface FAQ {
@@ -360,18 +494,13 @@ interface FAQ {
   faqCategory?: { id: number; name: string };
 }
 
-interface FAQCategory {
-  id: number;
-  name: string;
-  slug: string;
-}
-
 function FAQPanel() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [categories, setCategories] = useState<FAQCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingFAQ, setEditingFAQ] = useState<FAQ | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [form, setForm] = useState({
     question: '',
     answer: '',
@@ -391,6 +520,9 @@ function FAQPanel() {
       setLoading(false);
     });
   }, []);
+
+  const reloadCategories = () =>
+    fetch('/api/admin/categories').then((r) => r.json()).then((c) => setCategories(Array.isArray(c) ? c : []));
 
   const openCreate = () => {
     setIsCreating(true);
@@ -497,17 +629,24 @@ function FAQPanel() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
                 <select
                   value={form.categoryId ?? ''}
-                  onChange={(e) => setForm({
-                    ...form,
-                    categoryId: e.target.value ? parseInt(e.target.value) : null,
-                    category: e.target.value ? categories.find((c) => c.id === parseInt(e.target.value))?.name || '' : '',
-                  })}
+                  onChange={(e) => {
+                    if (e.target.value === '__new__') {
+                      setShowAddCategoryModal(true);
+                      return;
+                    }
+                    setForm({
+                      ...form,
+                      categoryId: e.target.value ? parseInt(e.target.value) : null,
+                      category: e.target.value ? categories.find((c) => c.id === parseInt(e.target.value))?.name || '' : '',
+                    });
+                  }}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
                 >
                   <option value="">-- Aucune --</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
+                  <option value="__new__">＋ Ajouter une catégorie…</option>
                 </select>
               </div>
               <div className="flex flex-col">
@@ -595,6 +734,18 @@ function FAQPanel() {
             </div>
           ))}
         </div>
+      )}
+
+      {showAddCategoryModal && (
+        <AddCategoryModal
+          onClose={() => setShowAddCategoryModal(false)}
+          onCreated={(newCat) => {
+            setCategories((prev) => [...prev, newCat]);
+            setForm((prev) => ({ ...prev, categoryId: newCat.id, category: newCat.name }));
+            setShowAddCategoryModal(false);
+            reloadCategories();
+          }}
+        />
       )}
     </div>
   );
