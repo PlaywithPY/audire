@@ -41,6 +41,7 @@ import {
 import AdminHeader from '@/components/AdminHeader';
 import MediaPicker from '@/components/MediaPicker';
 import Link from 'next/link';
+import HomePanel from './HomePanel';
 
 type ContentBlock = {
   id: number;
@@ -1120,7 +1121,9 @@ export default function EditeurVisuelPage() {
           </div>
 
           {/* Page-specific panel or block canvas */}
-          {activePage.key === 'faq' ? (
+          {activePage.key === 'home' ? (
+            <HomePanel />
+          ) : activePage.key === 'faq' ? (
             <FAQPanel />
           ) : (
           <div className="px-6 py-6 max-w-2xl mx-auto">
