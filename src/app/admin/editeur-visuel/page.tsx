@@ -39,6 +39,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import AdminHeader from '@/components/AdminHeader';
+import MediaPicker from '@/components/MediaPicker';
 import Link from 'next/link';
 
 type ContentBlock = {
@@ -369,6 +370,7 @@ function AddCategoryModal({
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [saving, setSaving] = useState(false);
+  const [showMediaPicker, setShowMediaPicker] = useState(false);
 
   const handleNameChange = (val: string) => {
     setName(val);
@@ -446,13 +448,24 @@ function AddCategoryModal({
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Image <span className="text-gray-400">(optionnel)</span></label>
-            <input
-              type="text"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
-              placeholder="https://…"
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                placeholder="https://…"
+              />
+              <button
+                type="button"
+                onClick={() => setShowMediaPicker(true)}
+                className="flex-shrink-0 inline-flex items-center gap-1.5 border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-600 hover:text-primary hover:border-primary/40 transition-colors"
+                title="Choisir depuis la médiathèque"
+              >
+                <ImageIcon size={15} />
+                Médiathèque
+              </button>
+            </div>
             {imageUrl && (
               <img src={imageUrl} alt="aperçu" className="mt-2 w-20 h-20 object-cover rounded-lg border border-gray-200" />
             )}
@@ -477,6 +490,13 @@ function AddCategoryModal({
           </button>
         </div>
       </div>
+      <MediaPicker
+        isOpen={showMediaPicker}
+        onClose={() => setShowMediaPicker(false)}
+        onSelect={(url) => { setImageUrl(url); setShowMediaPicker(false); }}
+        currentMedia={imageUrl}
+        mediaType="image"
+      />
     </div>
   );
 }
@@ -588,92 +608,100 @@ function FAQPanel() {
         </button>
       </div>
 
-      {/* Form */}
+      {/* FAQ Form Modal */}
       {(isCreating || editingFAQ) && (
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 mb-6">
-          <h2 className="font-bold text-gray-900 mb-4">
-            {editingFAQ ? 'Modifier la FAQ' : 'Nouvelle FAQ'}
-          </h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Question *</label>
-              <input
-                type="text"
-                value={form.question}
-                onChange={(e) => setForm({ ...form, question: e.target.value })}
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
-                placeholder="Quelle est votre question ?"
-              />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4 border-b flex-shrink-0">
+              <h2 className="font-bold text-gray-900 text-lg">
+                {editingFAQ ? 'Modifier la FAQ' : 'Nouvelle FAQ'}
+              </h2>
+              <button onClick={cancelForm} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100">
+                <X size={20} />
+              </button>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Réponse *</label>
-              <textarea
-                value={form.answer}
-                onChange={(e) => setForm({ ...form, answer: e.target.value })}
-                rows={5}
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
-                placeholder="La réponse..."
-              />
-            </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="overflow-y-auto px-6 py-5 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Ordre</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Question *</label>
                 <input
-                  type="number"
-                  value={form.order}
-                  onChange={(e) => setForm({ ...form, order: parseInt(e.target.value) || 0 })}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                  type="text"
+                  value={form.question}
+                  onChange={(e) => setForm({ ...form, question: e.target.value })}
+                  autoFocus
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                  placeholder="Quelle est votre question ?"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
-                <select
-                  value={form.categoryId ?? ''}
-                  onChange={(e) => {
-                    if (e.target.value === '__new__') {
-                      setShowAddCategoryModal(true);
-                      return;
-                    }
-                    setForm({
-                      ...form,
-                      categoryId: e.target.value ? parseInt(e.target.value) : null,
-                      category: e.target.value ? categories.find((c) => c.id === parseInt(e.target.value))?.name || '' : '',
-                    });
-                  }}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-                >
-                  <option value="">-- Aucune --</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                  ))}
-                  <option value="__new__">＋ Ajouter une catégorie…</option>
-                </select>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Réponse *</label>
+                <textarea
+                  value={form.answer}
+                  onChange={(e) => setForm({ ...form, answer: e.target.value })}
+                  rows={6}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                  placeholder="La réponse..."
+                />
               </div>
-              <div className="flex flex-col">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Visible</label>
-                <label className="flex items-center gap-2 mt-2 cursor-pointer">
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Ordre</label>
                   <input
-                    type="checkbox"
-                    checked={form.isVisible}
-                    onChange={(e) => setForm({ ...form, isVisible: e.target.checked })}
-                    className="w-4 h-4 rounded accent-primary"
+                    type="number"
+                    value={form.order}
+                    onChange={(e) => setForm({ ...form, order: parseInt(e.target.value) || 0 })}
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
                   />
-                  <span className="text-sm text-gray-600">Afficher</span>
-                </label>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
+                  <select
+                    value={form.categoryId ?? ''}
+                    onChange={(e) => {
+                      if (e.target.value === '__new__') {
+                        setShowAddCategoryModal(true);
+                        return;
+                      }
+                      setForm({
+                        ...form,
+                        categoryId: e.target.value ? parseInt(e.target.value) : null,
+                        category: e.target.value ? categories.find((c) => c.id === parseInt(e.target.value))?.name || '' : '',
+                      });
+                    }}
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                  >
+                    <option value="">-- Aucune --</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                    <option value="__new__">＋ Ajouter une catégorie…</option>
+                  </select>
+                </div>
+                <div className="flex flex-col">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Visible</label>
+                  <label className="flex items-center gap-2 mt-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.isVisible}
+                      onChange={(e) => setForm({ ...form, isVisible: e.target.checked })}
+                      className="w-4 h-4 rounded accent-primary"
+                    />
+                    <span className="text-sm text-gray-600">Afficher</span>
+                  </label>
+                </div>
               </div>
             </div>
-            <div className="flex gap-3 pt-2">
-              <button
-                onClick={save}
-                className="px-5 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-dark transition-colors flex items-center gap-2"
-              >
-                <Check size={15} /> Enregistrer
-              </button>
+            <div className="px-6 py-4 border-t flex justify-end gap-3 flex-shrink-0">
               <button
                 onClick={cancelForm}
                 className="px-4 py-2 border border-gray-200 text-gray-600 text-sm rounded-xl hover:bg-gray-50 transition-colors"
               >
                 Annuler
+              </button>
+              <button
+                onClick={save}
+                className="px-5 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-dark transition-colors flex items-center gap-2"
+              >
+                <Check size={15} /> Enregistrer
               </button>
             </div>
           </div>
