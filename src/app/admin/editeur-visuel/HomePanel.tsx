@@ -337,11 +337,15 @@ export default function HomePanel() {
   }
 
   async function saveTexts(values: Record<string, string>) {
-    await fetch('/api/admin/page-texts', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pageKey: 'home', texts: values }),
-    });
+    await Promise.all(
+      Object.entries(values).map(([textKey, content]) =>
+        fetch('/api/admin/page-texts', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pageKey: 'home', textKey, content }),
+        })
+      )
+    );
     setTexts(t => ({ ...t, ...values }));
   }
 

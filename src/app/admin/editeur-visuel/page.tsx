@@ -518,10 +518,14 @@ interface FAQ {
 function FAQPanel() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [categories, setCategories] = useState<FAQCategory[]>([]);
+  const [texts, setTexts] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [editingFAQ, setEditingFAQ] = useState<FAQ | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
+  const [showHeroModal, setShowHeroModal] = useState(false);
+  const [heroForm, setHeroForm] = useState({ 'hero-kicker': '', 'hero-title': '', 'hero-description': '', 'cta-title': '', 'cta-description': '' });
+  const [heroSaving, setHeroSaving] = useState(false);
   const [form, setForm] = useState({
     question: '',
     answer: '',
@@ -535,12 +539,39 @@ function FAQPanel() {
     Promise.all([
       fetch('/api/admin/faqs').then((r) => r.json()),
       fetch('/api/admin/categories').then((r) => r.json()),
-    ]).then(([f, c]) => {
+      fetch('/api/page-texts?pageKey=faq').then((r) => r.json()),
+    ]).then(([f, c, t]) => {
       setFaqs(Array.isArray(f) ? f : []);
       setCategories(Array.isArray(c) ? c : []);
+      const textMap: Record<string, string> = {};
+      if (typeof t === 'object' && !Array.isArray(t)) Object.assign(textMap, t);
+      setTexts(textMap);
+      setHeroForm({
+        'hero-kicker': textMap['hero-kicker'] || '',
+        'hero-title': textMap['hero-title'] || '',
+        'hero-description': textMap['hero-description'] || '',
+        'cta-title': textMap['cta-title'] || '',
+        'cta-description': textMap['cta-description'] || '',
+      });
       setLoading(false);
     });
   }, []);
+
+  async function saveHeroTexts() {
+    setHeroSaving(true);
+    await Promise.all(
+      Object.entries(heroForm).map(([textKey, content]) =>
+        fetch('/api/admin/page-texts', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pageKey: 'faq', textKey, content }),
+        })
+      )
+    );
+    setTexts(t => ({ ...t, ...heroForm }));
+    setHeroSaving(false);
+    setShowHeroModal(false);
+  }
 
   const reloadCategories = () =>
     fetch('/api/admin/categories').then((r) => r.json()).then((c) => setCategories(Array.isArray(c) ? c : []));
@@ -599,6 +630,84 @@ function FAQPanel() {
 
   return (
     <div className="px-6 py-6 max-w-3xl mx-auto">
+
+      {/* Hero section card */}
+      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mb-5">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 bg-gray-50">
+          <span className="font-semibold text-sm text-gray-700">🏷️ En-tête de page (Héro)</span>
+          <button
+            onClick={() => setShowHeroModal(true)}
+            className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-primary border border-gray-200 hover:border-primary/40 rounded-lg px-2.5 py-1.5 transition-colors"
+          >
+            <Pencil size={12} /> Éditer
+          </button>
+        </div>
+        <div className="p-5 space-y-1.5">
+          <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">
+            {texts['hero-kicker'] || <em className="not-italic text-gray-300">badge… (ex: Vos questions)</em>}
+          </p>
+          <p className="text-xl font-bold text-gray-800">
+            {texts['hero-title'] || <em className="not-italic text-gray-300">titre… (ex: Questions fréquentes)</em>}
+          </p>
+          <p className="text-sm text-gray-500 leading-relaxed">
+            {texts['hero-description'] || <em className="not-italic text-gray-300">description sous le titre…</em>}
+          </p>
+        </div>
+      </div>
+
+      {/* Hero edit modal */}
+      {showHeroModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <h3 className="font-semibold text-gray-800">En-tête de page FAQ</h3>
+              <button onClick={() => setShowHeroModal(false)} className="text-gray-400 hover:text-gray-600"><X size={18} /></button>
+            </div>
+            <div className="overflow-y-auto flex-1 px-5 py-4 space-y-4">
+              {([
+                { key: 'hero-kicker', label: 'Badge (kicker)', placeholder: 'Vos questions' },
+                { key: 'hero-title', label: 'Titre principal', placeholder: 'Questions fréquentes' },
+                { key: 'hero-description', label: 'Description', placeholder: 'Vous vous posez des questions sur…', multiline: true },
+                { key: 'cta-title', label: 'Titre section CTA (bas de page)', placeholder: 'Vous ne trouvez pas votre réponse ?' },
+                { key: 'cta-description', label: 'Description CTA', placeholder: 'Contactez-nous !', multiline: true },
+              ] as { key: keyof typeof heroForm; label: string; placeholder: string; multiline?: boolean }[]).map(({ key, label, placeholder, multiline }) => (
+                <div key={key}>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">{label}</label>
+                  {multiline ? (
+                    <textarea
+                      value={heroForm[key]}
+                      onChange={e => setHeroForm(f => ({ ...f, [key]: e.target.value }))}
+                      placeholder={placeholder}
+                      rows={3}
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                  ) : (
+                    <input
+                      value={heroForm[key]}
+                      onChange={e => setHeroForm(f => ({ ...f, [key]: e.target.value }))}
+                      placeholder={placeholder}
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-3 px-5 py-4 border-t border-gray-100">
+              <button
+                onClick={saveHeroTexts}
+                disabled={heroSaving}
+                className="flex-1 bg-primary text-white rounded-lg py-2 text-sm font-medium hover:bg-primary-dark disabled:opacity-50"
+              >
+                {heroSaving ? 'Enregistrement…' : <><Check size={14} className="inline mr-1" />Enregistrer</>}
+              </button>
+              <button onClick={() => setShowHeroModal(false)} className="px-4 py-2 text-sm text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50">
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-end mb-5">
         <button
           onClick={openCreate}
