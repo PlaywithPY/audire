@@ -347,6 +347,261 @@ function EditModal({
   );
 }
 
+// ── FAQ Panel ────────────────────────────────────────────────────────────────
+
+interface FAQ {
+  id: number;
+  question: string;
+  answer: string;
+  order: number;
+  isVisible: boolean;
+  category: string | null;
+  categoryId: number | null;
+  faqCategory?: { id: number; name: string };
+}
+
+interface FAQCategory {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+function FAQPanel() {
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [categories, setCategories] = useState<FAQCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editingFAQ, setEditingFAQ] = useState<FAQ | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [form, setForm] = useState({
+    question: '',
+    answer: '',
+    order: 0,
+    isVisible: true,
+    category: '',
+    categoryId: null as number | null,
+  });
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/admin/faqs').then((r) => r.json()),
+      fetch('/api/admin/categories').then((r) => r.json()),
+    ]).then(([f, c]) => {
+      setFaqs(Array.isArray(f) ? f : []);
+      setCategories(Array.isArray(c) ? c : []);
+      setLoading(false);
+    });
+  }, []);
+
+  const openCreate = () => {
+    setIsCreating(true);
+    setEditingFAQ(null);
+    setForm({ question: '', answer: '', order: faqs.length, isVisible: true, category: '', categoryId: null });
+  };
+
+  const openEdit = (faq: FAQ) => {
+    setEditingFAQ(faq);
+    setIsCreating(false);
+    setForm({ question: faq.question, answer: faq.answer, order: faq.order, isVisible: faq.isVisible, category: faq.category || '', categoryId: faq.categoryId });
+  };
+
+  const cancelForm = () => { setEditingFAQ(null); setIsCreating(false); };
+
+  const reload = () =>
+    fetch('/api/admin/faqs').then((r) => r.json()).then((f) => setFaqs(Array.isArray(f) ? f : []));
+
+  const save = async () => {
+    if (!form.question.trim() || !form.answer.trim()) return alert('Question et réponse sont obligatoires');
+    const method = editingFAQ ? 'PUT' : 'POST';
+    const body = editingFAQ ? { id: editingFAQ.id, ...form } : form;
+    const res = await fetch('/api/admin/faqs', {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) { cancelForm(); reload(); }
+    else { const e = await res.json(); alert(e.error || 'Erreur'); }
+  };
+
+  const deleteFAQ = async (id: number) => {
+    if (!confirm('Supprimer cette FAQ ?')) return;
+    await fetch(`/api/admin/faqs?id=${id}`, { method: 'DELETE' });
+    reload();
+  };
+
+  const toggleVisibility = async (faq: FAQ) => {
+    await fetch('/api/admin/faqs', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: faq.id, question: faq.question, answer: faq.answer, order: faq.order, isVisible: !faq.isVisible, category: faq.category }),
+    });
+    reload();
+  };
+
+  if (loading) return (
+    <div className="flex items-center justify-center py-20 text-gray-400">
+      <div className="animate-spin w-6 h-6 border-2 border-gray-200 border-t-primary rounded-full mr-3" />
+      Chargement…
+    </div>
+  );
+
+  return (
+    <div className="px-6 py-6 max-w-3xl mx-auto">
+      <div className="flex justify-end mb-5">
+        <button
+          onClick={openCreate}
+          className="inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-primary-dark transition-colors shadow-sm"
+        >
+          <Plus size={16} />
+          Nouvelle FAQ
+        </button>
+      </div>
+
+      {/* Form */}
+      {(isCreating || editingFAQ) && (
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 mb-6">
+          <h2 className="font-bold text-gray-900 mb-4">
+            {editingFAQ ? 'Modifier la FAQ' : 'Nouvelle FAQ'}
+          </h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Question *</label>
+              <input
+                type="text"
+                value={form.question}
+                onChange={(e) => setForm({ ...form, question: e.target.value })}
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                placeholder="Quelle est votre question ?"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Réponse *</label>
+              <textarea
+                value={form.answer}
+                onChange={(e) => setForm({ ...form, answer: e.target.value })}
+                rows={5}
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                placeholder="La réponse..."
+              />
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Ordre</label>
+                <input
+                  type="number"
+                  value={form.order}
+                  onChange={(e) => setForm({ ...form, order: parseInt(e.target.value) || 0 })}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
+                <select
+                  value={form.categoryId ?? ''}
+                  onChange={(e) => setForm({
+                    ...form,
+                    categoryId: e.target.value ? parseInt(e.target.value) : null,
+                    category: e.target.value ? categories.find((c) => c.id === parseInt(e.target.value))?.name || '' : '',
+                  })}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                >
+                  <option value="">-- Aucune --</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Visible</label>
+                <label className="flex items-center gap-2 mt-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={form.isVisible}
+                    onChange={(e) => setForm({ ...form, isVisible: e.target.checked })}
+                    className="w-4 h-4 rounded accent-primary"
+                  />
+                  <span className="text-sm text-gray-600">Afficher</span>
+                </label>
+              </div>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={save}
+                className="px-5 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-dark transition-colors flex items-center gap-2"
+              >
+                <Check size={15} /> Enregistrer
+              </button>
+              <button
+                onClick={cancelForm}
+                className="px-4 py-2 border border-gray-200 text-gray-600 text-sm rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FAQ list */}
+      {faqs.length === 0 ? (
+        <div className="text-center py-20">
+          <div className="text-5xl mb-4">❓</div>
+          <p className="text-gray-500 font-medium">Aucune FAQ pour le moment</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {faqs.map((faq) => (
+            <div
+              key={faq.id}
+              className={`bg-white border border-gray-200 rounded-xl p-5 group transition-all hover:shadow-md ${!faq.isVisible ? 'opacity-60' : ''}`}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">#{faq.order}</span>
+                    {faq.faqCategory && (
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{faq.faqCategory.name}</span>
+                    )}
+                    {!faq.isVisible && (
+                      <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full">masquée</span>
+                    )}
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-1">{faq.question}</h3>
+                  <p className="text-sm text-gray-500 line-clamp-2">{faq.answer}</p>
+                </div>
+                <div className="flex items-center gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => openEdit(faq)}
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-primary hover:bg-primary/10 transition-colors"
+                    title="Modifier"
+                  >
+                    <Pencil size={15} />
+                  </button>
+                  <button
+                    onClick={() => toggleVisibility(faq)}
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-amber-500 hover:bg-amber-50 transition-colors"
+                    title={faq.isVisible ? 'Masquer' : 'Afficher'}
+                  >
+                    {faq.isVisible ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                  <button
+                    onClick={() => deleteFAQ(faq.id)}
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                    title="Supprimer"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Add block modal
 function AddBlockModal({
   onAdd,
@@ -659,7 +914,9 @@ export default function EditeurVisuelPage() {
                 {activePage.icon} {activePage.label}
               </h1>
               <p className="text-xs text-gray-400 mt-0.5">
-                {blocks.length} bloc{blocks.length !== 1 ? 's' : ''} — drag pour réordonner
+                {activePage.key === 'faq'
+                  ? 'Questions / Réponses'
+                  : `${blocks.length} bloc${blocks.length !== 1 ? 's' : ''} — drag pour réordonner`}
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -671,17 +928,22 @@ export default function EditeurVisuelPage() {
                 <ExternalLink size={14} />
                 Voir la page
               </Link>
-              <button
-                onClick={() => setShowAddBlock(true)}
-                className="inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-primary-dark transition-colors shadow-sm"
-              >
-                <Plus size={16} />
-                Ajouter un bloc
-              </button>
+              {activePage.key !== 'faq' && (
+                <button
+                  onClick={() => setShowAddBlock(true)}
+                  className="inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-primary-dark transition-colors shadow-sm"
+                >
+                  <Plus size={16} />
+                  Ajouter un bloc
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Block list */}
+          {/* Page-specific panel or block canvas */}
+          {activePage.key === 'faq' ? (
+            <FAQPanel />
+          ) : (
           <div className="px-6 py-6 max-w-2xl mx-auto">
             {loading ? (
               <div className="flex items-center justify-center py-20 text-gray-400">
@@ -740,6 +1002,7 @@ export default function EditeurVisuelPage() {
               </div>
             )}
           </div>
+          )}
         </main>
       </div>
 
