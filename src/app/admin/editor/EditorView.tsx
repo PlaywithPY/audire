@@ -1,9 +1,7 @@
 'use client';
 
 // src/app/admin/editor/EditorView.tsx
-// Phase 3 — Workflow brouillon/publication.
-// Modifications stockées en localStorage. Iframe affiche les drafts. Bouton Publier
-// envoie tout en base via /api/admin/publish.
+// Phase 4 — fournit la liste des catégories à l'inspecteur + gère le draft de categoryId.
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -26,32 +24,44 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
   const [selected, setSelected] = useState<SelectedBlock | null>(null);
   const [iframeReady, setIframeReady] = useState(false);
   const [iframeRect, setIframeRect] = useState({ x: 0, y: 0 });
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
+  const [liveFaqsById, setLiveFaqsById] = useState<Record<string, { categoryId: number | null }>>({});
 
   const history = useEditorHistory();
-  const { drafts, setPageText, setFaqItem, setCategory, clear, count } = useDrafts();
+  const d = useDrafts();
+
+  // Charge catégories + FAQs (pour connaître la categoryId actuelle de chaque FAQ)
+  useEffect(() => {
+    fetch('/api/categories').then((r) => r.ok ? r.json() : []).then((cats: any[]) => {
+      setCategories(cats.map((c) => ({ id: c.id, name: c.name })));
+    });
+    fetch('/api/faqs').then((r) => r.ok ? r.json() : []).then((faqs: any[]) => {
+      const map: Record<string, { categoryId: number | null }> = {};
+      faqs.forEach((f) => { map[String(f.id)] = { categoryId: f.categoryId ?? null }; });
+      setLiveFaqsById(map);
+    });
+  }, []);
 
   // Beforeunload guard
   useEffect(() => {
     function onBeforeUnload(e: BeforeUnloadEvent) {
-      if (count === 0) return;
+      if (d.count === 0) return;
       e.preventDefault();
-      e.returnValue = ''; // requis pour Chrome
+      e.returnValue = '';
     }
     window.addEventListener('beforeunload', onBeforeUnload);
     return () => window.removeEventListener('beforeunload', onBeforeUnload);
-  }, [count]);
+  }, [d.count]);
 
-  // Iframe → parent
+  // Iframe ↔ parent
   useEffect(() => {
     function onMessage(e: MessageEvent) {
       if (e.source !== iframeRef.current?.contentWindow) return;
       const msg = e.data;
       if (!msg || typeof msg !== 'object') return;
-
       switch (msg.type) {
         case 'editor:ready':
           setIframeReady(true);
-          // Envoie les drafts courants à l'iframe pour qu'elle affiche les modifs en attente
           iframeRef.current?.contentWindow?.postMessage({ type: 'editor:apply-drafts', drafts: draftsStore.read() }, '*');
           break;
         case 'editor:select':
@@ -66,7 +76,6 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
     return () => window.removeEventListener('message', onMessage);
   }, []);
 
-  // Position iframe pour l'inspecteur
   useEffect(() => {
     function update() {
       if (!iframeRef.current) return;
@@ -86,29 +95,29 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
     iframeRef.current?.contentWindow?.postMessage({ type: 'editor:apply-text', blockKey, text }, '*');
   }
 
-  // Sauvegarde en draft selon le format de blockKey
   function saveDraft(blockKey: string, value: string) {
     if (blockKey.startsWith('faq-item:')) {
       const [, id, field] = blockKey.split(':');
-      if (field === 'question' || field === 'answer') setFaqItem(id, field, value);
+      if (field === 'question' || field === 'answer') d.setFaqItem(id, { [field]: value });
     } else if (blockKey.startsWith('faq-category:')) {
       const [, id, field] = blockKey.split(':');
-      if (field === 'name' || field === 'description' || field === 'imageUrl') setCategory(id, field, value);
+      if (field === 'name' || field === 'description' || field === 'imageUrl') d.setCategory(id, { [field]: value });
     } else if (blockKey.includes('.')) {
-      setPageText(blockKey, value);
+      d.setPageText(blockKey, value);
     }
   }
 
-  // Undo/Redo via raccourcis
+  // Catégorie courante de la FAQ sélectionnée (live + draft merge)
+  let faqCategoryId: number | null | undefined = undefined;
+  if (selected?.blockKey.startsWith('faq-item:')) {
+    const [, id] = selected.blockKey.split(':');
+    const draftCatId = d.drafts.faqItems[id]?.categoryId;
+    faqCategoryId = draftCatId !== undefined ? draftCatId : (liveFaqsById[id]?.categoryId ?? null);
+  }
+
   useEffect(() => {
-    function applyOp(op: EditOp) {
-      applyTextToIframe(op.blockKey, op.before); // undo applique 'before'
-      saveDraft(op.blockKey, op.before);
-    }
-    function applyOpRedo(op: EditOp) {
-      applyTextToIframe(op.blockKey, op.after);
-      saveDraft(op.blockKey, op.after);
-    }
+    function applyOp(op: EditOp) { applyTextToIframe(op.blockKey, op.before); saveDraft(op.blockKey, op.before); }
+    function applyOpRedo(op: EditOp) { applyTextToIframe(op.blockKey, op.after); saveDraft(op.blockKey, op.after); }
     const onUndo = (e: Event) => applyOp((e as CustomEvent<EditOp>).detail);
     const onRedo = (e: Event) => applyOpRedo((e as CustomEvent<EditOp>).detail);
     window.addEventListener('editor:apply-undo', onUndo);
@@ -120,79 +129,48 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
   }, []);
 
   function changePage(slug: string) {
-    setSelected(null);
-    setIframeReady(false);
-    setPageMenuOpen(false);
-    history.clear();
+    setSelected(null); setIframeReady(false); setPageMenuOpen(false); history.clear();
     router.push(`/admin/editor?page=${slug}`);
   }
 
   async function handlePublish() {
-    const current = draftsStore.read();
     const res = await fetch('/api/admin/publish', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(current),
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(draftsStore.read()),
     });
-    if (!res.ok) {
-      alert('Erreur lors de la publication. Vos modifications restent en brouillon.');
-      return;
-    }
-    clear();
-    history.clear();
+    if (!res.ok) { alert('Erreur lors de la publication.'); return; }
+    d.clear(); history.clear();
     iframeRef.current?.contentWindow?.postMessage({ type: 'editor:reset-blocks' }, '*');
+    if (iframeRef.current) iframeRef.current.src = iframeRef.current.src;
   }
 
   function handleDiscard() {
-    clear();
-    history.clear();
-    // Recharge l'iframe pour repartir de la version publiée
-    if (iframeRef.current) {
-      iframeRef.current.src = iframeRef.current.src;
-    }
+    d.clear(); history.clear();
+    if (iframeRef.current) iframeRef.current.src = iframeRef.current.src;
   }
 
   return (
     <div className="flex flex-col h-screen">
       <AdminTopbar
         crumbs={[{ label: 'Site web' }, { label: 'Éditeur' }]}
-        device={device}
-        onDeviceChange={setDevice}
-        canUndo={history.canUndo}
-        canRedo={history.canRedo}
-        onUndo={() => {
-          const op = history.undo();
-          if (op) { applyTextToIframe(op.blockKey, op.before); saveDraft(op.blockKey, op.before); }
-        }}
-        onRedo={() => {
-          const op = history.redo();
-          if (op) { applyTextToIframe(op.blockKey, op.after); saveDraft(op.blockKey, op.after); }
-        }}
+        device={device} onDeviceChange={setDevice}
+        canUndo={history.canUndo} canRedo={history.canRedo}
+        onUndo={() => { const op = history.undo(); if (op) { applyTextToIframe(op.blockKey, op.before); saveDraft(op.blockKey, op.before); } }}
+        onRedo={() => { const op = history.redo(); if (op) { applyTextToIframe(op.blockKey, op.after); saveDraft(op.blockKey, op.after); } }}
         rightExtra={
           <div className="flex items-center gap-2">
-            <PublishBar pendingCount={count} onPublish={handlePublish} onDiscard={handleDiscard} />
+            <PublishBar pendingCount={d.count} onPublish={handlePublish} onDiscard={handleDiscard} />
             <div className="relative">
-              <button
-                type="button"
-                onClick={() => setPageMenuOpen((v) => !v)}
-                className="h-7 px-2.5 rounded-md border border-gray-200 hover:bg-gray-50 text-[13px] font-medium flex items-center gap-1.5"
-              >
-                {page.label}
-                <ChevronDown className="w-3 h-3" />
+              <button type="button" onClick={() => setPageMenuOpen((v) => !v)}
+                className="h-7 px-2.5 rounded-md border border-gray-200 hover:bg-gray-50 text-[13px] font-medium flex items-center gap-1.5">
+                {page.label}<ChevronDown className="w-3 h-3" />
               </button>
               {pageMenuOpen && (
                 <div className="absolute right-0 top-full mt-1 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-40">
                   {pages.map((p) => (
-                    <button
-                      key={p.slug}
-                      type="button"
-                      onClick={() => changePage(p.slug)}
-                      className={`w-full text-left px-3 py-1.5 text-[13px] hover:bg-gray-50 ${
-                        p.slug === page.slug ? 'font-semibold text-gray-900' : 'text-gray-700'
-                      }`}
-                    >
-                      {p.label}
-                      <span className="ml-2 text-[11px] text-gray-400 font-mono">{p.path}</span>
+                    <button key={p.slug} type="button" onClick={() => changePage(p.slug)}
+                      className={`w-full text-left px-3 py-1.5 text-[13px] hover:bg-gray-50 ${p.slug === page.slug ? 'font-semibold text-gray-900' : 'text-gray-700'}`}>
+                      {p.label}<span className="ml-2 text-[11px] text-gray-400 font-mono">{p.path}</span>
                     </button>
                   ))}
                 </div>
@@ -204,19 +182,11 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
       />
 
       <div className="flex-1 overflow-auto bg-gray-100 p-6">
-        <div
-          className="mx-auto bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden transition-all duration-300"
-          style={{ maxWidth: DEVICE_WIDTHS[device] }}
-        >
-          {!iframeReady && (
-            <div className="aspect-[16/10] grid place-items-center text-sm text-gray-500">
-              Chargement de la page…
-            </div>
-          )}
+        <div className="mx-auto bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden transition-all duration-300"
+             style={{ maxWidth: DEVICE_WIDTHS[device] }}>
+          {!iframeReady && <div className="aspect-[16/10] grid place-items-center text-sm text-gray-500">Chargement de la page…</div>}
           <iframe
-            ref={iframeRef}
-            key={page.slug}
-            src={`${page.path}?edit=1`}
+            ref={iframeRef} key={page.slug} src={`${page.path}?edit=1`}
             className={`w-full bg-white ${iframeReady ? 'block' : 'hidden'}`}
             style={{ height: 'calc(100vh - 120px)', border: 0 }}
             title={`Aperçu : ${page.label}`}
@@ -226,14 +196,20 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
 
       {selected && (
         <BlockInspector
-          selected={selected}
-          iframeRect={iframeRect}
+          selected={selected} iframeRect={iframeRect}
           onChange={(text) => applyTextToIframe(selected.blockKey, text)}
           onCommit={(before, after) => {
             history.push({ blockKey: selected.blockKey, before, after });
             saveDraft(selected.blockKey, after);
           }}
           onClose={() => setSelected(null)}
+          categories={categories}
+          faqCategoryId={faqCategoryId}
+          onFaqCategoryChange={(catId) => {
+            if (!selected.blockKey.startsWith('faq-item:')) return;
+            const [, id] = selected.blockKey.split(':');
+            d.setFaqItem(id, { categoryId: catId });
+          }}
         />
       )}
     </div>
