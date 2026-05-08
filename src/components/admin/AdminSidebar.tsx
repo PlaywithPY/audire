@@ -47,6 +47,7 @@ const SECTIONS: Section[] = [
     label: 'Site web',
     items: [
       { href: '/admin/editor', label: 'Éditeur', icon: Pencil },
+      { href: '/admin/faq-management', label: 'FAQ — Gestion', icon: FileText },
       { href: '/admin/testimonials', label: 'Témoignages', icon: FileText },
       { href: '/admin/mediatheque', label: 'Médiathèque', icon: ImageIcon },
     ],

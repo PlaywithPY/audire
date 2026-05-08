@@ -1,15 +1,11 @@
 'use client';
 
 // src/components/admin/BlockInspector.tsx
-// Inspecteur flottant. Modes selon le format de blockKey :
-//   "faq.hero-title"          → page text
-//   "faq-item:42:question"    → FAQ item
-//   "faq-item:42:answer"      → FAQ item
-//   "faq-category:3:name"     → catégorie
-//   "faq-category:3:description" / ":imageUrl"
+// Phase 4 — modes étendus : page-text, faq-item (avec dropdown catégorie), faq-category (avec MediaPicker).
 
 import { useEffect, useRef, useState } from 'react';
 import { X, Type, HelpCircle, FolderOpen } from 'lucide-react';
+import MediaPickerButton from './MediaPickerButton';
 
 export type SelectedBlock = {
   blockKey: string;
@@ -17,12 +13,18 @@ export type SelectedBlock = {
   data: { text?: string; [k: string]: unknown };
 };
 
+type Category = { id: number; name: string };
+
 interface Props {
   selected: SelectedBlock;
   iframeRect: { x: number; y: number };
   onChange: (text: string) => void;
   onCommit: (before: string, after: string) => void;
   onClose: () => void;
+  // Phase 4
+  categories: Category[];
+  faqCategoryId?: number | null; // catégorie ACTUELLE de la FAQ sélectionnée (live + draft)
+  onFaqCategoryChange?: (categoryId: number | null) => void;
 }
 
 type Mode =
@@ -50,20 +52,16 @@ function parseBlockKey(blockKey: string): Mode {
 }
 
 const ICON: Record<Mode['kind'], React.ComponentType<{ className?: string }>> = {
-  'page-text': Type,
-  'faq-item': HelpCircle,
-  'faq-category': FolderOpen,
-  'unknown': Type,
+  'page-text': Type, 'faq-item': HelpCircle, 'faq-category': FolderOpen, 'unknown': Type,
 };
-
 const LABEL: Record<Mode['kind'], string> = {
-  'page-text': 'Texte de page',
-  'faq-item': 'Question FAQ',
-  'faq-category': 'Catégorie FAQ',
-  'unknown': 'Bloc',
+  'page-text': 'Texte de page', 'faq-item': 'Question FAQ', 'faq-category': 'Catégorie FAQ', 'unknown': 'Bloc',
 };
 
-export default function BlockInspector({ selected, iframeRect, onChange, onCommit, onClose }: Props) {
+export default function BlockInspector({
+  selected, iframeRect, onChange, onCommit, onClose,
+  categories, faqCategoryId, onFaqCategoryChange,
+}: Props) {
   const [text, setText] = useState(selected.data.text ?? '');
   const before = useRef(selected.data.text ?? '');
   const debounceRef = useRef<number | null>(null);
@@ -86,30 +84,33 @@ export default function BlockInspector({ selected, iframeRect, onChange, onCommi
     }, 600);
   }
 
-  // Position : à droite du bloc, fallback à gauche, fallback en bas
-  const inspectorWidth = 340;
-  const margin = 12;
+  function commitImmediate(value: string) {
+    setText(value);
+    onChange(value);
+    onCommit(before.current, value);
+    before.current = value;
+  }
+
+  // Position
+  const w = 360, m = 12;
   const blockRight = iframeRect.x + selected.rect.x + selected.rect.width;
   const blockLeft  = iframeRect.x + selected.rect.x;
   const blockTop   = iframeRect.y + selected.rect.y;
-
-  let left = blockRight + margin;
-  if (left + inspectorWidth > window.innerWidth - 8) {
-    left = blockLeft - inspectorWidth - margin;
-    if (left < 8) left = window.innerWidth - inspectorWidth - 8;
+  let left = blockRight + m;
+  if (left + w > window.innerWidth - 8) {
+    left = blockLeft - w - m;
+    if (left < 8) left = window.innerWidth - w - 8;
   }
   let top = Math.max(8, blockTop);
-  if (top + 260 > window.innerHeight) top = window.innerHeight - 268;
+  if (top + 280 > window.innerHeight) top = window.innerHeight - 288;
 
   const isImageField = mode.kind === 'faq-category' && mode.field === 'imageUrl';
-  const isLongField  = (mode.kind === 'faq-item' && mode.field === 'answer') || (mode.kind === 'faq-category' && mode.field === 'description');
+  const isLongField = (mode.kind === 'faq-item' && mode.field === 'answer') || (mode.kind === 'faq-category' && mode.field === 'description');
   const rows = isLongField ? 6 : 2;
 
   return (
-    <div
-      className="fixed bg-white border border-gray-200 rounded-xl shadow-2xl z-50 flex flex-col"
-      style={{ left, top, width: inspectorWidth }}
-    >
+    <div className="fixed bg-white border border-gray-200 rounded-xl shadow-2xl z-50 flex flex-col"
+         style={{ left, top, width: w }}>
       <div className="flex items-center gap-2 px-3 py-2 border-b border-gray-100">
         <Icon className="w-3.5 h-3.5 text-gray-400" />
         <div className="flex-1 min-w-0">
@@ -121,46 +122,69 @@ export default function BlockInspector({ selected, iframeRect, onChange, onCommi
         </button>
       </div>
 
-      <div className="p-3">
+      <div className="p-3 space-y-3">
         {mode.kind === 'unknown' ? (
           <div className="text-[12px] text-amber-700 bg-amber-50 p-2 rounded">
-            Format de blockKey non reconnu. Convention attendue :<br/>
-            <code className="text-[10px]">page.cle</code>, <code className="text-[10px]">faq-item:ID:champ</code>, <code className="text-[10px]">faq-category:ID:champ</code>
+            Format non reconnu : <code>{selected.blockKey}</code>
           </div>
         ) : (
-          <>
+          <div>
             <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">
               {mode.kind === 'page-text' && 'Contenu'}
               {mode.kind === 'faq-item' && (mode.field === 'question' ? 'Question' : 'Réponse')}
               {mode.kind === 'faq-category' && (
-                mode.field === 'name' ? 'Nom' :
-                mode.field === 'description' ? 'Description' : 'URL de l\'image'
+                mode.field === 'name' ? 'Nom' : mode.field === 'description' ? 'Description' : 'Image'
               )}
             </label>
+
             {isImageField ? (
-              <input
-                type="url"
-                value={text}
-                onChange={(e) => handleChange(e.target.value)}
-                placeholder="https://..."
-                className="w-full text-[13px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400"
-                autoFocus
-              />
+              <div className="space-y-2">
+                {text && (
+                  <div className="aspect-video bg-gray-100 rounded overflow-hidden border border-gray-200">
+                    <img src={text} alt="" className="w-full h-full object-cover" />
+                  </div>
+                )}
+                <input
+                  type="url" value={text} onChange={(e) => handleChange(e.target.value)}
+                  placeholder="https://... ou choisir →"
+                  className="w-full text-[12px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 font-mono"
+                />
+                <MediaPickerButton onPick={(url) => commitImmediate(url)} />
+              </div>
             ) : (
               <textarea
-                value={text}
-                onChange={(e) => handleChange(e.target.value)}
+                value={text} onChange={(e) => handleChange(e.target.value)}
                 rows={Math.min(10, Math.max(rows, text.split('\n').length))}
                 className="w-full text-[13px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 resize-y"
                 autoFocus
               />
             )}
-            <div className="mt-2 text-[11px] text-gray-400 flex items-center justify-between">
-              <span>Modification en brouillon — cliquez Publier pour valider</span>
-              <span className="font-mono">⌘Z</span>
-            </div>
-          </>
+          </div>
         )}
+
+        {/* Dropdown catégorie pour les FAQ items */}
+        {mode.kind === 'faq-item' && onFaqCategoryChange && (
+          <div className="pt-2 border-t border-gray-100">
+            <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">
+              Catégorie
+            </label>
+            <select
+              value={faqCategoryId ?? ''}
+              onChange={(e) => onFaqCategoryChange(e.target.value ? Number(e.target.value) : null)}
+              className="w-full text-[13px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 bg-white"
+            >
+              <option value="">— Aucune —</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        <div className="text-[11px] text-gray-400 flex items-center justify-between">
+          <span>Brouillon — Publier pour valider</span>
+          <span className="font-mono">⌘Z</span>
+        </div>
       </div>
     </div>
   );
