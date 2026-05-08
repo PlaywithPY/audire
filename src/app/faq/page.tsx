@@ -4,13 +4,17 @@ import FAQAccordion from "@/components/FAQAccordion";
 import CategoryGrid from "@/components/CategoryGrid";
 import AllPageImageEffects from "@/components/AllPageImageEffects";
 import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 interface FAQ {
   id: number;
   question: string;
   answer: string;
   order: number;
+  categoryId?: number | null;
+  category?: { id: number; name: string } | null;
+  // Enrichi côté client :
+  categoryName?: string | null;
 }
 
 interface Category {
@@ -30,7 +34,6 @@ interface PageTexts {
 export default function FAQ() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [allFaqs, setAllFaqs] = useState<FAQ[]>([]);
-  const [displayedFaqs, setDisplayedFaqs] = useState<FAQ[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [texts, setTexts] = useState<PageTexts>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -38,31 +41,39 @@ export default function FAQ() {
   useEffect(() => {
     async function loadData() {
       try {
-        // Charger les catégories avec leurs FAQs
+        // Charger les catégories avec leurs FAQs (source de vérité pour la
+        // correspondance FAQ ↔ catégorie)
         const categoriesRes = await fetch('/api/categories');
+        let cats: Category[] = [];
         if (categoriesRes.ok) {
-          const categoriesData = await categoriesRes.json();
-          setCategories(categoriesData);
-
-          // Extraire toutes les FAQs de toutes les catégories
-          const allFaqsFromCategories = categoriesData.flatMap((cat: Category) => cat.faqs);
-          setAllFaqs(allFaqsFromCategories);
-          setDisplayedFaqs(allFaqsFromCategories);
+          cats = await categoriesRes.json();
+          setCategories(cats);
         }
 
-        // Charger aussi les FAQs sans catégorie
+        // Construire une map { faqId → {categoryId, categoryName} }
+        const catMap = new Map<number, { id: number; name: string }>();
+        cats.forEach((cat) => {
+          cat.faqs?.forEach((f) => {
+            catMap.set(f.id, { id: cat.id, name: cat.name });
+          });
+        });
+
+        // Charger toutes les FAQs (incluant les sans-catégorie)
         const faqsRes = await fetch('/api/faqs');
+        let faqs: FAQ[] = [];
         if (faqsRes.ok) {
-          const faqsData = await faqsRes.json();
-          // Si on a des FAQs qui ne sont pas dans les catégories, les ajouter
-          const uncategorizedFaqs = faqsData.filter(
-            (faq: FAQ) => !allFaqs.some((f: FAQ) => f.id === faq.id)
-          );
-          if (uncategorizedFaqs.length > 0) {
-            setAllFaqs(prev => [...prev, ...uncategorizedFaqs]);
-            setDisplayedFaqs(prev => [...prev, ...uncategorizedFaqs]);
-          }
+          faqs = await faqsRes.json();
         }
+
+        // Enrichir chaque FAQ avec sa catégorie (depuis la map ou son propre champ)
+        const enriched: FAQ[] = faqs.map((f) => {
+          const fromMap = catMap.get(f.id);
+          const catId = f.categoryId ?? fromMap?.id ?? null;
+          const catName = f.category?.name ?? fromMap?.name ?? null;
+          return { ...f, categoryId: catId, categoryName: catName };
+        });
+
+        setAllFaqs(enriched);
 
         // Charger les textes de la page
         const textsRes = await fetch('/api/page-texts?pageKey=faq');
@@ -79,16 +90,14 @@ export default function FAQ() {
     loadData();
   }, []);
 
+  // Filtrage en mémoire — pas de re-fetch nécessaire
+  const displayedFaqs = useMemo(() => {
+    if (selectedCategory === null) return allFaqs;
+    return allFaqs.filter((f) => f.categoryId === selectedCategory);
+  }, [allFaqs, selectedCategory]);
+
   const handleCategorySelect = (categoryId: number | null) => {
     setSelectedCategory(categoryId);
-    if (categoryId === null) {
-      // Afficher toutes les FAQs
-      setDisplayedFaqs(allFaqs);
-    } else {
-      // Afficher seulement les FAQs de la catégorie sélectionnée
-      const category = categories.find(cat => cat.id === categoryId);
-      setDisplayedFaqs(category?.faqs || []);
-    }
   };
 
   return (
@@ -131,20 +140,29 @@ export default function FAQ() {
                   />
                 )}
 
+                {/* En-tête de filtre actif */}
+                {selectedCategory !== null && (
+                  <div className="flex items-center justify-center gap-3 mb-6">
+                    <h3 className="text-2xl font-bold">
+                      {categories.find((cat) => cat.id === selectedCategory)?.name}
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCategory(null)}
+                      className="text-sm text-primary hover:underline"
+                    >
+                      ← Toutes les catégories
+                    </button>
+                  </div>
+                )}
+
                 {/* FAQ Accordion */}
                 {displayedFaqs.length === 0 ? (
                   <div className="text-center py-12">
                     <p className="text-gray-500">Aucune question disponible pour le moment.</p>
                   </div>
                 ) : (
-                  <>
-                    {selectedCategory !== null && (
-                      <h3 className="text-2xl font-bold mb-6 text-center">
-                        {categories.find(cat => cat.id === selectedCategory)?.name}
-                      </h3>
-                    )}
-                    <FAQAccordion faqs={displayedFaqs} />
-                  </>
+                  <FAQAccordion faqs={displayedFaqs} />
                 )}
               </>
             )}
