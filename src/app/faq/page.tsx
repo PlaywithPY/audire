@@ -98,13 +98,16 @@ export default function FAQ() {
         <section data-section="hero" className="relative bg-gradient-to-br from-primary to-primary-dark text-white py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <span className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <span data-edit-block="faq.hero-kicker"
+                    className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
                 {texts['hero-kicker'] || 'Vos questions'}
               </span>
-              <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <h1 data-edit-block="faq.hero-title"
+                  className="text-5xl md:text-6xl font-bold mb-6">
                 {texts['hero-title'] || 'Questions fréquentes'}
               </h1>
-              <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
+              <p data-edit-block="faq.hero-description"
+                 className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
                 {texts['hero-description'] || 'Vous vous posez des questions sur les appareils auditifs, les remboursements ou notre accompagnement ? Vous trouverez ici les réponses aux questions les plus fréquentes.'}
               </p>
             </div>
@@ -151,8 +154,13 @@ export default function FAQ() {
         {/* CTA */}
         <section className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-4xl font-bold mb-4">{texts['cta-title'] || 'Vous ne trouvez pas votre réponse ?'}</h2>
-            <p className="text-xl text-text-light mb-8 max-w-2xl mx-auto">
+            <h2 data-edit-block="faq.cta-title"
+                className="text-4xl font-bold mb-4">
+              {texts['cta-title'] || 'Vous ne trouvez pas votre réponse ?'}
+            </h2>
+            
+            <p data-edit-block="faq.cta-description"
+               className="text-xl text-text-light mb-8 max-w-2xl mx-auto">
               {texts['cta-description'] || 'Contactez-nous ! Nous sommes là pour répondre à toutes vos questions.'}
             </p>
             <a
