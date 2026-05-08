@@ -1,238 +1,200 @@
 'use client';
 
+// src/app/admin/mediatheque/page.tsx
+// Réécrit pour utiliser /api/admin/upload (la même API que les feature cards).
+// Vercel n'autorise pas l'écriture disque — l'ancienne route /api/admin/mediatheque
+// écrivait dans public/uploads/media et n'a jamais marché en prod.
+
 import { useState, useEffect } from 'react';
 import AdminHeader from '@/components/AdminHeader';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 type MediaFile = {
-  id: string;
+  name: string;
   url: string;
-  filename: string;
-  uploadedAt: string;
-  size: number;
-  type: string;
-  usedIn: string[];
+  size?: number;
+  uploadedAt?: string;
+  type?: 'image' | 'video';
 };
 
 export default function MediathequeAdmin() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/admin/login');
-    } else if (status === 'authenticated') {
-      fetchMediaFiles();
-    }
+    if (status === 'unauthenticated') router.push('/admin/login');
+    else if (status === 'authenticated') fetchMedia();
   }, [status, router]);
 
-  async function fetchMediaFiles() {
+  async function fetchMedia() {
     try {
       setLoading(true);
-      const res = await fetch('/api/admin/mediatheque');
-      if (res.ok) {
-        const data = await res.json();
-        setMediaFiles(data);
-      }
-    } catch (error) {
-      console.error('Error fetching media files:', error);
+      const res = await fetch('/api/admin/upload');
+      if (res.ok) setMediaFiles(await res.json());
+    } catch (e) {
+      console.error('Error fetching media:', e);
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleUpload() {
-    if (!selectedFile) return;
-
+  async function handleUpload(file: File) {
     try {
       setUploading(true);
       const formData = new FormData();
-      formData.append('file', selectedFile);
-
-      const res = await fetch('/api/admin/mediatheque', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (res.ok) {
-        setSelectedFile(null);
-        fetchMediaFiles();
+      formData.append('file', file);
+      const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.success || res.ok) {
+        await fetchMedia();
       } else {
-        alert('Erreur lors de l\'upload');
+        alert('Erreur lors de l\'upload : ' + (data.error || 'inconnu'));
       }
-    } catch (error) {
-      console.error('Error uploading file:', error);
+    } catch (e) {
+      console.error('Upload error:', e);
       alert('Erreur lors de l\'upload');
     } finally {
       setUploading(false);
     }
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce fichier ?')) return;
-
+  async function handleDelete(name: string) {
+    if (!confirm(`Supprimer ${name} ?`)) return;
     try {
-      const res = await fetch(`/api/admin/mediatheque?id=${id}`, {
-        method: 'DELETE',
-      });
-
-      if (res.ok) {
-        fetchMediaFiles();
-      } else {
-        alert('Erreur lors de la suppression');
-      }
-    } catch (error) {
-      console.error('Error deleting file:', error);
-      alert('Erreur lors de la suppression');
+      const res = await fetch(`/api/admin/upload?name=${encodeURIComponent(name)}`, { method: 'DELETE' });
+      if (res.ok) fetchMedia();
+      else alert('Erreur lors de la suppression');
+    } catch (e) {
+      console.error(e);
     }
   }
 
-  function copyUrlToClipboard(url: string) {
-    navigator.clipboard.writeText(url);
-    alert('URL copiée dans le presse-papier');
+  function copyUrl(url: string) {
+    navigator.clipboard.writeText(window.location.origin + url);
+    alert('URL copiée');
   }
 
-  function formatFileSize(bytes: number): string {
+  function formatSize(bytes?: number) {
+    if (!bytes) return '—';
     if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   }
 
-  const filteredFiles = mediaFiles.filter((file) =>
-    file.filename.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Mode picker (popup)
+  const isPicker = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('picker');
+
+  function handlePick(url: string) {
+    if (isPicker && window.opener) {
+      window.opener.postMessage({ type: 'media:selected', url: window.location.origin + url }, '*');
+      window.close();
+    }
+  }
+
+  const filtered = mediaFiles.filter((f) => f.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   if (status === 'loading' || loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <AdminHeader currentPage="mediatheque" />
-        <div className="flex items-center justify-center h-96">
-          <div className="text-lg">Chargement...</div>
-        </div>
+        {!isPicker && <AdminHeader currentPage="mediatheque" />}
+        <div className="flex items-center justify-center h-96 text-gray-500">Chargement…</div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AdminHeader currentPage="mediatheque" />
+      {!isPicker && <AdminHeader currentPage="mediatheque" />}
 
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Médiathèque</h1>
-          <div className="flex items-center gap-4">
+          <h1 className="text-3xl font-bold">
+            {isPicker ? 'Choisir un média' : 'Médiathèque'}
+          </h1>
+          {!isPicker && (
             <div className="flex gap-2">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`px-4 py-2 rounded-lg transition-colors ${
-                  viewMode === 'grid'
-                    ? 'bg-primary text-white'
-                    : 'bg-white text-gray-700 hover:bg-gray-100'
-                }`}
-              >
+              <button onClick={() => setViewMode('grid')}
+                className={`px-4 py-2 rounded-lg ${viewMode === 'grid' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}>
                 Grille
               </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`px-4 py-2 rounded-lg transition-colors ${
-                  viewMode === 'list'
-                    ? 'bg-primary text-white'
-                    : 'bg-white text-gray-700 hover:bg-gray-100'
-                }`}
-              >
+              <button onClick={() => setViewMode('list')}
+                className={`px-4 py-2 rounded-lg ${viewMode === 'list' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}>
                 Liste
               </button>
             </div>
-          </div>
-        </div>
-
-        {/* Upload Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-xl font-bold mb-4">Ajouter un nouveau fichier</h2>
-          <div className="flex gap-4">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg"
-            />
-            <button
-              onClick={handleUpload}
-              disabled={!selectedFile || uploading}
-              className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-            >
-              {uploading ? 'Upload en cours...' : 'Uploader'}
-            </button>
-          </div>
-          {selectedFile && (
-            <p className="mt-2 text-sm text-gray-600">
-              Fichier sélectionné : {selectedFile.name} ({formatFileSize(selectedFile.size)})
-            </p>
           )}
         </div>
 
-        {/* Search Bar */}
+        {/* Upload */}
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h2 className="text-xl font-bold mb-4">Ajouter un fichier</h2>
+          <label className="block">
+            <div className="border-2 border-dashed border-blue-300 rounded-lg p-6 hover:border-blue-500 transition-colors cursor-pointer text-center">
+              {uploading
+                ? <p className="text-blue-600">Upload en cours…</p>
+                : <p className="text-gray-700">Cliquez ou glissez une image / vidéo ici</p>}
+            </div>
+            <input
+              type="file" accept="image/*,video/*" className="hidden" disabled={uploading}
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUpload(f); }}
+            />
+          </label>
+        </div>
+
+        {/* Recherche */}
         <div className="bg-white rounded-2xl shadow-lg p-4">
           <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Rechercher un fichier..."
+            type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Rechercher…"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
           />
         </div>
 
-        {/* Media Files Display */}
+        {/* Fichiers */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-xl font-bold mb-4">
-            Fichiers ({filteredFiles.length})
-          </h2>
+          <h2 className="text-xl font-bold mb-4">Fichiers ({filtered.length})</h2>
 
-          {filteredFiles.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              Aucun fichier trouvé
-            </div>
+          {filtered.length === 0 ? (
+            <p className="text-center py-12 text-gray-500">Aucun fichier</p>
           ) : viewMode === 'grid' ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filteredFiles.map((file) => (
-                <div
-                  key={file.id}
-                  className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
-                >
-                  <div className="relative aspect-square bg-gray-100">
-                    <img
-                      src={file.url}
-                      alt={file.filename}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+              {filtered.map((file) => (
+                <div key={file.url}
+                  className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                  <button
+                    type="button"
+                    onClick={() => isPicker ? handlePick(file.url) : copyUrl(file.url)}
+                    className="block w-full relative aspect-square bg-gray-100"
+                  >
+                    <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
+                  </button>
                   <div className="p-3">
-                    <div className="text-sm font-semibold truncate mb-2">
-                      {file.filename}
-                    </div>
-                    <div className="text-xs text-gray-500 mb-3">
-                      {formatFileSize(file.size)}
-                    </div>
+                    <div className="text-sm font-semibold truncate mb-1">{file.name}</div>
+                    <div className="text-xs text-gray-500 mb-3">{formatSize(file.size)}</div>
                     <div className="flex gap-2">
-                      <button
-                        onClick={() => copyUrlToClipboard(file.url)}
-                        className="flex-1 px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                      >
-                        Copier URL
-                      </button>
-                      <button
-                        onClick={() => handleDelete(file.id)}
-                        className="px-3 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-                      >
-                        Supprimer
-                      </button>
+                      {isPicker ? (
+                        <button onClick={() => handlePick(file.url)}
+                          className="flex-1 px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700">
+                          Choisir
+                        </button>
+                      ) : (
+                        <>
+                          <button onClick={() => copyUrl(file.url)}
+                            className="flex-1 px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600">
+                            Copier URL
+                          </button>
+                          <button onClick={() => handleDelete(file.name)}
+                            className="px-3 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600">
+                            Suppr.
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -240,38 +202,33 @@ export default function MediathequeAdmin() {
             </div>
           ) : (
             <div className="space-y-2">
-              {filteredFiles.map((file) => (
-                <div
-                  key={file.id}
-                  className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="w-16 h-16 bg-gray-100 rounded overflow-hidden flex-shrink-0">
-                    <img
-                      src={file.url}
-                      alt={file.filename}
-                      className="w-full h-full object-cover"
-                    />
+              {filtered.map((file) => (
+                <div key={file.url} className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                  <div className="w-16 h-16 bg-gray-100 rounded overflow-hidden shrink-0">
+                    <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold truncate">{file.filename}</div>
-                    <div className="text-sm text-gray-500">
-                      {formatFileSize(file.size)} • Uploadé le{' '}
-                      {new Date(file.uploadedAt).toLocaleDateString('fr-FR')}
-                    </div>
+                    <div className="font-semibold truncate">{file.name}</div>
+                    <div className="text-sm text-gray-500">{formatSize(file.size)}</div>
                   </div>
-                  <div className="flex gap-2 flex-shrink-0">
-                    <button
-                      onClick={() => copyUrlToClipboard(file.url)}
-                      className="px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                    >
-                      Copier URL
-                    </button>
-                    <button
-                      onClick={() => handleDelete(file.id)}
-                      className="px-4 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-                    >
-                      Supprimer
-                    </button>
+                  <div className="flex gap-2 shrink-0">
+                    {isPicker ? (
+                      <button onClick={() => handlePick(file.url)}
+                        className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Choisir
+                      </button>
+                    ) : (
+                      <>
+                        <button onClick={() => copyUrl(file.url)}
+                          className="px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">
+                          Copier URL
+                        </button>
+                        <button onClick={() => handleDelete(file.name)}
+                          className="px-4 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600">
+                          Supprimer
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               ))}
