@@ -2,7 +2,7 @@
 
 // src/components/FAQAccordion.tsx
 // Version éditable : ajoute data-edit-block="faq-item:{id}:question|answer".
-// Backward compatible — si l'item n'a pas d'id, c'est un FAQItem ancien (pas éditable).
+// Affiche aussi une pastille avec le nom de la catégorie quand disponible.
 
 import { useState } from 'react';
 
@@ -10,6 +10,7 @@ type FAQItem = {
   id?: number;
   question: string;
   answer: string;
+  categoryName?: string | null;
 };
 
 type FAQAccordionProps = {
@@ -27,14 +28,21 @@ export default function FAQAccordion({ faqs }: FAQAccordionProps) {
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
             className="w-full bg-bg hover:bg-bg-alt p-6 rounded-xl text-left transition-all flex justify-between items-center gap-4"
           >
-            <span
-              className="font-semibold text-lg"
-              {...(faq.id ? { 'data-edit-block': `faq-item:${faq.id}:question` } : {})}
-            >
-              {faq.question}
-            </span>
+            <div className="flex-1 min-w-0 flex items-center gap-3 flex-wrap">
+              <span
+                className="font-semibold text-lg"
+                {...(faq.id ? { 'data-edit-block': `faq-item:${faq.id}:question` } : {})}
+              >
+                {faq.question}
+              </span>
+              {faq.categoryName && (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20 whitespace-nowrap">
+                  {faq.categoryName}
+                </span>
+              )}
+            </div>
             <svg
-              className={`w-6 h-6 text-primary transition-transform ${openIndex === index ? 'rotate-180' : ''}`}
+              className={`w-6 h-6 text-primary transition-transform shrink-0 ${openIndex === index ? 'rotate-180' : ''}`}
               fill="none" stroke="currentColor" viewBox="0 0 24 24"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
