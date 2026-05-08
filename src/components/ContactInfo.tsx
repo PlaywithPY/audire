@@ -1,6 +1,7 @@
 'use client';
 
 import { useCentre } from '@/contexts/CentreContext';
+import ContactIcon from './ContactIcon';
 
 export default function ContactInfo() {
   const { currentCentre, loading } = useCentre();
@@ -23,7 +24,7 @@ export default function ContactInfo() {
       {/* Téléphone */}
       <div className="bg-bg p-8 rounded-2xl text-center hover:shadow-lg transition-all">
         <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-          📞
+          <ContactIcon settingKey="contact_icon_phone" fallback="📞" size={28} />
         </div>
         <h3 className="text-xl font-bold mb-2">Téléphone</h3>
         <a
@@ -46,7 +47,7 @@ export default function ContactInfo() {
       {/* Email */}
       <div className="bg-bg p-8 rounded-2xl text-center hover:shadow-lg transition-all">
         <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-          ✉️
+          <ContactIcon settingKey="contact_icon_email" fallback="✉️" size={28} />
         </div>
         <h3 className="text-xl font-bold mb-2">Email</h3>
         <a
@@ -61,7 +62,7 @@ export default function ContactInfo() {
       {/* Adresse */}
       <div className="bg-bg p-8 rounded-2xl text-center hover:shadow-lg transition-all">
         <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-          📍
+          <ContactIcon settingKey="contact_icon_address" fallback="📍" size={28} />
         </div>
         <h3 className="text-xl font-bold mb-2">Adresse</h3>
         <p className="text-text-light">
