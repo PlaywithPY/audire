@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import AdminHeader from '@/components/AdminHeader';
+import ContactIconsSettings from '@/components/admin/ContactIconsSettings';
 
 type ThemeColors = {
   primary: string;
@@ -281,6 +282,7 @@ export default function SettingsPage() {
                 />
               </div>
             </div>
+            <ContactIconsSettings />
           </div>
 
           <button
