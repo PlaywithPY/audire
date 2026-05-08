@@ -106,13 +106,16 @@ export default function Contact() {
         <section data-section="hero" className="relative bg-gradient-to-br from-primary to-primary-dark text-white py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <span className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <span data-edit-block="contact.hero-kicker"
+                    className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
                 {texts['hero-kicker'] || 'Nous contacter'}
               </span>
-              <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <h1 data-edit-block="contact.hero-title"
+                  className="text-5xl md:text-6xl font-bold mb-6">
                 {texts['hero-title'] || 'Contact'}
               </h1>
-              <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
+              <p data-edit-block="contact.hero-description"
+                 className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
                 {texts['hero-description'] || 'Une question ? Envie de prendre rendez-vous ? Nous sommes là pour vous accompagner.'}
               </p>
             </div>
@@ -130,8 +133,10 @@ export default function Contact() {
         <section className="py-20 bg-gradient-to-br from-primary/5 to-primary-light/5">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">{texts['section-hours-title'] || 'Horaires d\'ouverture'}</h2>
-              <p className="text-xl text-text-light">
+              <h2 data-edit-block="contact.section-hours-title"
+                  className="text-4xl font-bold mb-4">{texts['section-hours-title'] || 'Horaires d\'ouverture'}</h2>
+              <p data-edit-block="contact.section-hours-description"
+                 className="text-xl text-text-light">
                 {texts['section-hours-description'] || 'Nous sommes ouverts du lundi au vendredi. Le samedi sur rendez-vous uniquement.'}
               </p>
             </div>
@@ -144,8 +149,10 @@ export default function Contact() {
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">{texts['section-form-title'] || 'Envoyez-nous un message'}</h2>
-              <p className="text-xl text-text-light">
+              <h2 data-edit-block="contact.section-form-title"
+                  className="text-4xl font-bold mb-4">{texts['section-form-title'] || 'Envoyez-nous un message'}</h2>
+              <p data-edit-block="contact.section-form-description"
+                 className="text-xl text-text-light">
                 {texts['section-form-description'] || 'Vous avez une question ? Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais.'}
               </p>
             </div>
