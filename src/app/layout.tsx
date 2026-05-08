@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { CentreProvider } from "@/contexts/CentreContext";
 import Providers from "@/components/Providers";
 import ConditionalLayout from "@/components/ConditionalLayout";
+import EditorOverlay from '@/components/admin/EditorOverlay';
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({
