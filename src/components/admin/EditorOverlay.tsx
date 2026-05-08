@@ -1,12 +1,8 @@
 'use client';
 
 // src/components/admin/EditorOverlay.tsx
-// Composant à monter dans le layout root quand l'URL contient ?edit=1.
-// - Détecte les éléments [data-edit-block] et les rend cliquables/sélectionnables
-// - Notifie le parent (admin) via postMessage : ready / select / deselect
-// - Reçoit du parent : updates (texte modifié dans l'inspecteur → applique en live)
-//
-// Intégration : dans src/app/layout.tsx (layout root du site public), à la fin du <body>.
+// Reçoit les drafts du parent au chargement et les applique pour que l'utilisateur
+// VOIE ses modifs non publiées dans l'iframe.
 
 import { useEffect } from 'react';
 
@@ -15,8 +11,6 @@ export default function EditorOverlay() {
     if (typeof window === 'undefined') return;
     if (!new URLSearchParams(window.location.search).has('edit')) return;
     if (window.parent === window) return;
-
-    window.parent.postMessage({ type: 'editor:ready' }, '*');
 
     let selected: HTMLElement | null = null;
 
@@ -64,6 +58,7 @@ export default function EditorOverlay() {
       selected = target;
       target.style.outline = '2px solid rgb(59,130,246)';
       target.style.outlineOffset = '4px';
+      // Petite pastille bleue si déjà modifié
       postSelect(target);
     }
     function onLinkClick(e: MouseEvent) {
@@ -72,15 +67,40 @@ export default function EditorOverlay() {
       e.preventDefault();
     }
 
-    // Reçoit les messages du parent (admin)
+    function applyTextToBlock(blockKey: string, text: string) {
+      const el = document.querySelector<HTMLElement>(`[data-edit-block="${CSS.escape(blockKey)}"]`);
+      if (el) {
+        el.innerText = text;
+        el.setAttribute('data-edit-dirty', 'true');
+      }
+    }
+
     function onMessage(e: MessageEvent) {
       const msg = e.data;
       if (!msg || typeof msg !== 'object') return;
 
       if (msg.type === 'editor:apply-text') {
-        // { blockKey, text } → trouve l'élément et met à jour son textContent
-        const el = document.querySelector<HTMLElement>(`[data-edit-block="${msg.blockKey}"]`);
-        if (el) el.innerText = msg.text;
+        applyTextToBlock(msg.blockKey, msg.text);
+      } else if (msg.type === 'editor:apply-drafts') {
+        // Reçoit toutes les drafts et les applique d'un coup
+        const drafts = msg.drafts as {
+          pageTexts: Record<string, string>;
+          faqItems: Record<string, { question?: string; answer?: string }>;
+          categories: Record<string, { name?: string; description?: string; imageUrl?: string }>;
+        };
+        Object.entries(drafts.pageTexts || {}).forEach(([k, v]) => applyTextToBlock(k, v));
+        Object.entries(drafts.faqItems || {}).forEach(([id, fields]) => {
+          if (fields.question !== undefined) applyTextToBlock(`faq-item:${id}:question`, fields.question);
+          if (fields.answer   !== undefined) applyTextToBlock(`faq-item:${id}:answer`,   fields.answer);
+        });
+        Object.entries(drafts.categories || {}).forEach(([id, fields]) => {
+          if (fields.name        !== undefined) applyTextToBlock(`faq-category:${id}:name`, fields.name);
+          if (fields.description !== undefined) applyTextToBlock(`faq-category:${id}:description`, fields.description);
+        });
+      } else if (msg.type === 'editor:reset-blocks') {
+        document.querySelectorAll<HTMLElement>('[data-edit-dirty]').forEach((el) => {
+          el.removeAttribute('data-edit-dirty');
+        });
       }
     }
 
@@ -92,10 +112,18 @@ export default function EditorOverlay() {
 
     const style = document.createElement('style');
     style.textContent = `
-      [data-edit-block] { cursor: pointer; transition: outline-color .12s; }
+      [data-edit-block] { cursor: pointer; transition: outline-color .12s; position: relative; }
       [data-edit-block] * { pointer-events: none; }
+      [data-edit-dirty]::after {
+        content: ''; position: absolute; top: -6px; right: -6px;
+        width: 8px; height: 8px; border-radius: 50%;
+        background: #f59e0b; box-shadow: 0 0 0 2px white;
+      }
     `;
     document.head.appendChild(style);
+
+    // Annonce ready APRÈS avoir branché les listeners
+    window.parent.postMessage({ type: 'editor:ready' }, '*');
 
     return () => {
       document.removeEventListener('mouseover', onMouseOver);
@@ -107,6 +135,7 @@ export default function EditorOverlay() {
       document.querySelectorAll<HTMLElement>('[data-edit-block]').forEach((el) => {
         el.style.outline = '';
         el.style.outlineOffset = '';
+        el.removeAttribute('data-edit-dirty');
       });
     };
   }, []);
