@@ -1,14 +1,14 @@
 'use client';
 
 // src/app/admin/mediatheque/page.tsx
-// Réécrit pour utiliser /api/admin/upload (la même API que les feature cards).
-// Vercel n'autorise pas l'écriture disque — l'ancienne route /api/admin/mediatheque
-// écrivait dans public/uploads/media et n'a jamais marché en prod.
+// Réécrit pour utiliser /api/admin/upload (la même API que les feature cards)
+// + upload direct côté client via @vercel/blob/client (bypass de la limite 4,5 Mo).
 
 import { useState, useEffect } from 'react';
 import AdminHeader from '@/components/AdminHeader';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { uploadFile } from '@/lib/upload-client';
 
 type MediaFile = {
   name: string;
@@ -47,18 +47,11 @@ export default function MediathequeAdmin() {
   async function handleUpload(file: File) {
     try {
       setUploading(true);
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (data.success || res.ok) {
-        await fetchMedia();
-      } else {
-        alert('Erreur lors de l\'upload : ' + (data.error || 'inconnu'));
-      }
-    } catch (e) {
+      await uploadFile(file);
+      await fetchMedia();
+    } catch (e: any) {
       console.error('Upload error:', e);
-      alert('Erreur lors de l\'upload');
+      alert('Erreur lors de l\'upload : ' + (e?.message || 'inconnu'));
     } finally {
       setUploading(false);
     }
@@ -67,7 +60,10 @@ export default function MediathequeAdmin() {
   async function handleDelete(name: string) {
     if (!confirm(`Supprimer ${name} ?`)) return;
     try {
-      const res = await fetch(`/api/admin/upload?name=${encodeURIComponent(name)}`, { method: 'DELETE' });
+      // /api/admin/upload DELETE attend ?url= (l'URL complète du blob)
+      const file = mediaFiles.find((f) => f.name === name);
+      if (!file) return;
+      const res = await fetch(`/api/admin/upload?url=${encodeURIComponent(file.url)}`, { method: 'DELETE' });
       if (res.ok) fetchMedia();
       else alert('Erreur lors de la suppression');
     } catch (e) {
