@@ -133,10 +133,12 @@ export default function Home() {
             <span className="inline-block bg-gradient-to-r from-primary/10 to-primary-light/10 text-primary px-6 py-2.5 rounded-full text-sm font-semibold mb-4 border border-primary/20 hover-lift">
               ✨ Notre approche
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+            <h2 data-edit-block="home.section-1-title"
+                className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
               {texts['section-1-title'] || 'Pourquoi choisir Audire ?'}
             </h2>
-            <p className="text-xl text-text-light max-w-3xl mx-auto leading-relaxed">
+            <p data-edit-block="home.description-2"
+               className="text-xl text-text-light max-w-3xl mx-auto leading-relaxed">
               {texts['description-2'] || 'Parce que bien entendre, ce n\'est pas qu\'une question d\'appareil. C\'est une question d\'accompagnement, d\'écoute et de suivi dans la durée.'}
             </p>
           </div>
@@ -292,12 +294,14 @@ export default function Home() {
             </div>
 
             {/* Titre avec gradient */}
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 animate-fade-in-up bg-gradient-to-r from-gray-900 via-primary to-gray-900 bg-clip-text text-transparent">
+            <h2 data-edit-block="home.section-2-title"
+                className="text-4xl md:text-5xl font-bold mb-6 animate-fade-in-up bg-gradient-to-r from-gray-900 via-primary to-gray-900 bg-clip-text text-transparent">
               {texts['section-2-title'] || 'Prêt à mieux entendre ?'}
             </h2>
 
             {/* Description */}
-            <p className="text-xl md:text-2xl text-text-light mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up delay-100">
+            <p data-edit-block="home.description-3"
+               className="text-xl md:text-2xl text-text-light mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up delay-100">
               {texts['description-3'] || 'Prenez rendez-vous pour un test auditif gratuit et sans engagement.'}
             </p>
 
