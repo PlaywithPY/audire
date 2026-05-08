@@ -81,7 +81,7 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
       fetch('/api/page-texts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pageKey, key: keyParts.join('.'), value: text }),
+        body: JSON.stringify({ pageKey, textKey: keyParts.join('.'), content: text }),
       }).catch(() => {});
     }
     const onUndo = (e: Event) => applyOp((e as CustomEvent<EditOp>).detail, 'undo');

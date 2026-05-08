@@ -55,7 +55,7 @@ export default function BlockInspector({
       const res = await fetch('/api/page-texts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pageKey, key: textKey, value }),
+        body: JSON.stringify({ pageKey, textKey, content: value }),
       });
       if (!res.ok) throw new Error(`API ${res.status}`);
       setSavingState('saved');
