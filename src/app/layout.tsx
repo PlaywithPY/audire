@@ -46,6 +46,7 @@ export default function RootLayout({
             </ConditionalLayout>
           </CentreProvider>
         </Providers>
+        <EditorOverlay />  
       </body>
     </html>
   );
