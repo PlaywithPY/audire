@@ -130,7 +130,7 @@ export default function FaqManagementClient() {
                   {mergedCategories.map((c) => (
                     <CategoryCard
                       key={c.id} cat={c}
-                      onUpdate={(fields) => {
+                      onUpdate={(fields: Partial<{ name: string; description: string; imageUrl: string }>) => {
                         if (c.isNew) d.updateNewCategory(c.id as string, fields);
                         else d.setCategory(String(c.id), fields);
                       }}
@@ -195,7 +195,7 @@ export default function FaqManagementClient() {
                   {filteredFaqs.map((f) => (
                     <FaqRow
                       key={f.id} faq={f} categories={mergedCategories.filter((c) => !c.isNew) as { id: number; name: string }[]}
-                      onUpdate={(fields) => {
+                      onUpdate={(fields: Partial<{ question: string; answer: string; categoryId: number | null }>) => {
                         if (f.isNew) d.updateNewFaq(f.id as string, fields);
                         else d.setFaqItem(String(f.id), fields);
                       }}
