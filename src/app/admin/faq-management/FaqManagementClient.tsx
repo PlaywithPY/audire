@@ -243,7 +243,7 @@ function CategoryCard({ cat, onUpdate, onDelete }: any) {
 }
 
 function FaqRow({ faq, categories, onUpdate, onDelete }: any) {
-  const [open, setOpen] = useState(faq.isNew);
+  const [open, setOpen] = useState<boolean>(Boolean(faq.isNew));
   return (
     <div className={`rounded-lg border bg-white ${faq.isNew ? 'border-amber-200 bg-amber-50/30' : 'border-gray-200'}`}>
       <div className="flex items-center gap-2 p-3">
