@@ -1,5 +1,8 @@
 'use client';
 
+// src/components/CategoryGrid.tsx
+// Version éditable : ajoute data-edit-block sur le nom et la description de chaque catégorie.
+
 import { useState } from 'react';
 
 interface FAQ {
@@ -33,9 +36,7 @@ export default function CategoryGrid({ categories, onSelectCategory }: CategoryG
     onSelectCategory(newSelection);
   };
 
-  if (categories.length === 0) {
-    return null;
-  }
+  if (categories.length === 0) return null;
 
   return (
     <div className="mb-12">
@@ -51,7 +52,6 @@ export default function CategoryGrid({ categories, onSelectCategory }: CategoryG
                 : 'bg-white hover:bg-gray-50 hover:shadow-lg'
             }`}
           >
-            {/* Image */}
             <div className={`w-24 h-24 mb-3 rounded-lg overflow-hidden flex items-center justify-center transition-transform group-hover:scale-110 ${
               selectedCategory === category.id ? 'bg-white/20' : 'bg-gray-100'
             }`}>
@@ -60,20 +60,27 @@ export default function CategoryGrid({ categories, onSelectCategory }: CategoryG
                   src={category.imageUrl}
                   alt={category.name}
                   className="w-full h-full object-cover"
+                  data-edit-block={`faq-category:${category.id}:imageUrl`}
                 />
               ) : (
-                <span className="text-4xl">📁</span>
+                <span
+                  className="text-4xl"
+                  data-edit-block={`faq-category:${category.id}:imageUrl`}
+                >
+                  📁
+                </span>
               )}
             </div>
 
-            {/* Nom */}
-            <h3 className={`text-sm font-semibold text-center ${
-              selectedCategory === category.id ? 'text-white' : 'text-gray-800'
-            }`}>
+            <h3
+              className={`text-sm font-semibold text-center ${
+                selectedCategory === category.id ? 'text-white' : 'text-gray-800'
+              }`}
+              data-edit-block={`faq-category:${category.id}:name`}
+            >
               {category.name}
             </h3>
 
-            {/* Nombre de FAQs */}
             <p className={`text-xs mt-1 ${
               selectedCategory === category.id ? 'text-white/80' : 'text-gray-500'
             }`}>
@@ -83,14 +90,10 @@ export default function CategoryGrid({ categories, onSelectCategory }: CategoryG
         ))}
       </div>
 
-      {/* Bouton pour tout afficher */}
       {selectedCategory !== null && (
         <div className="text-center mt-6">
           <button
-            onClick={() => {
-              setSelectedCategory(null);
-              onSelectCategory(null);
-            }}
+            onClick={() => { setSelectedCategory(null); onSelectCategory(null); }}
             className="text-primary hover:text-primary-dark font-semibold underline"
           >
             Afficher toutes les questions
