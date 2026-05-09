@@ -1,24 +1,16 @@
 'use client';
 
 // src/components/DynamicBlockSlot.tsx
-// Sprint 2.5 — Renderer "par slot" : n'affiche que les blocs dont metadata.slot
-// correspond. Permet de placer les blocs créés via <InsertZone slot="…"> exactement
-// là où la barre "+" a été cliquée, plutôt qu'en vrac en bas de la page.
-//
-// Inclut une overlay d'édition (✏️ / 🗑️) visible uniquement en mode ?edit=1.
+// Sprint 3 — la pastille ✏️ disparaît : on clique directement sur le bloc pour
+// ouvrir l'inspecteur (qui sait maintenant gérer dynamic:<id>:content).
+// Le bloc "text" et "html" rendent désormais le HTML pour préserver le formatage.
 
 import { useEffect, useState, useCallback } from 'react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 type Block = {
-  id: number;
-  pageKey: string;
-  blockKey: string;
-  blockType: string;
-  content: string;
-  metadata: string | null;
-  order: number;
-  isVisible: boolean;
+  id: number; pageKey: string; blockKey: string; blockType: string;
+  content: string; metadata: string | null; order: number; isVisible: boolean;
 };
 
 type Props = { pageKey: string; slot: string; className?: string };
@@ -35,7 +27,8 @@ export default function DynamicBlockSlot({ pageKey, slot, className = '' }: Prop
     const res = await fetch(`/api/blocks?pageKey=${encodeURIComponent(pageKey)}`);
     if (!res.ok) return;
     const all: Block[] = await res.json();
-    setBlocks(all.filter((b) => parseMeta(b.metadata).slot === slot).sort((a, b) => a.order - b.order));
+    setBlocks(all.filter((b) => b.isVisible !== false && parseMeta(b.metadata).slot === slot)
+      .sort((a, b) => a.order - b.order));
   }, [pageKey, slot]);
 
   useEffect(() => {
@@ -43,7 +36,6 @@ export default function DynamicBlockSlot({ pageKey, slot, className = '' }: Prop
     load();
   }, [load]);
 
-  // Recharge quand un autre composant signale un changement
   useEffect(() => {
     function onMsg(e: MessageEvent) {
       if (e.data?.type === 'editor:blocks-changed') load();
@@ -66,21 +58,10 @@ export default function DynamicBlockSlot({ pageKey, slot, className = '' }: Prop
 function BlockShell({ block, editMode, onChanged }: { block: Block; editMode: boolean; onChanged: () => void }) {
   const meta = parseMeta(block.metadata);
 
-  async function onDelete() {
+  async function onDelete(e: React.MouseEvent) {
+    e.stopPropagation();
     if (!confirm(`Supprimer ce bloc (${block.blockType}) ?`)) return;
     await fetch(`/api/blocks?id=${block.id}`, { method: 'DELETE' });
-    onChanged();
-    try { window.parent?.postMessage({ type: 'editor:blocks-changed' }, '*'); } catch {}
-  }
-
-  async function onEdit() {
-    const next = prompt('Nouveau contenu :', block.content);
-    if (next === null || next === block.content) return;
-    await fetch('/api/blocks', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: block.id, content: next }),
-    });
     onChanged();
     try { window.parent?.postMessage({ type: 'editor:blocks-changed' }, '*'); } catch {}
   }
@@ -89,10 +70,8 @@ function BlockShell({ block, editMode, onChanged }: { block: Block; editMode: bo
     <div className="relative group/block my-4">
       {editMode && (
         <div className="absolute -top-2 right-2 z-20 hidden group-hover/block:flex items-center gap-1 bg-white border border-gray-200 rounded-md shadow-md p-0.5">
-          <button onClick={onEdit} title="Éditer" className="w-6 h-6 grid place-items-center rounded hover:bg-gray-100 text-gray-700">
-            <Pencil className="w-3 h-3" />
-          </button>
-          <button onClick={onDelete} title="Supprimer" className="w-6 h-6 grid place-items-center rounded hover:bg-red-50 text-red-600">
+          <button onClick={onDelete} title="Supprimer ce bloc"
+            className="w-6 h-6 grid place-items-center rounded hover:bg-red-50 text-red-600">
             <Trash2 className="w-3 h-3" />
           </button>
         </div>
@@ -109,15 +88,23 @@ function BlockBody({ type, content, meta }: { type: string; content: string; met
     case 'title':
       return <h2 className="text-3xl md:text-4xl font-bold text-center my-6 text-gray-900">{content}</h2>;
     case 'text':
-      return <p className="text-base md:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto px-4 my-4 text-center">{content}</p>;
+      // Sprint 3 — rendu HTML pour préserver le formatage de TipTap
+      return (
+        <div
+          className="prose prose-lg max-w-3xl mx-auto px-4 my-4 text-gray-700"
+          dangerouslySetInnerHTML={{ __html: content || '<p>Tapez votre texte…</p>' }}
+        />
+      );
     case 'image':
       return meta.imageUrl ? (
-        <img src={meta.imageUrl} alt="" className="max-w-3xl mx-auto rounded-xl my-6" />
+        <img src={meta.imageUrl} alt={meta.alt || ''} className="max-w-3xl mx-auto rounded-xl my-6" />
       ) : (
-        <div className="max-w-3xl mx-auto h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl grid place-items-center text-gray-400 my-6">Image (URL à définir)</div>
+        <div className="max-w-3xl mx-auto h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl grid place-items-center text-gray-400 my-6">
+          Image (cliquer pour configurer)
+        </div>
       );
     case 'button': {
-      const [label, href = '#'] = content.split('|');
+      const [label = 'Bouton', href = '#'] = (content || '').split('|');
       return (
         <div className="text-center my-6">
           <a href={href} className="inline-block bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors">{label}</a>
@@ -137,7 +124,7 @@ function BlockBody({ type, content, meta }: { type: string; content: string; met
     case 'divider':
       return <hr className="max-w-3xl mx-auto my-8 border-gray-200" />;
     case 'html':
-      return <div className="max-w-3xl mx-auto px-4 my-4" dangerouslySetInnerHTML={{ __html: content }} />;
+      return <div className="max-w-3xl mx-auto px-4 my-4 prose" dangerouslySetInnerHTML={{ __html: content }} />;
     default:
       return <div className="text-sm text-gray-400 italic text-center my-4">Type "{type}" non géré</div>;
   }

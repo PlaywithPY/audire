@@ -5,6 +5,7 @@ import { requireAuth } from '@/lib/auth-helpers';
 /**
  * API blocs dynamiques.
  * GET    /api/blocks?pageKey=home              public — liste des blocs visibles
+ * GET    /api/blocks?id=123                    public — un bloc précis (édition admin)
  * POST   /api/blocks                           admin — créer un bloc {pageKey, blockType, content?, afterOrder?}
  * PATCH  /api/blocks                           admin — réordonner [{id, order}, …] OU patcher un bloc {id, content?, isVisible?, metadata?}
  * DELETE /api/blocks?id=123                    admin — supprimer un bloc
@@ -13,8 +14,23 @@ import { requireAuth } from '@/lib/auth-helpers';
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    const idParam = searchParams.get('id');
     const pageKey = searchParams.get('pageKey');
-    if (!pageKey) return NextResponse.json({ error: 'pageKey is required' }, { status: 400 });
+
+    // Fix Sprint 3 : on accepte ?id=… pour récupérer un bloc unique
+    if (idParam) {
+      const id = Number(idParam);
+      if (!Number.isFinite(id)) {
+        return NextResponse.json({ error: 'id invalide' }, { status: 400 });
+      }
+      const block = await prisma.contentBlock.findUnique({ where: { id } });
+      if (!block) return NextResponse.json({ error: 'not found' }, { status: 404 });
+      return NextResponse.json(block);
+    }
+
+    if (!pageKey) {
+      return NextResponse.json({ error: 'pageKey or id is required' }, { status: 400 });
+    }
 
     const blocks = await prisma.contentBlock.findMany({
       where: { pageKey, isVisible: true },
@@ -38,7 +54,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'pageKey & blockType requis' }, { status: 400 });
     }
 
-    // Décale les blocs suivants pour insérer "après" un order donné, sinon append en fin.
     let newOrder: number;
     if (typeof afterOrder === 'number') {
       newOrder = afterOrder + 1;
@@ -57,7 +72,7 @@ export async function POST(request: NextRequest) {
     const block = await prisma.contentBlock.create({
       data: {
         pageKey, blockKey, blockType, content,
-        metadata: metadata ? JSON.stringify(metadata) : null,
+        metadata: metadata ? (typeof metadata === 'string' ? metadata : JSON.stringify(metadata)) : null,
         order: newOrder, isVisible: true,
       },
     });
@@ -75,7 +90,6 @@ export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Mode 1 : réorder en lot {reorder: [{id, order}, …]}
     if (Array.isArray(body?.reorder)) {
       await prisma.$transaction(
         body.reorder.map((r: { id: number; order: number }) =>
@@ -85,14 +99,16 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    // Mode 2 : patch d'un bloc {id, content?, isVisible?, metadata?}
     const { id, content, isVisible, metadata } = body || {};
     if (!id) return NextResponse.json({ error: 'id requis' }, { status: 400 });
 
     const data: any = {};
     if (typeof content === 'string') data.content = content;
     if (typeof isVisible === 'boolean') data.isVisible = isVisible;
-    if (metadata !== undefined) data.metadata = metadata ? JSON.stringify(metadata) : null;
+    if (metadata !== undefined) {
+      // Sprint 3 : DynamicBlockInspector envoie déjà metadata sous forme de string JSON.
+      data.metadata = metadata ? (typeof metadata === 'string' ? metadata : JSON.stringify(metadata)) : null;
+    }
 
     const block = await prisma.contentBlock.update({ where: { id }, data });
     return NextResponse.json(block);
