@@ -283,7 +283,7 @@ export default function SettingsPage() {
               </div>
             </div>
           </div>
-          <ContactIconsSettings />
+
 
           <button
             onClick={saveColors}
@@ -293,6 +293,7 @@ export default function SettingsPage() {
             {saving ? 'Sauvegarde...' : '💾 Sauvegarder les couleurs'}
           </button>
         </section>
+        <ContactIconsSettings />
       </div>
     </div>
   );
