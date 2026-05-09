@@ -1,9 +1,8 @@
 'use client';
 
 // src/components/admin/BlockInspector.tsx
-// Sprint 3 — reconnaît `dynamic:<id>:content` et délègue à DynamicBlockInspector.
-// Pour les page-text, utilise désormais RichTextEditor au lieu d'un <textarea>
-// → préserve gras / italique / listes / liens / titres.
+// Sprint 3.1 — heuristique RichEditor étendue : -desc, -sub, -subtitle, -paragraph,
+// -quote, -citation, -message, -bio, -story + fallback "contient du HTML ou >120 chars"
 
 import { useEffect, useRef, useState } from 'react';
 import { X, Type, HelpCircle, FolderOpen, Image as ImageIcon, Layout, Boxes } from 'lucide-react';
@@ -70,9 +69,16 @@ const LABEL: Record<Mode['kind'], string> = {
   'dynamic': 'Bloc dynamique', 'unknown': 'Bloc',
 };
 
-// Heuristique : ces clés contiennent du HTML riche, on utilise l'éditeur formaté
-function shouldUseRichEditor(textKey: string): boolean {
-  return /-(body|content|text|description|intro|conclusion)$/.test(textKey);
+// Sprint 3.1 — heuristique élargie. Active l'éditeur riche pour :
+// - les suffixes "longs" courants (-body, -content, -text, -desc, -description,
+//   -intro, -conclusion, -sub, -subtitle, -paragraph, -quote, -citation, -message, -bio, -story)
+// - OU si le texte contient une balise HTML (<p>, <strong>, <a>...) → preserve le formatage
+// - OU si le texte fait > 120 caractères (probablement du paragraphe libre)
+function shouldUseRichEditor(textKey: string, currentText: string): boolean {
+  if (/-(body|content|text|desc|description|intro|conclusion|sub|subtitle|paragraph|quote|citation|message|bio|story)$/i.test(textKey)) return true;
+  if (/<\/?(p|strong|em|b|i|u|a|ul|ol|li|h[1-6]|br)\b/i.test(currentText)) return true;
+  if (currentText && currentText.length > 120) return true;
+  return false;
 }
 
 export default function BlockInspector({
@@ -106,7 +112,6 @@ export default function BlockInspector({
     setText(value); onChange(value); onCommit(before.current, value); before.current = value;
   }
 
-  // Position
   const w = 380, m = 12;
   const blockRight = iframeRect.x + selected.rect.x + selected.rect.width;
   const blockLeft  = iframeRect.x + selected.rect.x;
@@ -121,7 +126,7 @@ export default function BlockInspector({
 
   const isImageField = mode.kind === 'faq-category' && mode.field === 'imageUrl';
   const isLongField = (mode.kind === 'faq-item' && mode.field === 'answer') || (mode.kind === 'faq-category' && mode.field === 'description');
-  const useRich = mode.kind === 'page-text' && shouldUseRichEditor(mode.textKey);
+  const useRich = mode.kind === 'page-text' && shouldUseRichEditor(mode.textKey, text);
   const rows = isLongField ? 6 : 2;
 
   return (
