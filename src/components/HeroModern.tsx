@@ -111,6 +111,7 @@ export default function HeroModern({ texts }: HeroModernProps) {
           <BlockLayoutWrapper
             blockKey="home.hero-reassure-block"
             defaultMaxWidth="3xl"
+            defaultAlign="center"
             defaultPadding="normal"
             className="animate-fade-in delay-500 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20"
           >

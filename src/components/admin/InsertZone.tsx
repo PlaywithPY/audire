@@ -68,18 +68,20 @@ export default function InsertZone({ pageKey, afterOrder, onInserted, alwaysVisi
   return (
     <>
       <div
+        data-insert-zone
         role="button"
         tabIndex={0}
         onClick={() => setOpen(true)}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setOpen(true); }}
-        className="group relative h-3.5 hover:h-8 transition-all duration-150 cursor-pointer my-1 mx-8"
+        className="group relative h-6 hover:h-10 transition-all duration-150 cursor-pointer my-2 mx-4 z-50"
         aria-label="Insérer un bloc"
+        style={{ pointerEvents: 'auto' }}
       >
-        {/* Ligne pointillée centrale */}
-        <span className="absolute left-0 right-0 top-1/2 h-px bg-primary/40 opacity-0 group-hover:opacity-60 transition-opacity" />
-        {/* Bouton "+" */}
-        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-white text-primary border border-primary/60 opacity-30 group-hover:opacity-100 group-hover:px-3 transition-all whitespace-nowrap shadow-sm">
-          <Plus className="w-3 h-3" />
+        {/* Ligne pointillée centrale — visible en permanence en mode édition */}
+        <span className="absolute left-0 right-0 top-1/2 -translate-y-1/2 border-t-2 border-dashed border-primary/40 group-hover:border-primary group-hover:border-solid transition-all" />
+        {/* Bouton "+" — toujours visible, agrandi au survol */}
+        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-semibold bg-white text-primary border-2 border-primary/60 group-hover:border-primary group-hover:px-4 group-hover:shadow-lg transition-all whitespace-nowrap shadow-md">
+          <Plus className="w-3.5 h-3.5" />
           <span className="hidden group-hover:inline">Insérer un bloc</span>
         </span>
       </div>
