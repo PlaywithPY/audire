@@ -1,12 +1,16 @@
 'use client';
 
 // src/components/admin/BlockInspector.tsx
-// Sprint 2 — onglets "Texte" + "Mise en page".
+// Sprint 3 — reconnaît `dynamic:<id>:content` et délègue à DynamicBlockInspector.
+// Pour les page-text, utilise désormais RichTextEditor au lieu d'un <textarea>
+// → préserve gras / italique / listes / liens / titres.
 
 import { useEffect, useRef, useState } from 'react';
-import { X, Type, HelpCircle, FolderOpen, Image as ImageIcon, Layout } from 'lucide-react';
+import { X, Type, HelpCircle, FolderOpen, Image as ImageIcon, Layout, Boxes } from 'lucide-react';
 import MediaPicker from '@/components/MediaPicker';
 import LayoutPanel from './LayoutPanel';
+import RichTextEditor from './RichTextEditor';
+import DynamicBlockInspector from './DynamicBlockInspector';
 
 export type SelectedBlock = {
   blockKey: string;
@@ -25,7 +29,6 @@ interface Props {
   categories: Category[];
   faqCategoryId?: number | null;
   onFaqCategoryChange?: (categoryId: number | null) => void;
-  /** Sprint 2 — appelé quand le layout change pour rafraîchir l'iframe */
   onLayoutChanged?: () => void;
 }
 
@@ -33,9 +36,15 @@ type Mode =
   | { kind: 'page-text'; pageKey: string; textKey: string }
   | { kind: 'faq-item'; id: string; field: 'question' | 'answer' }
   | { kind: 'faq-category'; id: string; field: 'name' | 'description' | 'imageUrl' }
+  | { kind: 'dynamic'; id: number; field: string }
   | { kind: 'unknown' };
 
 function parseBlockKey(blockKey: string): Mode {
+  if (blockKey.startsWith('dynamic:')) {
+    const [, idStr, field = 'content'] = blockKey.split(':');
+    const id = Number(idStr);
+    if (Number.isFinite(id)) return { kind: 'dynamic', id, field };
+  }
   if (blockKey.startsWith('faq-item:')) {
     const [, id, field] = blockKey.split(':');
     if (id && (field === 'question' || field === 'answer')) return { kind: 'faq-item', id, field };
@@ -54,11 +63,17 @@ function parseBlockKey(blockKey: string): Mode {
 }
 
 const ICON: Record<Mode['kind'], React.ComponentType<{ className?: string }>> = {
-  'page-text': Type, 'faq-item': HelpCircle, 'faq-category': FolderOpen, 'unknown': Type,
+  'page-text': Type, 'faq-item': HelpCircle, 'faq-category': FolderOpen, 'dynamic': Boxes, 'unknown': Type,
 };
 const LABEL: Record<Mode['kind'], string> = {
-  'page-text': 'Texte de page', 'faq-item': 'Question FAQ', 'faq-category': 'Catégorie FAQ', 'unknown': 'Bloc',
+  'page-text': 'Texte de page', 'faq-item': 'Question FAQ', 'faq-category': 'Catégorie FAQ',
+  'dynamic': 'Bloc dynamique', 'unknown': 'Bloc',
 };
+
+// Heuristique : ces clés contiennent du HTML riche, on utilise l'éditeur formaté
+function shouldUseRichEditor(textKey: string): boolean {
+  return /-(body|content|text|description|intro|conclusion)$/.test(textKey);
+}
 
 export default function BlockInspector({
   selected, iframeRect, onChange, onCommit, onClose,
@@ -78,16 +93,13 @@ export default function BlockInspector({
 
   const mode = parseBlockKey(selected.blockKey);
   const Icon = ICON[mode.kind];
-  // Mise en page disponible uniquement pour les page-text (pas les FAQ items qui ont leur propre rendu)
-  const canEditLayout = mode.kind === 'page-text';
+  const canEditLayout = mode.kind === 'page-text' || mode.kind === 'dynamic';
 
   function handleChange(value: string) {
-    setText(value);
-    onChange(value);
+    setText(value); onChange(value);
     if (debounceRef.current) window.clearTimeout(debounceRef.current);
     debounceRef.current = window.setTimeout(() => {
-      onCommit(before.current, value);
-      before.current = value;
+      onCommit(before.current, value); before.current = value;
     }, 600);
   }
   function commitImmediate(value: string) {
@@ -95,7 +107,7 @@ export default function BlockInspector({
   }
 
   // Position
-  const w = 360, m = 12;
+  const w = 380, m = 12;
   const blockRight = iframeRect.x + selected.rect.x + selected.rect.width;
   const blockLeft  = iframeRect.x + selected.rect.x;
   const blockTop   = iframeRect.y + selected.rect.y;
@@ -105,10 +117,11 @@ export default function BlockInspector({
     if (left < 8) left = window.innerWidth - w - 8;
   }
   let top = Math.max(8, blockTop);
-  if (top + 320 > window.innerHeight) top = window.innerHeight - 328;
+  if (top + 380 > window.innerHeight) top = window.innerHeight - 388;
 
   const isImageField = mode.kind === 'faq-category' && mode.field === 'imageUrl';
   const isLongField = (mode.kind === 'faq-item' && mode.field === 'answer') || (mode.kind === 'faq-category' && mode.field === 'description');
+  const useRich = mode.kind === 'page-text' && shouldUseRichEditor(mode.textKey);
   const rows = isLongField ? 6 : 2;
 
   return (
@@ -127,27 +140,21 @@ export default function BlockInspector({
 
         {canEditLayout && (
           <div className="flex border-b border-gray-100 text-[12px] font-medium">
-            <button
-              onClick={() => setTab('text')}
+            <button onClick={() => setTab('text')}
               className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
                 tab === 'text' ? 'text-primary border-b-2 border-primary -mb-px' : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Type className="w-3.5 h-3.5" /> Texte
-            </button>
-            <button
-              onClick={() => setTab('layout')}
+              }`}><Type className="w-3.5 h-3.5" /> {mode.kind === 'dynamic' ? 'Bloc' : 'Texte'}</button>
+            <button onClick={() => setTab('layout')}
               className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
                 tab === 'layout' ? 'text-primary border-b-2 border-primary -mb-px' : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Layout className="w-3.5 h-3.5" /> Mise en page
-            </button>
+              }`}><Layout className="w-3.5 h-3.5" /> Mise en page</button>
           </div>
         )}
 
         {tab === 'layout' && canEditLayout ? (
           <LayoutPanel blockKey={selected.blockKey} onChanged={onLayoutChanged} />
+        ) : mode.kind === 'dynamic' ? (
+          <DynamicBlockInspector blockId={mode.id} onChanged={onLayoutChanged} onDeleted={onClose} />
         ) : (
           <div className="p-3 space-y-3">
             {mode.kind === 'unknown' ? (
@@ -177,11 +184,16 @@ export default function BlockInspector({
                       <ImageIcon className="w-3.5 h-3.5" /> Choisir dans la médiathèque
                     </button>
                   </div>
+                ) : useRich ? (
+                  <RichTextEditor html={text} onChange={handleChange} minHeight={140} />
                 ) : (
                   <textarea value={text} onChange={(e) => handleChange(e.target.value)}
                     rows={Math.min(10, Math.max(rows, text.split('\n').length))}
                     className="w-full text-[13px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 resize-y"
                     autoFocus />
+                )}
+                {useRich && (
+                  <p className="text-[10px] text-gray-400 mt-1">Le formatage (gras, listes, liens, titres) est conservé.</p>
                 )}
               </div>
             )}
@@ -189,11 +201,9 @@ export default function BlockInspector({
             {mode.kind === 'faq-item' && onFaqCategoryChange && (
               <div className="pt-2 border-t border-gray-100">
                 <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Catégorie</label>
-                <select
-                  value={faqCategoryId ?? ''}
+                <select value={faqCategoryId ?? ''}
                   onChange={(e) => onFaqCategoryChange(e.target.value ? Number(e.target.value) : null)}
-                  className="w-full text-[13px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 bg-white"
-                >
+                  className="w-full text-[13px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 bg-white">
                   <option value="">— Aucune —</option>
                   {categories.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
                 </select>
