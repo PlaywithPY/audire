@@ -1,7 +1,9 @@
 'use client';
 
 // src/app/admin/editor/EditorView.tsx
-// Phase 4 — fournit la liste des catégories à l'inspecteur + gère le draft de categoryId.
+// Sprint 2 — ajout :
+//   • listener `editor:blocks-changed` / `editor:layout-changed` (refresh iframe)
+//   • prop `onLayoutChanged` passée à <BlockInspector>
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -30,7 +32,11 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
   const history = useEditorHistory();
   const d = useDrafts();
 
-  // Charge catégories + FAQs (pour connaître la categoryId actuelle de chaque FAQ)
+  // Helper — recharge l'iframe (utilisé après création/suppression de bloc, changement de layout)
+  function refreshIframe() {
+    if (iframeRef.current) iframeRef.current.src = iframeRef.current.src;
+  }
+
   useEffect(() => {
     fetch('/api/categories').then((r) => r.ok ? r.json() : []).then((cats: any[]) => {
       setCategories(cats.map((c) => ({ id: c.id, name: c.name })));
@@ -42,7 +48,6 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
     });
   }, []);
 
-  // Beforeunload guard
   useEffect(() => {
     function onBeforeUnload(e: BeforeUnloadEvent) {
       if (d.count === 0) return;
@@ -56,9 +61,17 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
   // Iframe ↔ parent
   useEffect(() => {
     function onMessage(e: MessageEvent) {
-      if (e.source !== iframeRef.current?.contentWindow) return;
       const msg = e.data;
       if (!msg || typeof msg !== 'object') return;
+
+      // ─── Sprint 2 : messages d'invalidation venant de n'importe quel iframe ───
+      if (msg.type === 'editor:blocks-changed' || msg.type === 'editor:layout-changed') {
+        refreshIframe();
+        return;
+      }
+
+      // Les autres messages doivent venir de notre iframe
+      if (e.source !== iframeRef.current?.contentWindow) return;
       switch (msg.type) {
         case 'editor:ready':
           setIframeReady(true);
@@ -107,7 +120,6 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
     }
   }
 
-  // Catégorie courante de la FAQ sélectionnée (live + draft merge)
   let faqCategoryId: number | null | undefined = undefined;
   if (selected?.blockKey.startsWith('faq-item:')) {
     const [, id] = selected.blockKey.split(':');
@@ -141,12 +153,12 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
     if (!res.ok) { alert('Erreur lors de la publication.'); return; }
     d.clear(); history.clear();
     iframeRef.current?.contentWindow?.postMessage({ type: 'editor:reset-blocks' }, '*');
-    if (iframeRef.current) iframeRef.current.src = iframeRef.current.src;
+    refreshIframe();
   }
 
   function handleDiscard() {
     d.clear(); history.clear();
-    if (iframeRef.current) iframeRef.current.src = iframeRef.current.src;
+    refreshIframe();
   }
 
   return (
@@ -210,6 +222,8 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
             const [, id] = selected.blockKey.split(':');
             d.setFaqItem(id, { categoryId: catId });
           }}
+          /* Sprint 2 — refresh quand le LayoutPanel sauve un layout */
+          onLayoutChanged={refreshIframe}
         />
       )}
     </div>
