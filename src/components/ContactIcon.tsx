@@ -1,8 +1,11 @@
 'use client';
 
 // src/components/ContactIcon.tsx
-// Affiche une icône depuis Settings — Lucide ou emoji.
-// Utilise un cache via fetch + setState pour ne pas rappeler l'API à chaque rendu.
+// Affiche une icône depuis Settings — image uploadée, Lucide ou emoji.
+// Une seule chaîne stockée dans Settings :
+//   - URL ("https://…" ou "/images/…" ou ".jpg/.png/.svg/…") → <img>
+//   - Identifiant Lucide kebab-case ("phone", "map-pin", "mail-open") → composant Lucide
+//   - Sinon → texte / emoji
 
 import { useEffect, useState } from 'react';
 import * as Icons from 'lucide-react';
@@ -10,9 +13,9 @@ import * as Icons from 'lucide-react';
 type Props = {
   /** Clé de réglage : 'contact_icon_phone' | 'contact_icon_email' | 'contact_icon_address' | 'contact_icon_mobile' */
   settingKey: string;
-  /** Valeur par défaut si Settings ne renvoie rien (emoji ou nom Lucide) */
+  /** Valeur par défaut si Settings ne renvoie rien (emoji, nom Lucide ou URL) */
   fallback?: string;
-  /** Taille pour Lucide (px). Pour les emojis, contrôlez via la classe parente. */
+  /** Taille en px (Lucide + image). Pour les emojis, contrôlez via la classe parente. */
   size?: number;
   className?: string;
 };
@@ -46,6 +49,14 @@ function toLucideName(name: string): string {
     .join('');
 }
 
+/** Détecte si la valeur est une URL d'image (absolue, relative ou par extension) */
+export function isImageValue(value: string): boolean {
+  if (!value) return false;
+  if (/^(https?:\/\/|\/|data:image\/|blob:)/i.test(value)) return true;
+  if (/\.(png|jpe?g|svg|gif|webp|avif)(\?.*)?$/i.test(value)) return true;
+  return false;
+}
+
 export default function ContactIcon({ settingKey, fallback = '', size = 28, className = '' }: Props) {
   const [value, setValue] = useState<string>(fallback);
 
@@ -59,12 +70,27 @@ export default function ContactIcon({ settingKey, fallback = '', size = 28, clas
     };
   }, [settingKey]);
 
-  // Si la valeur ressemble à un nom Lucide (kebab-case ou PascalCase, lettres/tirets seulement) → render Lucide
+  // 1) Image uploadée → <img>
+  if (isImageValue(value)) {
+    return (
+      <img
+        src={value}
+        alt=""
+        style={{ width: size, height: size, objectFit: 'contain' }}
+        className={className}
+      />
+    );
+  }
+
+  // 2) Nom Lucide (kebab/PascalCase, lettres/tirets seulement) → render Lucide
   const isLucide = /^[a-zA-Z][a-zA-Z0-9-]*$/.test(value);
   if (isLucide) {
-    const Comp = (Icons as any)[toLucideName(value)] as React.ComponentType<{ size?: number; className?: string }> | undefined;
+    const Comp = (Icons as any)[toLucideName(value)] as
+      | React.ComponentType<{ size?: number; className?: string }>
+      | undefined;
     if (Comp) return <Comp size={size} className={className} />;
   }
-  // Sinon → emoji ou texte
+
+  // 3) Sinon → emoji ou texte brut
   return <span className={className}>{value}</span>;
 }
