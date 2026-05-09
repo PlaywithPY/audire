@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BlockLayoutWrapper from "@/components/BlockLayoutWrapper";
 
 interface HeroModernProps {
   texts: { [key: string]: string };
@@ -13,7 +14,8 @@ export default function HeroModern({ texts }: HeroModernProps) {
         <div className="bubble w-96 h-96 top-40 -right-32 animate-float delay-200 opacity-15"></div>
         <div className="bubble w-48 h-48 bottom-20 left-1/4 animate-float delay-300 opacity-20"></div>
         <div className="bubble w-80 h-80 bottom-10 right-1/4 animate-float delay-100 opacity-10"></div>
-      </div>A
+      </div>
+      {/* ↑ Le « A » parasite qui était là a été retiré (rendait un « A » visible sur la page). */}
 
       {/* Vague décorative en bas */}
       <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
@@ -105,9 +107,14 @@ export default function HeroModern({ texts }: HeroModernProps) {
             </Link>
           </div>
 
-          {/* Message de réassurance avec animation */}
-          <div className="animate-fade-in delay-500 bg-white/10 backdrop-blur-sm rounded-2xl p-6 max-w-2xl mx-auto border border-white/20">
-            <div className="text-center text-white/90">
+          {/* ─── Message de réassurance — wrappé pour édition de la mise en page ─── */}
+          <BlockLayoutWrapper
+            blockKey="home.hero-reassure-block"
+            defaultMaxWidth="3xl"
+            defaultPadding="normal"
+            className="animate-fade-in delay-500 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20"
+          >
+            <div data-edit-block="home.hero-reassure-block" className="text-center text-white/90">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <svg className="w-5 h-5 text-yellow-300 animate-pulse-slow flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -120,7 +127,7 @@ export default function HeroModern({ texts }: HeroModernProps) {
                 {texts['hero-reassure-text'] || 'Venez juste faire le point. Parfois la meilleure réponse est "pas maintenant" — et on vous le dira.'}
               </p>
             </div>
-          </div>
+          </BlockLayoutWrapper>
         </div>
       </div>
     </section>

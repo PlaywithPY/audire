@@ -6,6 +6,7 @@ import DynamicBlockRenderer from "@/components/DynamicBlockRenderer";
 import ImageEffectsRenderer from "@/components/ImageEffectsRenderer";
 import HeroModern from "@/components/HeroModern";
 import HeroClassic from "@/components/HeroClassic";
+import InsertZone from "@/components/admin/InsertZone";
 import { useState, useEffect, useRef } from "react";
 import { CardData } from "@/lib/card-helpers";
 import Link from "next/link";
@@ -31,30 +32,22 @@ export default function Home() {
   const [mutuelleReimbursement, setMutuelleReimbursement] = useState<number>(0);
   const [useModernDesign, setUseModernDesign] = useState<boolean>(true);
 
-  // Fonction pour extraire le premier prix numérique d'une chaîne
   const extractPrice = (priceString: string | null): number | null => {
     if (!priceString) return null;
     const match = priceString.match(/(\d+)/);
     return match ? parseInt(match[1]) : null;
   };
 
-  // Fonction pour formater l'affichage du prix avec remboursement
   const formatPriceWithReimbursement = (priceString: string | null): JSX.Element | null => {
     const price = extractPrice(priceString);
     if (!price) {
       return priceString ? <span>{priceString}</span> : null;
     }
-
     const finalPrice = mutuelleReimbursement ? price - mutuelleReimbursement : price;
-
     return (
       <div>
-        <div className="text-sm text-gray-600 mb-1">
-          À partir de
-        </div>
-        <div className="text-lg font-semibold text-primary">
-          {price}€
-        </div>
+        <div className="text-sm text-gray-600 mb-1">À partir de</div>
+        <div className="text-lg font-semibold text-primary">{price}€</div>
         {mutuelleReimbursement > 0 && (
           <div className="text-sm text-gray-600">
             (-{mutuelleReimbursement}€ de la mutuelle donc {finalPrice}€)
@@ -67,35 +60,21 @@ export default function Home() {
   useEffect(() => {
     async function loadData() {
       try {
-        // Charger les feature cards
         const cardsRes = await fetch('/api/card-images?pageKey=home');
-        if (cardsRes.ok) {
-          const cardsData = await cardsRes.json();
-          setFeatureCards(cardsData);
-        }
+        if (cardsRes.ok) setFeatureCards(await cardsRes.json());
 
-        // Charger les textes de la page
         const textsRes = await fetch('/api/page-texts?pageKey=home');
-        if (textsRes.ok) {
-          const textsData = await textsRes.json();
-          setTexts(textsData);
-        }
+        if (textsRes.ok) setTexts(await textsRes.json());
 
-        // Charger les produits mis en avant
         const productsRes = await fetch('/api/hearing-aids/featured');
-        if (productsRes.ok) {
-          const productsData = await productsRes.json();
-          setFeaturedProducts(productsData);
-        }
+        if (productsRes.ok) setFeaturedProducts(await productsRes.json());
 
-        // Charger le remboursement mutuelle
         const settingsRes = await fetch('/api/settings?key=mutuelle_reimbursement');
         if (settingsRes.ok) {
           const settingsData = await settingsRes.json();
           setMutuelleReimbursement(parseFloat(settingsData.value || '0'));
         }
 
-        // Charger le setting pour le design moderne
         const designRes = await fetch('/api/settings?key=use_modern_homepage_design');
         if (designRes.ok) {
           const designData = await designRes.json();
@@ -107,6 +86,7 @@ export default function Home() {
     }
     loadData();
   }, []);
+
   return (
     <>
       <main className="min-h-screen relative">
@@ -117,15 +97,23 @@ export default function Home() {
           className="absolute inset-0 pointer-events-none"
         />
 
+      {/* ── Insert-Zone : tout en haut de la page ── */}
+      <InsertZone pageKey="home" afterOrder={null} />
+
       {/* Hero Section */}
       {useModernDesign ? <HeroModern texts={texts} /> : <HeroClassic texts={texts} />}
+
+      {/* ── Insert-Zone : après le Hero ── */}
+      <InsertZone pageKey="home" afterOrder={0} />
 
       {/* Image effect after hero */}
       <ImageEffectsRenderer pageKey="home" sectionKey="after-hero" />
 
+      {/* ── Insert-Zone : avant les Features ── */}
+      <InsertZone pageKey="home" afterOrder={1} />
+
       {/* Features Section */}
       <section className="py-20 bg-white relative overflow-hidden">
-        {/* Fond décoratif subtil */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
 
         <div className="container mx-auto px-4">
@@ -145,11 +133,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {featureCards.map((card, index) => (
-              <div
-                key={card.cardKey}
-                className="animate-fade-in-up"
-                style={{ animationDelay: `${index * 0.15}s` }}
-              >
+              <div key={card.cardKey} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.15}s` }}>
                 <ImageFeatureCard
                   imageSrc={card.imageSrc}
                   title={card.title}
@@ -165,16 +149,24 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Insert-Zone : après les Features ── */}
+      <InsertZone pageKey="home" afterOrder={2} />
+
       {/* Image effect after features */}
       <ImageEffectsRenderer pageKey="home" sectionKey="after-features" />
+
+      {/* ── Insert-Zone : avant les témoignages ── */}
+      <InsertZone pageKey="home" afterOrder={3} />
 
       {/* Testimonials Carousel */}
       <TestimonialsCarousel />
 
+      {/* ── Insert-Zone : avant les produits mis en avant ── */}
+      <InsertZone pageKey="home" afterOrder={4} />
+
       {/* Featured Products Section */}
       {featuredProducts.length > 0 && (
         <section className="py-20 bg-gradient-to-br from-gray-50 via-white to-primary/5 relative overflow-hidden">
-          {/* Éléments décoratifs */}
           <div className="absolute top-20 right-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl"></div>
           <div className="absolute bottom-20 left-10 w-96 h-96 bg-primary-light/5 rounded-full blur-3xl"></div>
 
@@ -199,7 +191,6 @@ export default function Home() {
                   className="group bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 animate-fade-in-up border border-gray-100"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  {/* Image du produit avec overlay au hover */}
                   <div className="relative h-64 bg-gradient-to-br from-primary/10 to-primary-light/10 overflow-hidden">
                     {product.heroImage ? (
                       <>
@@ -215,7 +206,6 @@ export default function Home() {
                         <span className="text-7xl animate-float">🎧</span>
                       </div>
                     )}
-                    {/* Badge "Mis en avant" amélioré */}
                     <div className="absolute top-4 right-4 bg-gradient-to-r from-primary to-primary-dark text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg animate-pulse-slow">
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -224,21 +214,16 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Contenu avec séparateur décoratif */}
                   <div className="p-6">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-1 h-6 bg-gradient-to-b from-primary to-primary-light rounded-full"></div>
-                      <div className="text-sm text-primary font-bold uppercase tracking-wide">
-                        {product.brand}
-                      </div>
+                      <div className="text-sm text-primary font-bold uppercase tracking-wide">{product.brand}</div>
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors leading-tight">
                       {product.name}
                     </h3>
                     {product.shortDesc && (
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">
-                        {product.shortDesc}
-                      </p>
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">{product.shortDesc}</p>
                     )}
                     {product.price && (
                       <div className="mb-6 p-4 bg-gradient-to-br from-primary/5 to-primary-light/5 rounded-xl border border-primary/10">
@@ -258,7 +243,6 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Lien vers toutes les solutions amélioré */}
             <div className="text-center mt-16">
               <Link
                 href="/solutions-auditives"
@@ -274,9 +258,11 @@ export default function Home() {
         </section>
       )}
 
+      {/* ── Insert-Zone : avant le CTA final ── */}
+      <InsertZone pageKey="home" afterOrder={5} />
+
       {/* CTA Section */}
       <section className="py-24 bg-gradient-to-br from-primary/10 via-primary-light/10 to-white relative overflow-hidden">
-        {/* Éléments décoratifs */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
         <div className="absolute inset-0 opacity-30">
           <div className="bubble w-96 h-96 -top-20 -left-20 animate-float opacity-20"></div>
@@ -285,7 +271,6 @@ export default function Home() {
 
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="max-w-4xl mx-auto">
-            {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-white px-5 py-2.5 rounded-full shadow-md mb-6 border border-primary/20 animate-fade-in">
               <svg className="w-5 h-5 text-primary animate-pulse-slow" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
@@ -293,19 +278,16 @@ export default function Home() {
               <span className="text-sm font-semibold text-gray-700">Première étape simple et gratuite</span>
             </div>
 
-            {/* Titre avec gradient */}
             <h2 data-edit-block="home.section-2-title"
                 className="text-4xl md:text-5xl font-bold mb-6 animate-fade-in-up bg-gradient-to-r from-gray-900 via-primary to-gray-900 bg-clip-text text-transparent">
               {texts['section-2-title'] || 'Prêt à mieux entendre ?'}
             </h2>
 
-            {/* Description */}
             <p data-edit-block="home.description-3"
                className="text-xl md:text-2xl text-text-light mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up delay-100">
               {texts['description-3'] || 'Prenez rendez-vous pour un test auditif gratuit et sans engagement.'}
             </p>
 
-            {/* Bouton CTA principal amélioré */}
             <div className="mb-8 animate-fade-in-up delay-200">
               <Link
                 href="/prendre-rendez-vous"
@@ -321,17 +303,13 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Points de réassurance avec icônes */}
             <div className="flex flex-wrap justify-center gap-6 mb-8 animate-fade-in delay-300">
               {[
                 { icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', text: 'Test gratuit' },
                 { icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z', text: 'Sans engagement' },
                 { icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', text: 'Conseils personnalisés' }
               ].map((item, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-2 bg-white px-5 py-3 rounded-xl shadow-md hover:shadow-lg transition-all hover-lift"
-                >
+                <div key={index} className="flex items-center gap-2 bg-white px-5 py-3 rounded-xl shadow-md hover:shadow-lg transition-all hover-lift">
                   <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
                   </svg>
@@ -340,7 +318,6 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Message additionnel */}
             <div className="inline-flex items-center gap-2 text-sm text-text-muted bg-white/60 backdrop-blur-sm px-6 py-3 rounded-full animate-fade-in delay-400">
               <svg className="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
@@ -350,6 +327,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── Insert-Zone : tout en bas (avant les blocs dynamiques fin de page) ── */}
+      <InsertZone pageKey="home" afterOrder={6} />
 
       <DynamicBlockRenderer pageKey="home" />
     </main>

@@ -1,11 +1,12 @@
 'use client';
 
 // src/components/admin/BlockInspector.tsx
-// Phase 4 — modes étendus : page-text, faq-item (avec dropdown catégorie), faq-category (avec MediaPicker).
+// Sprint 2 — onglets "Texte" + "Mise en page".
 
 import { useEffect, useRef, useState } from 'react';
-import { X, Type, HelpCircle, FolderOpen, Image as ImageIcon } from 'lucide-react';
+import { X, Type, HelpCircle, FolderOpen, Image as ImageIcon, Layout } from 'lucide-react';
 import MediaPicker from '@/components/MediaPicker';
+import LayoutPanel from './LayoutPanel';
 
 export type SelectedBlock = {
   blockKey: string;
@@ -21,10 +22,11 @@ interface Props {
   onChange: (text: string) => void;
   onCommit: (before: string, after: string) => void;
   onClose: () => void;
-  // Phase 4
   categories: Category[];
   faqCategoryId?: number | null;
   onFaqCategoryChange?: (categoryId: number | null) => void;
+  /** Sprint 2 — appelé quand le layout change pour rafraîchir l'iframe */
+  onLayoutChanged?: () => void;
 }
 
 type Mode =
@@ -60,8 +62,9 @@ const LABEL: Record<Mode['kind'], string> = {
 
 export default function BlockInspector({
   selected, iframeRect, onChange, onCommit, onClose,
-  categories, faqCategoryId, onFaqCategoryChange,
+  categories, faqCategoryId, onFaqCategoryChange, onLayoutChanged,
 }: Props) {
+  const [tab, setTab] = useState<'text' | 'layout'>('text');
   const [text, setText] = useState(selected.data.text ?? '');
   const [pickerOpen, setPickerOpen] = useState(false);
   const before = useRef(selected.data.text ?? '');
@@ -70,10 +73,13 @@ export default function BlockInspector({
   useEffect(() => {
     setText(selected.data.text ?? '');
     before.current = selected.data.text ?? '';
+    setTab('text');
   }, [selected.blockKey]);
 
   const mode = parseBlockKey(selected.blockKey);
   const Icon = ICON[mode.kind];
+  // Mise en page disponible uniquement pour les page-text (pas les FAQ items qui ont leur propre rendu)
+  const canEditLayout = mode.kind === 'page-text';
 
   function handleChange(value: string) {
     setText(value);
@@ -84,12 +90,8 @@ export default function BlockInspector({
       before.current = value;
     }, 600);
   }
-
   function commitImmediate(value: string) {
-    setText(value);
-    onChange(value);
-    onCommit(before.current, value);
-    before.current = value;
+    setText(value); onChange(value); onCommit(before.current, value); before.current = value;
   }
 
   // Position
@@ -103,7 +105,7 @@ export default function BlockInspector({
     if (left < 8) left = window.innerWidth - w - 8;
   }
   let top = Math.max(8, blockTop);
-  if (top + 280 > window.innerHeight) top = window.innerHeight - 288;
+  if (top + 320 > window.innerHeight) top = window.innerHeight - 328;
 
   const isImageField = mode.kind === 'faq-category' && mode.field === 'imageUrl';
   const isLongField = (mode.kind === 'faq-item' && mode.field === 'answer') || (mode.kind === 'faq-category' && mode.field === 'description');
@@ -111,8 +113,7 @@ export default function BlockInspector({
 
   return (
     <>
-      <div className="fixed bg-white border border-gray-200 rounded-xl shadow-2xl z-50 flex flex-col"
-           style={{ left, top, width: w }}>
+      <div className="fixed bg-white border border-gray-200 rounded-xl shadow-2xl z-50 flex flex-col" style={{ left, top, width: w }}>
         <div className="flex items-center gap-2 px-3 py-2 border-b border-gray-100">
           <Icon className="w-3.5 h-3.5 text-gray-400" />
           <div className="flex-1 min-w-0">
@@ -124,84 +125,92 @@ export default function BlockInspector({
           </button>
         </div>
 
-        <div className="p-3 space-y-3">
-          {mode.kind === 'unknown' ? (
-            <div className="text-[12px] text-amber-700 bg-amber-50 p-2 rounded">
-              Format non reconnu : <code>{selected.blockKey}</code>
-            </div>
-          ) : (
-            <div>
-              <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">
-                {mode.kind === 'page-text' && 'Contenu'}
-                {mode.kind === 'faq-item' && (mode.field === 'question' ? 'Question' : 'Réponse')}
-                {mode.kind === 'faq-category' && (
-                  mode.field === 'name' ? 'Nom' : mode.field === 'description' ? 'Description' : 'Image'
-                )}
-              </label>
-
-              {isImageField ? (
-                <div className="space-y-2">
-                  {text && (
-                    <div className="aspect-video bg-gray-100 rounded overflow-hidden border border-gray-200">
-                      <img src={text} alt="" className="w-full h-full object-cover" />
-                    </div>
-                  )}
-                  <input
-                    type="url" value={text} onChange={(e) => handleChange(e.target.value)}
-                    placeholder="https://… ou choisir →"
-                    className="w-full text-[12px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 font-mono"
-                  />
-                  <button type="button" onClick={() => setPickerOpen(true)}
-                    className="h-8 px-2.5 rounded-md border border-gray-200 hover:bg-gray-50 text-[12px] font-medium flex items-center gap-1.5">
-                    <ImageIcon className="w-3.5 h-3.5" />
-                    Choisir dans la médiathèque
-                  </button>
-                </div>
-              ) : (
-                <textarea
-                  value={text} onChange={(e) => handleChange(e.target.value)}
-                  rows={Math.min(10, Math.max(rows, text.split('\n').length))}
-                  className="w-full text-[13px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 resize-y"
-                  autoFocus
-                />
-              )}
-            </div>
-          )}
-
-          {/* Dropdown catégorie pour les FAQ items */}
-          {mode.kind === 'faq-item' && onFaqCategoryChange && (
-            <div className="pt-2 border-t border-gray-100">
-              <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">
-                Catégorie
-              </label>
-              <select
-                value={faqCategoryId ?? ''}
-                onChange={(e) => onFaqCategoryChange(e.target.value ? Number(e.target.value) : null)}
-                className="w-full text-[13px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 bg-white"
-              >
-                <option value="">— Aucune —</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          <div className="text-[11px] text-gray-400 flex items-center justify-between">
-            <span>Brouillon — Publier pour valider</span>
-            <span className="font-mono">⌘Z</span>
+        {canEditLayout && (
+          <div className="flex border-b border-gray-100 text-[12px] font-medium">
+            <button
+              onClick={() => setTab('text')}
+              className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
+                tab === 'text' ? 'text-primary border-b-2 border-primary -mb-px' : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Type className="w-3.5 h-3.5" /> Texte
+            </button>
+            <button
+              onClick={() => setTab('layout')}
+              className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
+                tab === 'layout' ? 'text-primary border-b-2 border-primary -mb-px' : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Layout className="w-3.5 h-3.5" /> Mise en page
+            </button>
           </div>
-        </div>
+        )}
+
+        {tab === 'layout' && canEditLayout ? (
+          <LayoutPanel blockKey={selected.blockKey} onChanged={onLayoutChanged} />
+        ) : (
+          <div className="p-3 space-y-3">
+            {mode.kind === 'unknown' ? (
+              <div className="text-[12px] text-amber-700 bg-amber-50 p-2 rounded">
+                Format non reconnu : <code>{selected.blockKey}</code>
+              </div>
+            ) : (
+              <div>
+                <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">
+                  {mode.kind === 'page-text' && 'Contenu'}
+                  {mode.kind === 'faq-item' && (mode.field === 'question' ? 'Question' : 'Réponse')}
+                  {mode.kind === 'faq-category' && (mode.field === 'name' ? 'Nom' : mode.field === 'description' ? 'Description' : 'Image')}
+                </label>
+
+                {isImageField ? (
+                  <div className="space-y-2">
+                    {text && (
+                      <div className="aspect-video bg-gray-100 rounded overflow-hidden border border-gray-200">
+                        <img src={text} alt="" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <input type="url" value={text} onChange={(e) => handleChange(e.target.value)}
+                      placeholder="https://… ou choisir →"
+                      className="w-full text-[12px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 font-mono" />
+                    <button type="button" onClick={() => setPickerOpen(true)}
+                      className="h-8 px-2.5 rounded-md border border-gray-200 hover:bg-gray-50 text-[12px] font-medium flex items-center gap-1.5">
+                      <ImageIcon className="w-3.5 h-3.5" /> Choisir dans la médiathèque
+                    </button>
+                  </div>
+                ) : (
+                  <textarea value={text} onChange={(e) => handleChange(e.target.value)}
+                    rows={Math.min(10, Math.max(rows, text.split('\n').length))}
+                    className="w-full text-[13px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 resize-y"
+                    autoFocus />
+                )}
+              </div>
+            )}
+
+            {mode.kind === 'faq-item' && onFaqCategoryChange && (
+              <div className="pt-2 border-t border-gray-100">
+                <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Catégorie</label>
+                <select
+                  value={faqCategoryId ?? ''}
+                  onChange={(e) => onFaqCategoryChange(e.target.value ? Number(e.target.value) : null)}
+                  className="w-full text-[13px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 bg-white"
+                >
+                  <option value="">— Aucune —</option>
+                  {categories.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
+                </select>
+              </div>
+            )}
+
+            <div className="text-[11px] text-gray-400 flex items-center justify-between">
+              <span>Brouillon — Publier pour valider</span>
+              <span className="font-mono">⌘Z</span>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Médiathèque modale (réutilise le composant existant des feature cards) */}
-      <MediaPicker
-        isOpen={pickerOpen}
-        onClose={() => setPickerOpen(false)}
+      <MediaPicker isOpen={pickerOpen} onClose={() => setPickerOpen(false)}
         onSelect={(url) => { commitImmediate(url); setPickerOpen(false); }}
-        currentMedia={text}
-        mediaType="image"
-      />
+        currentMedia={text} mediaType="image" />
     </>
   );
 }
