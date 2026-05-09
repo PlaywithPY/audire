@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import AdminHeader from '@/components/AdminHeader';
 import ContactIconsSettings from '@/components/admin/ContactIconsSettings';
+import CompanyInfoSettings from '@/components/admin/CompanyInfoSettings';
 
 type ThemeColors = {
   primary: string;
@@ -140,6 +141,7 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminHeader currentPage="settings" title="⚙️ Paramètres" />
+      <CompanyInfoSettings />
 
       <div className="container mx-auto px-6 py-8 max-w-6xl">
         {/* Design de la page d'accueil */}
