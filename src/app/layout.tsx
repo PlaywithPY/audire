@@ -40,6 +40,7 @@ export default function RootLayout({
         <ThemeProvider />
       </head>
       <body className={`${inter.variable} ${playfair.variable} antialiased`}>
+        <EditorNavSync />
         <Providers>
           <CentreProvider>
             <ConditionalLayout>
