@@ -1,7 +1,16 @@
 'use client';
 
+// Sprint 5 — Mode édition inline pour les effets d'image plein écran (parallax/zoom/etc).
+// Le rendu visuel est STRICTEMENT identique à avant pour ne pas casser les images existantes
+// (notamment la "vague" sur la home). Le mode édition se déclenche via ?edit=1 et :
+//   - retire pointer-events-none sur les wrappers
+//   - ajoute un bouton flottant "📷 Modifier" en survol
+//   - met data-edit-block="image-effect:<pageKey>:<sectionKey>" sur ce bouton
+//     (l'éditeur l'écoute déjà via le sélecteur générique des blocs éditables).
+
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
+import { ImageIcon } from 'lucide-react';
 
 type ImageEffect = {
   id: number;
@@ -18,412 +27,218 @@ type ImageEffect = {
   minHeight: string;
 };
 
-type AllPageImageEffectsProps = {
-  pageKey: string;
-  className?: string;
-};
+type Props = { pageKey: string; className?: string };
 
-/**
- * Charge et affiche TOUS les effets d'images pour une page donnée
- * Optimisé : une seule requête API pour tous les effets
- * Positionne chaque effet sur sa section correspondante
- */
-export default function AllPageImageEffects({
-  pageKey,
-  className = '',
-}: AllPageImageEffectsProps) {
+export default function AllPageImageEffects({ pageKey, className = '' }: Props) {
   const [effects, setEffects] = useState<ImageEffect[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
-    fetchAllEffects();
-  }, [pageKey]);
+    setEditMode(new URLSearchParams(window.location.search).get('edit') === '1');
+  }, []);
+
+  useEffect(() => { fetchAllEffects(); }, [pageKey]);
+
+  // Rafraîchit quand l'éditeur publie une modif
+  useEffect(() => {
+    function onMsg(e: MessageEvent) {
+      if (e.data?.type === 'editor:image-effects-changed') fetchAllEffects();
+    }
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
 
   async function fetchAllEffects() {
     try {
-      console.log(`🔍 [AllPageImageEffects] Fetching all image effects for page: ${pageKey}`);
       const res = await fetch(`/api/image-effects?pageKey=${pageKey}`);
-
-      if (!res.ok) {
-        console.error('❌ [AllPageImageEffects] API error:', res.status);
-        setEffects([]);
-        return;
-      }
-
+      if (!res.ok) { setEffects([]); return; }
       const data: ImageEffect[] = await res.json();
-
-      // Filtrer uniquement les effets visibles et les trier par ordre
-      const visibleEffects = data
-        .filter(e => e.isVisible)
-        .sort((a, b) => a.order - b.order);
-
-      console.log(`📦 [AllPageImageEffects] Loaded ${visibleEffects.length} visible effect(s) for page "${pageKey}"`);
-      visibleEffects.forEach(effect => {
-        console.log(`   ✓ Section "${effect.sectionKey}": ${effect.effectType} (order: ${effect.order})`);
-      });
-
-      setEffects(visibleEffects);
-    } catch (error) {
-      console.error('💥 [AllPageImageEffects] Error fetching effects:', error);
-      setEffects([]);
-    } finally {
-      setLoading(false);
-    }
+      setEffects(data.filter(e => e.isVisible).sort((a, b) => a.order - b.order));
+    } catch { setEffects([]); }
+    finally { setLoading(false); }
   }
 
-  if (loading) {
-    return null;
-  }
+  if (loading || effects.length === 0) return null;
 
-  if (effects.length === 0) {
-    console.log(`ℹ️ [AllPageImageEffects] No effects to render for page "${pageKey}"`);
-    return null;
-  }
-
-  // Rendre tous les effets positionnés sur leurs sections
   return (
-    <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
+    // En édition : pointer-events-auto pour permettre le clic sur le bouton flottant.
+    // Hors édition : pointer-events-none, comportement identique à l'ancienne version.
+    <div className="fixed inset-0" style={{ zIndex: 0, pointerEvents: editMode ? 'auto' : 'none' }}>
       {effects.map((effect) => (
-        <PositionedImageEffect
-          key={effect.id}
-          imageEffect={effect}
-          className={className}
-        />
+        <PositionedImageEffect key={effect.id} imageEffect={effect} className={className} editMode={editMode} />
       ))}
     </div>
   );
 }
 
-// Composant qui positionne un effet sur sa section correspondante
-function PositionedImageEffect({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+function PositionedImageEffect({ imageEffect, className, editMode }: { imageEffect: ImageEffect; className: string; editMode: boolean }) {
   const [position, setPosition] = useState<{ top: number } | null>(null);
 
   useEffect(() => {
-    const updatePosition = () => {
+    const update = () => {
       const section = document.querySelector(`[data-section="${imageEffect.sectionKey}"]`) as HTMLElement;
-
       if (section) {
         const rect = section.getBoundingClientRect();
-        const scrollY = window.scrollY || window.pageYOffset;
-
-        setPosition({
-          top: rect.top + scrollY,
-        });
-
-        console.log(`📍 [PositionedImageEffect] Positioned "${imageEffect.sectionKey}" effect at top: ${rect.top + scrollY}px`);
-      } else {
-        console.warn(`⚠️ [PositionedImageEffect] Section "${imageEffect.sectionKey}" not found`);
+        setPosition({ top: rect.top + (window.scrollY || window.pageYOffset) });
       }
     };
-
-    // Initial position
-    updatePosition();
-
-    // Update on resize
-    window.addEventListener('resize', updatePosition);
-
-    // Update after a short delay to account for lazy loading
-    const timeout = setTimeout(updatePosition, 500);
-
-    return () => {
-      window.removeEventListener('resize', updatePosition);
-      clearTimeout(timeout);
-    };
+    update();
+    window.addEventListener('resize', update);
+    const t = setTimeout(update, 500);
+    return () => { window.removeEventListener('resize', update); clearTimeout(t); };
   }, [imageEffect.sectionKey]);
 
-  if (!position) {
-    return null;
-  }
+  if (!position) return null;
 
   return (
-    <div
-      ref={containerRef}
-      className="absolute left-0 right-0 w-full pointer-events-none"
-      style={{
-        top: `${position.top}px`,
-        height: imageEffect.minHeight,
-      }}
-    >
-      <SingleImageEffect
-        imageEffect={imageEffect}
-        className={className}
-      />
+    <div className="absolute left-0 right-0 w-full group/effect"
+      style={{ top: `${position.top}px`, height: imageEffect.minHeight, pointerEvents: editMode ? 'auto' : 'none' }}>
+      <SingleImageEffect imageEffect={imageEffect} className={className} />
+
+      {/* Mode édition : surcouche cliquable + bouton "Modifier l'image" en haut-droite */}
+      {editMode && (
+        <>
+          <div className="absolute inset-0 ring-2 ring-blue-500/0 group-hover/effect:ring-blue-500/60 transition-all" style={{ pointerEvents: 'none' }} />
+          <button
+            type="button"
+            data-edit-block={`image-effect:${imageEffect.pageKey}:${imageEffect.sectionKey}`}
+            className="absolute top-3 right-3 bg-white/95 hover:bg-white text-blue-700 border border-blue-300 shadow-lg rounded-lg px-3 py-2 text-xs font-semibold flex items-center gap-1.5 opacity-0 group-hover/effect:opacity-100 transition-opacity"
+            style={{ pointerEvents: 'auto', zIndex: 50 }}
+            title={`Modifier l'image de fond — ${imageEffect.effectType}`}
+          >
+            <ImageIcon className="w-3.5 h-3.5" /> Modifier l'image
+            <span className="ml-1.5 text-[10px] font-mono text-blue-500/80">{imageEffect.sectionKey}</span>
+          </button>
+        </>
+      )}
     </div>
   );
 }
 
-// Composant pour rendre un seul effet (copie de la logique de ImageEffectsRenderer)
 function SingleImageEffect({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
   switch (imageEffect.effectType) {
-    case 'parallax':
-      return <ParallaxEffect imageEffect={imageEffect} className={className} />;
-    case 'zoom':
-      return <ZoomEffect imageEffect={imageEffect} className={className} />;
-    case 'fade':
-      return <FadeEffect imageEffect={imageEffect} className={className} />;
-    case 'fixed':
-      return <FixedEffect imageEffect={imageEffect} className={className} />;
-    case 'slide':
-      return <SlideEffect imageEffect={imageEffect} className={className} />;
+    case 'parallax': return <ParallaxEffect imageEffect={imageEffect} className={className} />;
+    case 'zoom':     return <ZoomEffect imageEffect={imageEffect} className={className} />;
+    case 'fade':     return <FadeEffect imageEffect={imageEffect} className={className} />;
+    case 'fixed':    return <FixedEffect imageEffect={imageEffect} className={className} />;
+    case 'slide':    return <SlideEffect imageEffect={imageEffect} className={className} />;
     case 'none':
-    default:
-      return <SimpleImage imageEffect={imageEffect} className={className} />;
+    default:         return <SimpleImage imageEffect={imageEffect} className={className} />;
   }
 }
 
-// Effet Parallax
 function ParallaxEffect({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
-  const parallaxRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-
+  const ref = useRef<HTMLDivElement>(null); const imgRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const handleScroll = () => {
-      if (!parallaxRef.current || !imageRef.current) return;
-
-      const scrolled = window.scrollY;
-      const elementTop = parallaxRef.current.offsetTop;
-      const elementHeight = parallaxRef.current.offsetHeight;
-      const windowHeight = window.innerHeight;
-
-      const isVisible = scrolled + windowHeight > elementTop && scrolled < elementTop + elementHeight;
-
-      if (isVisible) {
-        const relativeScroll = scrolled - elementTop + windowHeight;
-        const parallaxOffset = relativeScroll * (1 - imageEffect.effectSpeed);
-        imageRef.current.style.transform = `translateY(${parallaxOffset * imageEffect.effectSpeed}px)`;
+    const onScroll = () => {
+      if (!ref.current || !imgRef.current) return;
+      const scrolled = window.scrollY, top = ref.current.offsetTop, h = ref.current.offsetHeight, wh = window.innerHeight;
+      if (scrolled + wh > top && scrolled < top + h) {
+        const rel = scrolled - top + wh, off = rel * (1 - imageEffect.effectSpeed);
+        imgRef.current.style.transform = `translateY(${off * imageEffect.effectSpeed}px)`;
       }
     };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', onScroll); onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
   }, [imageEffect.effectSpeed]);
-
   return (
-    <div
-      ref={parallaxRef}
-      className={`absolute inset-0 overflow-hidden ${className}`}
-    >
-      <div
-        ref={imageRef}
-        className="absolute inset-0 w-full"
-        style={{ height: '120%', top: '-10%' }}
-      >
-        <div className="relative w-full h-full">
-          <Image
-            src={imageEffect.imageUrl}
-            alt={imageEffect.alt || 'Image parallax'}
-            fill
-            className="object-cover"
-            priority
-            sizes="100vw"
-          />
-        </div>
+    <div ref={ref} className={`absolute inset-0 overflow-hidden ${className}`}>
+      <div ref={imgRef} className="absolute inset-0 w-full" style={{ height: '120%', top: '-10%' }}>
+        <div className="relative w-full h-full"><Image src={imageEffect.imageUrl} alt={imageEffect.alt || 'Image parallax'} fill className="object-cover" priority sizes="100vw" /></div>
       </div>
-      {imageEffect.overlayColor && (
-        <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />
-      )}
+      {imageEffect.overlayColor && <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />}
     </div>
   );
 }
 
-// Effet Zoom
 function ZoomEffect({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
-  const zoomRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-
+  const ref = useRef<HTMLDivElement>(null); const imgRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const handleScroll = () => {
-      if (!zoomRef.current || !imageRef.current) return;
-
-      const scrolled = window.scrollY;
-      const elementTop = zoomRef.current.offsetTop;
-      const elementHeight = zoomRef.current.offsetHeight;
-      const windowHeight = window.innerHeight;
-      const isVisible = scrolled + windowHeight > elementTop && scrolled < elementTop + elementHeight;
-
-      if (isVisible) {
-        const relativeScroll = scrolled - elementTop + windowHeight;
-        const progress = Math.min(relativeScroll / (elementHeight + windowHeight), 1);
-        const scale = 1 + (imageEffect.effectScale - 1) * progress;
-        imageRef.current.style.transform = `scale(${scale})`;
+    const onScroll = () => {
+      if (!ref.current || !imgRef.current) return;
+      const scrolled = window.scrollY, top = ref.current.offsetTop, h = ref.current.offsetHeight, wh = window.innerHeight;
+      if (scrolled + wh > top && scrolled < top + h) {
+        const p = Math.min((scrolled - top + wh) / (h + wh), 1);
+        imgRef.current.style.transform = `scale(${1 + (imageEffect.effectScale - 1) * p})`;
       }
     };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', onScroll); onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
   }, [imageEffect.effectScale]);
-
   return (
-    <div
-      ref={zoomRef}
-      className={`absolute inset-0 overflow-hidden ${className}`}
-    >
-      <div ref={imageRef} className="absolute inset-0 w-full h-full transition-transform duration-100">
-        <Image
-          src={imageEffect.imageUrl}
-          alt={imageEffect.alt || 'Image zoom'}
-          fill
-          className="object-cover"
-          priority
-          sizes="100vw"
-        />
+    <div ref={ref} className={`absolute inset-0 overflow-hidden ${className}`}>
+      <div ref={imgRef} className="absolute inset-0 w-full h-full transition-transform duration-100">
+        <Image src={imageEffect.imageUrl} alt={imageEffect.alt || 'Image zoom'} fill className="object-cover" priority sizes="100vw" />
       </div>
-      {imageEffect.overlayColor && (
-        <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />
-      )}
+      {imageEffect.overlayColor && <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />}
     </div>
   );
 }
 
-// Effet Fade
 function FadeEffect({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
-  const fadeRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-
+  const ref = useRef<HTMLDivElement>(null); const imgRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const handleScroll = () => {
-      if (!fadeRef.current || !imageRef.current) return;
-
-      const scrolled = window.scrollY;
-      const elementTop = fadeRef.current.offsetTop;
-      const elementHeight = fadeRef.current.offsetHeight;
-      const windowHeight = window.innerHeight;
-      const isVisible = scrolled + windowHeight > elementTop && scrolled < elementTop + elementHeight;
-
-      if (isVisible) {
-        const relativeScroll = scrolled - elementTop + windowHeight;
-        const progress = Math.min(relativeScroll / (elementHeight + windowHeight), 1);
-        let opacity = 1;
-        if (progress < 0.3) {
-          opacity = progress / 0.3;
-        } else if (progress > 0.7) {
-          opacity = (1 - progress) / 0.3;
-        }
-        imageRef.current.style.opacity = `${opacity}`;
+    const onScroll = () => {
+      if (!ref.current || !imgRef.current) return;
+      const scrolled = window.scrollY, top = ref.current.offsetTop, h = ref.current.offsetHeight, wh = window.innerHeight;
+      if (scrolled + wh > top && scrolled < top + h) {
+        const p = Math.min((scrolled - top + wh) / (h + wh), 1);
+        let opacity = 1; if (p < 0.3) opacity = p / 0.3; else if (p > 0.7) opacity = (1 - p) / 0.3;
+        imgRef.current.style.opacity = `${opacity}`;
       }
     };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', onScroll); onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
   return (
-    <div
-      ref={fadeRef}
-      className={`absolute inset-0 overflow-hidden ${className}`}
-    >
-      <div ref={imageRef} className="absolute inset-0 w-full h-full transition-opacity duration-300">
-        <Image
-          src={imageEffect.imageUrl}
-          alt={imageEffect.alt || 'Image fade'}
-          fill
-          className="object-cover"
-          priority
-          sizes="100vw"
-        />
+    <div ref={ref} className={`absolute inset-0 overflow-hidden ${className}`}>
+      <div ref={imgRef} className="absolute inset-0 w-full h-full transition-opacity duration-300">
+        <Image src={imageEffect.imageUrl} alt={imageEffect.alt || 'Image fade'} fill className="object-cover" priority sizes="100vw" />
       </div>
-      {imageEffect.overlayColor && (
-        <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />
-      )}
+      {imageEffect.overlayColor && <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />}
     </div>
   );
 }
 
-// Effet Fixed
 function FixedEffect({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
   return (
-    <div
-      className={`absolute inset-0 overflow-hidden ${className}`}
-    >
-      <div
-        className="absolute inset-0 w-full h-full"
-        style={{
-          backgroundImage: `url(${imageEffect.imageUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
-        }}
-      />
-      {imageEffect.overlayColor && (
-        <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />
-      )}
+    <div className={`absolute inset-0 overflow-hidden ${className}`}>
+      <div className="absolute inset-0 w-full h-full" style={{ backgroundImage: `url(${imageEffect.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }} />
+      {imageEffect.overlayColor && <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />}
     </div>
   );
 }
 
-// Effet Slide
 function SlideEffect({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
-  const slideRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-
+  const ref = useRef<HTMLDivElement>(null); const imgRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const handleScroll = () => {
-      if (!slideRef.current || !imageRef.current) return;
-
-      const scrolled = window.scrollY;
-      const elementTop = slideRef.current.offsetTop;
-      const elementHeight = slideRef.current.offsetHeight;
-      const windowHeight = window.innerHeight;
-      const isVisible = scrolled + windowHeight > elementTop && scrolled < elementTop + elementHeight;
-
-      if (isVisible) {
-        const relativeScroll = scrolled - elementTop + windowHeight;
-        const progress = relativeScroll / (elementHeight + windowHeight);
-        const translateX = (progress - 0.5) * 100 * imageEffect.effectSpeed;
-        imageRef.current.style.transform = `translateX(${translateX}px)`;
+    const onScroll = () => {
+      if (!ref.current || !imgRef.current) return;
+      const scrolled = window.scrollY, top = ref.current.offsetTop, h = ref.current.offsetHeight, wh = window.innerHeight;
+      if (scrolled + wh > top && scrolled < top + h) {
+        const p = (scrolled - top + wh) / (h + wh);
+        imgRef.current.style.transform = `translateX(${(p - 0.5) * 100 * imageEffect.effectSpeed}px)`;
       }
     };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', onScroll); onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
   }, [imageEffect.effectSpeed]);
-
   return (
-    <div
-      ref={slideRef}
-      className={`absolute inset-0 overflow-hidden ${className}`}
-    >
-      <div ref={imageRef} className="absolute inset-0 w-full h-full transition-transform duration-100">
-        <Image
-          src={imageEffect.imageUrl}
-          alt={imageEffect.alt || 'Image slide'}
-          fill
-          className="object-cover"
-          priority
-          sizes="100vw"
-        />
+    <div ref={ref} className={`absolute inset-0 overflow-hidden ${className}`}>
+      <div ref={imgRef} className="absolute inset-0 w-full h-full transition-transform duration-100">
+        <Image src={imageEffect.imageUrl} alt={imageEffect.alt || 'Image slide'} fill className="object-cover" priority sizes="100vw" />
       </div>
-      {imageEffect.overlayColor && (
-        <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />
-      )}
+      {imageEffect.overlayColor && <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />}
     </div>
   );
 }
 
-// Image simple
 function SimpleImage({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
   return (
-    <div
-      className={`absolute inset-0 overflow-hidden ${className}`}
-    >
-      <div className="relative w-full h-full">
-        <Image
-          src={imageEffect.imageUrl}
-          alt={imageEffect.alt || 'Image'}
-          fill
-          className="object-cover"
-          priority
-          sizes="100vw"
-        />
-      </div>
-      {imageEffect.overlayColor && (
-        <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />
-      )}
+    <div className={`absolute inset-0 overflow-hidden ${className}`}>
+      <div className="relative w-full h-full"><Image src={imageEffect.imageUrl} alt={imageEffect.alt || 'Image'} fill className="object-cover" priority sizes="100vw" /></div>
+      {imageEffect.overlayColor && <div className="absolute inset-0" style={{ backgroundColor: imageEffect.overlayColor }} />}
     </div>
   );
 }
