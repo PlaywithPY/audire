@@ -1,9 +1,7 @@
 'use client';
 
 // src/app/admin/editor/EditorView.tsx
-// Sprint 4 — sync iframe-nav → dropdown :
-//   • Au load de l'iframe, on lit son pathname et on synchronise l'URL d'éditeur si besoin.
-//   • L'iframe peut aussi nous envoyer {type:'editor:navigate', path} (cf. NavLinkInterceptor).
+// Sprint 4.1 — pleine largeur en desktop + bouton "Plein écran" qui cache la sidebar admin.
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
@@ -12,11 +10,12 @@ import BlockInspector, { type SelectedBlock } from '@/components/admin/BlockInsp
 import PublishBar from '@/components/admin/PublishBar';
 import { useEditorHistory, type EditOp } from '@/components/admin/useEditorHistory';
 import { useDrafts, draftsStore } from '@/components/admin/useDrafts';
-import { ChevronDown, Search } from 'lucide-react';
+import { ChevronDown, Search, Maximize2, Minimize2 } from 'lucide-react';
 
 type Page = { slug: string; label: string; path: string };
 
-const DEVICE_WIDTHS: Record<Device, number> = { desktop: 1280, tablet: 820, mobile: 390 };
+// Sprint 4.1 — desktop = 100% (limité uniquement par le viewport).
+const DEVICE_WIDTHS: Record<Device, number | string> = { desktop: '100%', tablet: 820, mobile: 390 };
 
 export default function EditorView({ page, pages }: { page: Page; pages: Page[] }) {
   const router = useRouter();
@@ -24,6 +23,7 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
   const [device, setDevice] = useState<Device>('desktop');
   const [pageMenuOpen, setPageMenuOpen] = useState(false);
   const [pageFilter, setPageFilter] = useState('');
+  const [fullscreen, setFullscreen] = useState(false);
   const [selected, setSelected] = useState<SelectedBlock | null>(null);
   const [iframeReady, setIframeReady] = useState(false);
   const [iframeRect, setIframeRect] = useState({ x: 0, y: 0 });
@@ -37,7 +37,17 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
     if (iframeRef.current) iframeRef.current.src = iframeRef.current.src;
   }
 
-  // Sprint 4 — sync nav iframe → dropdown
+  // Sprint 4.1 — toggle plein écran : on met l'éditeur en position fixed inset:0,
+  // ce qui passe au-dessus de la sidebar admin (peu importe son selector).
+  useEffect(() => {
+    if (fullscreen) {
+      document.documentElement.style.setProperty('overflow', 'hidden');
+      const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setFullscreen(false); };
+      window.addEventListener('keydown', onKey);
+      return () => { document.documentElement.style.removeProperty('overflow'); window.removeEventListener('keydown', onKey); };
+    }
+  }, [fullscreen]);
+
   const syncFromIframe = useCallback((pathname: string) => {
     if (!pathname) return;
     const match = pages.find((p) => p.path === pathname || (p.path !== '/' && pathname.startsWith(p.path)));
@@ -71,17 +81,8 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
     function onMessage(e: MessageEvent) {
       const msg = e.data;
       if (!msg || typeof msg !== 'object') return;
-
-      if (msg.type === 'editor:blocks-changed' || msg.type === 'editor:layout-changed') {
-        refreshIframe(); return;
-      }
-
-      // Sprint 4 — l'iframe peut nous demander de changer d'onglet quand l'utilisateur
-      // clique sur un lien interne. Aucun cross-origin : iframe est same-origin.
-      if (msg.type === 'editor:navigate' && typeof msg.path === 'string') {
-        syncFromIframe(msg.path); return;
-      }
-
+      if (msg.type === 'editor:blocks-changed' || msg.type === 'editor:layout-changed') { refreshIframe(); return; }
+      if (msg.type === 'editor:navigate' && typeof msg.path === 'string') { syncFromIframe(msg.path); return; }
       if (e.source !== iframeRef.current?.contentWindow) return;
       switch (msg.type) {
         case 'editor:ready':
@@ -100,14 +101,12 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
     return () => window.removeEventListener('message', onMessage);
   }, [syncFromIframe]);
 
-  // Sprint 4 — fallback : à chaque load de l'iframe, on regarde sa location (same-origin).
   function onIframeLoad() {
     try {
       const w = iframeRef.current?.contentWindow;
       if (!w) return;
-      const path = w.location.pathname;
-      syncFromIframe(path);
-    } catch { /* cross-origin (peu probable ici) */ }
+      syncFromIframe(w.location.pathname);
+    } catch {}
   }
 
   useEffect(() => {
@@ -119,11 +118,8 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
     update();
     window.addEventListener('resize', update);
     window.addEventListener('scroll', update, true);
-    return () => {
-      window.removeEventListener('resize', update);
-      window.removeEventListener('scroll', update, true);
-    };
-  }, [device, iframeReady]);
+    return () => { window.removeEventListener('resize', update); window.removeEventListener('scroll', update, true); };
+  }, [device, iframeReady, fullscreen]);
 
   function applyTextToIframe(blockKey: string, text: string) {
     iframeRef.current?.contentWindow?.postMessage({ type: 'editor:apply-text', blockKey, text }, '*');
@@ -155,10 +151,7 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
     const onRedo = (e: Event) => applyOpRedo((e as CustomEvent<EditOp>).detail);
     window.addEventListener('editor:apply-undo', onUndo);
     window.addEventListener('editor:apply-redo', onRedo);
-    return () => {
-      window.removeEventListener('editor:apply-undo', onUndo);
-      window.removeEventListener('editor:apply-redo', onRedo);
-    };
+    return () => { window.removeEventListener('editor:apply-undo', onUndo); window.removeEventListener('editor:apply-redo', onRedo); };
   }, []);
 
   function changePage(slug: string) {
@@ -177,19 +170,21 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
     refreshIframe();
   }
 
-  function handleDiscard() {
-    d.clear(); history.clear(); refreshIframe();
-  }
+  function handleDiscard() { d.clear(); history.clear(); refreshIframe(); }
 
-  // Sprint 4 — filtrage live de la liste de pages
   const filteredPages = pageFilter
     ? pages.filter((p) =>
         p.label.toLowerCase().includes(pageFilter.toLowerCase()) ||
         p.path.toLowerCase().includes(pageFilter.toLowerCase()))
     : pages;
 
+  // Conteneur racine — fixed inset:0 quand fullscreen, sinon flex column normal.
+  const rootCls = fullscreen
+    ? 'fixed inset-0 bg-white z-[9999] flex flex-col'
+    : 'flex flex-col h-screen';
+
   return (
-    <div className="flex flex-col h-screen">
+    <div className={rootCls}>
       <AdminTopbar
         crumbs={[{ label: 'Site web' }, { label: 'Éditeur' }]}
         device={device} onDeviceChange={setDevice}
@@ -199,6 +194,14 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
         rightExtra={
           <div className="flex items-center gap-2">
             <PublishBar pendingCount={d.count} onPublish={handlePublish} onDiscard={handleDiscard} />
+
+            {/* Sprint 4.1 — toggle plein écran */}
+            <button type="button" onClick={() => setFullscreen((v) => !v)}
+              title={fullscreen ? 'Quitter le plein écran (Échap)' : 'Plein écran — masque la sidebar admin'}
+              className="h-7 w-7 grid place-items-center rounded-md border border-gray-200 hover:bg-gray-50 text-gray-600">
+              {fullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+            </button>
+
             <div className="relative">
               <button type="button" onClick={() => setPageMenuOpen((v) => !v)}
                 className="h-7 px-2.5 rounded-md border border-gray-200 hover:bg-gray-50 text-[13px] font-medium flex items-center gap-1.5 max-w-[200px]">
@@ -238,15 +241,19 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
         onPreview={() => window.open(page.path, '_blank')}
       />
 
-      <div className="flex-1 overflow-auto bg-gray-100 p-6">
+      <div className="flex-1 overflow-auto bg-gray-100 p-4">
+        {/* Sprint 4.1 — desktop = max-w-none, autres devices = device width */}
         <div className="mx-auto bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden transition-all duration-300"
-             style={{ maxWidth: DEVICE_WIDTHS[device] }}>
+             style={{
+               width: device === 'desktop' ? '100%' : DEVICE_WIDTHS[device],
+               maxWidth: '100%',
+             }}>
           {!iframeReady && <div className="aspect-[16/10] grid place-items-center text-sm text-gray-500">Chargement de la page…</div>}
           <iframe
             ref={iframeRef} key={page.slug} src={`${page.path}?edit=1`}
             onLoad={onIframeLoad}
             className={`w-full bg-white ${iframeReady ? 'block' : 'hidden'}`}
-            style={{ height: 'calc(100vh - 120px)', border: 0 }}
+            style={{ height: 'calc(100vh - 100px)', border: 0 }}
             title={`Aperçu : ${page.label}`}
           />
         </div>
