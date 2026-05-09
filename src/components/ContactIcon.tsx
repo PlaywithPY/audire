@@ -65,6 +65,18 @@ export default function ContactIcon({ settingKey, fallback = '', size = 28, clas
     const Comp = (Icons as any)[toLucideName(value)] as React.ComponentType<{ size?: number; className?: string }> | undefined;
     if (Comp) return <Comp size={size} className={className} />;
   }
+  // Si la valeur ressemble à une URL d'image → render <img>
+  const isImage = /^(https?:\/\/|\/)/.test(value) || /\.(png|jpg|jpeg|svg|gif|webp)$/i.test(value);
+  if (isImage) {
+    return (
+      <img
+        src={value}
+        alt=""
+        style={{ width: size, height: size, objectFit: 'contain' }}
+        className={className}
+      />
+    );
+  }
   // Sinon → emoji ou texte
   return <span className={className}>{value}</span>;
 }
