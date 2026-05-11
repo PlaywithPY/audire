@@ -1,8 +1,8 @@
 'use client';
 
 // src/components/admin/BlockInspector.tsx
-// Sprint 3.1 — heuristique RichEditor étendue : -desc, -sub, -subtitle, -paragraph,
-// -quote, -citation, -message, -bio, -story + fallback "contient du HTML ou >120 chars"
+// Sprint 5 — ajout du mode "image-effect:<pageKey>:<sectionKey>" qui ouvre
+// l'inspecteur dédié aux images de fond (parallax/zoom/etc).
 
 import { useEffect, useRef, useState } from 'react';
 import { X, Type, HelpCircle, FolderOpen, Image as ImageIcon, Layout, Boxes } from 'lucide-react';
@@ -10,6 +10,7 @@ import MediaPicker from '@/components/MediaPicker';
 import LayoutPanel from './LayoutPanel';
 import RichTextEditor from './RichTextEditor';
 import DynamicBlockInspector from './DynamicBlockInspector';
+import ImageEffectInspector from './ImageEffectInspector';
 
 export type SelectedBlock = {
   blockKey: string;
@@ -36,9 +37,14 @@ type Mode =
   | { kind: 'faq-item'; id: string; field: 'question' | 'answer' }
   | { kind: 'faq-category'; id: string; field: 'name' | 'description' | 'imageUrl' }
   | { kind: 'dynamic'; id: number; field: string }
+  | { kind: 'image-effect'; pageKey: string; sectionKey: string }
   | { kind: 'unknown' };
 
 function parseBlockKey(blockKey: string): Mode {
+  if (blockKey.startsWith('image-effect:')) {
+    const [, pageKey, sectionKey] = blockKey.split(':');
+    if (pageKey && sectionKey) return { kind: 'image-effect', pageKey, sectionKey };
+  }
   if (blockKey.startsWith('dynamic:')) {
     const [, idStr, field = 'content'] = blockKey.split(':');
     const id = Number(idStr);
@@ -62,18 +68,14 @@ function parseBlockKey(blockKey: string): Mode {
 }
 
 const ICON: Record<Mode['kind'], React.ComponentType<{ className?: string }>> = {
-  'page-text': Type, 'faq-item': HelpCircle, 'faq-category': FolderOpen, 'dynamic': Boxes, 'unknown': Type,
+  'page-text': Type, 'faq-item': HelpCircle, 'faq-category': FolderOpen,
+  'dynamic': Boxes, 'image-effect': ImageIcon, 'unknown': Type,
 };
 const LABEL: Record<Mode['kind'], string> = {
   'page-text': 'Texte de page', 'faq-item': 'Question FAQ', 'faq-category': 'Catégorie FAQ',
-  'dynamic': 'Bloc dynamique', 'unknown': 'Bloc',
+  'dynamic': 'Bloc dynamique', 'image-effect': 'Image de fond', 'unknown': 'Bloc',
 };
 
-// Sprint 3.1 — heuristique élargie. Active l'éditeur riche pour :
-// - les suffixes "longs" courants (-body, -content, -text, -desc, -description,
-//   -intro, -conclusion, -sub, -subtitle, -paragraph, -quote, -citation, -message, -bio, -story)
-// - OU si le texte contient une balise HTML (<p>, <strong>, <a>...) → preserve le formatage
-// - OU si le texte fait > 120 caractères (probablement du paragraphe libre)
 function shouldUseRichEditor(textKey: string, currentText: string): boolean {
   if (/-(body|content|text|desc|description|intro|conclusion|sub|subtitle|paragraph|quote|citation|message|bio|story)$/i.test(textKey)) return true;
   if (/<\/?(p|strong|em|b|i|u|a|ul|ol|li|h[1-6]|br)\b/i.test(currentText)) return true;
@@ -156,7 +158,9 @@ export default function BlockInspector({
           </div>
         )}
 
-        {tab === 'layout' && canEditLayout ? (
+        {mode.kind === 'image-effect' ? (
+          <ImageEffectInspector pageKey={mode.pageKey} sectionKey={mode.sectionKey} onChanged={onLayoutChanged} />
+        ) : tab === 'layout' && canEditLayout ? (
           <LayoutPanel blockKey={selected.blockKey} onChanged={onLayoutChanged} />
         ) : mode.kind === 'dynamic' ? (
           <DynamicBlockInspector blockId={mode.id} onChanged={onLayoutChanged} onDeleted={onClose} />
