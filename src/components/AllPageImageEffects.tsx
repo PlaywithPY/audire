@@ -1,15 +1,14 @@
 'use client';
 
-// Sprint 5.1 — fix : la couche d'édition était sous le contenu de la page (zIndex 0).
-// On sépare maintenant en DEUX couches :
-//   1. Couche visuelle  → fixed inset-0, zIndex 0, pointer-events:none (INCHANGÉ)
-//   2. Couche "poignées d'édition" → fixed inset-0, zIndex 40, pointer-events:none
-//      avec le bouton "📷 Modifier" en pointer-events:auto.
-// Hors édition, la couche 2 n'est pas rendue → comportement strictement identique.
+// src/components/AllPageImageEffects.tsx — Sprint 5.7
+// Fixes :
+//  1. Le parent passe de `fixed inset-0` → `absolute top-0 left-0 right-0` :
+//     les images plein écran scrollent avec la page (avant : pinned au viewport).
+//  2. Ajout d'un bouton "🗑 Supprimer" en mode édition, à côté de "📷 Modifier".
 
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-import { ImageIcon } from 'lucide-react';
+import { ImageIcon, Trash2 } from 'lucide-react';
 
 type ImageEffect = {
   id: number;
@@ -57,35 +56,44 @@ export default function AllPageImageEffects({ pageKey, className = '' }: Props) 
     finally { setLoading(false); }
   }
 
+  async function onDeleteEffect(id: number) {
+    if (!confirm('Supprimer définitivement cette image plein écran ?')) return;
+    const res = await fetch(`/api/image-effects?id=${id}`, { method: 'DELETE' });
+    if (!res.ok) { alert('Suppression échouée'); return; }
+    fetchAllEffects();
+    try { window.parent?.postMessage({ type: 'editor:image-effects-changed' }, '*'); } catch {}
+  }
+
   if (loading || effects.length === 0) return null;
 
+  // Sprint 5.7 : `position: absolute` (et plus `fixed`) → l'overlay scrolle avec la page.
+  // top-0 left-0 right-0 + pointer-events-none par défaut.
   return (
-    <>
-      {/* COUCHE 1 — visuelle, comportement strictement identique à avant */}
-      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
-        {effects.map((effect) => (
-          <PositionedImageEffect key={effect.id} imageEffect={effect} className={className} />
-        ))}
-      </div>
-
-      {/* COUCHE 2 — poignées d'édition au-dessus de tout, uniquement en mode édition */}
-      {editMode && (
-        <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 40 }}>
-          {effects.map((effect) => (
-            <PositionedEditHandle key={`handle-${effect.id}`} imageEffect={effect} />
-          ))}
-        </div>
-      )}
-    </>
+    <div
+      className="absolute left-0 right-0 top-0"
+      style={{ zIndex: 0, pointerEvents: 'none' }}
+    >
+      {effects.map((effect) => (
+        <PositionedImageEffect
+          key={effect.id}
+          imageEffect={effect}
+          className={className}
+          editMode={editMode}
+          onDelete={() => onDeleteEffect(effect.id)}
+        />
+      ))}
+    </div>
   );
 }
 
-// Hook commun : calcule la position top de la section associée à l'effet
-function useSectionTop(sectionKey: string) {
+function PositionedImageEffect({ imageEffect, className, editMode, onDelete }: {
+  imageEffect: ImageEffect; className: string; editMode: boolean; onDelete: () => void;
+}) {
   const [position, setPosition] = useState<{ top: number } | null>(null);
+
   useEffect(() => {
     const update = () => {
-      const section = document.querySelector(`[data-section="${sectionKey}"]`) as HTMLElement;
+      const section = document.querySelector(`[data-section="${imageEffect.sectionKey}"]`) as HTMLElement;
       if (section) {
         const rect = section.getBoundingClientRect();
         setPosition({ top: rect.top + (window.scrollY || window.pageYOffset) });
@@ -95,71 +103,52 @@ function useSectionTop(sectionKey: string) {
     window.addEventListener('resize', update);
     const t = setTimeout(update, 500);
     return () => { window.removeEventListener('resize', update); clearTimeout(t); };
-  }, [sectionKey]);
-  return position;
-}
+  }, [imageEffect.sectionKey]);
 
-// Couche 1 — rendu visuel, inchangé
-function PositionedImageEffect({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
-  const position = useSectionTop(imageEffect.sectionKey);
   if (!position) return null;
+
   return (
-    <div className="absolute left-0 right-0 w-full pointer-events-none"
-      style={{ top: `${position.top}px`, height: imageEffect.minHeight }}>
+    <div className="absolute left-0 right-0 w-full group/effect"
+      style={{ top: `${position.top}px`, height: imageEffect.minHeight, pointerEvents: editMode ? 'auto' : 'none' }}>
       <SingleImageEffect imageEffect={imageEffect} className={className} />
-    </div>
-  );
-}
 
-// Couche 2 — poignée d'édition (bouton flottant + ring de focus au survol)
-function PositionedEditHandle({ imageEffect }: { imageEffect: ImageEffect }) {
-  const position = useSectionTop(imageEffect.sectionKey);
-  const [hover, setHover] = useState(false);
-  if (!position) return null;
-  return (
-    <div
-      className="absolute left-0 right-0 w-full"
-      style={{
-        top: `${position.top}px`,
-        height: imageEffect.minHeight,
-        pointerEvents: 'none', // tout est non-cliquable…
-      }}
-    >
-      {/* Zone de hover transparente — pointer-events:auto seulement quand on
-          n'est pas en train de cliquer du contenu (le bouton lui-même reste cliquable).
-          On utilise un overlay qui détecte l'entrée souris MAIS laisse passer les clics. */}
-      <div
-        className="absolute inset-0"
-        style={{ pointerEvents: 'none' }}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-      />
-      {/* Ring de focus quand le bouton est survolé */}
-      <div
-        className="absolute inset-0 transition-all duration-150"
-        style={{
-          pointerEvents: 'none',
-          boxShadow: hover ? 'inset 0 0 0 3px rgba(59,130,246,0.7)' : 'inset 0 0 0 0 transparent',
-        }}
-      />
-      {/* Le bouton — pointer-events:auto, unique élément cliquable */}
-      <button
-        type="button"
-        data-edit-block={`image-effect:${imageEffect.pageKey}:${imageEffect.sectionKey}`}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        className="absolute top-3 right-3 bg-white/95 hover:bg-white text-blue-700 border border-blue-300 shadow-lg rounded-lg px-3 py-2 text-xs font-semibold flex items-center gap-1.5"
-        style={{ pointerEvents: 'auto' }}
-        title={`Modifier l'image de fond — ${imageEffect.effectType}`}
-      >
-        <ImageIcon className="w-3.5 h-3.5" /> Modifier l'image
-        <span className="ml-1.5 text-[10px] font-mono text-blue-500/80">{imageEffect.sectionKey}</span>
-      </button>
+      {editMode && (
+        <>
+          <div className="absolute inset-0 ring-2 ring-blue-500/0 group-hover/effect:ring-blue-500/60 transition-all" style={{ pointerEvents: 'none' }} />
+          <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover/effect:opacity-100 transition-opacity" style={{ pointerEvents: 'auto', zIndex: 50 }}>
+            <button
+              type="button"
+              data-edit-block={`image-effect:${imageEffect.pageKey}:${imageEffect.sectionKey}`}
+              className="bg-white/95 hover:bg-white text-blue-700 border border-blue-300 shadow-lg rounded-lg px-3 py-2 text-xs font-semibold flex items-center gap-1.5"
+              title={`Modifier l'image de fond — ${imageEffect.effectType}`}
+            >
+              <ImageIcon className="w-3.5 h-3.5" /> Modifier l'image
+              <span className="ml-1.5 text-[10px] font-mono text-blue-500/80">{imageEffect.sectionKey}</span>
+            </button>
+            <button
+              type="button"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete(); }}
+              className="bg-white/95 hover:bg-red-50 text-red-600 border border-red-300 shadow-lg rounded-lg w-9 h-9 grid place-items-center"
+              title="Supprimer cette image plein écran"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
 
 function SingleImageEffect({ imageEffect, className }: { imageEffect: ImageEffect; className: string }) {
+  // Empty URL → placeholder visible only en édition
+  if (!imageEffect.imageUrl) {
+    return (
+      <div className={`absolute inset-0 grid place-items-center bg-blue-50/60 border-2 border-dashed border-blue-300 ${className}`}>
+        <div className="text-blue-600 text-sm font-medium">Aucune image — clique sur "Modifier l'image" pour en charger une</div>
+      </div>
+    );
+  }
   switch (imageEffect.effectType) {
     case 'parallax': return <ParallaxEffect imageEffect={imageEffect} className={className} />;
     case 'zoom':     return <ZoomEffect imageEffect={imageEffect} className={className} />;
