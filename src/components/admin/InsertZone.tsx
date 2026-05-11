@@ -1,10 +1,9 @@
 'use client';
 
-// src/components/admin/InsertZone.tsx — Sprint 5.5
-// Gère deux types d'insertion :
-//   1) Bloc dynamique classique → POST /api/blocks (comportement initial)
-//   2) Image plein écran → POST /api/image-effects (nouveau)
-//      Le sectionKey est généré automatiquement à partir du slot + d'un suffixe unique.
+// src/components/admin/InsertZone.tsx — Sprint 5.6
+// Le sectionKey d'un image-effect créé inline utilise la MÊME formule que
+// DynamicBlockSlot (slot-<pageKey>-<slot>) → l'effet s'attache automatiquement
+// au wrapper rendu par le slot, sans manip manuelle.
 
 import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
@@ -17,6 +16,11 @@ type Props = {
   onInserted?: () => void;
   alwaysVisible?: boolean;
 };
+
+/** Formule canonique partagée avec DynamicBlockSlot */
+function slotSectionKey(pageKey: string, slot: string) {
+  return `slot-${pageKey}-${slot}`;
+}
 
 export default function InsertZone({ pageKey, slot, afterOrder = null, onInserted, alwaysVisible }: Props) {
   const [editMode, setEditMode] = useState(false);
@@ -34,17 +38,12 @@ export default function InsertZone({ pageKey, slot, afterOrder = null, onInserte
     setBusy(true);
     try {
       if (opt.kind === 'image-effect') {
-        // Sprint 5.5 — création d'un image-effect.
-        // Le sectionKey doit correspondre à une <section data-section="…"> de la page.
-        // On crée donc un sectionKey "synthétique" basé sur le slot (qui sera matched par
-        // un wrapper auto-injecté autour du DynamicBlockSlot, voir DynamicBlockSlot.tsx).
-        const sectionKey = `slot-${slot}-${Date.now().toString(36)}`;
+        const sectionKey = slotSectionKey(pageKey, slot);
         const res = await fetch('/api/image-effects', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            pageKey,
-            sectionKey,
+            pageKey, sectionKey,
             effectType: 'parallax',
             minHeight: '500px',
             isVisible: true,
@@ -59,7 +58,6 @@ export default function InsertZone({ pageKey, slot, afterOrder = null, onInserte
         return;
       }
 
-      // Bloc classique
       const meta = { ...(opt.defaultMetadata || {}), slot };
       const res = await fetch('/api/blocks', {
         method: 'POST',
