@@ -1,9 +1,10 @@
 'use client';
 
-// src/components/DynamicBlockSlot.tsx
-// Sprint 3 — la pastille ✏️ disparaît : on clique directement sur le bloc pour
-// ouvrir l'inspecteur (qui sait maintenant gérer dynamic:<id>:content).
-// Le bloc "text" et "html" rendent désormais le HTML pour préserver le formatage.
+// src/components/DynamicBlockSlot.tsx — Sprint 5.6
+// Le slot rend désormais TOUJOURS un <section data-section="slot-<pageKey>-<slot>">
+// (au lieu de retourner null quand il est vide). Ça permet à AllPageImageEffects
+// de positionner son image plein écran sur n'importe quel slot, exactement comme
+// pour les sections "hardcodées" de la home.
 
 import { useEffect, useState, useCallback } from 'react';
 import { Trash2 } from 'lucide-react';
@@ -17,6 +18,11 @@ type Props = { pageKey: string; slot: string; className?: string };
 
 function parseMeta(m: string | null): Record<string, any> {
   if (!m) return {}; try { return JSON.parse(m); } catch { return {}; }
+}
+
+/** Formule canonique partagée avec InsertZone */
+export function slotSectionKey(pageKey: string, slot: string) {
+  return `slot-${pageKey}-${slot}`;
 }
 
 export default function DynamicBlockSlot({ pageKey, slot, className = '' }: Props) {
@@ -44,14 +50,24 @@ export default function DynamicBlockSlot({ pageKey, slot, className = '' }: Prop
     return () => window.removeEventListener('message', onMsg);
   }, [load]);
 
-  if (blocks.length === 0) return null;
+  // Sprint 5.6 : on rend toujours la <section> wrapper (même vide) pour permettre
+  // l'ancrage des image-effects. data-section reprend la formule canonique.
+  const sectionKey = slotSectionKey(pageKey, slot);
+  const hasContent = blocks.length > 0;
 
   return (
-    <div className={`dynamic-block-slot ${className}`} data-slot={slot}>
+    <section
+      data-section={sectionKey}
+      data-slot={slot}
+      className={`dynamic-block-slot ${className}`}
+      // En mode édition, on garde une min-height pour que le slot vide soit visible
+      // et attrape les image-effects associés. Hors édition, no-op si vide.
+      style={!hasContent && editMode ? { minHeight: '120px' } : undefined}
+    >
       {blocks.map((b) => (
         <BlockShell key={b.id} block={b} editMode={editMode} onChanged={load} />
       ))}
-    </div>
+    </section>
   );
 }
 
@@ -88,7 +104,6 @@ function BlockBody({ type, content, meta }: { type: string; content: string; met
     case 'title':
       return <h2 className="text-3xl md:text-4xl font-bold text-center my-6 text-gray-900">{content}</h2>;
     case 'text':
-      // Sprint 3 — rendu HTML pour préserver le formatage de TipTap
       return (
         <div
           className="prose prose-lg max-w-3xl mx-auto px-4 my-4 text-gray-700"
