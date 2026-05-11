@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAdmin } from '@/lib/auth-helpers';
+import { requireAuth } from '@/lib/auth-helpers';
+
+async function guard() {
+  const { error } = await requireAuth();
+  return error;
+}
 
 // Sprint 5.5 — extension : PATCH (édition inline) + POST (création depuis InsertZone) + DELETE.
 // GET reste public (lecture côté frontend).
@@ -22,7 +27,7 @@ export async function GET(request: NextRequest) {
 
 // PATCH /api/image-effects  body: { id, ...partial }
 export async function PATCH(request: NextRequest) {
-  const guard = await requireAdmin(); if (guard) return guard;
+  const g = await guard(); if (g) return g;
   try {
     const body = await request.json();
     const { id, ...patch } = body || {};
@@ -40,7 +45,7 @@ export async function PATCH(request: NextRequest) {
 
 // POST /api/image-effects  body: { pageKey, sectionKey, imageUrl?, effectType?, ... }
 export async function POST(request: NextRequest) {
-  const guard = await requireAdmin(); if (guard) return guard;
+  const g = await guard(); if (g) return g;
   try {
     const body = await request.json();
     const { pageKey, sectionKey } = body || {};
@@ -72,7 +77,7 @@ export async function POST(request: NextRequest) {
 
 // DELETE /api/image-effects?id=12
 export async function DELETE(request: NextRequest) {
-  const guard = await requireAdmin(); if (guard) return guard;
+  const g = await guard(); if (g) return g;
   try {
     const id = request.nextUrl.searchParams.get('id');
     if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
