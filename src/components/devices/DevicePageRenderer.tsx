@@ -1,14 +1,13 @@
 'use client';
 
 // =====================================================
-// DevicePageRenderer — rendu unifié de la fiche appareil
+// DevicePageRenderer (v2.1) — rendu unifié de la fiche appareil
 // =====================================================
-// Utilisé par :
-//   - src/app/appareils/[slug]/page.tsx          (rendu public)
-//   - src/app/admin/appareils-v2/[slug]/page.tsx (preview admin)
-//
-// Style "Zeal" : Inter + Playfair, gradient bleu sur le hero, sections
-// alternées, encadrés highlight, FAQ accordéon, CTA finale.
+// v2.1 :
+//   - Affiche les ProductContentBlock insérés à la bonne place
+//     (après chaque bloc fixe, selon afterBlockId)
+//   - Applique le focal point (imagePositions) aux médias
+//   - 3 types de blocs insérables : text-media, gallery, highlight
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -17,6 +16,13 @@ import {
   BlockId,
   BlockVisibility,
   shouldRenderBlock,
+  ProductContentBlockData,
+  parseMetadata,
+  GalleryMetadata,
+  HighlightMetadata,
+  parseImagePositions,
+  getFocal,
+  focalToObjectPosition,
 } from '@/lib/deviceBlocks';
 
 // ============================================
@@ -32,18 +38,14 @@ export interface HearingAidData {
   shortDesc: string | null;
   price: string | null;
   mainImage: string | null;
-  gallery: string | null; // JSON array of URLs
+  gallery: string | null;
 
-  // Hero
   heroGradientFrom: string | null;
   heroGradientTo: string | null;
   heroImage: string | null;
   heroDescription: string | null;
 
-  // Avantages (5 promesses)
-  advantages: string | null; // JSON [{title,description,icon}]
-
-  // Sections
+  advantages: string | null;
   section1Title: string | null;
   section1Description: string | null;
   section1MediaUrl: string | null;
@@ -58,38 +60,31 @@ export interface HearingAidData {
   section4Description: string | null;
   section4MediaUrl: string | null;
   section4MediaType: string | null;
-
-  // Highlights
   highlightBox1Title: string | null;
   highlightBox1Description: string | null;
   highlightBox1Image: string | null;
   highlightBox2Title: string | null;
-  highlightBox2Images: string | null; // JSON array of URLs
+  highlightBox2Images: string | null;
+  productFAQs: string | null;
 
-  // FAQ
-  productFAQs: string | null; // JSON [{question,answer}]
-
-  // Visibilité par bloc (nouveau)
   blockVisibility: string | null;
+  imagePositions: string | null;
+  contentBlocks?: ProductContentBlockData[];
 }
 
 export interface Advantage { title: string; description: string; icon: string; }
 export interface FAQ { question: string; answer: string; }
-export interface Accessory { name: string; imageUrl?: string; }
 
 export interface DevicePageRendererProps {
   product: HearingAidData;
   visibility: BlockVisibility;
-  /** Force tous les blocs à s'afficher (preview admin) */
   previewAll?: boolean;
-  /** ID du bloc actuellement sélectionné — encadré bleu */
-  selectedBlock?: BlockId | null;
-  /** Callback quand l'utilisateur clique sur un bloc (mode admin) */
-  onBlockSelect?: (id: BlockId) => void;
+  selectedBlock?: BlockId | string | null;
+  onBlockSelect?: (id: BlockId | string) => void;
 }
 
 // ============================================
-// Helpers d'extraction des données JSON
+// Helpers
 // ============================================
 function safeParse<T>(raw: string | null | undefined, fallback: T): T {
   if (!raw) return fallback;
@@ -97,7 +92,7 @@ function safeParse<T>(raw: string | null | undefined, fallback: T): T {
 }
 
 // ============================================
-// Composant principal
+// Component
 // ============================================
 export default function DevicePageRenderer({
   product,
@@ -110,20 +105,25 @@ export default function DevicePageRenderer({
   const faqs = safeParse<FAQ[]>(product.productFAQs, []);
   const highlight2Images = safeParse<string[]>(product.highlightBox2Images, []);
   const gallery = safeParse<string[]>(product.gallery, []);
+  const imagePositions = parseImagePositions(product.imagePositions);
+  const contentBlocks = product.contentBlocks || [];
 
-  const handleClick = (id: BlockId) => {
+  const heroFrom = product.heroGradientFrom || '#42a4ff';
+  const heroTo   = product.heroGradientTo   || '#2d87e6';
+
+  const onClickBlock = (id: BlockId | string) => {
     if (onBlockSelect) onBlockSelect(id);
   };
 
-  // Wrapper helper : applique visibilité, data-block, sélection
-  const Block = ({ id, children }: { id: BlockId; children: React.ReactNode }) => {
+  // Wrapper helper — pour les blocs FIXES
+  const FixedBlock = ({ id, children }: { id: BlockId; children: React.ReactNode }) => {
     if (!shouldRenderBlock(id, visibility, { previewAll })) return null;
     const hidden = visibility[id] === false;
     const selected = selectedBlock === id;
     return (
       <section
         data-block={id}
-        onClick={onBlockSelect ? (e) => { e.stopPropagation(); handleClick(id); } : undefined}
+        onClick={onBlockSelect ? (e) => { e.stopPropagation(); onClickBlock(id); } : undefined}
         className={[
           'relative transition-all',
           onBlockSelect ? 'cursor-pointer' : '',
@@ -141,24 +141,69 @@ export default function DevicePageRenderer({
     );
   };
 
-  const heroFrom = product.heroGradientFrom || '#42a4ff';
-  const heroTo   = product.heroGradientTo   || '#2d87e6';
+  // Wrapper pour les blocs INSÉRÉS
+  const InsertedBlock = ({ block, children }: { block: ProductContentBlockData; children: React.ReactNode }) => {
+    if (!previewAll && !block.isVisible) return null;
+    const selectedKey = `content:${block.id}`;
+    const selected = selectedBlock === selectedKey;
+    return (
+      <section
+        data-block={selectedKey}
+        data-content-block-id={block.id}
+        onClick={onBlockSelect ? (e) => { e.stopPropagation(); onClickBlock(selectedKey); } : undefined}
+        className={[
+          'relative transition-all',
+          onBlockSelect ? 'cursor-pointer' : '',
+          !block.isVisible && previewAll ? 'opacity-40 grayscale' : '',
+          selected ? 'ring-2 ring-emerald-500 ring-offset-2 ring-offset-white' : '',
+        ].join(' ')}
+      >
+        {previewAll && (
+          <div className="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[10px] font-mono uppercase tracking-wider shadow-lg">
+            Bloc inséré · {block.blockType}
+          </div>
+        )}
+        {children}
+      </section>
+    );
+  };
+
+  // Pour chaque bloc fixe, on récupère les blocs insérés qui s'affichent juste après
+  function blocksAfter(fixedId: BlockId): ProductContentBlockData[] {
+    return contentBlocks
+      .filter((b) => b.afterBlockId === fixedId)
+      .sort((a, b) => a.order - b.order);
+  }
+  // Blocs orphelins (afterBlockId null ou inconnu) → en queue avant le footer
+  function orphanBlocks(): ProductContentBlockData[] {
+    return contentBlocks
+      .filter((b) => !b.afterBlockId || !BLOCKS.some((x) => x.id === b.afterBlockId))
+      .sort((a, b) => a.order - b.order);
+  }
+
+  // Rend un ProductContentBlock selon son blockType
+  const renderInserted = (b: ProductContentBlockData) => (
+    <InsertedBlock key={b.id} block={b}>
+      <ContentBlockRenderer block={b} />
+    </InsertedBlock>
+  );
 
   return (
     <div className="device-page bg-white text-gray-900" style={{ fontFamily: 'var(--font-body, Inter, system-ui, sans-serif)' }}>
 
-      {/* =========== TOP BANNER =========== */}
-      <Block id="topbanner">
+      {/* TOP BANNER */}
+      <FixedBlock id="topbanner">
         <div className="bg-primary-dark text-white text-xs sm:text-sm">
           <div className="max-w-6xl mx-auto px-6 py-2 flex flex-wrap items-center justify-between gap-2">
             <span>📞 042 75 06 66 — Centre Audire, Jemeppe-sur-Meuse</span>
             <span className="hidden md:inline">Test auditif gratuit · Essai 30 jours sans engagement</span>
           </div>
         </div>
-      </Block>
+      </FixedBlock>
+      {blocksAfter('topbanner').map(renderInserted)}
 
-      {/* =========== HEADER =========== */}
-      <Block id="header">
+      {/* HEADER */}
+      <FixedBlock id="header">
         <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-[var(--border,#C4DDF8)] shadow-sm">
           <div className="max-w-6xl mx-auto px-6 min-h-[72px] flex items-center gap-6">
             <Link href="/" className="text-[26px] font-bold text-primary-dark tracking-tight" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
@@ -179,10 +224,11 @@ export default function DevicePageRenderer({
             </div>
           </div>
         </header>
-      </Block>
+      </FixedBlock>
+      {/* (pas d'insertion après header — chrome) */}
 
-      {/* =========== BREADCRUMB =========== */}
-      <Block id="crumbs">
+      {/* CRUMBS */}
+      <FixedBlock id="crumbs">
         <div className="bg-[var(--bg-alt,#F0F7FF)] border-b border-[var(--border,#C4DDF8)]">
           <div className="max-w-6xl mx-auto px-6 py-3">
             <nav className="flex items-center gap-2 text-sm text-gray-500">
@@ -194,16 +240,21 @@ export default function DevicePageRenderer({
             </nav>
           </div>
         </div>
-      </Block>
+      </FixedBlock>
 
-      {/* =========== HERO =========== */}
-      <Block id="hero">
+      {/* HERO */}
+      <FixedBlock id="hero">
         <div className="relative overflow-hidden text-white" style={{
           background: `radial-gradient(900px 500px at 85% 20%, rgba(255,255,255,.18), transparent 60%), linear-gradient(120deg, #16243a 0%, ${heroTo} 60%, ${heroFrom} 100%)`,
         }}>
           {product.heroImage && (
             <div className="absolute inset-y-0 right-0 w-1/2 hidden md:block opacity-70">
-              <img src={product.heroImage} alt={product.name} className="w-full h-full object-cover" style={{ objectPosition: 'right center' }} />
+              <img
+                src={product.heroImage}
+                alt={product.name}
+                className="w-full h-full object-cover"
+                style={{ objectPosition: focalToObjectPosition(getFocal(imagePositions, 'heroImage')) }}
+              />
             </div>
           )}
           <div className="relative max-w-6xl mx-auto px-6 py-16 md:py-24">
@@ -242,10 +293,11 @@ export default function DevicePageRenderer({
             </div>
           </div>
         </div>
-      </Block>
+      </FixedBlock>
+      {blocksAfter('hero').map(renderInserted)}
 
-      {/* =========== PROMISES =========== */}
-      <Block id="promises">
+      {/* PROMISES */}
+      <FixedBlock id="promises">
         <div className="py-14 bg-white">
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center max-w-2xl mx-auto mb-10">
@@ -275,10 +327,11 @@ export default function DevicePageRenderer({
             )}
           </div>
         </div>
-      </Block>
+      </FixedBlock>
+      {blocksAfter('promises').map(renderInserted)}
 
-      {/* =========== SECTION 1 — Texte + Média =========== */}
-      <Block id="section-1">
+      {/* SECTION 1 */}
+      <FixedBlock id="section-1">
         {(product.section1Title || previewAll) && (
           <div className="py-14 bg-[var(--bg,#F8FBFF)]">
             <div className="max-w-6xl mx-auto px-6">
@@ -290,25 +343,24 @@ export default function DevicePageRenderer({
                   </h2>
                   {product.section1Description ? (
                     <p className="text-gray-700 leading-relaxed whitespace-pre-line">{product.section1Description}</p>
-                  ) : (
-                    <PreviewPlaceholder previewAll={previewAll}>Description manquante</PreviewPlaceholder>
-                  )}
+                  ) : <PreviewPlaceholder previewAll={previewAll}>Description manquante</PreviewPlaceholder>}
                 </div>
-                <MediaSlot url={product.section1MediaUrl} type={product.section1MediaType} alt={product.section1Title || ''} />
+                <MediaSlot url={product.section1MediaUrl} type={product.section1MediaType} alt={product.section1Title || ''} focal={getFocal(imagePositions, 'section1MediaUrl')} />
               </div>
             </div>
           </div>
         )}
-      </Block>
+      </FixedBlock>
+      {blocksAfter('section-1').map(renderInserted)}
 
-      {/* =========== SECTION 2 — Image + Texte =========== */}
-      <Block id="section-2">
+      {/* SECTION 2 */}
+      <FixedBlock id="section-2">
         {(product.section2Title || previewAll) && (
           <div className="py-14 bg-white">
             <div className="max-w-6xl mx-auto px-6">
               <div className="grid md:grid-cols-2 gap-10 items-center">
                 <div className="order-2 md:order-1">
-                  <ImageSlot url={product.section2Image} alt={product.section2Title || ''} aspect="square" />
+                  <ImageSlot url={product.section2Image} alt={product.section2Title || ''} aspect="square" focal={getFocal(imagePositions, 'section2Image')} />
                   {gallery.length > 0 && (
                     <div className="mt-4 grid grid-cols-3 gap-3">
                       {gallery.slice(0, 3).map((url, i) => (
@@ -326,24 +378,23 @@ export default function DevicePageRenderer({
                   </h2>
                   {product.section2Description ? (
                     <p className="text-gray-700 leading-relaxed whitespace-pre-line">{product.section2Description}</p>
-                  ) : (
-                    <PreviewPlaceholder previewAll={previewAll}>Description manquante</PreviewPlaceholder>
-                  )}
+                  ) : <PreviewPlaceholder previewAll={previewAll}>Description manquante</PreviewPlaceholder>}
                 </div>
               </div>
             </div>
           </div>
         )}
-      </Block>
+      </FixedBlock>
+      {blocksAfter('section-2').map(renderInserted)}
 
-      {/* =========== HIGHLIGHT 1 =========== */}
-      <Block id="highlight-1">
+      {/* HIGHLIGHT 1 */}
+      <FixedBlock id="highlight-1">
         {(product.highlightBox1Title || previewAll) && (
           <div className="py-14" style={{ background: 'linear-gradient(135deg, rgba(66,164,255,0.05), rgba(66,164,255,0.10))' }}>
             <div className="max-w-5xl mx-auto px-6">
               <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
                 <div className="grid md:grid-cols-2 gap-8 items-center p-8 md:p-12">
-                  <ImageSlot url={product.highlightBox1Image} alt={product.highlightBox1Title || ''} aspect="square" />
+                  <ImageSlot url={product.highlightBox1Image} alt={product.highlightBox1Title || ''} aspect="square" focal={getFocal(imagePositions, 'highlightBox1Image')} />
                   <div>
                     <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Highlight</p>
                     <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
@@ -361,10 +412,11 @@ export default function DevicePageRenderer({
             </div>
           </div>
         )}
-      </Block>
+      </FixedBlock>
+      {blocksAfter('highlight-1').map(renderInserted)}
 
-      {/* =========== SECTION 3 — Texte + Image =========== */}
-      <Block id="section-3">
+      {/* SECTION 3 */}
+      <FixedBlock id="section-3">
         {(product.section3Title || previewAll) && (
           <div className="py-14 bg-white">
             <div className="max-w-6xl mx-auto px-6">
@@ -376,25 +428,24 @@ export default function DevicePageRenderer({
                   </h2>
                   {product.section3Description ? (
                     <p className="text-gray-700 leading-relaxed whitespace-pre-line">{product.section3Description}</p>
-                  ) : (
-                    <PreviewPlaceholder previewAll={previewAll}>Description manquante</PreviewPlaceholder>
-                  )}
+                  ) : <PreviewPlaceholder previewAll={previewAll}>Description manquante</PreviewPlaceholder>}
                 </div>
-                <ImageSlot url={product.section3Image} alt={product.section3Title || ''} aspect="square" />
+                <ImageSlot url={product.section3Image} alt={product.section3Title || ''} aspect="square" focal={getFocal(imagePositions, 'section3Image')} />
               </div>
             </div>
           </div>
         )}
-      </Block>
+      </FixedBlock>
+      {blocksAfter('section-3').map(renderInserted)}
 
-      {/* =========== SECTION 4 — Média + Texte =========== */}
-      <Block id="section-4">
+      {/* SECTION 4 */}
+      <FixedBlock id="section-4">
         {(product.section4Title || previewAll) && (
           <div className="py-14 bg-[var(--bg,#F8FBFF)]">
             <div className="max-w-6xl mx-auto px-6">
               <div className="grid md:grid-cols-2 gap-10 items-center">
                 <div className="order-2 md:order-1">
-                  <MediaSlot url={product.section4MediaUrl} type={product.section4MediaType} alt={product.section4Title || ''} />
+                  <MediaSlot url={product.section4MediaUrl} type={product.section4MediaType} alt={product.section4Title || ''} focal={getFocal(imagePositions, 'section4MediaUrl')} />
                 </div>
                 <div className="order-1 md:order-2">
                   <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Rechargeable</p>
@@ -403,18 +454,17 @@ export default function DevicePageRenderer({
                   </h2>
                   {product.section4Description ? (
                     <p className="text-gray-700 leading-relaxed whitespace-pre-line">{product.section4Description}</p>
-                  ) : (
-                    <PreviewPlaceholder previewAll={previewAll}>Description manquante</PreviewPlaceholder>
-                  )}
+                  ) : <PreviewPlaceholder previewAll={previewAll}>Description manquante</PreviewPlaceholder>}
                 </div>
               </div>
             </div>
           </div>
         )}
-      </Block>
+      </FixedBlock>
+      {blocksAfter('section-4').map(renderInserted)}
 
-      {/* =========== HIGHLIGHT 2 — Same-day fitting / galerie =========== */}
-      <Block id="highlight-2">
+      {/* HIGHLIGHT 2 */}
+      <FixedBlock id="highlight-2">
         {(product.highlightBox2Title || previewAll) && (
           <div className="py-14" style={{ background: 'linear-gradient(135deg, rgba(66,164,255,0.05), rgba(66,164,255,0.10))' }}>
             <div className="max-w-6xl mx-auto px-6">
@@ -445,12 +495,11 @@ export default function DevicePageRenderer({
             </div>
           </div>
         )}
-      </Block>
+      </FixedBlock>
+      {blocksAfter('highlight-2').map(renderInserted)}
 
-      {/* =========== ACCESSORIES =========== */}
-      {/* Bloc nouveau (pas de champ Prisma dédié) — utilise des accessoires statiques
-          jusqu'à l'ajout d'un champ dédié. En production sans champ, masquer par défaut. */}
-      <Block id="accessories">
+      {/* ACCESSORIES */}
+      <FixedBlock id="accessories">
         <div className="py-14 bg-white">
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center max-w-2xl mx-auto mb-8">
@@ -460,32 +509,30 @@ export default function DevicePageRenderer({
               </h2>
             </div>
             <PreviewPlaceholder previewAll={previewAll}>
-              Liste d'accessoires non encore configurable en base — à câbler dans une v2.1
+              Liste d'accessoires non encore configurable en base — à câbler dans une v2.2
             </PreviewPlaceholder>
           </div>
         </div>
-      </Block>
+      </FixedBlock>
+      {blocksAfter('accessories').map(renderInserted)}
 
-      {/* =========== FAQ =========== */}
-      <Block id="faq">
+      {/* FAQ */}
+      <FixedBlock id="faq">
         {(faqs.length > 0 || previewAll) && (
           <div className="py-14 bg-white">
             <div className="max-w-4xl mx-auto px-6">
               <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-8 text-center" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                 Pourquoi choisir {product.name} ?
               </h2>
-              {faqs.length > 0 ? (
-                <FAQList faqs={faqs} />
-              ) : (
-                <PreviewPlaceholder previewAll={previewAll}>Aucune FAQ définie</PreviewPlaceholder>
-              )}
+              {faqs.length > 0 ? <FAQList faqs={faqs} /> : <PreviewPlaceholder previewAll={previewAll}>Aucune FAQ définie</PreviewPlaceholder>}
             </div>
           </div>
         )}
-      </Block>
+      </FixedBlock>
+      {blocksAfter('faq').map(renderInserted)}
 
-      {/* =========== FORM =========== */}
-      <Block id="form">
+      {/* FORM */}
+      <FixedBlock id="form">
         <div className="py-14 bg-[var(--bg,#F8FBFF)]">
           <div className="max-w-2xl mx-auto px-6">
             <div className="text-center mb-8">
@@ -507,10 +554,13 @@ export default function DevicePageRenderer({
             </form>
           </div>
         </div>
-      </Block>
+      </FixedBlock>
 
-      {/* =========== CTA FINAL =========== */}
-      <Block id="cta-final">
+      {/* Orphelins (afterBlockId vide / inconnu) — juste avant la CTA */}
+      {orphanBlocks().map(renderInserted)}
+
+      {/* CTA FINAL */}
+      <FixedBlock id="cta-final">
         <div className="py-16 text-white text-center" style={{
           background: `radial-gradient(900px 400px at 80% 10%, rgba(255,255,255,.18), transparent 60%), linear-gradient(135deg, ${heroFrom} 0%, ${heroTo} 100%)`,
         }}>
@@ -531,10 +581,10 @@ export default function DevicePageRenderer({
             </div>
           </div>
         </div>
-      </Block>
+      </FixedBlock>
 
-      {/* =========== FOOTER =========== */}
-      <Block id="footer">
+      {/* FOOTER */}
+      <FixedBlock id="footer">
         <footer className="border-t border-[var(--border,#C4DDF8)]" style={{ background: 'linear-gradient(135deg, rgba(66,164,255,0.04), rgba(90,179,255,0.04))' }}>
           <div className="max-w-6xl mx-auto px-6 py-12">
             <div className="grid md:grid-cols-4 gap-8 mb-8">
@@ -575,17 +625,120 @@ export default function DevicePageRenderer({
             </div>
           </div>
         </footer>
-      </Block>
+      </FixedBlock>
 
     </div>
   );
 }
 
 // ============================================
-// Sous-composants
+// Renderer pour un ProductContentBlock inséré
 // ============================================
+function ContentBlockRenderer({ block }: { block: ProductContentBlockData }) {
+  const bg = block.backgroundColor || undefined;
+  switch (block.blockType) {
+    case 'gallery': {
+      const meta = parseMetadata<GalleryMetadata>(block.metadata, { images: [] });
+      return (
+        <div className="py-14" style={bg ? { backgroundColor: bg } : undefined}>
+          <div className="max-w-6xl mx-auto px-6">
+            {block.title && (
+              <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-8 text-center" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
+                {block.title}
+              </h2>
+            )}
+            {meta.images.length > 0 ? (
+              <div className={`grid gap-5 ${meta.images.length >= 4 ? 'grid-cols-2 md:grid-cols-4' : meta.images.length === 3 ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2'}`}>
+                {meta.images.map((url, i) => (
+                  <div key={i} className="aspect-square rounded-2xl bg-gray-100 overflow-hidden">
+                    <img src={url} alt={`Galerie ${i + 1}`} className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-12 text-center text-gray-500 text-sm">
+                Aucune image dans la galerie
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
 
-function MediaSlot({ url, type, alt }: { url: string | null; type: string | null; alt: string }) {
+    case 'highlight': {
+      const meta = parseMetadata<HighlightMetadata>(block.metadata, {});
+      return (
+        <div className="py-14" style={bg ? { backgroundColor: bg } : { background: 'linear-gradient(135deg, rgba(66,164,255,0.05), rgba(66,164,255,0.10))' }}>
+          <div className="max-w-5xl mx-auto px-6">
+            <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
+              <div className="grid md:grid-cols-2 gap-8 items-center p-8 md:p-12">
+                {block.mediaUrl ? (
+                  <div className={`aspect-square rounded-2xl bg-gray-100 overflow-hidden shadow-xl ${block.mediaPosition === 'right' ? 'md:order-2' : ''}`}>
+                    {block.mediaType === 'video' ? (
+                      <video src={block.mediaUrl} controls className="w-full h-full object-cover" />
+                    ) : (
+                      <img src={block.mediaUrl} alt={block.mediaAlt || block.title || ''} className="w-full h-full object-cover" />
+                    )}
+                  </div>
+                ) : (
+                  <div className={`aspect-square rounded-2xl bg-gradient-to-br from-[#EEF6FF] to-[#E1EEFC] grid place-items-center ${block.mediaPosition === 'right' ? 'md:order-2' : ''}`}>
+                    <span className="text-xs uppercase tracking-widest font-mono text-primary-dark bg-white/90 px-3 py-1.5 rounded">Image à ajouter</span>
+                  </div>
+                )}
+                <div>
+                  {block.title && (
+                    <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
+                      {block.title}
+                    </h2>
+                  )}
+                  {block.description && (
+                    <p className="text-gray-600 leading-relaxed mb-6 whitespace-pre-line">{block.description}</p>
+                  )}
+                  {meta.ctaLabel && (
+                    <Link href={meta.ctaHref || '#'} className="inline-flex items-center px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition shadow-lg">
+                      {meta.ctaLabel}
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    case 'text-media':
+    default: {
+      const isLeft = block.mediaPosition === 'left';
+      return (
+        <div className="py-14" style={bg ? { backgroundColor: bg } : undefined}>
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="grid md:grid-cols-2 gap-10 items-center">
+              <div className={isLeft ? 'md:order-2' : ''}>
+                {block.title && (
+                  <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-5" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
+                    {block.title}
+                  </h2>
+                )}
+                {block.description && (
+                  <p className="text-gray-700 leading-relaxed whitespace-pre-line">{block.description}</p>
+                )}
+              </div>
+              <div className={isLeft ? 'md:order-1' : ''}>
+                <MediaSlot url={block.mediaUrl} type={block.mediaType} alt={block.mediaAlt || block.title || ''} />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
+}
+
+// ============================================
+// Sub-components
+// ============================================
+function MediaSlot({ url, type, alt, focal }: { url: string | null; type: string | null; alt: string; focal?: { x: number; y: number } }) {
   if (!url) {
     return (
       <div className="aspect-video rounded-2xl bg-gradient-to-br from-[#EEF6FF] to-[#E1EEFC] grid place-items-center">
@@ -602,12 +755,12 @@ function MediaSlot({ url, type, alt }: { url: string | null; type: string | null
   }
   return (
     <div className="aspect-video rounded-2xl bg-gray-100 overflow-hidden shadow-xl">
-      <img src={url} alt={alt} className="w-full h-full object-cover" />
+      <img src={url} alt={alt} className="w-full h-full object-cover" style={focal ? { objectPosition: `${focal.x}% ${focal.y}%` } : undefined} />
     </div>
   );
 }
 
-function ImageSlot({ url, alt, aspect = 'square' }: { url: string | null; alt: string; aspect?: 'square' | 'video' }) {
+function ImageSlot({ url, alt, aspect = 'square', focal }: { url: string | null; alt: string; aspect?: 'square' | 'video'; focal?: { x: number; y: number } }) {
   const aspectClass = aspect === 'video' ? 'aspect-video' : 'aspect-square';
   if (!url) {
     return (
@@ -618,7 +771,7 @@ function ImageSlot({ url, alt, aspect = 'square' }: { url: string | null; alt: s
   }
   return (
     <div className={`${aspectClass} rounded-2xl bg-gray-100 overflow-hidden shadow-xl`}>
-      <img src={url} alt={alt} className="w-full h-full object-cover" />
+      <img src={url} alt={alt} className="w-full h-full object-cover" style={focal ? { objectPosition: `${focal.x}% ${focal.y}%` } : undefined} />
     </div>
   );
 }
