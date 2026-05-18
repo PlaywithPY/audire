@@ -1,11 +1,10 @@
 'use client';
 
-// src/components/admin/DynamicBlockInspector.tsx
-// Sprint 3 — Inspecteur dédié aux blocs dynamiques (créés via InsertZone "+").
-// Reconnaît les keys de la forme `dynamic:<id>:content` et affiche une UI
-// adaptée au type du bloc (image avec uploader, spacer avec slider, etc.).
-//
-// Charge le bloc via GET /api/blocks?id=<id>, sauvegarde via PATCH /api/blocks.
+// Sprint 5.5.2 — DynamicBlockInspector
+// Ajouts :
+//   1. Position de l'image (object-position) pour le type "image" inline,
+//      avec presets visuels + grille cliquable + champ libre (comme Images&Effets).
+//   2. Idem pour bg-image (position du fond).
 
 import { useEffect, useRef, useState } from 'react';
 import { Image as ImageIcon, Trash2, Loader2 } from 'lucide-react';
@@ -13,14 +12,8 @@ import RichTextEditor from './RichTextEditor';
 import MediaPicker from '@/components/MediaPicker';
 
 type Block = {
-  id: number;
-  pageKey: string;
-  blockKey: string;
-  blockType: string;
-  content: string;
-  metadata: string | null;
-  order: number;
-  isVisible: boolean;
+  id: number; pageKey: string; blockKey: string; blockType: string;
+  content: string; metadata: string | null; order: number; isVisible: boolean;
 };
 
 interface Props {
@@ -34,9 +27,80 @@ function parseMeta(m: string | null): Record<string, any> {
 }
 
 const TYPE_LABELS: Record<string, string> = {
-  title: 'Titre', text: 'Texte', image: 'Image', button: 'Bouton',
-  card: 'Carte', spacer: 'Espacement', divider: 'Séparateur', html: 'HTML libre',
+  title: 'Titre', text: 'Texte', image: 'Image', 'bg-image': 'Image de fond',
+  button: 'Bouton', card: 'Carte', spacer: 'Espacement', divider: 'Séparateur', html: 'HTML libre',
 };
+
+function rgbaToHexAlpha(rgba: string | null | undefined): { hex: string; alpha: number } {
+  if (!rgba) return { hex: '#000000', alpha: 0 };
+  if (rgba.startsWith('#')) return { hex: rgba.slice(0, 7), alpha: 1 };
+  const m = rgba.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d.]+))?\s*\)/);
+  if (!m) return { hex: '#000000', alpha: 0 };
+  const r = +m[1], g = +m[2], b = +m[3], a = m[4] !== undefined ? parseFloat(m[4]) : 1;
+  const hex = '#' + [r, g, b].map((n) => n.toString(16).padStart(2, '0')).join('');
+  return { hex, alpha: a };
+}
+function hexAlphaToRgba(hex: string, alpha: number): string {
+  const m = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+  if (!m) return `rgba(0,0,0,${alpha})`;
+  return `rgba(${parseInt(m[1], 16)},${parseInt(m[2], 16)},${parseInt(m[3], 16)},${alpha})`;
+}
+
+const SEG = (active: boolean) =>
+  `px-2 py-1.5 text-[11px] rounded border transition-colors ${
+    active ? 'bg-blue-50 border-blue-500 text-blue-700 font-semibold' : 'bg-white border-gray-200 hover:border-gray-300 text-gray-600'
+  }`;
+
+// ====== Sélecteur de position visuel ======
+const POSITION_PRESETS: Array<{ pos: string; label: string }> = [
+  { pos: 'left top',     label: '↖' },
+  { pos: 'center top',   label: '↑' },
+  { pos: 'right top',    label: '↗' },
+  { pos: 'left center',  label: '←' },
+  { pos: 'center center', label: '◯' },
+  { pos: 'right center', label: '→' },
+  { pos: 'left bottom',  label: '↙' },
+  { pos: 'center bottom', label: '↓' },
+  { pos: 'right bottom', label: '↘' },
+];
+
+function ObjectPositionPicker({
+  value, onChange, label = 'Position de l\'image',
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  label?: string;
+}) {
+  return (
+    <div>
+      <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">{label}</label>
+      <div className="grid grid-cols-3 gap-1 w-32 mb-2">
+        {POSITION_PRESETS.map((p) => (
+          <button key={p.pos} type="button" onClick={() => onChange(p.pos)}
+            title={p.pos}
+            className={`aspect-square text-base font-bold rounded border transition-colors ${
+              value === p.pos
+                ? 'bg-blue-500 border-blue-600 text-white'
+                : 'bg-white border-gray-200 hover:border-gray-300 text-gray-500'
+            }`}>
+            {p.label}
+          </button>
+        ))}
+      </div>
+      <input type="text" value={value} onChange={(e) => onChange(e.target.value)}
+        placeholder="Ex: center 35%"
+        className="w-full text-[11px] font-mono p-1.5 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400" />
+      <div className="flex flex-wrap gap-1 mt-1">
+        {['center 25%', 'center 35%', 'center 60%', 'center 75%'].map((preset) => (
+          <button key={preset} type="button" onClick={() => onChange(preset)}
+            className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 hover:bg-gray-200 text-gray-600">
+            {preset}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function DynamicBlockInspector({ blockId, onChanged, onDeleted }: Props) {
   const [block, setBlock] = useState<Block | null>(null);
@@ -62,8 +126,7 @@ export default function DynamicBlockInspector({ blockId, onChanged, onDeleted }:
     if (debounceRef.current) window.clearTimeout(debounceRef.current);
     debounceRef.current = window.setTimeout(async () => {
       await fetch('/api/blocks', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: block.id, ...patch }),
       });
       setSaving(false);
@@ -102,7 +165,6 @@ export default function DynamicBlockInspector({ blockId, onChanged, onDeleted }:
         {saving && <Loader2 className="w-3 h-3 animate-spin text-gray-400" />}
       </div>
 
-      {/* TITRE */}
       {block.blockType === 'title' && (
         <div>
           <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Texte du titre</label>
@@ -111,7 +173,6 @@ export default function DynamicBlockInspector({ blockId, onChanged, onDeleted }:
         </div>
       )}
 
-      {/* TEXTE — éditeur riche */}
       {block.blockType === 'text' && (
         <div>
           <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Contenu</label>
@@ -120,7 +181,6 @@ export default function DynamicBlockInspector({ blockId, onChanged, onDeleted }:
         </div>
       )}
 
-      {/* HTML libre — éditeur riche aussi */}
       {block.blockType === 'html' && (
         <div>
           <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">HTML</label>
@@ -128,26 +188,106 @@ export default function DynamicBlockInspector({ blockId, onChanged, onDeleted }:
         </div>
       )}
 
-      {/* IMAGE — uploader + URL */}
+      {/* IMAGE INLINE — options avancées + position */}
       {block.blockType === 'image' && (
         <>
           <div>
             <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Image</label>
             {meta.imageUrl ? (
               <div className="aspect-video bg-gray-100 rounded-md overflow-hidden border border-gray-200 mb-2">
-                <img src={meta.imageUrl} alt="" className="w-full h-full object-cover" />
+                <img src={meta.imageUrl} alt="" className="w-full h-full object-cover"
+                  style={{ objectPosition: meta.objectPosition || 'center center' }} />
               </div>
             ) : (
-              <div className="aspect-video bg-gray-50 border-2 border-dashed border-gray-300 rounded-md grid place-items-center text-gray-400 text-xs mb-2">Aucune image</div>
+              <div className="aspect-video bg-gray-50 border-2 border-dashed border-gray-300 rounded-md grid place-items-center text-gray-400 text-xs mb-2">
+                Aucune image
+              </div>
             )}
-            <input type="url" value={meta.imageUrl ?? ''} onChange={(e) => setMetaField('imageUrl', e.target.value)}
-              placeholder="https://… ou choisir →"
-              className="w-full text-[12px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400 font-mono" />
             <button type="button" onClick={() => setPickerOpen(true)}
-              className="mt-2 h-8 px-2.5 rounded-md border border-gray-200 hover:bg-gray-50 text-[12px] font-medium flex items-center gap-1.5">
+              className="h-8 px-2.5 rounded-md border border-gray-200 hover:bg-gray-50 text-[12px] font-medium flex items-center gap-1.5 w-full justify-center">
               <ImageIcon className="w-3.5 h-3.5" /> Choisir dans la médiathèque
             </button>
           </div>
+
+          <div>
+            <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Largeur</label>
+            <div className="grid grid-cols-3 gap-1">
+              {[
+                { v: 'contained', l: 'Contenue' },
+                { v: 'full',      l: 'Pleine' },
+                { v: 'bleed',     l: 'Full-bleed' },
+              ].map((o) => (
+                <button key={o.v} type="button" onClick={() => setMetaField('width', o.v)}
+                  className={SEG((meta.width ?? 'contained') === o.v)}>{o.l}</button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Ajustement (object-fit)</label>
+            <div className="grid grid-cols-2 gap-1">
+              {[
+                { v: 'cover',   l: 'Cover (rempli)' },
+                { v: 'contain', l: 'Contain (visible)' },
+              ].map((o) => (
+                <button key={o.v} type="button" onClick={() => setMetaField('objectFit', o.v)}
+                  className={SEG((meta.objectFit ?? 'cover') === o.v)}>{o.l}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Sprint 5.5.2 — Position de l'image (object-position) */}
+          <ObjectPositionPicker
+            value={meta.objectPosition || 'center center'}
+            onChange={(v) => setMetaField('objectPosition', v)}
+          />
+
+          <div>
+            <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">
+              Hauteur · <span className="text-gray-700 font-semibold">{meta.height ? `${meta.height}px` : 'auto'}</span>
+            </label>
+            <input type="range" min={0} max={800} step={20} value={meta.height ?? 0}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                setMetaField('height', v === 0 ? null : v);
+              }}
+              className="w-full accent-blue-600" />
+            <div className="flex justify-between text-[10px] text-gray-400">
+              <button type="button" onClick={() => setMetaField('height', null)}
+                className="hover:underline">auto</button>
+              <span>400</span><span>800</span>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Arrondi</label>
+            <div className="grid grid-cols-4 gap-1">
+              {[
+                { v: 'none', l: 'Aucun' },
+                { v: 'md',   l: 'Léger' },
+                { v: 'lg',   l: 'Normal' },
+                { v: 'full', l: 'Max' },
+              ].map((o) => (
+                <button key={o.v} type="button" onClick={() => setMetaField('borderRadius', o.v)}
+                  className={SEG((meta.borderRadius ?? 'lg') === o.v)}>{o.l}</button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Marges verticales</label>
+            <div className="grid grid-cols-3 gap-1">
+              {[
+                { v: 'compact', l: 'Compact' },
+                { v: 'normal',  l: 'Normal' },
+                { v: 'large',   l: 'Large' },
+              ].map((o) => (
+                <button key={o.v} type="button" onClick={() => setMetaField('marginY', o.v)}
+                  className={SEG((meta.marginY ?? 'normal') === o.v)}>{o.l}</button>
+              ))}
+            </div>
+          </div>
+
           <div>
             <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Texte alternatif (alt)</label>
             <input type="text" value={meta.alt ?? ''} onChange={(e) => setMetaField('alt', e.target.value)}
@@ -157,7 +297,110 @@ export default function DynamicBlockInspector({ blockId, onChanged, onDeleted }:
         </>
       )}
 
-      {/* BOUTON — label + href */}
+      {/* IMAGE DE FOND PLEIN LARGEUR */}
+      {block.blockType === 'bg-image' && (() => {
+        const { hex, alpha } = rgbaToHexAlpha(meta.overlayColor);
+        return (
+          <>
+            <div>
+              <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Image de fond</label>
+              {meta.imageUrl ? (
+                <div className="aspect-video bg-gray-100 rounded-md overflow-hidden border border-gray-200 mb-2">
+                  <img src={meta.imageUrl} alt={meta.alt || ''} className="w-full h-full object-cover"
+                    style={{ objectPosition: meta.objectPosition || 'center center' }} />
+                </div>
+              ) : (
+                <div className="aspect-video bg-gray-50 border-2 border-dashed border-gray-300 rounded-md grid place-items-center text-gray-400 text-xs mb-2">
+                  Aucune image
+                </div>
+              )}
+              <button type="button" onClick={() => setPickerOpen(true)}
+                className="h-8 px-2.5 rounded-md border border-gray-200 hover:bg-gray-50 text-[12px] font-medium flex items-center gap-1.5 w-full justify-center">
+                <ImageIcon className="w-3.5 h-3.5" /> Choisir dans la médiathèque
+              </button>
+            </div>
+
+            {/* Position de l'image de fond */}
+            <ObjectPositionPicker
+              value={meta.objectPosition || 'center center'}
+              onChange={(v) => setMetaField('objectPosition', v)}
+              label="Position de l'image"
+            />
+
+            <div>
+              <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Type d'effet</label>
+              <div className="grid grid-cols-3 gap-1">
+                {[
+                  { v: 'parallax', l: '🌊 Parallax' },
+                  { v: 'zoom',     l: '🔍 Zoom' },
+                  { v: 'fade',     l: '🌫️ Fade' },
+                  { v: 'fixed',    l: '📌 Fixed' },
+                  { v: 'none',     l: '— Aucun' },
+                ].map((o) => (
+                  <button key={o.v} type="button" onClick={() => setMetaField('effectType', o.v)}
+                    className={SEG((meta.effectType ?? 'parallax') === o.v)}>{o.l}</button>
+                ))}
+              </div>
+            </div>
+
+            {(meta.effectType === 'parallax' || !meta.effectType) && (
+              <div>
+                <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">
+                  Vitesse · <span className="text-gray-700 font-semibold">{(meta.effectSpeed ?? 0.5).toFixed(2)}</span>
+                </label>
+                <input type="range" min={0} max={1} step={0.05} value={meta.effectSpeed ?? 0.5}
+                  onChange={(e) => setMetaField('effectSpeed', parseFloat(e.target.value))}
+                  className="w-full accent-blue-600" />
+              </div>
+            )}
+
+            {meta.effectType === 'zoom' && (
+              <div>
+                <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">
+                  Échelle · <span className="text-gray-700 font-semibold">{(meta.effectScale ?? 1.2).toFixed(2)}×</span>
+                </label>
+                <input type="range" min={1} max={2} step={0.05} value={meta.effectScale ?? 1.2}
+                  onChange={(e) => setMetaField('effectScale', parseFloat(e.target.value))}
+                  className="w-full accent-blue-600" />
+              </div>
+            )}
+
+            <div>
+              <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">
+                Hauteur · <span className="text-gray-700 font-semibold">{meta.height ?? 480}px</span>
+              </label>
+              <input type="range" min={200} max={900} step={20} value={meta.height ?? 480}
+                onChange={(e) => setMetaField('height', Number(e.target.value))}
+                className="w-full accent-blue-600" />
+            </div>
+
+            <div>
+              <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Voile (overlay)</label>
+              <div className="flex items-center gap-2">
+                <input type="color" value={hex}
+                  onChange={(e) => setMetaField('overlayColor', hexAlphaToRgba(e.target.value, alpha))}
+                  className="w-10 h-8 p-0 border border-gray-200 rounded cursor-pointer" />
+                <div className="flex-1">
+                  <input type="range" min={0} max={1} step={0.05} value={alpha}
+                    onChange={(e) => setMetaField('overlayColor', hexAlphaToRgba(hex, parseFloat(e.target.value)))}
+                    className="w-full accent-blue-600" />
+                  <div className="text-[10px] text-gray-400 text-center">opacité : {Math.round(alpha * 100)}%</div>
+                </div>
+                <button type="button" onClick={() => setMetaField('overlayColor', null)}
+                  className="text-[10px] text-gray-500 hover:text-gray-700 px-1.5 py-1 rounded hover:bg-gray-100">aucun</button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">Texte alternatif</label>
+              <input type="text" value={meta.alt ?? ''} onChange={(e) => setMetaField('alt', e.target.value)}
+                placeholder="Description courte de l'image"
+                className="w-full text-[12px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400" />
+            </div>
+          </>
+        );
+      })()}
+
       {block.blockType === 'button' && (() => {
         const [label = '', href = ''] = (block.content || '').split('|');
         return (
@@ -177,7 +420,6 @@ export default function DynamicBlockInspector({ blockId, onChanged, onDeleted }:
         );
       })()}
 
-      {/* CARTE — titre + description + icône */}
       {block.blockType === 'card' && (
         <>
           <div>
@@ -199,27 +441,21 @@ export default function DynamicBlockInspector({ blockId, onChanged, onDeleted }:
         </>
       )}
 
-      {/* SPACER — slider de hauteur */}
       {block.blockType === 'spacer' && (
         <div>
           <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">
-            Hauteur de l'espace : <span className="text-gray-700 font-semibold">{meta.height ?? 48}px</span>
+            Hauteur · <span className="text-gray-700 font-semibold">{meta.height ?? 48}px</span>
           </label>
           <input type="range" min={8} max={240} step={4} value={meta.height ?? 48}
             onChange={(e) => setMetaField('height', Number(e.target.value))}
             className="w-full accent-primary" />
-          <div className="flex justify-between text-[10px] text-gray-400 mt-1">
-            <span>8</span><span>120</span><span>240</span>
-          </div>
         </div>
       )}
 
-      {/* DIVIDER — pas d'options */}
       {block.blockType === 'divider' && (
         <p className="text-[12px] text-gray-500 italic">Une simple ligne horizontale. Aucune option à configurer.</p>
       )}
 
-      {/* Visibilité + suppression — communs */}
       <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
         <label className="flex items-center gap-1.5 text-[12px] text-gray-700">
           <input type="checkbox" checked={block.isVisible} onChange={(e) => persist({ isVisible: e.target.checked })} />

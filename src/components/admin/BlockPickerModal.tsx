@@ -1,12 +1,15 @@
 'use client';
 
-// src/components/admin/BlockPickerModal.tsx
-// Sprint 5.5 — ajout de l'option "🌊 Image plein écran (avec effet)".
-// Cette option est traitée par InsertZone via le flag `kind: 'image-effect'`
-// (le booléen surcharge la création par défaut côté API /api/blocks).
+// Sprint 5.5 — Modal "Choisir un type de bloc"
+// Ajout : "🌊 Image de fond" — bloc plein largeur avec effet parallax/zoom/etc.
+// (Implémenté comme un dynamic block de type "bg-image", pas via la table ImageEffect.
+//  Plus simple : auto-contenu, créé inline, supprimable comme n'importe quel bloc.)
 
 import { useEffect } from 'react';
-import { X, Type, AlignLeft, Image as ImageIcon, MousePointerClick, Minus, Move3d, LayoutGrid, Waves } from 'lucide-react';
+import {
+  X, Type, AlignLeft, Image as ImageIcon, MousePointerClick,
+  Minus, Move3d, LayoutGrid, Mountain,
+} from 'lucide-react';
 
 export type BlockTypeOption = {
   blockType: string;
@@ -15,34 +18,40 @@ export type BlockTypeOption = {
   icon: React.ComponentType<{ className?: string }>;
   defaultContent?: string;
   defaultMetadata?: Record<string, any>;
-  // Sprint 5.5 — variant kind. Si 'image-effect', InsertZone crée un ImageEffect
-  // au lieu d'un ContentBlock.
-  kind?: 'block' | 'image-effect';
 };
 
 const OPTIONS: BlockTypeOption[] = [
-  { blockType: 'title',  label: 'Titre',         description: 'Un grand titre de section',
-    icon: Type,             defaultContent: 'Nouveau titre' },
-  { blockType: 'text',   label: 'Texte',         description: 'Un paragraphe de texte',
-    icon: AlignLeft,        defaultContent: 'Tapez votre texte ici…' },
-  { blockType: 'image',  label: 'Image',         description: 'Image inline simple',
-    icon: ImageIcon,        defaultContent: '', defaultMetadata: { imageUrl: '' } },
-  { blockType: 'image-effect', label: 'Image plein écran',
-    description: 'Image de fond avec effet (parallax, zoom, fade…)',
-    icon: Waves,            kind: 'image-effect' },
-  { blockType: 'button', label: 'Bouton',        description: 'Un appel à l\'action cliquable',
+  { blockType: 'title',  label: 'Titre', description: 'Un grand titre de section',
+    icon: Type, defaultContent: 'Nouveau titre' },
+  { blockType: 'text',   label: 'Texte', description: 'Un paragraphe de texte',
+    icon: AlignLeft, defaultContent: 'Tapez votre texte ici…' },
+  { blockType: 'image',  label: 'Image (inline)', description: 'Une image dans le flux du contenu',
+    icon: ImageIcon, defaultContent: '',
+    defaultMetadata: { imageUrl: '', width: 'contained', objectFit: 'cover', borderRadius: 'lg', marginY: 'normal' } },
+  { blockType: 'bg-image', label: 'Image de fond', description: 'Image plein écran avec effet (parallax/zoom)',
+    icon: Mountain, defaultContent: '',
+    defaultMetadata: {
+      imageUrl: '', alt: '', effectType: 'parallax', effectSpeed: 0.5, effectScale: 1.2,
+      height: 480, overlayColor: 'rgba(0,0,0,0.25)', borderRadius: 'none',
+    } },
+  { blockType: 'button', label: 'Bouton', description: "Un appel à l'action cliquable",
     icon: MousePointerClick, defaultContent: 'En savoir plus|/contact' },
-  { blockType: 'card',   label: 'Carte',         description: 'Une carte avec icône + titre + description',
-    icon: LayoutGrid,       defaultContent: 'Titre de la carte', defaultMetadata: { icon: '✨', description: 'Description courte' } },
-  { blockType: 'spacer', label: 'Espace',        description: 'Un espacement vertical',
-    icon: Move3d,           defaultContent: '', defaultMetadata: { height: 48 } },
-  { blockType: 'divider', label: 'Séparateur',   description: 'Une ligne de séparation',
-    icon: Minus,            defaultContent: '' },
-  { blockType: 'html',   label: 'HTML libre',    description: 'Bloc HTML personnalisé (avancé)',
-    icon: Type,             defaultContent: '<p>Contenu personnalisé</p>' },
+  { blockType: 'card',   label: 'Carte', description: 'Une carte avec icône + titre + description',
+    icon: LayoutGrid, defaultContent: 'Titre de la carte',
+    defaultMetadata: { icon: '✨', description: 'Description courte' } },
+  { blockType: 'spacer', label: 'Espace', description: 'Un espacement vertical',
+    icon: Move3d, defaultContent: '', defaultMetadata: { height: 48 } },
+  { blockType: 'divider', label: 'Séparateur', description: 'Une ligne de séparation',
+    icon: Minus, defaultContent: '' },
+  { blockType: 'html',   label: 'HTML libre', description: 'Bloc HTML personnalisé (avancé)',
+    icon: Type, defaultContent: '<p>Contenu personnalisé</p>' },
 ];
 
-type Props = { onClose: () => void; onPick: (option: BlockTypeOption) => void; busy?: boolean };
+type Props = {
+  onClose: () => void;
+  onPick: (option: BlockTypeOption) => void;
+  busy?: boolean;
+};
 
 export default function BlockPickerModal({ onClose, onPick, busy }: Props) {
   useEffect(() => {
@@ -60,7 +69,9 @@ export default function BlockPickerModal({ onClose, onPick, busy }: Props) {
             <h3 className="text-lg font-bold text-gray-900">Choisir un type de bloc</h3>
             <p className="text-xs text-gray-500">Le bloc sera inséré à l'endroit du clic.</p>
           </div>
-          <button onClick={onClose} className="w-8 h-8 grid place-items-center rounded-full hover:bg-gray-100 text-gray-500" aria-label="Fermer">
+          <button onClick={onClose}
+            className="w-8 h-8 grid place-items-center rounded-full hover:bg-gray-100 text-gray-500"
+            aria-label="Fermer">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -68,18 +79,11 @@ export default function BlockPickerModal({ onClose, onPick, busy }: Props) {
         <div className="grid grid-cols-2 gap-3 p-5 overflow-y-auto">
           {OPTIONS.map((opt) => {
             const Icon = opt.icon;
-            const isImageEffect = opt.kind === 'image-effect';
             return (
               <button key={opt.blockType} disabled={busy} onClick={() => onPick(opt)}
-                className={`group flex items-start gap-3 p-4 rounded-xl border transition-all text-left disabled:opacity-50 disabled:pointer-events-none ${
-                  isImageEffect
-                    ? 'border-blue-300 bg-blue-50/40 hover:border-blue-500 hover:bg-blue-50'
-                    : 'border-gray-200 hover:border-primary hover:bg-primary/5'
-                }`}>
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                  isImageEffect ? 'bg-blue-100 group-hover:bg-blue-200' : 'bg-gray-100 group-hover:bg-primary/10'
-                }`}>
-                  <Icon className={`w-5 h-5 ${isImageEffect ? 'text-blue-700' : 'text-gray-600 group-hover:text-primary'}`} />
+                className="group flex items-start gap-3 p-4 rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-all text-left disabled:opacity-50 disabled:pointer-events-none">
+                <div className="w-10 h-10 rounded-lg bg-gray-100 group-hover:bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-5 h-5 text-gray-600 group-hover:text-primary" />
                 </div>
                 <div className="min-w-0">
                   <div className="font-semibold text-sm text-gray-900">{opt.label}</div>
@@ -90,7 +94,11 @@ export default function BlockPickerModal({ onClose, onPick, busy }: Props) {
           })}
         </div>
 
-        {busy && <div className="px-5 py-3 border-t border-gray-100 text-xs text-gray-500">Création en cours…</div>}
+        {busy && (
+          <div className="px-5 py-3 border-t border-gray-100 text-xs text-gray-500">
+            Création en cours…
+          </div>
+        )}
       </div>
     </div>
   );
