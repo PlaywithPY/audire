@@ -15,6 +15,7 @@ type Item = {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: string | number;
+  badgeTone?: 'gray' | 'new' | 'legacy';
 };
 type Section = { label: string; items: Item[] };
 
@@ -26,7 +27,10 @@ const SECTIONS: Section[] = [
       { href: '/admin/appointments', label: 'Rendez-vous', icon: CalendarDays },
       { href: '/admin/rendez-vous', label: 'Créneaux', icon: Clock },
       { href: '/admin/centres', label: 'Centres', icon: Building2 },
-      { href: '/admin/appareils', label: 'Appareils', icon: Ear },
+      // Nouvel éditeur d'appareils (gabarit Zeal, click-to-edit)
+      { href: '/admin/appareils-v2', label: 'Appareils', icon: Ear, badge: 'beta', badgeTone: 'new' },
+      // Ancien éditeur (formulaire complet) — conservé en parallèle
+      { href: '/admin/appareils', label: 'Appareils', icon: Ear, badge: 'legacy', badgeTone: 'legacy' },
       { href: '/admin/sms', label: 'SMS', icon: MessageSquare },
     ],
   },
@@ -38,8 +42,6 @@ const SECTIONS: Section[] = [
       { href: '/admin/feature-cards-management', label: 'Cards visuelles', icon: ImageIcon },
       { href: '/admin/testimonials', label: 'Témoignages', icon: FileText },
       { href: '/admin/mediatheque', label: 'Médiathèque', icon: ImageIcon },
-      // Sprint 5 — promu hors de "Anciens outils" : édition désormais possible
-      // depuis l'éditeur inline, mais le bulk admin reste utile pour créer/réordonner.
       { href: '/admin/image-effects', label: 'Images & effets', icon: ImageIcon },
     ],
   },
@@ -67,13 +69,27 @@ const LEGACY_ITEMS: Item[] = [
   { href: '/admin/sms-templates',         label: 'Modèles SMS',            icon: Wrench },
 ];
 
+function badgeStyle(tone: Item['badgeTone']) {
+  switch (tone) {
+    case 'new':    return 'bg-emerald-100 text-emerald-700 font-semibold';
+    case 'legacy': return 'bg-amber-100 text-amber-800';
+    default:       return 'bg-gray-100 text-gray-500';
+  }
+}
+
 export default function AdminSidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [legacyOpen, setLegacyOpen] = useState(false);
 
-  const isActive = (href: string) =>
-    href === '/admin' ? pathname === '/admin' : pathname?.startsWith(href);
+  const isActive = (href: string) => {
+    if (href === '/admin') return pathname === '/admin';
+    // Cas particulier : /admin/appareils-v2 ne doit pas activer aussi /admin/appareils
+    if (href === '/admin/appareils') {
+      return pathname === '/admin/appareils' || pathname?.startsWith('/admin/appareils/');
+    }
+    return pathname?.startsWith(href);
+  };
 
   return (
     <aside className="w-60 shrink-0 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
@@ -100,7 +116,9 @@ export default function AdminSidebar() {
                   <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-gray-900' : 'text-gray-400'}`} />
                   <span className="flex-1 truncate">{item.label}</span>
                   {item.badge != null && (
-                    <span className="text-[10px] font-mono text-gray-500 bg-gray-100 px-1.5 rounded">{item.badge}</span>
+                    <span className={`text-[9px] uppercase tracking-wider font-mono px-1.5 py-0.5 rounded ${badgeStyle(item.badgeTone)}`}>
+                      {item.badge}
+                    </span>
                   )}
                 </Link>
               );
