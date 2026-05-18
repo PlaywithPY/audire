@@ -297,6 +297,9 @@ model HearingAid {
   // Positions des images (object-position CSS)
   imagePositions String? // JSON object: {"mainImage": {"x": 50, "y": 50}, "heroImage": {...}, ...}
 
+  // Visibilité par bloc sur la page produit (v2)
+  blockVisibility String?
+
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
