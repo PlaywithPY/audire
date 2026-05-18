@@ -1,12 +1,10 @@
 'use client';
 
-// src/components/DynamicBlockSlot.tsx — Sprint 5.6
-// Le slot rend désormais TOUJOURS un <section data-section="slot-<pageKey>-<slot>">
-// (au lieu de retourner null quand il est vide). Ça permet à AllPageImageEffects
-// de positionner son image plein écran sur n'importe quel slot, exactement comme
-// pour les sections "hardcodées" de la home.
+// Sprint 5.5 — DynamicBlockSlot enrichi :
+//   1. Nouveau type "bg-image" → image plein largeur avec effet parallax/zoom/fade/fixed/none
+//   2. Type "image" enrichi : width, objectFit, height, borderRadius, marginY
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Trash2 } from 'lucide-react';
 
 type Block = {
@@ -18,11 +16,6 @@ type Props = { pageKey: string; slot: string; className?: string };
 
 function parseMeta(m: string | null): Record<string, any> {
   if (!m) return {}; try { return JSON.parse(m); } catch { return {}; }
-}
-
-/** Formule canonique partagée avec InsertZone */
-export function slotSectionKey(pageKey: string, slot: string) {
-  return `slot-${pageKey}-${slot}`;
 }
 
 export default function DynamicBlockSlot({ pageKey, slot, className = '' }: Props) {
@@ -50,24 +43,14 @@ export default function DynamicBlockSlot({ pageKey, slot, className = '' }: Prop
     return () => window.removeEventListener('message', onMsg);
   }, [load]);
 
-  // Sprint 5.6 : on rend toujours la <section> wrapper (même vide) pour permettre
-  // l'ancrage des image-effects. data-section reprend la formule canonique.
-  const sectionKey = slotSectionKey(pageKey, slot);
-  const hasContent = blocks.length > 0;
+  if (blocks.length === 0) return null;
 
   return (
-    <section
-      data-section={sectionKey}
-      data-slot={slot}
-      className={`dynamic-block-slot ${className}`}
-      // En mode édition, on garde une min-height pour que le slot vide soit visible
-      // et attrape les image-effects associés. Hors édition, no-op si vide.
-      style={!hasContent && editMode ? { minHeight: '120px' } : undefined}
-    >
+    <div className={`dynamic-block-slot ${className}`} data-slot={slot}>
       {blocks.map((b) => (
         <BlockShell key={b.id} block={b} editMode={editMode} onChanged={load} />
       ))}
-    </section>
+    </div>
   );
 }
 
@@ -99,30 +82,29 @@ function BlockShell({ block, editMode, onChanged }: { block: Block; editMode: bo
   );
 }
 
+// ===========================================================================
+// Rendu par type de bloc
+// ===========================================================================
 function BlockBody({ type, content, meta }: { type: string; content: string; meta: Record<string, any> }) {
   switch (type) {
     case 'title':
       return <h2 className="text-3xl md:text-4xl font-bold text-center my-6 text-gray-900">{content}</h2>;
     case 'text':
       return (
-        <div
-          className="prose prose-lg max-w-3xl mx-auto px-4 my-4 text-gray-700"
-          dangerouslySetInnerHTML={{ __html: content || '<p>Tapez votre texte…</p>' }}
-        />
+        <div className="prose prose-lg max-w-3xl mx-auto px-4 my-4 text-gray-700"
+          dangerouslySetInnerHTML={{ __html: content || '<p>Tapez votre texte…</p>' }} />
       );
     case 'image':
-      return meta.imageUrl ? (
-        <img src={meta.imageUrl} alt={meta.alt || ''} className="max-w-3xl mx-auto rounded-xl my-6" />
-      ) : (
-        <div className="max-w-3xl mx-auto h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl grid place-items-center text-gray-400 my-6">
-          Image (cliquer pour configurer)
-        </div>
-      );
+      return <InlineImage meta={meta} />;
+    case 'bg-image':
+      return <BgImageBlock meta={meta} />;
     case 'button': {
       const [label = 'Bouton', href = '#'] = (content || '').split('|');
       return (
         <div className="text-center my-6">
-          <a href={href} className="inline-block bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors">{label}</a>
+          <a href={href} className="inline-block bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors">
+            {label}
+          </a>
         </div>
       );
     }
@@ -143,4 +125,180 @@ function BlockBody({ type, content, meta }: { type: string; content: string; met
     default:
       return <div className="text-sm text-gray-400 italic text-center my-4">Type "{type}" non géré</div>;
   }
+}
+
+// ===========================================================================
+// Image inline avec options avancées (Sprint 5D)
+// ===========================================================================
+const WIDTH_CLS: Record<string, string> = {
+  contained: 'max-w-3xl mx-auto',
+  full:      'w-full',
+  bleed:     'w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]',
+};
+const RADIUS_CLS: Record<string, string> = {
+  none: 'rounded-none',
+  md:   'rounded-md',
+  lg:   'rounded-xl',
+  full: 'rounded-3xl',
+};
+const MARGIN_CLS: Record<string, string> = {
+  compact: 'my-2',
+  normal:  'my-6',
+  large:   'my-12',
+};
+
+function InlineImage({ meta }: { meta: Record<string, any> }) {
+  const width      = meta.width      ?? 'contained';
+  const fit        = meta.objectFit  ?? 'cover';
+  const radius     = meta.borderRadius ?? 'lg';
+  const marginY    = meta.marginY    ?? 'normal';
+  const height     = meta.height ? `${meta.height}px` : 'auto';
+
+  const wrapperCls = `${WIDTH_CLS[width] || WIDTH_CLS.contained} ${MARGIN_CLS[marginY] || MARGIN_CLS.normal}`;
+  const imgCls     = `${RADIUS_CLS[radius] || RADIUS_CLS.lg} ${width === 'bleed' ? '' : 'w-full'}`;
+
+  if (!meta.imageUrl) {
+    return (
+      <div className={`${wrapperCls}`}>
+        <div className={`h-48 bg-gray-100 border-2 border-dashed border-gray-300 grid place-items-center text-gray-400 ${RADIUS_CLS[radius]}`}>
+          Image (cliquer pour configurer)
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={wrapperCls}>
+      <img
+        src={meta.imageUrl}
+        alt={meta.alt || ''}
+        className={imgCls}
+        style={{
+          height,
+          width: width === 'bleed' ? '100vw' : '100%',
+          objectFit: fit as any,
+        }}
+      />
+    </div>
+  );
+}
+
+// ===========================================================================
+// Image de fond plein largeur avec effet (Sprint 5.5)
+// ===========================================================================
+function BgImageBlock({ meta }: { meta: Record<string, any> }) {
+  const effectType   = (meta.effectType ?? 'parallax') as 'parallax' | 'zoom' | 'fade' | 'fixed' | 'none';
+  const height       = meta.height ?? 480;
+  const overlayColor = meta.overlayColor ?? null;
+  const imageUrl     = meta.imageUrl ?? '';
+  const alt          = meta.alt ?? '';
+
+  // Wrapper full-bleed (échappe au container)
+  const bleedCls = 'relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen overflow-hidden';
+
+  if (!imageUrl) {
+    return (
+      <div className={bleedCls} style={{ height: `${height}px` }}>
+        <div className="absolute inset-0 grid place-items-center bg-gray-100 border-y-2 border-dashed border-gray-300 text-gray-400">
+          Image de fond (cliquer pour configurer)
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={bleedCls} style={{ height: `${height}px` }}>
+      {effectType === 'parallax' && <BgParallax url={imageUrl} alt={alt} speed={meta.effectSpeed ?? 0.5} />}
+      {effectType === 'zoom'     && <BgZoom url={imageUrl} alt={alt} scale={meta.effectScale ?? 1.2} />}
+      {effectType === 'fade'     && <BgFade url={imageUrl} alt={alt} />}
+      {effectType === 'fixed'    && <BgFixed url={imageUrl} />}
+      {effectType === 'none'     && <BgSimple url={imageUrl} alt={alt} />}
+      {overlayColor && <div className="absolute inset-0" style={{ backgroundColor: overlayColor }} />}
+    </div>
+  );
+}
+
+function BgParallax({ url, alt, speed }: { url: string; alt: string; speed: number }) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const onScroll = () => {
+      if (!wrapRef.current || !imgRef.current) return;
+      const r = wrapRef.current.getBoundingClientRect();
+      const wh = window.innerHeight;
+      if (r.bottom < 0 || r.top > wh) return;
+      const rel = r.top - wh;
+      const off = -rel * (1 - speed);
+      imgRef.current.style.transform = `translateY(${off * speed}px)`;
+    };
+    window.addEventListener('scroll', onScroll); onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [speed]);
+  return (
+    <div ref={wrapRef} className="absolute inset-0">
+      <div ref={imgRef} className="absolute inset-0 w-full" style={{ height: '120%', top: '-10%' }}>
+        <img src={url} alt={alt} className="w-full h-full object-cover" />
+      </div>
+    </div>
+  );
+}
+
+function BgZoom({ url, alt, scale }: { url: string; alt: string; scale: number }) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const onScroll = () => {
+      if (!wrapRef.current || !imgRef.current) return;
+      const r = wrapRef.current.getBoundingClientRect();
+      const wh = window.innerHeight;
+      if (r.bottom < 0 || r.top > wh) return;
+      const p = Math.min(Math.max((wh - r.top) / (wh + r.height), 0), 1);
+      imgRef.current.style.transform = `scale(${1 + (scale - 1) * p})`;
+    };
+    window.addEventListener('scroll', onScroll); onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [scale]);
+  return (
+    <div ref={wrapRef} className="absolute inset-0 overflow-hidden">
+      <div ref={imgRef} className="absolute inset-0 transition-transform duration-100">
+        <img src={url} alt={alt} className="w-full h-full object-cover" />
+      </div>
+    </div>
+  );
+}
+
+function BgFade({ url, alt }: { url: string; alt: string }) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const onScroll = () => {
+      if (!wrapRef.current || !imgRef.current) return;
+      const r = wrapRef.current.getBoundingClientRect();
+      const wh = window.innerHeight;
+      if (r.bottom < 0 || r.top > wh) return;
+      const p = Math.min(Math.max((wh - r.top) / (wh + r.height), 0), 1);
+      let opacity = 1; if (p < 0.3) opacity = p / 0.3; else if (p > 0.7) opacity = (1 - p) / 0.3;
+      imgRef.current.style.opacity = `${opacity}`;
+    };
+    window.addEventListener('scroll', onScroll); onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  return (
+    <div ref={wrapRef} className="absolute inset-0">
+      <div ref={imgRef} className="absolute inset-0 transition-opacity duration-300">
+        <img src={url} alt={alt} className="w-full h-full object-cover" />
+      </div>
+    </div>
+  );
+}
+
+function BgFixed({ url }: { url: string }) {
+  return (
+    <div className="absolute inset-0"
+      style={{ backgroundImage: `url(${url})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }} />
+  );
+}
+
+function BgSimple({ url, alt }: { url: string; alt: string }) {
+  return <img src={url} alt={alt} className="absolute inset-0 w-full h-full object-cover" />;
 }
