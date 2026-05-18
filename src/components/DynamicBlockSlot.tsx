@@ -1,8 +1,8 @@
 'use client';
 
-// Sprint 5.5 — DynamicBlockSlot enrichi :
-//   1. Nouveau type "bg-image" → image plein largeur avec effet parallax/zoom/fade/fixed/none
-//   2. Type "image" enrichi : width, objectFit, height, borderRadius, marginY
+// Sprint 5.5.2 — DynamicBlockSlot
+// Ajouts :
+//   1. Applique meta.objectPosition aux images inline (image) et de fond (bg-image)
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { Trash2 } from 'lucide-react';
@@ -82,9 +82,6 @@ function BlockShell({ block, editMode, onChanged }: { block: Block; editMode: bo
   );
 }
 
-// ===========================================================================
-// Rendu par type de bloc
-// ===========================================================================
 function BlockBody({ type, content, meta }: { type: string; content: string; meta: Record<string, any> }) {
   switch (type) {
     case 'title':
@@ -127,29 +124,22 @@ function BlockBody({ type, content, meta }: { type: string; content: string; met
   }
 }
 
-// ===========================================================================
-// Image inline avec options avancées (Sprint 5D)
-// ===========================================================================
 const WIDTH_CLS: Record<string, string> = {
   contained: 'max-w-3xl mx-auto',
   full:      'w-full',
   bleed:     'w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]',
 };
 const RADIUS_CLS: Record<string, string> = {
-  none: 'rounded-none',
-  md:   'rounded-md',
-  lg:   'rounded-xl',
-  full: 'rounded-3xl',
+  none: 'rounded-none', md: 'rounded-md', lg: 'rounded-xl', full: 'rounded-3xl',
 };
 const MARGIN_CLS: Record<string, string> = {
-  compact: 'my-2',
-  normal:  'my-6',
-  large:   'my-12',
+  compact: 'my-2', normal: 'my-6', large: 'my-12',
 };
 
 function InlineImage({ meta }: { meta: Record<string, any> }) {
   const width      = meta.width      ?? 'contained';
   const fit        = meta.objectFit  ?? 'cover';
+  const objectPos  = meta.objectPosition ?? 'center center';
   const radius     = meta.borderRadius ?? 'lg';
   const marginY    = meta.marginY    ?? 'normal';
   const height     = meta.height ? `${meta.height}px` : 'auto';
@@ -177,23 +167,21 @@ function InlineImage({ meta }: { meta: Record<string, any> }) {
           height,
           width: width === 'bleed' ? '100vw' : '100%',
           objectFit: fit as any,
+          objectPosition: objectPos,
         }}
       />
     </div>
   );
 }
 
-// ===========================================================================
-// Image de fond plein largeur avec effet (Sprint 5.5)
-// ===========================================================================
 function BgImageBlock({ meta }: { meta: Record<string, any> }) {
   const effectType   = (meta.effectType ?? 'parallax') as 'parallax' | 'zoom' | 'fade' | 'fixed' | 'none';
   const height       = meta.height ?? 480;
   const overlayColor = meta.overlayColor ?? null;
   const imageUrl     = meta.imageUrl ?? '';
   const alt          = meta.alt ?? '';
+  const objectPos    = meta.objectPosition ?? 'center center';
 
-  // Wrapper full-bleed (échappe au container)
   const bleedCls = 'relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen overflow-hidden';
 
   if (!imageUrl) {
@@ -208,17 +196,17 @@ function BgImageBlock({ meta }: { meta: Record<string, any> }) {
 
   return (
     <div className={bleedCls} style={{ height: `${height}px` }}>
-      {effectType === 'parallax' && <BgParallax url={imageUrl} alt={alt} speed={meta.effectSpeed ?? 0.5} />}
-      {effectType === 'zoom'     && <BgZoom url={imageUrl} alt={alt} scale={meta.effectScale ?? 1.2} />}
-      {effectType === 'fade'     && <BgFade url={imageUrl} alt={alt} />}
-      {effectType === 'fixed'    && <BgFixed url={imageUrl} />}
-      {effectType === 'none'     && <BgSimple url={imageUrl} alt={alt} />}
+      {effectType === 'parallax' && <BgParallax url={imageUrl} alt={alt} speed={meta.effectSpeed ?? 0.5} objectPos={objectPos} />}
+      {effectType === 'zoom'     && <BgZoom url={imageUrl} alt={alt} scale={meta.effectScale ?? 1.2} objectPos={objectPos} />}
+      {effectType === 'fade'     && <BgFade url={imageUrl} alt={alt} objectPos={objectPos} />}
+      {effectType === 'fixed'    && <BgFixed url={imageUrl} objectPos={objectPos} />}
+      {effectType === 'none'     && <BgSimple url={imageUrl} alt={alt} objectPos={objectPos} />}
       {overlayColor && <div className="absolute inset-0" style={{ backgroundColor: overlayColor }} />}
     </div>
   );
 }
 
-function BgParallax({ url, alt, speed }: { url: string; alt: string; speed: number }) {
+function BgParallax({ url, alt, speed, objectPos }: { url: string; alt: string; speed: number; objectPos: string }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -237,13 +225,13 @@ function BgParallax({ url, alt, speed }: { url: string; alt: string; speed: numb
   return (
     <div ref={wrapRef} className="absolute inset-0">
       <div ref={imgRef} className="absolute inset-0 w-full" style={{ height: '120%', top: '-10%' }}>
-        <img src={url} alt={alt} className="w-full h-full object-cover" />
+        <img src={url} alt={alt} className="w-full h-full object-cover" style={{ objectPosition: objectPos }} />
       </div>
     </div>
   );
 }
 
-function BgZoom({ url, alt, scale }: { url: string; alt: string; scale: number }) {
+function BgZoom({ url, alt, scale, objectPos }: { url: string; alt: string; scale: number; objectPos: string }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -261,13 +249,13 @@ function BgZoom({ url, alt, scale }: { url: string; alt: string; scale: number }
   return (
     <div ref={wrapRef} className="absolute inset-0 overflow-hidden">
       <div ref={imgRef} className="absolute inset-0 transition-transform duration-100">
-        <img src={url} alt={alt} className="w-full h-full object-cover" />
+        <img src={url} alt={alt} className="w-full h-full object-cover" style={{ objectPosition: objectPos }} />
       </div>
     </div>
   );
 }
 
-function BgFade({ url, alt }: { url: string; alt: string }) {
+function BgFade({ url, alt, objectPos }: { url: string; alt: string; objectPos: string }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -286,19 +274,19 @@ function BgFade({ url, alt }: { url: string; alt: string }) {
   return (
     <div ref={wrapRef} className="absolute inset-0">
       <div ref={imgRef} className="absolute inset-0 transition-opacity duration-300">
-        <img src={url} alt={alt} className="w-full h-full object-cover" />
+        <img src={url} alt={alt} className="w-full h-full object-cover" style={{ objectPosition: objectPos }} />
       </div>
     </div>
   );
 }
 
-function BgFixed({ url }: { url: string }) {
+function BgFixed({ url, objectPos }: { url: string; objectPos: string }) {
   return (
     <div className="absolute inset-0"
-      style={{ backgroundImage: `url(${url})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }} />
+      style={{ backgroundImage: `url(${url})`, backgroundSize: 'cover', backgroundPosition: objectPos, backgroundAttachment: 'fixed' }} />
   );
 }
 
-function BgSimple({ url, alt }: { url: string; alt: string }) {
-  return <img src={url} alt={alt} className="absolute inset-0 w-full h-full object-cover" />;
+function BgSimple({ url, alt, objectPos }: { url: string; alt: string; objectPos: string }) {
+  return <img src={url} alt={alt} className="absolute inset-0 w-full h-full object-cover" style={{ objectPosition: objectPos }} />;
 }
