@@ -3,11 +3,8 @@
 // =====================================================
 // Page publique appareil — utilise DevicePageRenderer
 // =====================================================
-// Fait UNE chose : fetch le HearingAid via /api/hearing-aids/[slug]
-// et délègue le rendu au DevicePageRenderer partagé.
-//
-// La logique de visibilité par bloc (champ JSON blockVisibility)
-// est gérée dans le renderer via parseBlockVisibility().
+// v2.1.1 : passe chrome="layout" pour ne pas re-dessiner le header/footer
+// (le layout global du site les fournit déjà).
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -16,7 +13,6 @@ import DevicePageRenderer, { HearingAidData } from '@/components/devices/DeviceP
 import { parseBlockVisibility } from '@/lib/deviceBlocks';
 
 interface AnyProductRow extends HearingAidData {
-  // tolère des champs supplémentaires renvoyés par l'API (contentBlocks, etc.)
   [k: string]: unknown;
 }
 
@@ -107,7 +103,11 @@ export default function HearingAidPage() {
 
   return (
     <main className="min-h-screen">
-      <DevicePageRenderer product={product} visibility={visibility} />
+      <DevicePageRenderer
+        product={product}
+        visibility={visibility}
+        chrome="layout"
+      />
     </main>
   );
 }
