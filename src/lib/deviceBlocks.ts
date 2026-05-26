@@ -207,3 +207,189 @@ export function getFocal(positions: ImagePositions, key: string): FocalPoint {
 export function focalToObjectPosition(p: FocalPoint): string {
   return `${p.x}% ${p.y}%`;
 }
+
+// ============================================
+// Section kickers (textes bleus uppercase au-dessus de chaque H2)
+// ============================================
+// Stockés dans HearingAid.sectionKickers (JSON string) — éditables par appareil.
+// Si non définis, on tombe sur les libellés par défaut (DEFAULT_KICKERS).
+
+export type KickerKey =
+  | 'promises'
+  | 'section1'
+  | 'section2'
+  | 'highlight1'
+  | 'section3'
+  | 'section4'
+  | 'highlight2'
+  | 'accessories';
+
+export type SectionKickers = Partial<Record<KickerKey, string>>;
+
+export const DEFAULT_KICKERS: Required<SectionKickers> = {
+  promises:    "Tout ce qu'il vous faut",
+  section1:    "À propos",
+  section2:    "Design",
+  highlight1:  "Highlight",
+  section3:    "Connectivité",
+  section4:    "Rechargeable",
+  highlight2:  "L'expérience au quotidien",
+  accessories: "Compatible avec",
+};
+
+export function parseKickers(raw: string | null | undefined): Required<SectionKickers> {
+  if (!raw) return { ...DEFAULT_KICKERS };
+  try {
+    const p = JSON.parse(raw);
+    if (!p || typeof p !== 'object') return { ...DEFAULT_KICKERS };
+    // Filtre : on ne garde que les clés connues + valeurs string non-vides
+    const cleaned: SectionKickers = {};
+    for (const k of Object.keys(DEFAULT_KICKERS) as KickerKey[]) {
+      const v = (p as Record<string, unknown>)[k];
+      if (typeof v === 'string' && v.trim().length > 0) cleaned[k] = v;
+    }
+    return { ...DEFAULT_KICKERS, ...cleaned };
+  } catch {
+    return { ...DEFAULT_KICKERS };
+  }
+}
+
+// ============================================
+// Hero badges (puces colorées sous le CTA du héros, ex: "Essai gratuit 30 jours")
+// ============================================
+// Stockés dans HearingAid.heroBadges (JSON string) — array de { text, dotColor }.
+// dotColor accepte un hex (#86efac) ou un mot-clé CSS — vide = pas de puce.
+
+export interface HeroBadge { text: string; dotColor: string; }
+
+export const DEFAULT_HERO_BADGES: HeroBadge[] = [
+  { text: 'Essai gratuit 30 jours', dotColor: '#86efac' },
+  { text: 'Remboursement INAMI',    dotColor: '#86efac' },
+];
+
+export function parseHeroBadges(raw: string | null | undefined): HeroBadge[] {
+  if (raw == null) return [...DEFAULT_HERO_BADGES];
+  try {
+    const p = JSON.parse(raw);
+    if (!Array.isArray(p)) return [...DEFAULT_HERO_BADGES];
+    // Tableau vide explicite = aucune puce (intentionnel)
+    return p
+      .filter((b: unknown): b is { text: unknown; dotColor?: unknown } =>
+        b !== null && typeof b === 'object' && typeof (b as { text?: unknown }).text === 'string'
+      )
+      .map((b) => ({
+        text: String(b.text),
+        dotColor: typeof b.dotColor === 'string' ? b.dotColor : '',
+      }));
+  } catch {
+    return [...DEFAULT_HERO_BADGES];
+  }
+}
+
+// ============================================
+// Extras par section (Sprint 5.9)
+// ============================================
+// Stockés dans HearingAid.sectionExtras (JSON) — un objet keyé par section.
+// Chaque section peut contenir :
+//   - extraImages : tableau d'URLs (affichées en bande horizontale scrollable)
+//   - stats       : tableau de "stat cards" (un grand chiffre + un petit libellé)
+
+export interface StatCard {
+  num: string;
+  label: string;
+}
+
+export interface SectionExtra {
+  extraImages?: string[];
+  stats?: StatCard[];
+}
+
+// Clés de section où l'on peut ajouter des extras
+export type ExtrasSectionKey =
+  | 'hero'
+  | 'promises'
+  | 'section1'
+  | 'section2'
+  | 'highlight1'
+  | 'section3'
+  | 'section4';
+
+export type SectionExtras = Partial<Record<ExtrasSectionKey, SectionExtra>>;
+
+export function parseSectionExtras(raw: string | null | undefined): SectionExtras {
+  if (!raw) return {};
+  try {
+    const p = JSON.parse(raw);
+    if (!p || typeof p !== 'object') return {};
+    const out: SectionExtras = {};
+    for (const k of Object.keys(p) as ExtrasSectionKey[]) {
+      const v = (p as Record<string, unknown>)[k];
+      if (!v || typeof v !== 'object') continue;
+      const entry: SectionExtra = {};
+      const imgs = (v as { extraImages?: unknown }).extraImages;
+      if (Array.isArray(imgs)) entry.extraImages = imgs.filter((u) => typeof u === 'string') as string[];
+      const stats = (v as { stats?: unknown }).stats;
+      if (Array.isArray(stats)) {
+        entry.stats = stats
+          .filter((s): s is { num: unknown; label: unknown } => s !== null && typeof s === 'object')
+          .map((s) => ({ num: String(s.num ?? ''), label: String(s.label ?? '') }))
+          .filter((s) => s.num || s.label);
+      }
+      if (entry.extraImages?.length || entry.stats?.length) out[k] = entry;
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+export function getSectionExtra(extras: SectionExtras, key: ExtrasSectionKey): SectionExtra {
+  return extras[key] || {};
+}
+
+// ============================================
+// Accessoires partagés (Sprint 5.9)
+// ============================================
+// Liste maintenue dans un Setting (key = "accessories.shared") au format JSON.
+// Chaque appareil stocke un sous-ensemble via HearingAid.accessoryIds (JSON: number[]).
+
+export interface Accessory {
+  id: number;
+  name: string;
+  imageUrl?: string;
+  href?: string;
+  description?: string;
+}
+
+export function parseAccessoriesList(raw: string | null | undefined): Accessory[] {
+  if (!raw) return [];
+  try {
+    const p = JSON.parse(raw);
+    if (!Array.isArray(p)) return [];
+    return p
+      .filter((a): a is Record<string, unknown> => a !== null && typeof a === 'object')
+      .map((a, i): Accessory => {
+        const idRaw = a.id;
+        const id = typeof idRaw === 'number' ? idRaw : Number(idRaw) || (i + 1);
+        const name = typeof a.name === 'string' ? a.name : '';
+        const imageUrl = typeof a.imageUrl === 'string' ? a.imageUrl : undefined;
+        const href = typeof a.href === 'string' ? a.href : undefined;
+        const description = typeof a.description === 'string' ? a.description : undefined;
+        return { id, name, imageUrl, href, description };
+      })
+      .filter((a) => a.name);
+  } catch {
+    return [];
+  }
+}
+
+export function parseAccessoryIds(raw: string | null | undefined): number[] {
+  if (!raw) return [];
+  try {
+    const p = JSON.parse(raw);
+    if (!Array.isArray(p)) return [];
+    return p.filter((n): n is number => typeof n === 'number').sort((a, b) => a - b);
+  } catch {
+    return [];
+  }
+}

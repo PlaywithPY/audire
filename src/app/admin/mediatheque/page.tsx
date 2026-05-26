@@ -72,7 +72,12 @@ export default function MediathequeAdmin() {
   }
 
   function copyUrl(url: string) {
-    navigator.clipboard.writeText(window.location.origin + url);
+    // Sprint 5.8 — Fix : ne pas concaténer window.location.origin si l'URL
+    // est déjà absolue (Vercel Blob → https://...vercel-storage.com/...)
+    // sinon on obtient une URL malformée du genre :
+    //   https://audire.behttps://blob.../file.jpg → 404 → icône image cassée.
+    const fullUrl = /^https?:\/\//i.test(url) ? url : (window.location.origin + url);
+    navigator.clipboard.writeText(fullUrl);
     alert('URL copiée');
   }
 
@@ -88,7 +93,12 @@ export default function MediathequeAdmin() {
 
   function handlePick(url: string) {
     if (isPicker && window.opener) {
-      window.opener.postMessage({ type: 'media:selected', url: window.location.origin + url }, '*');
+      // Sprint 5.8 — Fix : ne pas concaténer window.location.origin si l'URL
+      // est déjà absolue (Vercel Blob → https://...vercel-storage.com/...)
+      // sinon le picker renvoyait une URL malformée et l'image apparaissait
+      // cassée (icône image déchirée + texte alt) dans l'éditeur d'appareils.
+      const fullUrl = /^https?:\/\//i.test(url) ? url : (window.location.origin + url);
+      window.opener.postMessage({ type: 'media:selected', url: fullUrl }, '*');
       window.close();
     }
   }

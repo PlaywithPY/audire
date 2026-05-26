@@ -9,7 +9,7 @@
 //   - Applique le focal point (imagePositions) aux médias
 //   - 3 types de blocs insérables : text-media, gallery, highlight
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   BLOCKS,
@@ -23,6 +23,13 @@ import {
   parseImagePositions,
   getFocal,
   focalToObjectPosition,
+  parseKickers,
+  parseHeroBadges,
+  parseSectionExtras,
+  parseAccessoryIds,
+  getSectionExtra,
+  SectionExtra,
+  Accessory,
 } from '@/lib/deviceBlocks';
 
 // ============================================
@@ -39,6 +46,8 @@ export interface HearingAidData {
   price: string | null;
   mainImage: string | null;
   gallery: string | null;
+  /** Sprint 5.9 — case "Mis en avant" du catalogue */
+  isHighlight?: boolean;
 
   heroGradientFrom: string | null;
   heroGradientTo: string | null;
@@ -69,6 +78,14 @@ export interface HearingAidData {
 
   blockVisibility: string | null;
   imagePositions: string | null;
+  /** Sprint 5.8 — JSON : { promises, section1, section2, highlight1, section3, section4, highlight2, accessories } */
+  sectionKickers?: string | null;
+  /** Sprint 5.8 — JSON : [{ text, dotColor }] */
+  heroBadges?: string | null;
+  /** Sprint 5.9 — JSON : { [sectionId]: { extraImages?, stats? } } */
+  sectionExtras?: string | null;
+  /** Sprint 5.9 — JSON : number[] (IDs des accessoires compatibles) */
+  accessoryIds?: string | null;
   contentBlocks?: ProductContentBlockData[];
 }
 
@@ -89,6 +106,13 @@ export interface DevicePageRendererProps {
    *                        un header/footer global.
    */
   chrome?: 'full' | 'layout';
+
+  /**
+   * Sprint 5.9 — Liste partagée d'accessoires (depuis /api/admin/accessories).
+   * Le renderer filtre selon HearingAid.accessoryIds.
+   * Si non fournie : on tente de la fetcher côté client (mode public-page).
+   */
+  accessories?: Accessory[];
 }
 
 // ============================================
@@ -109,6 +133,7 @@ export default function DevicePageRenderer({
   selectedBlock = null,
   onBlockSelect,
   chrome = 'full',
+  accessories,
 }: DevicePageRendererProps) {
   const advantages = safeParse<Advantage[]>(product.advantages, []);
   const faqs = safeParse<FAQ[]>(product.productFAQs, []);
@@ -116,6 +141,28 @@ export default function DevicePageRenderer({
   const gallery = safeParse<string[]>(product.gallery, []);
   const imagePositions = parseImagePositions(product.imagePositions);
   const contentBlocks = product.contentBlocks || [];
+
+  // Sprint 5.8 — kickers + heroBadges éditables
+  const kickers     = parseKickers(product.sectionKickers);
+  const heroBadges  = parseHeroBadges(product.heroBadges);
+
+  // Sprint 5.9 — extras par section + accessoires partagés
+  const extras       = parseSectionExtras(product.sectionExtras);
+  const accessoryIds = parseAccessoryIds(product.accessoryIds);
+  const [fetchedAccessories, setFetchedAccessories] = useState<Accessory[] | null>(null);
+  // Si la prop n'est pas fournie (mode public-page), on charge la liste depuis l'API.
+  useEffect(() => {
+    if (accessories !== undefined) return;
+    if (accessoryIds.length === 0) return;
+    let cancelled = false;
+    fetch('/api/admin/accessories')
+      .then((r) => r.ok ? r.json() : [])
+      .then((arr) => { if (!cancelled) setFetchedAccessories(Array.isArray(arr) ? arr : []); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [accessories, accessoryIds.length]);
+  const accessoriesSource = accessories ?? fetchedAccessories ?? [];
+  const visibleAccessories = accessoriesSource.filter((a) => accessoryIds.includes(a.id));
 
   const heroFrom = product.heroGradientFrom || '#42a4ff';
   const heroTo   = product.heroGradientTo   || '#2d87e6';
@@ -300,8 +347,12 @@ export default function DevicePageRenderer({
                   </Link>
                 </div>
                 <div className="mt-7 flex items-center gap-6 text-white/80 text-sm flex-wrap">
-                  <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-300"></span>Essai gratuit 30 jours</span>
-                  <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-300"></span>Remboursement INAMI</span>
+                  {heroBadges.map((b, i) => (
+                    <span key={i} className="flex items-center gap-2">
+                      {b.dotColor && <span className="w-2 h-2 rounded-full" style={{ backgroundColor: b.dotColor }}></span>}
+                      {b.text}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
@@ -315,7 +366,7 @@ export default function DevicePageRenderer({
         <div className="py-14 bg-white">
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center max-w-2xl mx-auto mb-10">
-              <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Tout ce qu'il vous faut</p>
+              <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.promises}</p>
               <h2 className="text-3xl md:text-4xl font-semibold text-gray-900" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                 {advantages.length || 'Plusieurs'} promesses, un seul appareil
               </h2>
@@ -351,7 +402,7 @@ export default function DevicePageRenderer({
             <div className="max-w-6xl mx-auto px-6">
               <div className="grid md:grid-cols-2 gap-10 items-center">
                 <div>
-                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">À propos</p>
+                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.section1}</p>
                   <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-5" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                     {product.section1Title || <em className="text-gray-400">Titre à définir</em>}
                   </h2>
@@ -361,6 +412,7 @@ export default function DevicePageRenderer({
                 </div>
                 <MediaSlot url={product.section1MediaUrl} type={product.section1MediaType} alt={product.section1Title || ''} focal={getFocal(imagePositions, 'section1MediaUrl')} />
               </div>
+              <SectionExtrasRender extra={getSectionExtra(extras, 'section1')} />
             </div>
           </div>
         )}
@@ -386,7 +438,7 @@ export default function DevicePageRenderer({
                   )}
                 </div>
                 <div className="order-1 md:order-2">
-                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Design</p>
+                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.section2}</p>
                   <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-5" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                     {product.section2Title || <em className="text-gray-400">Titre à définir</em>}
                   </h2>
@@ -395,6 +447,7 @@ export default function DevicePageRenderer({
                   ) : <PreviewPlaceholder previewAll={previewAll}>Description manquante</PreviewPlaceholder>}
                 </div>
               </div>
+              <SectionExtrasRender extra={getSectionExtra(extras, 'section2')} />
             </div>
           </div>
         )}
@@ -410,7 +463,7 @@ export default function DevicePageRenderer({
                 <div className="grid md:grid-cols-2 gap-8 items-center p-8 md:p-12">
                   <ImageSlot url={product.highlightBox1Image} alt={product.highlightBox1Title || ''} aspect="square" focal={getFocal(imagePositions, 'highlightBox1Image')} />
                   <div>
-                    <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Highlight</p>
+                    <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.highlight1}</p>
                     <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                       {product.highlightBox1Title || <em className="text-gray-400">Titre à définir</em>}
                     </h2>
@@ -423,6 +476,7 @@ export default function DevicePageRenderer({
                   </div>
                 </div>
               </div>
+              <SectionExtrasRender extra={getSectionExtra(extras, 'highlight1')} />
             </div>
           </div>
         )}
@@ -436,7 +490,7 @@ export default function DevicePageRenderer({
             <div className="max-w-6xl mx-auto px-6">
               <div className="grid md:grid-cols-2 gap-10 items-center">
                 <div>
-                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Connectivité</p>
+                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.section3}</p>
                   <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-5" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                     {product.section3Title || <em className="text-gray-400">Titre à définir</em>}
                   </h2>
@@ -446,6 +500,7 @@ export default function DevicePageRenderer({
                 </div>
                 <ImageSlot url={product.section3Image} alt={product.section3Title || ''} aspect="square" focal={getFocal(imagePositions, 'section3Image')} />
               </div>
+              <SectionExtrasRender extra={getSectionExtra(extras, 'section3')} />
             </div>
           </div>
         )}
@@ -462,7 +517,7 @@ export default function DevicePageRenderer({
                   <MediaSlot url={product.section4MediaUrl} type={product.section4MediaType} alt={product.section4Title || ''} focal={getFocal(imagePositions, 'section4MediaUrl')} />
                 </div>
                 <div className="order-1 md:order-2">
-                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Rechargeable</p>
+                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.section4}</p>
                   <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-5" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                     {product.section4Title || <em className="text-gray-400">Titre à définir</em>}
                   </h2>
@@ -471,6 +526,7 @@ export default function DevicePageRenderer({
                   ) : <PreviewPlaceholder previewAll={previewAll}>Description manquante</PreviewPlaceholder>}
                 </div>
               </div>
+              <SectionExtrasRender extra={getSectionExtra(extras, 'section4')} />
             </div>
           </div>
         )}
@@ -484,7 +540,7 @@ export default function DevicePageRenderer({
             <div className="max-w-6xl mx-auto px-6">
               <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12">
                 <div className="text-center max-w-2xl mx-auto mb-8">
-                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">L'expérience au quotidien</p>
+                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.highlight2}</p>
                   <h2 className="text-3xl md:text-4xl font-semibold text-gray-900" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                     {product.highlightBox2Title || <em className="text-gray-400">Titre à définir</em>}
                   </h2>
@@ -517,14 +573,24 @@ export default function DevicePageRenderer({
         <div className="py-14 bg-white">
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center max-w-2xl mx-auto mb-8">
-              <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Compatible avec</p>
+              <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.accessories}</p>
               <h2 className="text-3xl md:text-4xl font-semibold text-gray-900" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                 Des accessoires qui prolongent l'expérience
               </h2>
             </div>
-            <PreviewPlaceholder previewAll={previewAll}>
-              Liste d'accessoires non encore configurable en base — à câbler dans une v2.2
-            </PreviewPlaceholder>
+            {visibleAccessories.length > 0 ? (
+              <div className={`grid gap-5 ${visibleAccessories.length >= 4 ? 'grid-cols-2 md:grid-cols-4' : visibleAccessories.length === 3 ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2'}`}>
+                {visibleAccessories.map((a) => (
+                  <AccessoryCard key={a.id} accessory={a} />
+                ))}
+              </div>
+            ) : (
+              <PreviewPlaceholder previewAll={previewAll}>
+                {accessoryIds.length === 0
+                  ? "Aucun accessoire compatible — coche-les dans l'inspecteur du bloc « Accessoires »."
+                  : 'Chargement des accessoires…'}
+              </PreviewPlaceholder>
+            )}
           </div>
         </div>
       </FixedBlock>
@@ -797,6 +863,82 @@ function PreviewPlaceholder({ children, previewAll }: { children: React.ReactNod
       {children}
     </div>
   );
+}
+
+// ============================================
+// Sprint 5.9 — Extras (stats + bandeau d'images)
+// ============================================
+function SectionExtrasRender({ extra }: { extra: SectionExtra }) {
+  const hasStats  = Array.isArray(extra.stats) && extra.stats.length > 0;
+  const hasImages = Array.isArray(extra.extraImages) && extra.extraImages.length > 0;
+  if (!hasStats && !hasImages) return null;
+  return (
+    <div className="mt-10 space-y-6">
+      {hasStats && (
+        <div className={`grid gap-4 ${
+          extra.stats!.length >= 4 ? 'grid-cols-2 md:grid-cols-4' :
+          extra.stats!.length === 3 ? 'grid-cols-2 md:grid-cols-3' :
+          'grid-cols-2'}`}>
+          {extra.stats!.map((s, i) => (
+            <div key={i} className="bg-white border border-[var(--border,#C4DDF8)] rounded-2xl p-5 md:p-6">
+              <div className="text-3xl md:text-4xl font-semibold text-primary-dark"
+                   style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
+                {s.num}
+              </div>
+              <div className="text-sm text-gray-600 mt-1.5 leading-snug">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      )}
+      {hasImages && (
+        <div className="-mx-6 md:mx-0">
+          <div className="overflow-x-auto px-6 md:px-0 scroll-smooth snap-x snap-mandatory">
+            <div className="flex gap-3">
+              {extra.extraImages!.map((url, i) => (
+                <div key={i} className="snap-start flex-shrink-0 aspect-square w-40 md:w-52 rounded-2xl overflow-hidden bg-gray-100 shadow-sm">
+                  <img src={url} alt="" loading="lazy" className="w-full h-full object-cover" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================
+// Sprint 5.9 — Card accessoire
+// ============================================
+function AccessoryCard({ accessory }: { accessory: Accessory }) {
+  const inner = (
+    <div className="bg-white border border-[var(--border,#C4DDF8)] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition group h-full flex flex-col">
+      <div className="aspect-square bg-gradient-to-br from-[#EEF6FF] to-[#E1EEFC] grid place-items-center overflow-hidden">
+        {accessory.imageUrl ? (
+          <img src={accessory.imageUrl} alt={accessory.name} loading="lazy"
+               className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+        ) : (
+          <span className="text-xs uppercase tracking-widest font-mono text-primary-dark bg-white/90 px-3 py-1.5 rounded">
+            {accessory.name}
+          </span>
+        )}
+      </div>
+      <div className="p-4 flex-1 flex flex-col">
+        <div className="font-semibold text-gray-900 text-sm">{accessory.name}</div>
+        {accessory.description && (
+          <p className="text-xs text-gray-600 leading-snug mt-1.5 flex-1">{accessory.description}</p>
+        )}
+        {accessory.href && (
+          <span className="text-xs text-primary-dark font-medium mt-2 inline-flex items-center gap-1">
+            En savoir plus →
+          </span>
+        )}
+      </div>
+    </div>
+  );
+  return accessory.href ? (
+    <Link href={accessory.href} className="block">{inner}</Link>
+  ) : inner;
 }
 
 function Field({ label, name, type = 'text', textarea }: { label: string; name: string; type?: string; textarea?: boolean }) {
