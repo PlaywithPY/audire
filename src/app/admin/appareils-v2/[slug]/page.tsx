@@ -24,6 +24,8 @@ import {
   ProductContentBlockData, ContentBlockType, CONTENT_BLOCK_TYPES,
   defaultContentBlock, parseMetadata, GalleryMetadata, HighlightMetadata,
   parseImagePositions, getFocal, FocalPoint, ImagePositions,
+  parseKickers, DEFAULT_KICKERS, KickerKey, SectionKickers,
+  parseHeroBadges, HeroBadge,
 } from '@/lib/deviceBlocks';
 import MediaPicker from '@/components/admin/MediaPicker';
 
@@ -587,6 +589,17 @@ function FixedBlockInspector({
   onChange: (patch: Partial<HearingAidEditable>) => void;
   onFocal: (key: string, focal: FocalPoint) => void;
 }) {
+  // Sprint 5.8 — kickers + heroBadges helpers
+  const kickers = parseKickers(product.sectionKickers ?? null);
+  const setKicker = (key: KickerKey, value: string) => {
+    const next = { ...kickers, [key]: value || DEFAULT_KICKERS[key] };
+    onChange({ sectionKickers: JSON.stringify(next) } as Partial<HearingAidEditable>);
+  };
+  const heroBadges = parseHeroBadges(product.heroBadges ?? null);
+  const setHeroBadges = (next: HeroBadge[]) => {
+    onChange({ heroBadges: JSON.stringify(next) } as Partial<HearingAidEditable>);
+  };
+
   switch (blockId) {
     case 'topbanner':
     case 'crumbs':
@@ -621,12 +634,28 @@ function FixedBlockInspector({
             <ColorField label="Dégradé · début" value={product.heroGradientFrom || '#42a4ff'} onChange={(v) => onChange({ heroGradientFrom: v })} />
             <ColorField label="Dégradé · fin"   value={product.heroGradientTo   || '#2d87e6'} onChange={(v) => onChange({ heroGradientTo: v })} />
           </Row>
+          {/* Sprint 5.8 — Puces éditables sous le CTA du héros */}
+          <ArrayEditor<HeroBadge>
+            label="Puces du héros (sous le CTA)"
+            newItemLabel="Ajouter une puce"
+            items={heroBadges}
+            onChange={setHeroBadges}
+            empty={{ text: 'Nouvelle puce', dotColor: '#86efac' }}
+            renderItem={(item, set) => (
+              <>
+                <TextField label="Texte" value={item.text} onChange={(v) => set({ ...item, text: v })} />
+                <ColorField label="Couleur de la puce (vide = pas de puce)" value={item.dotColor} onChange={(v) => set({ ...item, dotColor: v })} allowEmpty />
+              </>
+            )}
+          />
         </FieldGroup>
       );
 
     case 'promises':
       return (
-        <ArrayEditor<Advantage>
+        <FieldGroup>
+          <KickerField label="Tout ce qu'il vous faut" kickerKey="promises" kickers={kickers} setKicker={setKicker} />
+          <ArrayEditor<Advantage>
           label="Promesses"
           newItemLabel="Ajouter une promesse"
           items={safeParseArray<Advantage>(product.advantages)}
@@ -640,11 +669,13 @@ function FixedBlockInspector({
             </>
           )}
         />
+        </FieldGroup>
       );
 
     case 'section-1':
       return (
         <FieldGroup>
+          <KickerField label="À propos" kickerKey="section1" kickers={kickers} setKicker={setKicker} />
           <TextField     label="Titre"       value={product.section1Title || ''}       onChange={(v) => onChange({ section1Title: v })} />
           <TextAreaField label="Description" value={product.section1Description || ''} onChange={(v) => onChange({ section1Description: v })} />
           <MediaPicker
@@ -662,6 +693,7 @@ function FixedBlockInspector({
     case 'section-2':
       return (
         <FieldGroup>
+          <KickerField label="Design" kickerKey="section2" kickers={kickers} setKicker={setKicker} />
           <TextField     label="Titre"       value={product.section2Title || ''}       onChange={(v) => onChange({ section2Title: v })} />
           <TextAreaField label="Description" value={product.section2Description || ''} onChange={(v) => onChange({ section2Description: v })} />
           <MediaPicker
@@ -678,6 +710,7 @@ function FixedBlockInspector({
     case 'highlight-1':
       return (
         <FieldGroup>
+          <KickerField label="Highlight" kickerKey="highlight1" kickers={kickers} setKicker={setKicker} />
           <TextField     label="Titre"       value={product.highlightBox1Title || ''}       onChange={(v) => onChange({ highlightBox1Title: v })} />
           <TextAreaField label="Description" value={product.highlightBox1Description || ''} onChange={(v) => onChange({ highlightBox1Description: v })} />
           <MediaPicker
@@ -694,6 +727,7 @@ function FixedBlockInspector({
     case 'section-3':
       return (
         <FieldGroup>
+          <KickerField label="Connectivité" kickerKey="section3" kickers={kickers} setKicker={setKicker} />
           <TextField     label="Titre"       value={product.section3Title || ''}       onChange={(v) => onChange({ section3Title: v })} />
           <TextAreaField label="Description" value={product.section3Description || ''} onChange={(v) => onChange({ section3Description: v })} />
           <MediaPicker
@@ -710,6 +744,7 @@ function FixedBlockInspector({
     case 'section-4':
       return (
         <FieldGroup>
+          <KickerField label="Rechargeable" kickerKey="section4" kickers={kickers} setKicker={setKicker} />
           <TextField     label="Titre"       value={product.section4Title || ''}       onChange={(v) => onChange({ section4Title: v })} />
           <TextAreaField label="Description" value={product.section4Description || ''} onChange={(v) => onChange({ section4Description: v })} />
           <MediaPicker
@@ -727,6 +762,7 @@ function FixedBlockInspector({
     case 'highlight-2':
       return (
         <FieldGroup>
+          <KickerField label="L'expérience au quotidien" kickerKey="highlight2" kickers={kickers} setKicker={setKicker} />
           <TextField label="Titre" value={product.highlightBox2Title || ''} onChange={(v) => onChange({ highlightBox2Title: v })} />
           <ArrayEditor<string>
             label="Galerie d'images"
@@ -743,10 +779,13 @@ function FixedBlockInspector({
 
     case 'accessories':
       return (
-        <div className="text-sm text-gray-500 leading-relaxed space-y-3">
-          <p className="font-semibold text-gray-700">Bloc en attente d'un champ dédié.</p>
-          <p>Pour gérer une liste d'accessoires par appareil, il faudra ajouter un champ JSON dédié dans le schéma.</p>
-        </div>
+        <FieldGroup>
+          <KickerField label="Compatible avec" kickerKey="accessories" kickers={kickers} setKicker={setKicker} />
+          <div className="text-sm text-gray-500 leading-relaxed space-y-3">
+            <p className="font-semibold text-gray-700">Bloc en attente d'un champ dédié.</p>
+            <p>Pour gérer une liste d'accessoires par appareil, il faudra ajouter un champ JSON dédié dans le schéma.</p>
+          </div>
+        </FieldGroup>
       );
 
     case 'faq':
@@ -894,6 +933,38 @@ function TextField({ label, value, onChange, placeholder }: { label: string; val
       <Label>{label}</Label>
       <input type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
              className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400" />
+    </div>
+  );
+}
+
+// Sprint 5.8 — Champ dédié pour les "kickers" (titre coloré au-dessus du H2 de chaque section).
+function KickerField({
+  label, kickerKey, kickers, setKicker,
+}: {
+  label: string;
+  kickerKey: KickerKey;
+  kickers: Required<SectionKickers>;
+  setKicker: (key: KickerKey, value: string) => void;
+}) {
+  const value = kickers[kickerKey];
+  const isDefault = value === DEFAULT_KICKERS[kickerKey];
+  return (
+    <div className="border border-blue-100 bg-blue-50/40 rounded-lg p-3 -mx-1">
+      <div className="flex items-baseline justify-between mb-1.5">
+        <Label>Kicker (titre bleu de la section)</Label>
+        {!isDefault && (
+          <button type="button" onClick={() => setKicker(kickerKey, DEFAULT_KICKERS[kickerKey])}
+                  className="text-[10px] text-blue-600 hover:text-blue-800 font-medium">
+            Réinitialiser
+          </button>
+        )}
+      </div>
+      <input type="text" value={value} onChange={(e) => setKicker(kickerKey, e.target.value)}
+             placeholder={DEFAULT_KICKERS[kickerKey]}
+             className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm uppercase tracking-wider font-semibold text-primary-dark bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400" />
+      <p className="text-[10px] text-gray-500 mt-1.5">
+        Par défaut : <span className="font-mono">{DEFAULT_KICKERS[kickerKey]}</span> (section <b>{label}</b>)
+      </p>
     </div>
   );
 }

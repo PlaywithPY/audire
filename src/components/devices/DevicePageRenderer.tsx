@@ -23,6 +23,8 @@ import {
   parseImagePositions,
   getFocal,
   focalToObjectPosition,
+  parseKickers,
+  parseHeroBadges,
 } from '@/lib/deviceBlocks';
 
 // ============================================
@@ -69,6 +71,10 @@ export interface HearingAidData {
 
   blockVisibility: string | null;
   imagePositions: string | null;
+  /** Sprint 5.8 — JSON : { promises, section1, section2, highlight1, section3, section4, highlight2, accessories } */
+  sectionKickers?: string | null;
+  /** Sprint 5.8 — JSON : [{ text, dotColor }] */
+  heroBadges?: string | null;
   contentBlocks?: ProductContentBlockData[];
 }
 
@@ -81,14 +87,6 @@ export interface DevicePageRendererProps {
   previewAll?: boolean;
   selectedBlock?: BlockId | string | null;
   onBlockSelect?: (id: BlockId | string) => void;
-  /**
-   * Mode de rendu du chrome (header / footer / breadcrumb / topbanner) :
-   *  - "full"   (défaut) : tous les blocs rendus — utilisé par la PREVIEW admin
-   *  - "layout"          : masque topbanner/header/crumbs/footer — utilisé sur
-   *                        la page publique, où le layout du site fournit déjà
-   *                        un header/footer global.
-   */
-  chrome?: 'full' | 'layout';
 }
 
 // ============================================
@@ -108,7 +106,6 @@ export default function DevicePageRenderer({
   previewAll = false,
   selectedBlock = null,
   onBlockSelect,
-  chrome = 'full',
 }: DevicePageRendererProps) {
   const advantages = safeParse<Advantage[]>(product.advantages, []);
   const faqs = safeParse<FAQ[]>(product.productFAQs, []);
@@ -116,6 +113,10 @@ export default function DevicePageRenderer({
   const gallery = safeParse<string[]>(product.gallery, []);
   const imagePositions = parseImagePositions(product.imagePositions);
   const contentBlocks = product.contentBlocks || [];
+
+  // Sprint 5.8 — kickers + heroBadges éditables
+  const kickers     = parseKickers(product.sectionKickers);
+  const heroBadges  = parseHeroBadges(product.heroBadges);
 
   const heroFrom = product.heroGradientFrom || '#42a4ff';
   const heroTo   = product.heroGradientTo   || '#2d87e6';
@@ -126,11 +127,6 @@ export default function DevicePageRenderer({
 
   // Wrapper helper — pour les blocs FIXES
   const FixedBlock = ({ id, children }: { id: BlockId; children: React.ReactNode }) => {
-    // En mode "layout" (page publique), on masque topbanner/header/crumbs/footer
-    // — ils sont déjà fournis par le layout global du site.
-    if (chrome === 'layout' && (id === 'topbanner' || id === 'header' || id === 'crumbs' || id === 'footer')) {
-      return null;
-    }
     if (!shouldRenderBlock(id, visibility, { previewAll })) return null;
     const hidden = visibility[id] === false;
     const selected = selectedBlock === id;
@@ -300,8 +296,12 @@ export default function DevicePageRenderer({
                   </Link>
                 </div>
                 <div className="mt-7 flex items-center gap-6 text-white/80 text-sm flex-wrap">
-                  <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-300"></span>Essai gratuit 30 jours</span>
-                  <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-300"></span>Remboursement INAMI</span>
+                  {heroBadges.map((b, i) => (
+                    <span key={i} className="flex items-center gap-2">
+                      {b.dotColor && <span className="w-2 h-2 rounded-full" style={{ backgroundColor: b.dotColor }}></span>}
+                      {b.text}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
@@ -315,7 +315,7 @@ export default function DevicePageRenderer({
         <div className="py-14 bg-white">
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center max-w-2xl mx-auto mb-10">
-              <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Tout ce qu'il vous faut</p>
+              <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.promises}</p>
               <h2 className="text-3xl md:text-4xl font-semibold text-gray-900" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                 {advantages.length || 'Plusieurs'} promesses, un seul appareil
               </h2>
@@ -351,7 +351,7 @@ export default function DevicePageRenderer({
             <div className="max-w-6xl mx-auto px-6">
               <div className="grid md:grid-cols-2 gap-10 items-center">
                 <div>
-                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">À propos</p>
+                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.section1}</p>
                   <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-5" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                     {product.section1Title || <em className="text-gray-400">Titre à définir</em>}
                   </h2>
@@ -386,7 +386,7 @@ export default function DevicePageRenderer({
                   )}
                 </div>
                 <div className="order-1 md:order-2">
-                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Design</p>
+                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.section2}</p>
                   <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-5" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                     {product.section2Title || <em className="text-gray-400">Titre à définir</em>}
                   </h2>
@@ -410,7 +410,7 @@ export default function DevicePageRenderer({
                 <div className="grid md:grid-cols-2 gap-8 items-center p-8 md:p-12">
                   <ImageSlot url={product.highlightBox1Image} alt={product.highlightBox1Title || ''} aspect="square" focal={getFocal(imagePositions, 'highlightBox1Image')} />
                   <div>
-                    <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Highlight</p>
+                    <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.highlight1}</p>
                     <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                       {product.highlightBox1Title || <em className="text-gray-400">Titre à définir</em>}
                     </h2>
@@ -436,7 +436,7 @@ export default function DevicePageRenderer({
             <div className="max-w-6xl mx-auto px-6">
               <div className="grid md:grid-cols-2 gap-10 items-center">
                 <div>
-                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Connectivité</p>
+                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.section3}</p>
                   <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-5" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                     {product.section3Title || <em className="text-gray-400">Titre à définir</em>}
                   </h2>
@@ -462,7 +462,7 @@ export default function DevicePageRenderer({
                   <MediaSlot url={product.section4MediaUrl} type={product.section4MediaType} alt={product.section4Title || ''} focal={getFocal(imagePositions, 'section4MediaUrl')} />
                 </div>
                 <div className="order-1 md:order-2">
-                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Rechargeable</p>
+                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.section4}</p>
                   <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-5" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                     {product.section4Title || <em className="text-gray-400">Titre à définir</em>}
                   </h2>
@@ -484,7 +484,7 @@ export default function DevicePageRenderer({
             <div className="max-w-6xl mx-auto px-6">
               <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12">
                 <div className="text-center max-w-2xl mx-auto mb-8">
-                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">L'expérience au quotidien</p>
+                  <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.highlight2}</p>
                   <h2 className="text-3xl md:text-4xl font-semibold text-gray-900" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                     {product.highlightBox2Title || <em className="text-gray-400">Titre à définir</em>}
                   </h2>
@@ -517,7 +517,7 @@ export default function DevicePageRenderer({
         <div className="py-14 bg-white">
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center max-w-2xl mx-auto mb-8">
-              <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">Compatible avec</p>
+              <p className="text-primary-dark text-xs font-semibold uppercase tracking-widest mb-2">{kickers.accessories}</p>
               <h2 className="text-3xl md:text-4xl font-semibold text-gray-900" style={{ fontFamily: 'var(--font-heading, Playfair Display, Georgia, serif)' }}>
                 Des accessoires qui prolongent l'expérience
               </h2>

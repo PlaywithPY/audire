@@ -207,3 +207,81 @@ export function getFocal(positions: ImagePositions, key: string): FocalPoint {
 export function focalToObjectPosition(p: FocalPoint): string {
   return `${p.x}% ${p.y}%`;
 }
+
+// ============================================
+// Section kickers (textes bleus uppercase au-dessus de chaque H2)
+// ============================================
+// Stockés dans HearingAid.sectionKickers (JSON string) — éditables par appareil.
+// Si non définis, on tombe sur les libellés par défaut (DEFAULT_KICKERS).
+
+export type KickerKey =
+  | 'promises'
+  | 'section1'
+  | 'section2'
+  | 'highlight1'
+  | 'section3'
+  | 'section4'
+  | 'highlight2'
+  | 'accessories';
+
+export type SectionKickers = Partial<Record<KickerKey, string>>;
+
+export const DEFAULT_KICKERS: Required<SectionKickers> = {
+  promises:    "Tout ce qu'il vous faut",
+  section1:    "À propos",
+  section2:    "Design",
+  highlight1:  "Highlight",
+  section3:    "Connectivité",
+  section4:    "Rechargeable",
+  highlight2:  "L'expérience au quotidien",
+  accessories: "Compatible avec",
+};
+
+export function parseKickers(raw: string | null | undefined): Required<SectionKickers> {
+  if (!raw) return { ...DEFAULT_KICKERS };
+  try {
+    const p = JSON.parse(raw);
+    if (!p || typeof p !== 'object') return { ...DEFAULT_KICKERS };
+    // Filtre : on ne garde que les clés connues + valeurs string non-vides
+    const cleaned: SectionKickers = {};
+    for (const k of Object.keys(DEFAULT_KICKERS) as KickerKey[]) {
+      const v = (p as Record<string, unknown>)[k];
+      if (typeof v === 'string' && v.trim().length > 0) cleaned[k] = v;
+    }
+    return { ...DEFAULT_KICKERS, ...cleaned };
+  } catch {
+    return { ...DEFAULT_KICKERS };
+  }
+}
+
+// ============================================
+// Hero badges (puces colorées sous le CTA du héros, ex: "Essai gratuit 30 jours")
+// ============================================
+// Stockés dans HearingAid.heroBadges (JSON string) — array de { text, dotColor }.
+// dotColor accepte un hex (#86efac) ou un mot-clé CSS — vide = pas de puce.
+
+export interface HeroBadge { text: string; dotColor: string; }
+
+export const DEFAULT_HERO_BADGES: HeroBadge[] = [
+  { text: 'Essai gratuit 30 jours', dotColor: '#86efac' },
+  { text: 'Remboursement INAMI',    dotColor: '#86efac' },
+];
+
+export function parseHeroBadges(raw: string | null | undefined): HeroBadge[] {
+  if (raw == null) return [...DEFAULT_HERO_BADGES];
+  try {
+    const p = JSON.parse(raw);
+    if (!Array.isArray(p)) return [...DEFAULT_HERO_BADGES];
+    // Tableau vide explicite = aucune puce (intentionnel)
+    return p
+      .filter((b: unknown): b is { text: unknown; dotColor?: unknown } =>
+        b !== null && typeof b === 'object' && typeof (b as { text?: unknown }).text === 'string'
+      )
+      .map((b) => ({
+        text: String(b.text),
+        dotColor: typeof b.dotColor === 'string' ? b.dotColor : '',
+      }));
+  } catch {
+    return [...DEFAULT_HERO_BADGES];
+  }
+}

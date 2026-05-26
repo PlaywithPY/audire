@@ -1,71 +1,48 @@
-# Patch Prisma v2.1 — `ProductContentBlock` enrichi
+# Sprint 5.8 — Patch Prisma
 
-## Où
+Ajoute **deux champs JSON** sur le modèle `HearingAid` pour rendre éditables :
 
-Dans `prisma/schema.prisma`, modèle `ProductContentBlock` (vers la ligne 240).
+- les **kickers** (les titres bleus uppercase au-dessus de chaque section)
+- les **puces du héros** (les "Essai gratuit 30 jours", "Remboursement INAMI", …)
 
-## Ce qu'il faut ajouter
+## Ajouts dans `prisma/schema.prisma`
 
-Trouve le bloc :
+Dans le `model HearingAid { … }`, ajoute ces deux lignes (n'importe où, je
+recommande à côté de `blockVisibility` et `imagePositions` pour grouper les
+champs JSON de personnalisation) :
 
 ```prisma
-model ProductContentBlock {
-  id           Int        @id @default(autoincrement())
-  hearingAidId Int
-  hearingAid   HearingAid @relation(fields: [hearingAidId], references: [id], onDelete: Cascade)
+model HearingAid {
+  // … champs existants …
 
-  order     Int     @default(0)
-  isVisible Boolean @default(true)
-  ...
+  blockVisibility   String?   // déjà présent
+  imagePositions    String?   // déjà présent
+
+  // ▼▼▼ Sprint 5.8 ▼▼▼
+  sectionKickers    String?   // JSON : { promises, section1, section2, highlight1, section3, section4, highlight2, accessories }
+  heroBadges        String?   // JSON : [{ text: string, dotColor: string }]
+  // ▲▲▲ Sprint 5.8 ▲▲▲
+
+  // … reste des champs …
 }
 ```
 
-Et ajoute **3 champs** juste après `isVisible` :
-
-```prisma
-model ProductContentBlock {
-  id           Int        @id @default(autoincrement())
-  hearingAidId Int
-  hearingAid   HearingAid @relation(fields: [hearingAidId], references: [id], onDelete: Cascade)
-
-  order     Int     @default(0)
-  isVisible Boolean @default(true)
-
-+ // Type de bloc inséré (v2.1) : "text-media" | "gallery" | "highlight"
-+ blockType String @default("text-media")
-+
-+ // ID du bloc fixe APRÈS lequel ce bloc s'insère (ex: "hero", "section-2")
-+ afterBlockId String?
-+
-+ // Métadonnées spécifiques au type (JSON)
-+ //   text-media : {} (utilise les champs natifs)
-+ //   gallery    : { images: string[] }
-+ //   highlight  : { ctaLabel?: string, ctaHref?: string }
-+ metadata String?
-
-  // Contenu du bloc
-  title       String?
-  description String?
-  ...
-}
-```
-
-## Appliquer
+## Migration
 
 ```bash
-npx prisma db push --accept-data-loss
+npx prisma migrate dev --name add-section-kickers-and-hero-badges
 npx prisma generate
 ```
 
-Les 3 champs sont optionnels (ou ont un default) → aucune donnée existante n'est touchée. Les ProductContentBlock déjà créés via l'éditeur legacy auront automatiquement `blockType="text-media"` et `afterBlockId=null` (= placés en fin de page, comme avant).
+## ✅ Rétro-compatibilité
 
-## Alternative SQL pure
+Les deux champs sont **nullables**. Si la valeur est `null` (le cas pour tous
+les appareils existants), les helpers `parseKickers()` et `parseHeroBadges()`
+retombent automatiquement sur les valeurs par défaut hardcodées d'avant :
 
-Si vraiment tu préfères (mais tu dois aussi éditer `schema.prisma` comme ci-dessus, sinon le code TS ne reconnaîtra pas les champs) :
+- Kickers : "Tout ce qu'il vous faut", "À propos", "Design", "Highlight",
+  "Connectivité", "Rechargeable", "L'expérience au quotidien", "Compatible avec".
+- Badges : `[{text: "Essai gratuit 30 jours", dotColor: "#86efac"},
+  {text: "Remboursement INAMI", dotColor: "#86efac"}]`.
 
-```sql
-ALTER TABLE "ProductContentBlock"
-  ADD COLUMN "blockType" TEXT NOT NULL DEFAULT 'text-media',
-  ADD COLUMN "afterBlockId" TEXT,
-  ADD COLUMN "metadata" TEXT;
-```
+Donc **zéro régression visuelle** au déploiement, même sans toucher aux données.
