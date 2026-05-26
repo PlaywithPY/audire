@@ -320,7 +320,11 @@ model ProductContentBlock {
 
   order     Int     @default(0) // Ordre d'affichage dans la page
   isVisible Boolean @default(true) // Visible ou masqué
-
+  // ↓↓↓ NOUVELLES LIGNES À AJOUTER ↓↓↓
+  blockType    String  @default("text-media")
+  afterBlockId String?
+  metadata     String?
+  // ↑↑↑ FIN DES NOUVELLES LIGNES ↑↑↑
   // Contenu du bloc
   title       String? // Titre de la section
   description String? // Description/texte (peut être long)
