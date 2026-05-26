@@ -8,9 +8,17 @@
 //   écoute postMessage({type:'media:selected', url})
 // - Bouton "Coller URL" : input texte direct
 // - Si focal point activé : afficher le FocalPointPicker pour recadrer
+//
+// Sprint 5.10.1 — perf fix :
+//   - Le preview utilise <Image> de next/image avec `sizes="300px"` →
+//     Next sert une variante redimensionnée (~300px) au lieu du blob original
+//     multi-Mo. Plus de freeze quand on tape dans l'inspecteur.
+//   - React.memo sur le composant pour éviter les re-renders inutiles quand
+//     les props n'ont pas vraiment changé.
 
-import { useEffect, useRef, useState } from 'react';
-import { Image as ImageIcon, FolderOpen, Link2, X, Crop, Video, Loader2 } from 'lucide-react';
+import { useEffect, useRef, useState, memo } from 'react';
+import Image from 'next/image';
+import { Image as ImageIcon, FolderOpen, Link2, X, Crop, Video } from 'lucide-react';
 import FocalPointPicker from './FocalPointPicker';
 import { FocalPoint } from '@/lib/deviceBlocks';
 
@@ -35,7 +43,7 @@ interface Props {
   aspect?: 'square' | 'video';
 }
 
-export default function MediaPicker({
+function MediaPickerImpl({
   value, onChange,
   mediaType = 'image',
   onTypeChange,
@@ -113,20 +121,27 @@ export default function MediaPicker({
         {value ? (
           <>
             {isVideo ? (
-              <video src={value} className="w-full h-full object-cover" muted />
+              <video src={value} className="w-full h-full object-cover" muted preload="metadata" />
             ) : (
-              <img
+              // Sprint 5.10.1 — next/image avec sizes="300px" pour servir une
+              // variante redimensionnée (au lieu de l'original multi-Mo du blob)
+              <Image
                 src={value}
                 alt=""
-                className="w-full h-full object-cover"
+                fill
+                sizes="300px"
+                quality={70}
+                className="object-cover"
                 style={focal ? { objectPosition: `${focal.x}% ${focal.y}%` } : undefined}
+                // unoptimized en fallback si l'URL est une data: ou un format non géré
+                unoptimized={value.startsWith('data:')}
               />
             )}
             <button
               type="button"
               onClick={clear}
               title="Retirer ce média"
-              className="absolute top-1.5 right-1.5 p-1 bg-white/95 rounded shadow hover:bg-red-50 hover:text-red-600 text-gray-600"
+              className="absolute top-1.5 right-1.5 p-1 bg-white/95 rounded shadow hover:bg-red-50 hover:text-red-600 text-gray-600 z-10"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -135,7 +150,7 @@ export default function MediaPicker({
                 type="button"
                 onClick={() => setFocalMode((v) => !v)}
                 title="Régler le focal point"
-                className={`absolute bottom-1.5 right-1.5 px-2 py-1 rounded shadow text-[10px] font-mono flex items-center gap-1 ${
+                className={`absolute bottom-1.5 right-1.5 px-2 py-1 rounded shadow text-[10px] font-mono flex items-center gap-1 z-10 ${
                   focalMode ? 'bg-blue-600 text-white' : 'bg-white/95 text-gray-700 hover:bg-blue-50'
                 }`}
               >
@@ -204,3 +219,17 @@ export default function MediaPicker({
     </div>
   );
 }
+
+// Sprint 5.10.1 — Memo : ne re-render que si les props ont vraiment changé.
+// Important quand l'inspecteur est re-rendu sur chaque keystroke d'un autre
+// champ (kicker, titre, etc.) — le MediaPicker n'a aucune raison de re-render.
+const MediaPicker = memo(MediaPickerImpl, (prev, next) => {
+  return prev.value === next.value
+      && prev.mediaType === next.mediaType
+      && prev.label === next.label
+      && prev.aspect === next.aspect
+      && prev.focal?.x === next.focal?.x
+      && prev.focal?.y === next.focal?.y;
+});
+
+export default MediaPicker;

@@ -11,6 +11,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+// Sprint 5.10.1 — next/image pour servir des variantes redimensionnées
+// des images du blob (sinon l'éditeur freeze sur chaque keystroke quand
+// une image multi-Mo est dans une section).
+import Image from 'next/image';
 import {
   BLOCKS,
   BlockId,
@@ -313,11 +317,15 @@ export default function DevicePageRenderer({
         }}>
           {product.heroImage && (
             <div className="absolute inset-y-0 right-0 w-1/2 hidden md:block opacity-70">
-              <img
+              <Image
                 src={product.heroImage}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                fill
+                sizes="50vw"
+                quality={75}
+                className="object-cover"
                 style={{ objectPosition: focalToObjectPosition(getFocal(imagePositions, 'heroImage')) }}
+                unoptimized={product.heroImage.startsWith('data:')}
               />
             </div>
           )}
@@ -380,7 +388,7 @@ export default function DevicePageRenderer({
                   <div key={i} className="text-center">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#EBF5FF] to-[#D7EBFF] text-primary-dark grid place-items-center shadow-[inset_0_0_0_1px_rgba(45,135,230,0.12)]">
                       {a.icon?.startsWith('http') || a.icon?.startsWith('/') ? (
-                        <img src={a.icon} alt={a.title} className="w-8 h-8 object-contain" />
+                        <img src={a.icon} alt={a.title} width={32} height={32} loading="lazy" decoding="async" className="w-8 h-8 object-contain" />
                       ) : (
                         <span className="text-3xl">{a.icon || '✓'}</span>
                       )}
@@ -433,8 +441,8 @@ export default function DevicePageRenderer({
                   {gallery.length > 0 && (
                     <div className="mt-4 grid grid-cols-3 gap-3">
                       {gallery.slice(0, 3).map((url, i) => (
-                        <div key={i} className="aspect-square rounded-2xl bg-gray-100 overflow-hidden">
-                          <img src={url} alt={`Galerie ${i+1}`} className="w-full h-full object-cover" />
+                        <div key={i} className="relative aspect-square rounded-2xl bg-gray-100 overflow-hidden">
+                          <Image src={url} alt={`Galerie ${i+1}`} fill sizes="200px" className="object-cover" unoptimized={url.startsWith('data:')} />
                         </div>
                       ))}
                     </div>
@@ -551,8 +559,8 @@ export default function DevicePageRenderer({
                 {highlight2Images.length > 0 ? (
                   <div className={`grid gap-5 mb-8 ${highlight2Images.length >= 4 ? 'grid-cols-2 md:grid-cols-4' : highlight2Images.length === 3 ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2'}`}>
                     {highlight2Images.map((url, i) => (
-                      <div key={i} className="aspect-square rounded-2xl bg-gray-100 overflow-hidden">
-                        <img src={url} alt={`${product.name} — ${i+1}`} className="w-full h-full object-cover" />
+                      <div key={i} className="relative aspect-square rounded-2xl bg-gray-100 overflow-hidden">
+                        <Image src={url} alt={`${product.name} — ${i+1}`} fill sizes="(max-width: 768px) 50vw, 300px" className="object-cover" unoptimized={url.startsWith('data:')} />
                       </div>
                     ))}
                   </div>
@@ -733,8 +741,8 @@ function ContentBlockRenderer({ block }: { block: ProductContentBlockData }) {
             {meta.images.length > 0 ? (
               <div className={`grid gap-5 ${meta.images.length >= 4 ? 'grid-cols-2 md:grid-cols-4' : meta.images.length === 3 ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2'}`}>
                 {meta.images.map((url, i) => (
-                  <div key={i} className="aspect-square rounded-2xl bg-gray-100 overflow-hidden">
-                    <img src={url} alt={`Galerie ${i + 1}`} className="w-full h-full object-cover" />
+                  <div key={i} className="relative aspect-square rounded-2xl bg-gray-100 overflow-hidden">
+                    <Image src={url} alt={`Galerie ${i + 1}`} fill sizes="(max-width: 768px) 50vw, 300px" className="object-cover" unoptimized={url.startsWith('data:')} />
                   </div>
                 ))}
               </div>
@@ -756,11 +764,11 @@ function ContentBlockRenderer({ block }: { block: ProductContentBlockData }) {
             <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
               <div className="grid md:grid-cols-2 gap-8 items-center p-8 md:p-12">
                 {block.mediaUrl ? (
-                  <div className={`aspect-square rounded-2xl bg-gray-100 overflow-hidden shadow-xl ${block.mediaPosition === 'right' ? 'md:order-2' : ''}`}>
+                  <div className={`relative aspect-square rounded-2xl bg-gray-100 overflow-hidden shadow-xl ${block.mediaPosition === 'right' ? 'md:order-2' : ''}`}>
                     {block.mediaType === 'video' ? (
-                      <video src={block.mediaUrl} controls className="w-full h-full object-cover" />
+                      <video src={block.mediaUrl} controls className="w-full h-full object-cover" preload="metadata" />
                     ) : (
-                      <img src={block.mediaUrl} alt={block.mediaAlt || block.title || ''} className="w-full h-full object-cover" />
+                      <Image src={block.mediaUrl} alt={block.mediaAlt || block.title || ''} fill sizes="(max-width: 768px) 100vw, 600px" className="object-cover" unoptimized={(block.mediaUrl || '').startsWith('data:')} />
                     )}
                   </div>
                 ) : (
@@ -832,13 +840,13 @@ function MediaSlot({ url, type, alt, focal }: { url: string | null; type: string
   if (type === 'video') {
     return (
       <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-xl">
-        <video src={url} controls className="w-full h-full object-cover" />
+        <video src={url} controls className="w-full h-full object-cover" preload="metadata" />
       </div>
     );
   }
   return (
-    <div className="aspect-video rounded-2xl bg-gray-100 overflow-hidden shadow-xl">
-      <img src={url} alt={alt} className="w-full h-full object-cover" style={focal ? { objectPosition: `${focal.x}% ${focal.y}%` } : undefined} />
+    <div className="relative aspect-video rounded-2xl bg-gray-100 overflow-hidden shadow-xl">
+      <Image src={url} alt={alt} fill sizes="(max-width: 768px) 100vw, 600px" className="object-cover" style={focal ? { objectPosition: `${focal.x}% ${focal.y}%` } : undefined} unoptimized={url.startsWith('data:')} />
     </div>
   );
 }
@@ -853,8 +861,8 @@ function ImageSlot({ url, alt, aspect = 'square', focal }: { url: string | null;
     );
   }
   return (
-    <div className={`${aspectClass} rounded-2xl bg-gray-100 overflow-hidden shadow-xl`}>
-      <img src={url} alt={alt} className="w-full h-full object-cover" style={focal ? { objectPosition: `${focal.x}% ${focal.y}%` } : undefined} />
+    <div className={`relative ${aspectClass} rounded-2xl bg-gray-100 overflow-hidden shadow-xl`}>
+      <Image src={url} alt={alt} fill sizes="(max-width: 768px) 100vw, 500px" className="object-cover" style={focal ? { objectPosition: `${focal.x}% ${focal.y}%` } : undefined} unoptimized={url.startsWith('data:')} />
     </div>
   );
 }
@@ -898,8 +906,8 @@ function SectionExtrasRender({ extra }: { extra: SectionExtra }) {
           <div className="overflow-x-auto px-6 md:px-0 scroll-smooth snap-x snap-mandatory">
             <div className="flex gap-3">
               {extra.extraImages!.map((url, i) => (
-                <div key={i} className="snap-start flex-shrink-0 aspect-square w-40 md:w-52 rounded-2xl overflow-hidden bg-gray-100 shadow-sm">
-                  <img src={url} alt="" loading="lazy" className="w-full h-full object-cover" />
+                <div key={i} className="relative snap-start flex-shrink-0 aspect-square w-40 md:w-52 rounded-2xl overflow-hidden bg-gray-100 shadow-sm">
+                  <Image src={url} alt="" fill sizes="(max-width: 768px) 160px, 210px" className="object-cover" unoptimized={url.startsWith('data:')} />
                 </div>
               ))}
             </div>
@@ -916,10 +924,11 @@ function SectionExtrasRender({ extra }: { extra: SectionExtra }) {
 function AccessoryCard({ accessory }: { accessory: Accessory }) {
   const inner = (
     <div className="bg-white border border-[var(--border,#C4DDF8)] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition group h-full flex flex-col">
-      <div className="aspect-square bg-gradient-to-br from-[#EEF6FF] to-[#E1EEFC] grid place-items-center overflow-hidden">
+      <div className="relative aspect-square bg-gradient-to-br from-[#EEF6FF] to-[#E1EEFC] grid place-items-center overflow-hidden">
         {accessory.imageUrl ? (
-          <img src={accessory.imageUrl} alt={accessory.name} loading="lazy"
-               className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+          <Image src={accessory.imageUrl} alt={accessory.name} fill sizes="(max-width: 768px) 50vw, 250px"
+                 className="object-cover group-hover:scale-105 transition-transform"
+                 unoptimized={accessory.imageUrl.startsWith('data:')} />
         ) : (
           <span className="text-xs uppercase tracking-widest font-mono text-primary-dark bg-white/90 px-3 py-1.5 rounded">
             {accessory.name}
