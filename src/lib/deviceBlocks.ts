@@ -285,3 +285,109 @@ export function parseHeroBadges(raw: string | null | undefined): HeroBadge[] {
     return [...DEFAULT_HERO_BADGES];
   }
 }
+
+// ============================================
+// Extras par section (Sprint 5.9)
+// ============================================
+// Stockés dans HearingAid.sectionExtras (JSON) — un objet keyé par section.
+// Chaque section peut contenir :
+//   - extraImages : tableau d'URLs (affichées en bande horizontale scrollable)
+//   - stats       : tableau de "stat cards" (un grand chiffre + un petit libellé)
+
+export interface StatCard {
+  num: string;
+  label: string;
+}
+
+export interface SectionExtra {
+  extraImages?: string[];
+  stats?: StatCard[];
+}
+
+// Clés de section où l'on peut ajouter des extras
+export type ExtrasSectionKey =
+  | 'hero'
+  | 'promises'
+  | 'section1'
+  | 'section2'
+  | 'highlight1'
+  | 'section3'
+  | 'section4';
+
+export type SectionExtras = Partial<Record<ExtrasSectionKey, SectionExtra>>;
+
+export function parseSectionExtras(raw: string | null | undefined): SectionExtras {
+  if (!raw) return {};
+  try {
+    const p = JSON.parse(raw);
+    if (!p || typeof p !== 'object') return {};
+    const out: SectionExtras = {};
+    for (const k of Object.keys(p) as ExtrasSectionKey[]) {
+      const v = (p as Record<string, unknown>)[k];
+      if (!v || typeof v !== 'object') continue;
+      const entry: SectionExtra = {};
+      const imgs = (v as { extraImages?: unknown }).extraImages;
+      if (Array.isArray(imgs)) entry.extraImages = imgs.filter((u) => typeof u === 'string') as string[];
+      const stats = (v as { stats?: unknown }).stats;
+      if (Array.isArray(stats)) {
+        entry.stats = stats
+          .filter((s): s is { num: unknown; label: unknown } => s !== null && typeof s === 'object')
+          .map((s) => ({ num: String(s.num ?? ''), label: String(s.label ?? '') }))
+          .filter((s) => s.num || s.label);
+      }
+      if (entry.extraImages?.length || entry.stats?.length) out[k] = entry;
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+export function getSectionExtra(extras: SectionExtras, key: ExtrasSectionKey): SectionExtra {
+  return extras[key] || {};
+}
+
+// ============================================
+// Accessoires partagés (Sprint 5.9)
+// ============================================
+// Liste maintenue dans un Setting (key = "accessories.shared") au format JSON.
+// Chaque appareil stocke un sous-ensemble via HearingAid.accessoryIds (JSON: number[]).
+
+export interface Accessory {
+  id: number;
+  name: string;
+  imageUrl?: string;
+  href?: string;
+  description?: string;
+}
+
+export function parseAccessoriesList(raw: string | null | undefined): Accessory[] {
+  if (!raw) return [];
+  try {
+    const p = JSON.parse(raw);
+    if (!Array.isArray(p)) return [];
+    return p
+      .filter((a): a is { id: unknown; name: unknown } => a !== null && typeof a === 'object')
+      .map((a, i) => ({
+        id: typeof a.id === 'number' ? a.id : Number(a.id) || (i + 1),
+        name: String((a as { name?: unknown }).name ?? ''),
+        imageUrl: typeof (a as { imageUrl?: unknown }).imageUrl === 'string' ? (a as { imageUrl: string }).imageUrl : undefined,
+        href:     typeof (a as { href?: unknown }).href === 'string' ? (a as { href: string }).href : undefined,
+        description: typeof (a as { description?: unknown }).description === 'string' ? (a as { description: string }).description : undefined,
+      }))
+      .filter((a) => a.name);
+  } catch {
+    return [];
+  }
+}
+
+export function parseAccessoryIds(raw: string | null | undefined): number[] {
+  if (!raw) return [];
+  try {
+    const p = JSON.parse(raw);
+    if (!Array.isArray(p)) return [];
+    return p.filter((n): n is number => typeof n === 'number').sort((a, b) => a - b);
+  } catch {
+    return [];
+  }
+}

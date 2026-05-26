@@ -310,6 +310,16 @@ model HearingAid {
   heroBadges String?
   // === Sprint 5.8 END ===
 
+  // === Sprint 5.9 BEGIN ===
+  // Extras par section : images supplémentaires (bande scrollable) + stat-cards
+  // JSON : { [sectionId]: { extraImages?: string[], stats?: [{num, label}] } }
+  sectionExtras String?
+
+  // IDs des accessoires compatibles (liste partagée stockée dans Setting "accessories.shared")
+  // JSON : number[]
+  accessoryIds String?
+  // === Sprint 5.9 END ===
+
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 

@@ -26,6 +26,8 @@ import {
   parseImagePositions, getFocal, FocalPoint, ImagePositions,
   parseKickers, DEFAULT_KICKERS, KickerKey, SectionKickers,
   parseHeroBadges, HeroBadge,
+  parseSectionExtras, getSectionExtra, SectionExtras, SectionExtra, StatCard, ExtrasSectionKey,
+  parseAccessoryIds, Accessory,
 } from '@/lib/deviceBlocks';
 import MediaPicker from '@/components/admin/MediaPicker';
 
@@ -64,6 +66,11 @@ export default function AppareilV2Editor() {
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState<string | null>(null);
 
+  // Sprint 5.9 — Liste partagée d'accessoires (Setting "accessories.shared")
+  const [accessoriesList, setAccessoriesList] = useState<Accessory[]>([]);
+  const [accessoriesDirty, setAccessoriesDirty] = useState(false);
+  const [accessoriesSaving, setAccessoriesSaving] = useState(false);
+
   const [selected, setSelected] = useState<Selection>('hero');
   const [railCollapsed, setRailCollapsed] = useState(false);
   const [inspectorCollapsed, setInspectorCollapsed] = useState(false);
@@ -81,14 +88,24 @@ export default function AppareilV2Editor() {
     async function load() {
       try {
         setLoading(true);
-        const res = await fetch('/api/admin/hearing-aids');
-        if (!res.ok) throw new Error('Échec du chargement');
-        const list: HearingAidEditable[] = await res.json();
+        const [hrRes, accRes] = await Promise.all([
+          fetch('/api/admin/hearing-aids'),
+          fetch('/api/admin/accessories'),
+        ]);
+        if (!hrRes.ok) throw new Error('Échec du chargement');
+        const list: HearingAidEditable[] = await hrRes.json();
         const found = list.find((p) => p.slug === slug);
         if (!found) throw new Error('Appareil introuvable');
         if (!cancelled) {
           // S'assurer que contentBlocks est toujours un array
           setProduct({ ...found, contentBlocks: found.contentBlocks || [] });
+          // Sprint 5.9 — accessoires partagés (best-effort, l'API peut ne pas exister encore)
+          if (accRes.ok) {
+            try {
+              const arr = await accRes.json();
+              if (Array.isArray(arr)) setAccessoriesList(arr as Accessory[]);
+            } catch {}
+          }
         }
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : 'Erreur');
@@ -99,6 +116,26 @@ export default function AppareilV2Editor() {
     if (slug) load();
     return () => { cancelled = true; };
   }, [slug]);
+
+  // Sprint 5.9 — Sauvegarde de la bibliothèque partagée d'accessoires
+  async function saveAccessoriesList(next: Accessory[]) {
+    setAccessoriesSaving(true);
+    try {
+      const res = await fetch('/api/admin/accessories', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(next),
+      });
+      if (!res.ok) throw new Error('Échec sauvegarde accessoires');
+      const saved = await res.json();
+      setAccessoriesList(Array.isArray(saved) ? saved : next);
+      setAccessoriesDirty(false);
+    } catch (e) {
+      alert(`Erreur : ${e instanceof Error ? e.message : 'inconnue'}`);
+    } finally {
+      setAccessoriesSaving(false);
+    }
+  }
 
   const visibility = useMemo(
     () => product ? parseBlockVisibility(product.blockVisibility) : defaultVisibility(),
@@ -389,6 +426,7 @@ export default function AppareilV2Editor() {
                 previewAll
                 selectedBlock={selected}
                 onBlockSelect={(id) => setSelected(id as Selection)}
+                accessories={accessoriesList}
               />
             </div>
           </div>
@@ -419,6 +457,9 @@ export default function AppareilV2Editor() {
                 onPatchContent={patchContentBlock}
                 onDeleteContent={deleteContentBlock}
                 onMoveContent={moveContentBlock}
+                accessoriesList={accessoriesList}
+                onAccessoriesListChange={saveAccessoriesList}
+                accessoriesSaving={accessoriesSaving}
               />
             </div>
           )}
@@ -537,6 +578,7 @@ function InsertModal({
 function Inspector({
   selection, product, imagePositions,
   onChange, onFocal, onPatchContent, onDeleteContent, onMoveContent,
+  accessoriesList, onAccessoriesListChange, accessoriesSaving,
 }: {
   selection: Selection;
   product: HearingAidEditable;
@@ -546,6 +588,9 @@ function Inspector({
   onPatchContent: (id: number, patch: Partial<ProductContentBlockData>) => void;
   onDeleteContent: (id: number) => void;
   onMoveContent: (id: number, dir: -1 | 1) => void;
+  accessoriesList: Accessory[];
+  onAccessoriesListChange: (next: Accessory[]) => void;
+  accessoriesSaving: boolean;
 }) {
   if (!selection) {
     return <p className="text-sm text-gray-400 text-center pt-12">Sélectionnez un bloc dans le rail ou directement dans le preview.</p>;
@@ -572,6 +617,9 @@ function Inspector({
       imagePositions={imagePositions}
       onChange={onChange}
       onFocal={onFocal}
+      accessoriesList={accessoriesList}
+      onAccessoriesListChange={onAccessoriesListChange}
+      accessoriesSaving={accessoriesSaving}
     />
   );
 }
@@ -582,12 +630,16 @@ function Inspector({
 function FixedBlockInspector({
   blockId, product, imagePositions,
   onChange, onFocal,
+  accessoriesList, onAccessoriesListChange, accessoriesSaving,
 }: {
   blockId: BlockId;
   product: HearingAidEditable;
   imagePositions: ImagePositions;
   onChange: (patch: Partial<HearingAidEditable>) => void;
   onFocal: (key: string, focal: FocalPoint) => void;
+  accessoriesList: Accessory[];
+  onAccessoriesListChange: (next: Accessory[]) => void;
+  accessoriesSaving: boolean;
 }) {
   // Sprint 5.8 — kickers + heroBadges helpers
   const kickers = parseKickers(product.sectionKickers ?? null);
@@ -598,6 +650,23 @@ function FixedBlockInspector({
   const heroBadges = parseHeroBadges(product.heroBadges ?? null);
   const setHeroBadges = (next: HeroBadge[]) => {
     onChange({ heroBadges: JSON.stringify(next) } as Partial<HearingAidEditable>);
+  };
+
+  // Sprint 5.9 — extras par section + accessoires
+  const extras = parseSectionExtras(product.sectionExtras ?? null);
+  const setExtra = (key: ExtrasSectionKey, next: SectionExtra) => {
+    const merged: SectionExtras = { ...extras };
+    // Si l'extra est vide, on retire la clé pour garder le JSON compact
+    if ((!next.extraImages || next.extraImages.length === 0) && (!next.stats || next.stats.length === 0)) {
+      delete merged[key];
+    } else {
+      merged[key] = next;
+    }
+    onChange({ sectionExtras: JSON.stringify(merged) } as Partial<HearingAidEditable>);
+  };
+  const accessoryIds = parseAccessoryIds(product.accessoryIds ?? null);
+  const setAccessoryIds = (ids: number[]) => {
+    onChange({ accessoryIds: JSON.stringify(ids.sort((a, b) => a - b)) } as Partial<HearingAidEditable>);
   };
 
   switch (blockId) {
@@ -634,6 +703,12 @@ function FixedBlockInspector({
             <ColorField label="Dégradé · début" value={product.heroGradientFrom || '#42a4ff'} onChange={(v) => onChange({ heroGradientFrom: v })} />
             <ColorField label="Dégradé · fin"   value={product.heroGradientTo   || '#2d87e6'} onChange={(v) => onChange({ heroGradientTo: v })} />
           </Row>
+          {/* Sprint 5.9 — Mise en avant sur le site (cases à cocher du catalogue) */}
+          <ToggleField
+            label="Mettre en avant sur le site"
+            value={!!product.isHighlight}
+            onChange={(v) => onChange({ isHighlight: v } as Partial<HearingAidEditable>)}
+          />
           {/* Sprint 5.8 — Puces éditables sous le CTA du héros */}
           <ArrayEditor<HeroBadge>
             label="Puces du héros (sous le CTA)"
@@ -687,6 +762,7 @@ function FixedBlockInspector({
             focal={getFocal(imagePositions, 'section1MediaUrl')}
             onFocalChange={(f) => onFocal('section1MediaUrl', f)}
           />
+          <SectionExtrasEditor sectionKey="section1" extra={extras.section1 || {}} setExtra={setExtra} />
         </FieldGroup>
       );
 
@@ -704,6 +780,7 @@ function FixedBlockInspector({
             onFocalChange={(f) => onFocal('section2Image', f)}
             aspect="square"
           />
+          <SectionExtrasEditor sectionKey="section2" extra={extras.section2 || {}} setExtra={setExtra} />
         </FieldGroup>
       );
 
@@ -721,6 +798,7 @@ function FixedBlockInspector({
             onFocalChange={(f) => onFocal('highlightBox1Image', f)}
             aspect="square"
           />
+          <SectionExtrasEditor sectionKey="highlight1" extra={extras.highlight1 || {}} setExtra={setExtra} />
         </FieldGroup>
       );
 
@@ -738,6 +816,7 @@ function FixedBlockInspector({
             onFocalChange={(f) => onFocal('section3Image', f)}
             aspect="square"
           />
+          <SectionExtrasEditor sectionKey="section3" extra={extras.section3 || {}} setExtra={setExtra} />
         </FieldGroup>
       );
 
@@ -756,6 +835,7 @@ function FixedBlockInspector({
             focal={getFocal(imagePositions, 'section4MediaUrl')}
             onFocalChange={(f) => onFocal('section4MediaUrl', f)}
           />
+          <SectionExtrasEditor sectionKey="section4" extra={extras.section4 || {}} setExtra={setExtra} />
         </FieldGroup>
       );
 
@@ -781,10 +861,13 @@ function FixedBlockInspector({
       return (
         <FieldGroup>
           <KickerField label="Compatible avec" kickerKey="accessories" kickers={kickers} setKicker={setKicker} />
-          <div className="text-sm text-gray-500 leading-relaxed space-y-3">
-            <p className="font-semibold text-gray-700">Bloc en attente d'un champ dédié.</p>
-            <p>Pour gérer une liste d'accessoires par appareil, il faudra ajouter un champ JSON dédié dans le schéma.</p>
-          </div>
+          <AccessoriesPanel
+            list={accessoriesList}
+            onListChange={onAccessoriesListChange}
+            saving={accessoriesSaving}
+            selectedIds={accessoryIds}
+            onSelectedIdsChange={setAccessoryIds}
+          />
         </FieldGroup>
       );
 
@@ -1022,6 +1105,145 @@ function ToggleField({ label, value, onChange }: { label: string; value: boolean
 // MediaPicker simplifié pour les arrays d'images
 function MediaPickerLite({ label, value, onChange }: { label: string; value: string; onChange: (v: string | null) => void }) {
   return <MediaPicker label={label} value={value || null} onChange={onChange} aspect="square" mediaType="image" />;
+}
+
+// ============================================
+// Sprint 5.9 — Editor pour les extras d'une section (extra images + stat cards)
+// ============================================
+function SectionExtrasEditor({
+  sectionKey, extra, setExtra,
+}: {
+  sectionKey: ExtrasSectionKey;
+  extra: SectionExtra;
+  setExtra: (key: ExtrasSectionKey, next: SectionExtra) => void;
+}) {
+  const stats = extra.stats || [];
+  const images = extra.extraImages || [];
+  return (
+    <div className="border border-amber-100 bg-amber-50/40 rounded-lg p-3 -mx-1 space-y-3">
+      <Label>Extras de la section (optionnels)</Label>
+
+      {/* Stat cards */}
+      <ArrayEditor<StatCard>
+        label="Cadres « stat » (un grand chiffre + un libellé)"
+        newItemLabel="Ajouter un cadre"
+        items={stats}
+        onChange={(arr) => setExtra(sectionKey, { ...extra, stats: arr })}
+        empty={{ num: '0', label: '' }}
+        renderItem={(item, set) => (
+          <Row>
+            <TextField label="Chiffre / valeur" value={item.num}   onChange={(v) => set({ ...item, num: v })} placeholder="1 h" />
+            <TextField label="Libellé"          value={item.label} onChange={(v) => set({ ...item, label: v })} placeholder="de charge = une journée" />
+          </Row>
+        )}
+      />
+
+      {/* Extra images strip */}
+      <ArrayEditor<string>
+        label="Images supplémentaires (bande horizontale scrollable)"
+        newItemLabel="Ajouter une image"
+        items={images}
+        onChange={(arr) => setExtra(sectionKey, { ...extra, extraImages: arr })}
+        empty=""
+        renderItem={(item, set, idx) => (
+          <MediaPickerLite label={`Image ${idx + 1}`} value={item} onChange={(v) => set(v || '')} />
+        )}
+      />
+    </div>
+  );
+}
+
+// ============================================
+// Sprint 5.9 — Panneau accessoires : gérer la bibliothèque partagée + cocher
+// ============================================
+function AccessoriesPanel({
+  list, onListChange, saving, selectedIds, onSelectedIdsChange,
+}: {
+  list: Accessory[];
+  onListChange: (next: Accessory[]) => void;
+  saving: boolean;
+  selectedIds: number[];
+  onSelectedIdsChange: (ids: number[]) => void;
+}) {
+  const [libraryOpen, setLibraryOpen] = useState(false);
+
+  function toggle(id: number) {
+    const set = new Set(selectedIds);
+    if (set.has(id)) set.delete(id);
+    else set.add(id);
+    onSelectedIdsChange(Array.from(set));
+  }
+
+  return (
+    <div className="space-y-3">
+      {/* SECTION 1 : Cocher les accessoires compatibles avec cet appareil */}
+      <div className="border border-blue-100 bg-blue-50/40 rounded-lg p-3 -mx-1">
+        <Label>Accessoires compatibles avec cet appareil</Label>
+        {list.length === 0 ? (
+          <p className="text-[12px] text-gray-500 italic">
+            La bibliothèque partagée est vide. Clique sur « Gérer la bibliothèque » ci-dessous pour en créer.
+          </p>
+        ) : (
+          <div className="space-y-1.5 mt-1">
+            {list.map((a) => (
+              <label key={a.id} className="flex items-center gap-2.5 p-2 rounded hover:bg-white cursor-pointer">
+                <input type="checkbox" checked={selectedIds.includes(a.id)} onChange={() => toggle(a.id)}
+                       className="w-4 h-4 accent-blue-600" />
+                <div className="w-10 h-10 rounded-md bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden flex-shrink-0">
+                  {a.imageUrl && <img src={a.imageUrl} alt="" className="w-full h-full object-cover" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-gray-900 truncate">{a.name}</div>
+                  {a.description && <div className="text-[11px] text-gray-500 truncate">{a.description}</div>}
+                </div>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* SECTION 2 : Gérer la bibliothèque (CRUD) — collapsible */}
+      <div className="border border-gray-200 rounded-lg overflow-hidden">
+        <button type="button" onClick={() => setLibraryOpen((v) => !v)}
+                className="w-full px-3 py-2.5 flex items-center justify-between text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <span className="flex items-center gap-2">
+            <ImageIcon className="w-3.5 h-3.5" />
+            Gérer la bibliothèque partagée
+            <span className="text-[10px] font-mono text-gray-400">({list.length})</span>
+          </span>
+          {libraryOpen ? <ChevronRight className="w-4 h-4 rotate-90" /> : <ChevronRight className="w-4 h-4" />}
+        </button>
+        {libraryOpen && (
+          <div className="border-t border-gray-200 p-3 bg-gray-50/50 space-y-2">
+            <p className="text-[11px] text-gray-500 leading-snug">
+              Cette liste est <b>partagée entre tous les appareils</b>. Modifier ici met à jour la médiathèque d'accessoires
+              pour tous les modèles.
+            </p>
+            <ArrayEditor<Accessory>
+              label="Accessoires"
+              newItemLabel="Ajouter un accessoire"
+              items={list}
+              onChange={(next) => onListChange(next)}
+              empty={{ id: 0, name: 'Nouvel accessoire' }}
+              renderItem={(item, set) => (
+                <>
+                  <TextField label="Nom"     value={item.name || ''} onChange={(v) => set({ ...item, name: v })} />
+                  <TextAreaField label="Description courte" value={item.description || ''} onChange={(v) => set({ ...item, description: v })} rows={2} />
+                  <TextField label="Lien (URL)" value={item.href || ''} onChange={(v) => set({ ...item, href: v })} placeholder="/accessoires/connect-clip" />
+                  <MediaPickerLite label="Image" value={item.imageUrl || ''} onChange={(v) => set({ ...item, imageUrl: v || undefined })} />
+                </>
+              )}
+            />
+            {saving && (
+              <div className="text-[11px] text-gray-400 italic flex items-center gap-1.5">
+                <Loader2 className="w-3 h-3 animate-spin" /> Sauvegarde de la bibliothèque…
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 // ============================================
