@@ -87,6 +87,14 @@ export interface DevicePageRendererProps {
   previewAll?: boolean;
   selectedBlock?: BlockId | string | null;
   onBlockSelect?: (id: BlockId | string) => void;
+  /**
+   * Mode de rendu du chrome (header / footer / breadcrumb / topbanner) :
+   *  - "full"   (défaut) : tous les blocs rendus — utilisé par la PREVIEW admin
+   *  - "layout"          : masque topbanner/header/crumbs/footer — utilisé sur
+   *                        la page publique, où le layout du site fournit déjà
+   *                        un header/footer global.
+   */
+  chrome?: 'full' | 'layout';
 }
 
 // ============================================
@@ -106,6 +114,7 @@ export default function DevicePageRenderer({
   previewAll = false,
   selectedBlock = null,
   onBlockSelect,
+  chrome = 'full',
 }: DevicePageRendererProps) {
   const advantages = safeParse<Advantage[]>(product.advantages, []);
   const faqs = safeParse<FAQ[]>(product.productFAQs, []);
@@ -127,6 +136,11 @@ export default function DevicePageRenderer({
 
   // Wrapper helper — pour les blocs FIXES
   const FixedBlock = ({ id, children }: { id: BlockId; children: React.ReactNode }) => {
+    // En mode "layout" (page publique), on masque topbanner/header/crumbs/footer
+    // — ils sont déjà fournis par le layout global du site.
+    if (chrome === 'layout' && (id === 'topbanner' || id === 'header' || id === 'crumbs' || id === 'footer')) {
+      return null;
+    }
     if (!shouldRenderBlock(id, visibility, { previewAll })) return null;
     const hidden = visibility[id] === false;
     const selected = selectedBlock === id;
