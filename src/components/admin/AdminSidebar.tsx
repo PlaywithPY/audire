@@ -27,10 +27,9 @@ const SECTIONS: Section[] = [
       { href: '/admin/appointments', label: 'Rendez-vous', icon: CalendarDays },
       { href: '/admin/rendez-vous', label: 'Créneaux', icon: Clock },
       { href: '/admin/centres', label: 'Centres', icon: Building2 },
-      // Nouvel éditeur d'appareils (gabarit Zeal, click-to-edit)
-      { href: '/admin/appareils-v2', label: 'Appareils', icon: Ear, badge: 'beta', badgeTone: 'new' },
-      // Ancien éditeur (formulaire complet) — conservé en parallèle
-      { href: '/admin/appareils', label: 'Appareils', icon: Ear, badge: 'legacy', badgeTone: 'legacy' },
+      // Sprint 5.10 — badge "beta" retiré, le nouvel éditeur est la version par défaut.
+      // L'ancien éditeur (formulaire complet) est descendu dans "Anciens outils".
+      { href: '/admin/appareils-v2', label: 'Appareils', icon: Ear },
       { href: '/admin/sms', label: 'SMS', icon: MessageSquare },
     ],
   },
@@ -55,6 +54,9 @@ const SECTIONS: Section[] = [
 ];
 
 const LEGACY_ITEMS: Item[] = [
+  // Sprint 5.10 — l'ancien éditeur d'appareils (formulaire complet) est conservé ici
+  // tant que le nouvel éditeur ne couvre pas tous les champs (technicalSpecs, etc.)
+  { href: '/admin/appareils',             label: 'Appareils (legacy)',     icon: Ear },
   { href: '/admin/editeur-visuel',        label: 'Éditeur visuel',         icon: Wrench },
   { href: '/admin/constructeur-visuel',   label: 'Constructeur visuel',    icon: Wrench },
   { href: '/admin/linear-content-editor', label: 'Éditeur linéaire',       icon: Wrench },
@@ -84,9 +86,9 @@ export default function AdminSidebar() {
 
   const isActive = (href: string) => {
     if (href === '/admin') return pathname === '/admin';
-    // Cas particulier : /admin/appareils-v2 ne doit pas activer aussi /admin/appareils
+    // Cas particulier : /admin/appareils ne doit pas être actif quand on est sur /admin/appareils-v2
     if (href === '/admin/appareils') {
-      return pathname === '/admin/appareils' || pathname?.startsWith('/admin/appareils/');
+      return pathname === '/admin/appareils' || (pathname?.startsWith('/admin/appareils/') && !pathname?.startsWith('/admin/appareils-v2'));
     }
     return pathname?.startsWith(href);
   };

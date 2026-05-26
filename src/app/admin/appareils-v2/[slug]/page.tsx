@@ -12,11 +12,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+// Sprint 5.10 — drag-and-drop pour réordonner les items dans ArrayEditor
+import {
+  DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import {
   ArrowLeft, Eye, EyeOff, Save, ExternalLink, Plus, Trash2,
   ChevronLeft, ChevronRight, Check, Loader2, Sparkles, AlertCircle,
   Columns, GalleryHorizontalEnd, X, Image as ImageIcon,
-  MoveUp, MoveDown,
+  MoveUp, MoveDown, Copy, GripVertical,
 } from 'lucide-react';
 import DevicePageRenderer, { HearingAidData, Advantage, FAQ } from '@/components/devices/DevicePageRenderer';
 import {
@@ -78,6 +88,7 @@ export default function AppareilV2Editor() {
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const [dirty, setDirty]   = useState(false);
+  const [duplicating, setDuplicating] = useState(false);
 
   // Modal de choix du type pour insertion
   const [insertAfter, setInsertAfter] = useState<BlockId | null>(null);
@@ -222,6 +233,28 @@ export default function AppareilV2Editor() {
     patchProduct({ contentBlocks: next });
   }
 
+  // Sprint 5.10 — Duplique l'appareil et navigue vers la copie
+  async function duplicate() {
+    if (!product) return;
+    if (dirty) {
+      if (!confirm('Tu as des modifications non enregistrées. Veux-tu quand même dupliquer (sans enregistrer) ?')) return;
+    }
+    setDuplicating(true);
+    try {
+      const res = await fetch(`/api/admin/hearing-aids/duplicate?id=${product.id}`, { method: 'POST' });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Échec de la duplication');
+      }
+      const created = await res.json();
+      if (created?.slug) router.push(`/admin/appareils-v2/${created.slug}`);
+    } catch (e) {
+      alert(`Erreur : ${e instanceof Error ? e.message : 'inconnue'}`);
+    } finally {
+      setDuplicating(false);
+    }
+  }
+
   async function save() {
     if (!product) return;
     setSaving(true);
@@ -316,7 +349,6 @@ export default function AppareilV2Editor() {
           <span className="text-gray-500">Appareils</span>
           <ChevronRight className="w-3 h-3 text-gray-400" />
           <span className="font-semibold text-gray-900">{product.name}</span>
-          <span className="ml-1 px-1.5 py-0.5 text-[9px] font-mono uppercase tracking-wider rounded bg-emerald-100 text-emerald-700">Beta · v2.1</span>
         </div>
 
         <div className="ml-auto flex items-center gap-3">
@@ -330,6 +362,12 @@ export default function AppareilV2Editor() {
              className="px-3 py-1.5 text-sm border border-gray-200 rounded-md hover:bg-gray-50 flex items-center gap-1.5 text-gray-700">
             Voir en ligne <ExternalLink className="w-3.5 h-3.5" />
           </a>
+          <button type="button" onClick={duplicate} disabled={duplicating}
+                  className="px-3 py-1.5 text-sm border border-gray-200 rounded-md hover:bg-gray-50 flex items-center gap-1.5 text-gray-700 disabled:opacity-50"
+                  title="Dupliquer cet appareil">
+            {duplicating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Copy className="w-3.5 h-3.5" />}
+            Dupliquer
+          </button>
           <button type="button" onClick={save} disabled={saving || !dirty}
                   className="px-3 py-1.5 text-sm bg-gray-900 text-white rounded-md font-medium hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5">
             <Save className="w-3.5 h-3.5" /> Enregistrer
@@ -723,6 +761,14 @@ function FixedBlockInspector({
               </>
             )}
           />
+          {/* Sprint 5.10 — Réglages SEO (titre + description meta) */}
+          <SeoPanel
+            seoTitle={product.seoTitle || ''}
+            seoDescription={product.seoDescription || ''}
+            productName={product.name}
+            shortDesc={product.shortDesc || ''}
+            onChange={(patch) => onChange(patch as Partial<HearingAidEditable>)}
+          />
         </FieldGroup>
       );
 
@@ -1021,6 +1067,76 @@ function TextField({ label, value, onChange, placeholder }: { label: string; val
 }
 
 // Sprint 5.8 — Champ dédié pour les "kickers" (titre coloré au-dessus du H2 de chaque section).
+// Sprint 5.10 — Panneau SEO (titre + description meta) — utilisé en bas de l'inspecteur Hero.
+function SeoPanel({
+  seoTitle, seoDescription, productName, shortDesc, onChange,
+}: {
+  seoTitle: string;
+  seoDescription: string;
+  productName: string;
+  shortDesc: string;
+  onChange: (patch: { seoTitle?: string | null; seoDescription?: string | null }) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const effectiveTitle = seoTitle || `${productName} — Audire`;
+  const effectiveDesc  = seoDescription || shortDesc || '';
+  const titleCount = effectiveTitle.length;
+  const descCount  = effectiveDesc.length;
+  const titleTone = titleCount === 0 ? 'gray' : titleCount < 30 || titleCount > 65 ? 'amber' : 'emerald';
+  const descTone  = descCount === 0  ? 'gray' : descCount < 80  || descCount > 165 ? 'amber' : 'emerald';
+
+  return (
+    <div className="border border-gray-200 rounded-lg overflow-hidden -mx-1">
+      <button type="button" onClick={() => setOpen((v) => !v)}
+              className="w-full px-3 py-2.5 flex items-center justify-between text-sm font-medium text-gray-700 hover:bg-gray-50">
+        <span className="flex items-center gap-2">
+          🔍 Référencement SEO
+          <span className="text-[10px] font-mono text-gray-400">(meta head)</span>
+        </span>
+        {open ? <ChevronRight className="w-4 h-4 rotate-90" /> : <ChevronRight className="w-4 h-4" />}
+      </button>
+      {open && (
+        <div className="border-t border-gray-200 p-3 bg-gray-50/50 space-y-3">
+          <div>
+            <div className="flex items-baseline justify-between mb-1.5">
+              <Label>Titre de la page (balise title)</Label>
+              <span className={`text-[10px] font-mono ${
+                titleTone === 'emerald' ? 'text-emerald-600' :
+                titleTone === 'amber' ? 'text-amber-600' : 'text-gray-400'
+              }`}>{titleCount} / 60</span>
+            </div>
+            <input type="text" value={seoTitle} onChange={(e) => onChange({ seoTitle: e.target.value || null })}
+                   placeholder={`${productName} — Audire`}
+                   className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400" />
+            <p className="text-[10px] text-gray-500 mt-1">Idéalement entre 50 et 60 caractères. Vide → défaut : <span className="font-mono">{productName} — Audire</span></p>
+          </div>
+          <div>
+            <div className="flex items-baseline justify-between mb-1.5">
+              <Label>Description (meta description)</Label>
+              <span className={`text-[10px] font-mono ${
+                descTone === 'emerald' ? 'text-emerald-600' :
+                descTone === 'amber' ? 'text-amber-600' : 'text-gray-400'
+              }`}>{descCount} / 160</span>
+            </div>
+            <textarea value={seoDescription} rows={3} onChange={(e) => onChange({ seoDescription: e.target.value || null })}
+                      placeholder={shortDesc || 'Décrivez l\'appareil en 140-160 caractères pour les résultats Google'}
+                      className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400" />
+            <p className="text-[10px] text-gray-500 mt-1">Idéalement entre 140 et 160 caractères. Vide → défaut : la « catch-phrase » du héros.</p>
+          </div>
+
+          {/* Aperçu Google */}
+          <div className="border border-gray-200 rounded-md p-3 bg-white">
+            <div className="text-[10px] font-mono text-gray-400 uppercase tracking-wider mb-2">Aperçu Google</div>
+            <div className="text-[13px] text-blue-700 font-medium truncate">{effectiveTitle}</div>
+            <div className="text-[11px] text-emerald-700 truncate mt-0.5">audire.be › appareils › …</div>
+            <div className="text-[12px] text-gray-600 leading-snug mt-1 line-clamp-2">{effectiveDesc || <em className="text-gray-400">Aucune description — Google composera un extrait du contenu de la page.</em>}</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function KickerField({
   label, kickerKey, kickers, setKicker,
 }: {
@@ -1247,7 +1363,7 @@ function AccessoriesPanel({
 }
 
 // ============================================
-// Array editor
+// Array editor — Sprint 5.10 : drag-and-drop pour réordonner
 // ============================================
 function ArrayEditor<T>({
   label, newItemLabel, items, onChange, empty, renderItem,
@@ -1259,6 +1375,11 @@ function ArrayEditor<T>({
   empty: T;
   renderItem: (item: T, set: (next: T) => void, index: number) => React.ReactNode;
 }) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
   function update(i: number, value: T) {
     const next = [...items];
     next[i] = value;
@@ -1271,26 +1392,76 @@ function ArrayEditor<T>({
     const newItem = typeof empty === 'object' && empty !== null ? { ...(empty as object) } as T : empty;
     onChange([...items, newItem]);
   }
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = Number(active.id);
+    const newIndex = Number(over.id);
+    if (Number.isNaN(oldIndex) || Number.isNaN(newIndex)) return;
+    onChange(arrayMove(items, oldIndex, newIndex));
+  }
+
+  const ids = items.map((_, i) => String(i));
+
   return (
     <div>
       <Label>{label} <span className="text-gray-400">({items.length})</span></Label>
       <div className="space-y-3">
-        {items.map((it, i) => (
-          <div key={i} className="border border-gray-200 rounded-lg p-3 bg-gray-50 relative space-y-2.5">
-            <div className="absolute top-1.5 right-1.5 flex items-center gap-1">
-              <span className="text-[10px] font-mono text-gray-400 px-1.5">{i + 1}</span>
-              <button type="button" onClick={() => remove(i)} className="p-1 rounded hover:bg-red-50 hover:text-red-600 text-gray-400" title="Supprimer">
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            </div>
-            {renderItem(it, (next) => update(i, next), i)}
-          </div>
-        ))}
+        {items.length > 0 && (
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+              {items.map((it, i) => (
+                <SortableArrayItem key={i} id={String(i)} index={i}
+                                   onRemove={() => remove(i)}>
+                  {renderItem(it, (next) => update(i, next), i)}
+                </SortableArrayItem>
+              ))}
+            </SortableContext>
+          </DndContext>
+        )}
         <button type="button" onClick={add}
                 className="w-full flex items-center justify-center gap-1.5 px-3 py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-gray-400 hover:text-gray-700 hover:bg-gray-50">
           <Plus className="w-3.5 h-3.5" /> {newItemLabel}
         </button>
       </div>
+    </div>
+  );
+}
+
+// Item draggable au sein d'un ArrayEditor
+function SortableArrayItem({
+  id, index, onRemove, children,
+}: {
+  id: string;
+  index: number;
+  onRemove: () => void;
+  children: React.ReactNode;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+    zIndex: isDragging ? 10 : 'auto',
+    position: 'relative',
+  };
+  return (
+    <div ref={setNodeRef} style={style}
+         className={`border border-gray-200 rounded-lg p-3 bg-gray-50 space-y-2.5 ${isDragging ? 'shadow-lg ring-2 ring-blue-200' : ''}`}>
+      <div className="absolute top-1.5 right-1.5 flex items-center gap-1 z-10">
+        <span className="text-[10px] font-mono text-gray-400 px-1.5">{index + 1}</span>
+        <button type="button" onClick={onRemove}
+                className="p-1 rounded hover:bg-red-50 hover:text-red-600 text-gray-400" title="Supprimer">
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+      {/* Drag handle — sur le bord gauche pour ne pas gêner l'édition */}
+      <button type="button" {...attributes} {...listeners}
+              className="absolute top-1/2 -translate-y-1/2 -left-1 w-5 h-8 grid place-items-center text-gray-300 hover:text-gray-600 cursor-grab active:cursor-grabbing"
+              title="Glisser pour réordonner" aria-label="Glisser pour réordonner">
+        <GripVertical className="w-3.5 h-3.5" />
+      </button>
+      <div className="pl-1">{children}</div>
     </div>
   );
 }

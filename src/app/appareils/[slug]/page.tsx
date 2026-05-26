@@ -4,7 +4,10 @@
 // Page publique appareil — utilise DevicePageRenderer
 // =====================================================
 // v2.1.1 : passe chrome="layout" pour ne pas re-dessiner le header/footer
-// (le layout global du site les fournit déjà).
+//          (le layout global du site les fournit déjà).
+// Sprint 5.10 : applique seoTitle / seoDescription côté client
+//          (document.title + meta[name=description]). Pour un SEO 100%
+//          server-side, il faudrait scinder en server component + generateMetadata.
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -53,6 +56,24 @@ export default function HearingAidPage() {
     if (slug) load();
     return () => { cancelled = true; };
   }, [slug]);
+
+  // Sprint 5.10 — Applique seoTitle / seoDescription côté client
+  useEffect(() => {
+    if (!product) return;
+    const title = (product.seoTitle && String(product.seoTitle).trim()) || `${product.name} — Audire`;
+    document.title = title;
+
+    const desc = (product.seoDescription && String(product.seoDescription).trim()) || product.shortDesc || '';
+    if (desc) {
+      let meta = document.querySelector('meta[name="description"]');
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.setAttribute('name', 'description');
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', desc);
+    }
+  }, [product]);
 
   if (loading) {
     return (

@@ -48,6 +48,9 @@ export interface HearingAidData {
   gallery: string | null;
   /** Sprint 5.9 — case "Mis en avant" du catalogue */
   isHighlight?: boolean;
+  /** Sprint 5.10 — SEO (head meta) */
+  seoTitle?: string | null;
+  seoDescription?: string | null;
 
   heroGradientFrom: string | null;
   heroGradientTo: string | null;
