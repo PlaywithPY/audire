@@ -367,14 +367,16 @@ export function parseAccessoriesList(raw: string | null | undefined): Accessory[
     const p = JSON.parse(raw);
     if (!Array.isArray(p)) return [];
     return p
-      .filter((a): a is { id: unknown; name: unknown } => a !== null && typeof a === 'object')
-      .map((a, i) => ({
-        id: typeof a.id === 'number' ? a.id : Number(a.id) || (i + 1),
-        name: String((a as { name?: unknown }).name ?? ''),
-        imageUrl: typeof (a as { imageUrl?: unknown }).imageUrl === 'string' ? (a as { imageUrl: string }).imageUrl : undefined,
-        href:     typeof (a as { href?: unknown }).href === 'string' ? (a as { href: string }).href : undefined,
-        description: typeof (a as { description?: unknown }).description === 'string' ? (a as { description: string }).description : undefined,
-      }))
+      .filter((a): a is Record<string, unknown> => a !== null && typeof a === 'object')
+      .map((a, i): Accessory => {
+        const idRaw = a.id;
+        const id = typeof idRaw === 'number' ? idRaw : Number(idRaw) || (i + 1);
+        const name = typeof a.name === 'string' ? a.name : '';
+        const imageUrl = typeof a.imageUrl === 'string' ? a.imageUrl : undefined;
+        const href = typeof a.href === 'string' ? a.href : undefined;
+        const description = typeof a.description === 'string' ? a.description : undefined;
+        return { id, name, imageUrl, href, description };
+      })
       .filter((a) => a.name);
   } catch {
     return [];
