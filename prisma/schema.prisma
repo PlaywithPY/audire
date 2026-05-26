@@ -300,6 +300,16 @@ model HearingAid {
   // Visibilité par bloc sur la page produit (v2)
   blockVisibility String?
 
+  // === Sprint 5.8 BEGIN ===
+  // Kickers éditables (titres bleus uppercase au-dessus de chaque H2)
+  // JSON : { promises, section1, section2, highlight1, section3, section4, highlight2, accessories }
+  sectionKickers String?
+
+  // Puces colorées sous le CTA du héros
+  // JSON : [{ text: string, dotColor: string }]
+  heroBadges String?
+  // === Sprint 5.8 END ===
+
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
