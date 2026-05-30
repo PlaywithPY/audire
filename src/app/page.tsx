@@ -99,7 +99,7 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {featureCards.map((card, index) => (
               <div key={card.cardKey} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.15}s` }}>
-                <ImageFeatureCard imageSrc={card.imageSrc} title={card.title} description={card.description}
+                <ImageFeatureCard pageKey="home" cardKey={card.cardKey} imageSrc={card.imageSrc} title={card.title} description={card.description}
                   imageAlt={card.imageAlt} href={card.href} imagePosition={card.imagePosition} fallbackEmoji={card.fallbackEmoji} />
               </div>
             ))}

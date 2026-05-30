@@ -6,14 +6,17 @@
 //  • max-height = viewport - 24px + overflow:auto interne → toujours scrollable
 //  • si bloc proche du bas, le panneau "remonte" pour rester visible
 //  • si pas de place ni à droite ni à gauche, recentre
+// Feature Cards Editor — ajout du mode `card:` : édition inline d'une feature
+//  card (image, cadrage, titre, description, lien, alt, emoji) via CardInspector.
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { X, Type, HelpCircle, FolderOpen, Image as ImageIcon, Layout, Boxes } from 'lucide-react';
+import { X, Type, HelpCircle, FolderOpen, Image as ImageIcon, Layout, Boxes, LayoutGrid } from 'lucide-react';
 import MediaPicker from '@/components/MediaPicker';
 import LayoutPanel from './LayoutPanel';
 import RichTextEditor from './RichTextEditor';
 import DynamicBlockInspector from './DynamicBlockInspector';
 import ImageEffectInspector from './ImageEffectInspector';
+import CardInspector, { type CardInitial } from './CardInspector';
 
 export type SelectedBlock = {
   blockKey: string;
@@ -41,9 +44,14 @@ type Mode =
   | { kind: 'faq-category'; id: string; field: 'name' | 'description' | 'imageUrl' }
   | { kind: 'dynamic'; id: number; field: string }
   | { kind: 'image-effect'; pageKey: string; sectionKey: string }
+  | { kind: 'card'; pageKey: string; cardKey: string }
   | { kind: 'unknown' };
 
 function parseBlockKey(blockKey: string): Mode {
+  if (blockKey.startsWith('card:')) {
+    const [, pageKey, cardKey] = blockKey.split(':');
+    if (pageKey && cardKey) return { kind: 'card', pageKey, cardKey };
+  }
   if (blockKey.startsWith('image-effect:')) {
     const [, pageKey, sectionKey] = blockKey.split(':');
     if (pageKey && sectionKey) return { kind: 'image-effect', pageKey, sectionKey };
@@ -72,11 +80,11 @@ function parseBlockKey(blockKey: string): Mode {
 
 const ICON: Record<Mode['kind'], React.ComponentType<{ className?: string }>> = {
   'page-text': Type, 'faq-item': HelpCircle, 'faq-category': FolderOpen,
-  'dynamic': Boxes, 'image-effect': ImageIcon, 'unknown': Type,
+  'dynamic': Boxes, 'image-effect': ImageIcon, 'card': LayoutGrid, 'unknown': Type,
 };
 const LABEL: Record<Mode['kind'], string> = {
   'page-text': 'Texte de page', 'faq-item': 'Question FAQ', 'faq-category': 'Catégorie FAQ',
-  'dynamic': 'Bloc dynamique', 'image-effect': 'Image de fond', 'unknown': 'Bloc',
+  'dynamic': 'Bloc dynamique', 'image-effect': 'Image de fond', 'card': 'Carte visuelle', 'unknown': 'Bloc',
 };
 
 function shouldUseRichEditor(textKey: string, currentText: string): boolean {
@@ -209,7 +217,14 @@ export default function BlockInspector({
 
         {/* Zone scrollable interne pour éviter d'être hors écran */}
         <div className="flex-1 overflow-y-auto">
-          {mode.kind === 'image-effect' ? (
+          {mode.kind === 'card' ? (
+            <CardInspector
+              pageKey={mode.pageKey}
+              cardKey={mode.cardKey}
+              initial={selected.data as unknown as CardInitial}
+              onSaved={onLayoutChanged}
+            />
+          ) : mode.kind === 'image-effect' ? (
             <ImageEffectInspector pageKey={mode.pageKey} sectionKey={mode.sectionKey} onChanged={onLayoutChanged} />
           ) : tab === 'layout' && canEditLayout ? (
             <LayoutPanel blockKey={selected.blockKey} onChanged={onLayoutChanged} />
