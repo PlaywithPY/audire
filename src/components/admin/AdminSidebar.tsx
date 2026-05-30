@@ -7,7 +7,7 @@ import { useState } from 'react';
 import {
   LayoutDashboard, CalendarDays, Clock, Building2, Ear, MessageSquare,
   Pencil, FileText, Image as ImageIcon, Settings, Database,
-  ChevronDown, ChevronRight, ExternalLink, Wrench, LogOut,
+  ChevronDown, ChevronRight, ExternalLink, Wrench, LogOut, Boxes,
 } from 'lucide-react';
 
 type Item = {
@@ -31,6 +31,8 @@ const SECTIONS: Section[] = [
       // L'ancien éditeur (formulaire complet) est descendu dans "Anciens outils".
       { href: '/admin/appareils-v2', label: 'Appareils', icon: Ear },
       { href: '/admin/sms', label: 'SMS', icon: MessageSquare },
+      // Uniformisation — "Modèles SMS" remonté des Anciens outils, c'est un outil courant.
+      { href: '/admin/sms-templates', label: 'Modèles SMS', icon: FileText },
     ],
   },
   {
@@ -39,6 +41,8 @@ const SECTIONS: Section[] = [
       { href: '/admin/editor', label: 'Éditeur', icon: Pencil },
       { href: '/admin/faq-management', label: 'FAQ — Gestion', icon: FileText },
       { href: '/admin/feature-cards-management', label: 'Feature cards', icon: ImageIcon },
+      // Refait en moderne — sorti des Anciens outils.
+      { href: '/admin/solutions', label: 'Solutions', icon: Boxes },
       { href: '/admin/testimonials', label: 'Témoignages', icon: FileText },
       { href: '/admin/mediatheque', label: 'Médiathèque', icon: ImageIcon },
       { href: '/admin/image-effects', label: 'Images & effets', icon: ImageIcon },
@@ -65,11 +69,9 @@ const LEGACY_ITEMS: Item[] = [
   { href: '/admin/setup-page-texts',      label: 'Setup textes',           icon: Wrench },
   // Feature Cards Editor — l'ancien "Feature cards (legacy)" est retiré : édition
   // inline dans l'éditeur (/admin/editor) + outil moderne "Cards visuelles".
-  { href: '/admin/solutions',             label: 'Solutions',              icon: Wrench },
   { href: '/admin/faqs',                  label: 'FAQs',                   icon: Wrench },
   { href: '/admin/categories',            label: 'Catégories FAQ',         icon: Wrench },
   { href: '/admin/footer',                label: 'Footer',                 icon: Wrench },
-  { href: '/admin/sms-templates',         label: 'Modèles SMS',            icon: Wrench },
 ];
 
 function badgeStyle(tone: Item['badgeTone']) {
