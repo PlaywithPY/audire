@@ -1,0 +1,19 @@
+{
+  "source_file": "/home/user/audire/public/images/tarifs.pdf",
+  "markdown_path": "/home/user/audire/.graphify/converted/pdf/tarifs_b4a99b0b918d.md",
+  "provider": "unpdf",
+  "mode": "auto",
+  "status": "converted",
+  "reason": "text_extractable",
+  "preflight": {
+    "filePath": "/home/user/audire/public/images/tarifs.pdf",
+    "sha256": "b4a99b0b918d0b5b0231dbbe234186bd88fda289bd4c02c43e233bda541d5e9c",
+    "pageCount": 1,
+    "wordCount": 494,
+    "charCount": 3291,
+    "imageMarkerCount": 104,
+    "textLayerProvider": "unpdf",
+    "reason": "text_extractable",
+    "shouldOcr": false
+  }
+}
