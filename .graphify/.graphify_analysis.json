@@ -1,0 +1,1856 @@
+{
+  "communities": {
+    "0": [
+      "appointments_route_delete",
+      "appointments_route_get",
+      "appointments_route_patch",
+      "appointments_route_post",
+      "appointments_route_prisma",
+      "auto_send_reminders_route_get",
+      "contact_request_route_post",
+      "contact_request_route_prisma",
+      "lib_email_appointmentrequestemailoptions",
+      "lib_email_emailservice",
+      "lib_email_emailservice_constructor",
+      "lib_email_emailservice_sendappointmentrequestemail",
+      "lib_email_emailservice_sendclientcancellationemail",
+      "lib_email_emailservice_sendclientfinalconfirmation",
+      "lib_email_emailservice_sendclientpendingconfirmation",
+      "lib_email_emailservice_sendpendingappointmentsreminder",
+      "lib_email_emailservice_sendprescriptionemail",
+      "lib_email_emailservice_verifyconnection",
+      "lib_email_generateics",
+      "lib_email_prescriptionemailoptions",
+      "lib_google_calendar_calendarevent",
+      "lib_google_calendar_googlecalendar",
+      "lib_google_calendar_googlecalendarservice",
+      "lib_google_calendar_googlecalendarservice_constructor",
+      "lib_google_calendar_googlecalendarservice_createappointmentevent",
+      "lib_google_calendar_googlecalendarservice_createevent",
+      "lib_google_calendar_googlecalendarservice_deleteevent",
+      "lib_google_calendar_googlecalendarservice_updateevent",
+      "lib_google_calendar_scopes",
+      "lib_sms_helpers_formatdateforsms",
+      "lib_sms_helpers_formattimeforsms",
+      "lib_sms_helpers_getsmstemplate",
+      "lib_sms_helpers_normalizephonenumber",
+      "lib_sms_helpers_replacesmsvariables",
+      "lib_sms_helpers_sendappointmentcancellation",
+      "lib_sms_helpers_sendappointmentconfirmation",
+      "lib_sms_helpers_sendappointmentreminder",
+      "lib_sms_helpers_sendappointmentrequestconfirmation",
+      "lib_sms_helpers_sendsmsfromtemplate",
+      "lib_sms_helpers_smsvariables",
+      "pending_reminders_route_get",
+      "pending_reminders_route_prisma",
+      "prescription_route_post",
+      "prescription_route_prisma",
+      "src_app_api_admin_appointments_route_ts",
+      "src_app_api_admin_pending_reminders_route_ts",
+      "src_app_api_appointments_prescription_route_ts",
+      "src_app_api_appointments_route_ts",
+      "src_app_api_auto_send_reminders_route_ts",
+      "src_app_api_contact_request_route_ts",
+      "src_lib_email_ts",
+      "src_lib_google_calendar_ts",
+      "src_lib_sms_helpers_ts"
+    ],
+    "1": [
+      "admin_simple_app_addlink",
+      "admin_simple_app_addsolution",
+      "admin_simple_app_cleartoken",
+      "admin_simple_app_config",
+      "admin_simple_app_createlinkitem",
+      "admin_simple_app_createorupdatehtmlfile",
+      "admin_simple_app_generateallpages",
+      "admin_simple_app_generatehtmlpage",
+      "admin_simple_app_getfile",
+      "admin_simple_app_getlinksfromeditor",
+      "admin_simple_app_getsolutionsfromeditor",
+      "admin_simple_app_handleimageselect",
+      "admin_simple_app_handlelogin",
+      "admin_simple_app_handlelogout",
+      "admin_simple_app_inittabs",
+      "admin_simple_app_loadallcontent",
+      "admin_simple_app_loadcontact",
+      "admin_simple_app_loadhomepage",
+      "admin_simple_app_loadimageslist",
+      "admin_simple_app_loadnavigation",
+      "admin_simple_app_loadsolutionsauditives",
+      "admin_simple_app_loadtextesjson",
+      "admin_simple_app_loadtoken",
+      "admin_simple_app_readfileasbase64",
+      "admin_simple_app_removelink",
+      "admin_simple_app_renderlinks",
+      "admin_simple_app_rendersolutions",
+      "admin_simple_app_saveaccompagnement",
+      "admin_simple_app_savecontact",
+      "admin_simple_app_savefaq",
+      "admin_simple_app_savehomepage",
+      "admin_simple_app_savenavigation",
+      "admin_simple_app_savepartenaires",
+      "admin_simple_app_saveremboursements",
+      "admin_simple_app_savesolutionsauditives",
+      "admin_simple_app_savetestgratuit",
+      "admin_simple_app_savetoken",
+      "admin_simple_app_showauth",
+      "admin_simple_app_showeditor",
+      "admin_simple_app_showerror",
+      "admin_simple_app_showstatus",
+      "admin_simple_app_updatefile",
+      "admin_simple_app_uploadimagetomain",
+      "admin_simple_app_verifytoken",
+      "legacy_1_0_admin_simple_app_js"
+    ],
+    "2": [
+      "admin_companyinfosettings_companyinfosettings",
+      "admin_companyinfosettings_half_width",
+      "admin_companyinfosettings_textarea_fields",
+      "admin_contacticonssettings_contacticonssettings",
+      "admin_contacticonssettings_iconkey",
+      "admin_contacticonssettings_iconpreview",
+      "admin_contacticonssettings_isimagevalue",
+      "admin_contacticonssettings_rows",
+      "admin_contacticonssettings_tolucidename",
+      "confidentialite_page_buildsections",
+      "confidentialite_page_confidentialite",
+      "confidentialite_page_pagetexts",
+      "hooks_usecompanyinfo_formataddresshtml",
+      "hooks_usecompanyinfo_formataddressline",
+      "hooks_usecompanyinfo_formatphonehref",
+      "hooks_usecompanyinfo_usecompanyinfo",
+      "lib_company_info_company_default",
+      "lib_company_info_company_keys",
+      "lib_company_info_company_labels",
+      "lib_company_info_companyinfo",
+      "lib_company_info_fetchcompanyinfo",
+      "mentions_legales_page_builddefaults",
+      "mentions_legales_page_mentionslegales",
+      "mentions_legales_page_pagetexts",
+      "settings_page_settingspage",
+      "settings_page_themecolors",
+      "src_app_admin_settings_page_tsx",
+      "src_app_confidentialite_page_tsx",
+      "src_app_mentions_legales_page_tsx",
+      "src_components_admin_companyinfosettings_tsx",
+      "src_components_admin_contacticonssettings_tsx",
+      "src_lib_company_info_ts",
+      "src_lib_hooks_usecompanyinfo_ts"
+    ],
+    "3": [
+      "lib_deviceblocks_imagepositions",
+      "lib_deviceblocks_parseimagepositions",
+      "lib_deviceblocks_parsesectionextras",
+      "lib_deviceblocks_sectionextras",
+      "lib_deviceblocks_statcard",
+      "slug_page_accessoriespanel",
+      "slug_page_arrayeditor",
+      "slug_page_colorfield",
+      "slug_page_contentblockinspector",
+      "slug_page_countitemsforblock",
+      "slug_page_fieldgroup",
+      "slug_page_fixedblockhint",
+      "slug_page_fixedblockinspector",
+      "slug_page_hearingaideditable",
+      "slug_page_insertmodal",
+      "slug_page_insertzone",
+      "slug_page_kickerfield",
+      "slug_page_label",
+      "slug_page_mediapickerlite",
+      "slug_page_row",
+      "slug_page_safeparsearray",
+      "slug_page_sectionextraseditor",
+      "slug_page_selectfield",
+      "slug_page_selection",
+      "slug_page_seopanel",
+      "slug_page_sortablearrayitem",
+      "slug_page_staticblockhint",
+      "slug_page_textareafield",
+      "slug_page_textfield",
+      "slug_page_togglefield",
+      "src_app_admin_appareils_v2_slug_page_tsx"
+    ],
+    "4": [
+      "block_layout_route_get",
+      "block_layout_route_put",
+      "card_images_route_delete",
+      "card_images_route_post",
+      "card_images_route_put",
+      "centre_route_get",
+      "centre_route_put",
+      "colors_route_get",
+      "colors_route_put",
+      "hours_route_get",
+      "hours_route_put",
+      "import_content_route_contentblocks",
+      "import_content_route_post",
+      "lib_auth_helpers_requireauth",
+      "settings_route_put",
+      "src_app_api_admin_block_layout_route_ts",
+      "src_app_api_admin_card_images_route_ts",
+      "src_app_api_admin_centre_route_ts",
+      "src_app_api_admin_colors_route_ts",
+      "src_app_api_admin_hours_route_ts",
+      "src_app_api_admin_import_content_route_ts",
+      "src_app_api_admin_settings_route_ts",
+      "src_app_api_admin_sync_missing_data_route_ts",
+      "src_app_api_admin_upload_route_ts",
+      "src_lib_auth_helpers_ts",
+      "sync_missing_data_route_defaultcardimages",
+      "sync_missing_data_route_post",
+      "upload_route_delete",
+      "upload_route_get",
+      "upload_route_post"
+    ],
+    "5": [
+      "all_pages_route_get",
+      "all_pages_route_prisma",
+      "config_route_get",
+      "config_route_post",
+      "fix_page_keys_route_get",
+      "fix_page_keys_route_post",
+      "fix_page_keys_route_prisma",
+      "lib_auth_authoptions",
+      "logs_route_get",
+      "nextauth_route_handler",
+      "populate_texts_route_post",
+      "send_route_post",
+      "setup_page_texts_route_post",
+      "sms_reminders_route_get",
+      "sms_reminders_route_post",
+      "src_app_api_admin_image_effects_all_pages_route_ts",
+      "src_app_api_admin_image_effects_fix_page_keys_route_ts",
+      "src_app_api_admin_populate_texts_route_ts",
+      "src_app_api_admin_setup_page_texts_route_ts",
+      "src_app_api_admin_sms_config_route_ts",
+      "src_app_api_admin_sms_logs_route_ts",
+      "src_app_api_admin_sms_reminders_route_ts",
+      "src_app_api_admin_sms_send_route_ts",
+      "src_app_api_admin_sms_test_route_ts",
+      "src_app_api_admin_test_db_route_ts",
+      "src_app_api_auth_nextauth_route_ts",
+      "src_lib_auth_ts",
+      "test_db_route_get",
+      "test_route_post"
+    ],
+    "6": [
+      "js_main_all",
+      "js_main_cancelbtn",
+      "js_main_closebtn",
+      "js_main_closemodal",
+      "js_main_data",
+      "js_main_headerscroll",
+      "js_main_headerscroll_constructor",
+      "js_main_headerscroll_init",
+      "js_main_headerscroll_onscroll",
+      "js_main_initopenstatus",
+      "js_main_initsmoothscroll",
+      "js_main_isopen",
+      "js_main_menubtn",
+      "js_main_mobilenav",
+      "js_main_note",
+      "js_main_openbtns",
+      "js_main_openmodal",
+      "js_main_overlay",
+      "js_main_rdvform",
+      "js_main_scrollanimations",
+      "js_main_scrollanimations_addelement",
+      "js_main_scrollanimations_constructor",
+      "js_main_scrollanimations_init",
+      "js_main_scrollanimations_observeelements",
+      "js_main_updateopenstatus",
+      "js_main_y",
+      "legacy_1_0_js_main_js"
+    ],
+    "7": [
+      "devices_devicepagerenderer_accessorycard",
+      "devices_devicepagerenderer_advantage",
+      "devices_devicepagerenderer_contentblockrenderer",
+      "devices_devicepagerenderer_devicepagerenderer",
+      "devices_devicepagerenderer_devicepagerendererprops",
+      "devices_devicepagerenderer_faq",
+      "devices_devicepagerenderer_faqlist",
+      "devices_devicepagerenderer_field",
+      "devices_devicepagerenderer_imageslot",
+      "devices_devicepagerenderer_mediaslot",
+      "devices_devicepagerenderer_previewplaceholder",
+      "devices_devicepagerenderer_safeparse",
+      "devices_devicepagerenderer_sectionextrasrender",
+      "lib_deviceblocks_blocks",
+      "lib_deviceblocks_focaltoobjectposition",
+      "lib_deviceblocks_gallerymetadata",
+      "lib_deviceblocks_getfocal",
+      "lib_deviceblocks_getsectionextra",
+      "lib_deviceblocks_highlightmetadata",
+      "lib_deviceblocks_parseaccessoryids",
+      "lib_deviceblocks_parseherobadges",
+      "lib_deviceblocks_parsemetadata",
+      "lib_deviceblocks_sectionextra",
+      "lib_deviceblocks_shouldrenderblock",
+      "src_components_devices_devicepagerenderer_tsx"
+    ],
+    "8": [
+      "accessories_route_get",
+      "accessories_route_incomingaccessory",
+      "accessories_route_put",
+      "cards_route_get",
+      "components_contentblock_contentblock",
+      "components_contentblock_contentblockprops",
+      "duplicate_route_findfreeslug",
+      "duplicate_route_post",
+      "featured_route_get",
+      "lib_prisma_globalforprisma",
+      "settings_route_get",
+      "slug_route_get",
+      "src_app_api_admin_accessories_route_ts",
+      "src_app_api_admin_hearing_aids_duplicate_route_ts",
+      "src_app_api_cards_route_ts",
+      "src_app_api_hearing_aids_featured_route_ts",
+      "src_app_api_hearing_aids_slug_route_ts",
+      "src_app_api_settings_route_ts",
+      "src_components_contentblock_tsx",
+      "src_lib_prisma_ts"
+    ],
+    "9": [
+      "admin_layoutpanel_layoutpanel",
+      "admin_layoutpanel_max_w_options",
+      "admin_layoutpanel_props",
+      "components_blocklayoutwrapper_align",
+      "components_blocklayoutwrapper_blocklayout",
+      "components_blocklayoutwrapper_blocklayoutwrapper",
+      "components_blocklayoutwrapper_cache",
+      "components_blocklayoutwrapper_clearlayoutcache",
+      "components_blocklayoutwrapper_inflight",
+      "components_blocklayoutwrapper_layouttoclasses",
+      "components_blocklayoutwrapper_loadlayout",
+      "components_blocklayoutwrapper_max_w",
+      "components_blocklayoutwrapper_padding",
+      "components_blocklayoutwrapper_props",
+      "components_blocklayoutwrapper_useblocklayout",
+      "components_heromodern_heromodern",
+      "components_heromodern_heromodernprops",
+      "src_components_admin_layoutpanel_tsx",
+      "src_components_blocklayoutwrapper_tsx",
+      "src_components_heromodern_tsx"
+    ],
+    "10": [
+      "components_categorygrid_category",
+      "components_categorygrid_categorygrid",
+      "components_categorygrid_categorygridprops",
+      "components_categorygrid_faq",
+      "components_dynamicblockrenderer_blockrenderer",
+      "components_dynamicblockrenderer_contentblock",
+      "components_dynamicblockrenderer_dynamicblockrenderer",
+      "components_dynamicblockrenderer_dynamicblockrendererprops",
+      "components_faqaccordion_faqaccordion",
+      "components_faqaccordion_faqaccordionprops",
+      "components_faqaccordion_faqitem",
+      "faq_page_category",
+      "faq_page_faq",
+      "faq_page_pagetexts",
+      "slug_page_custompage",
+      "src_app_faq_page_tsx",
+      "src_app_slug_page_tsx",
+      "src_components_categorygrid_tsx",
+      "src_components_dynamicblockrenderer_tsx",
+      "src_components_faqaccordion_tsx"
+    ],
+    "11": [
+      "lib_deviceblocks_accessory",
+      "lib_deviceblocks_blockdef",
+      "lib_deviceblocks_blockid",
+      "lib_deviceblocks_blockvisibility",
+      "lib_deviceblocks_content_block_types",
+      "lib_deviceblocks_contentblocktype",
+      "lib_deviceblocks_contentblocktypedef",
+      "lib_deviceblocks_default_hero_badges",
+      "lib_deviceblocks_default_kickers",
+      "lib_deviceblocks_defaultcontentblock",
+      "lib_deviceblocks_extrassectionkey",
+      "lib_deviceblocks_getblockdef",
+      "lib_deviceblocks_herobadge",
+      "lib_deviceblocks_kickerkey",
+      "lib_deviceblocks_parseaccessorieslist",
+      "lib_deviceblocks_parsekickers",
+      "lib_deviceblocks_productcontentblockdata",
+      "lib_deviceblocks_sectionkickers",
+      "src_lib_deviceblocks_ts"
+    ],
+    "12": [
+      "lib_linear_content_structure_accompagnementpagestructure",
+      "lib_linear_content_structure_contactpagestructure",
+      "lib_linear_content_structure_contentfield",
+      "lib_linear_content_structure_contentfieldtype",
+      "lib_linear_content_structure_faqpagestructure",
+      "lib_linear_content_structure_getallpagestructures",
+      "lib_linear_content_structure_getpagestructure",
+      "lib_linear_content_structure_homepagestructure",
+      "lib_linear_content_structure_keymigrationmap",
+      "lib_linear_content_structure_pagecontentstructure",
+      "lib_linear_content_structure_partenairespagestructure",
+      "lib_linear_content_structure_remboursementspagestructure",
+      "lib_linear_content_structure_solutionspagestructure",
+      "lib_linear_content_structure_testauditifpagestructure",
+      "linear_content_editor_page_contentvalue",
+      "linear_content_editor_page_linearcontenteditor",
+      "src_app_admin_linear_content_editor_page_tsx",
+      "src_lib_linear_content_structure_ts"
+    ],
+    "13": [
+      "admin_adminsidebar_adminsidebar",
+      "admin_adminsidebar_badgestyle",
+      "admin_adminsidebar_entry",
+      "admin_adminsidebar_group",
+      "admin_adminsidebar_icontype",
+      "admin_adminsidebar_isactive",
+      "admin_adminsidebar_isgroup",
+      "admin_adminsidebar_leaf",
+      "admin_adminsidebar_legacy_items",
+      "admin_adminsidebar_navgroup",
+      "admin_adminsidebar_navleaf",
+      "admin_adminsidebar_section",
+      "admin_adminsidebar_sections",
+      "admin_layout_adminlayout",
+      "admin_layout_no_chrome_routes",
+      "src_app_admin_layout_tsx",
+      "src_components_admin_adminsidebar_tsx"
+    ],
+    "14": [
+      "components_dynamicblockslot_bgfade",
+      "components_dynamicblockslot_bgfixed",
+      "components_dynamicblockslot_bgimageblock",
+      "components_dynamicblockslot_bgparallax",
+      "components_dynamicblockslot_bgsimple",
+      "components_dynamicblockslot_bgzoom",
+      "components_dynamicblockslot_block",
+      "components_dynamicblockslot_blockbody",
+      "components_dynamicblockslot_blockshell",
+      "components_dynamicblockslot_dynamicblockslot",
+      "components_dynamicblockslot_inlineimage",
+      "components_dynamicblockslot_margin_cls",
+      "components_dynamicblockslot_parsemeta",
+      "components_dynamicblockslot_props",
+      "components_dynamicblockslot_radius_cls",
+      "components_dynamicblockslot_width_cls",
+      "src_components_dynamicblockslot_tsx"
+    ],
+    "15": [
+      "editeur_visuel_page_addblockmodal",
+      "editeur_visuel_page_addcategorymodal",
+      "editeur_visuel_page_block_icons",
+      "editeur_visuel_page_block_types",
+      "editeur_visuel_page_blockcontentpreview",
+      "editeur_visuel_page_contentblock",
+      "editeur_visuel_page_default_content",
+      "editeur_visuel_page_editeurvisuelpage",
+      "editeur_visuel_page_editmodal",
+      "editeur_visuel_page_faq",
+      "editeur_visuel_page_faqcategory",
+      "editeur_visuel_page_faqpanel",
+      "editeur_visuel_page_page",
+      "editeur_visuel_page_predefined_pages",
+      "editeur_visuel_page_sortableblockcard",
+      "src_app_admin_editeur_visuel_page_tsx"
+    ],
+    "16": [
+      "admin_blockinspector_blockinspector",
+      "admin_blockinspector_category",
+      "admin_blockinspector_icon",
+      "admin_blockinspector_label",
+      "admin_blockinspector_mode",
+      "admin_blockinspector_parseblockkey",
+      "admin_blockinspector_props",
+      "admin_blockinspector_shouldusericheditor",
+      "admin_cardinspector_cardinitial",
+      "admin_cardinspector_cardinspector",
+      "admin_cardinspector_label",
+      "admin_cardinspector_position_presets",
+      "admin_cardinspector_props",
+      "src_components_admin_blockinspector_tsx",
+      "src_components_admin_cardinspector_tsx"
+    ],
+    "17": [
+      "admin_blockpickermodal_blockpickermodal",
+      "admin_blockpickermodal_blocktypeoption",
+      "admin_blockpickermodal_options",
+      "admin_blockpickermodal_props",
+      "admin_insertzone_insertzone",
+      "admin_insertzone_props",
+      "contact_page_contact",
+      "contact_page_normalizephonenumber",
+      "contact_page_pagetexts",
+      "notre_histoire_page_notrehistoire",
+      "notre_histoire_page_pagetexts",
+      "src_app_contact_page_tsx",
+      "src_app_notre_histoire_page_tsx",
+      "src_components_admin_blockpickermodal_tsx",
+      "src_components_admin_insertzone_tsx"
+    ],
+    "18": [
+      "components_allpageimageeffects_allpageimageeffects",
+      "components_allpageimageeffects_fadeeffect",
+      "components_allpageimageeffects_fixedeffect",
+      "components_allpageimageeffects_imageeffect",
+      "components_allpageimageeffects_parallaxeffect",
+      "components_allpageimageeffects_positionedimageeffect",
+      "components_allpageimageeffects_props",
+      "components_allpageimageeffects_simpleimage",
+      "components_allpageimageeffects_singleimageeffect",
+      "components_allpageimageeffects_slideeffect",
+      "components_allpageimageeffects_zoomeffect",
+      "remboursements_page_pagetexts",
+      "remboursements_page_remboursements",
+      "src_app_remboursements_page_tsx",
+      "src_components_allpageimageeffects_tsx"
+    ],
+    "19": [
+      "admin_dynamicblockinspector_block",
+      "admin_dynamicblockinspector_dynamicblockinspector",
+      "admin_dynamicblockinspector_hexalphatorgba",
+      "admin_dynamicblockinspector_objectpositionpicker",
+      "admin_dynamicblockinspector_parsemeta",
+      "admin_dynamicblockinspector_position_presets",
+      "admin_dynamicblockinspector_props",
+      "admin_dynamicblockinspector_rgbatohexalpha",
+      "admin_dynamicblockinspector_seg",
+      "admin_dynamicblockinspector_type_labels",
+      "admin_richtexteditor_props",
+      "admin_richtexteditor_richtexteditor",
+      "src_components_admin_dynamicblockinspector_tsx",
+      "src_components_admin_richtexteditor_tsx"
+    ],
+    "20": [
+      "components_contacthours_contacthours",
+      "components_contacthours_daysofweek",
+      "components_contactinfo_contactinfo",
+      "components_topbanner_topbanner",
+      "contexts_centrecontext_centre",
+      "contexts_centrecontext_centrecontext",
+      "contexts_centrecontext_centrecontexttype",
+      "contexts_centrecontext_centreprovider",
+      "contexts_centrecontext_openinghour",
+      "contexts_centrecontext_usecentre",
+      "src_components_contacthours_tsx",
+      "src_components_contactinfo_tsx",
+      "src_components_topbanner_tsx",
+      "src_contexts_centrecontext_tsx"
+    ],
+    "21": [
+      "components_imagefeaturecard_imagefeaturecard",
+      "components_imagefeaturecard_imagefeaturecardprops",
+      "lib_card_helpers_carddata",
+      "lib_card_helpers_getfeaturecards",
+      "partenaires_pharmaciens_page_pagetexts",
+      "partenaires_pharmaciens_page_partenairespharmaciens",
+      "partenaires_pharmaciens_page_steps",
+      "src_app_partenaires_pharmaciens_page_tsx",
+      "src_app_test_auditif_gratuit_page_tsx",
+      "src_components_imagefeaturecard_tsx",
+      "src_lib_card_helpers_ts",
+      "test_auditif_gratuit_page_normalizephonenumber",
+      "test_auditif_gratuit_page_pagetexts",
+      "test_auditif_gratuit_page_testauditifgratuit"
+    ],
+    "22": [
+      "admin_editoroverlay_editoroverlay",
+      "app_layout_inter",
+      "app_layout_metadata",
+      "app_layout_playfair",
+      "app_layout_rootlayout",
+      "components_editornavsync_editornavsync",
+      "components_providers_providers",
+      "components_themeprovider_themeprovider",
+      "src_app_layout_tsx",
+      "src_components_admin_editoroverlay_tsx",
+      "src_components_editornavsync_tsx",
+      "src_components_providers_tsx",
+      "src_components_themeprovider_tsx"
+    ],
+    "23": [
+      "solutions_page_defaults",
+      "solutions_page_devicelink",
+      "solutions_page_form",
+      "solutions_page_label",
+      "solutions_page_linklisteditor",
+      "solutions_page_pickertarget",
+      "solutions_page_seedform",
+      "solutions_page_solution",
+      "solutions_page_solutiondefault",
+      "solutions_page_solutionrow",
+      "solutions_page_solutionsadmin",
+      "solutions_page_stringlisteditor",
+      "src_app_admin_solutions_page_tsx"
+    ],
+    "24": [
+      "components_visualpagebuilder_blockpreview",
+      "components_visualpagebuilder_contentblock",
+      "components_visualpagebuilder_sortableblockcompact",
+      "components_visualpagebuilder_visualpagebuilder",
+      "components_visualpagebuilder_visualpagebuilderprops",
+      "constructeur_visuel_page_block_types",
+      "constructeur_visuel_page_constructeurvisuelpage",
+      "constructeur_visuel_page_contentblock",
+      "constructeur_visuel_page_default_content",
+      "constructeur_visuel_page_predefined_pages",
+      "src_app_admin_constructeur_visuel_page_tsx",
+      "src_components_visualpagebuilder_tsx"
+    ],
+    "25": [
+      "editeur_visuel_homepanel_carddata",
+      "editeur_visuel_homepanel_cardmodal",
+      "editeur_visuel_homepanel_editbtn",
+      "editeur_visuel_homepanel_homepanel",
+      "editeur_visuel_homepanel_hometexts",
+      "editeur_visuel_homepanel_sectioncard",
+      "editeur_visuel_homepanel_sectiontextmodal",
+      "editeur_visuel_homepanel_stars",
+      "editeur_visuel_homepanel_testimonial",
+      "editeur_visuel_homepanel_testimonialmodal",
+      "editeur_visuel_homepanel_textfield",
+      "src_app_admin_editeur_visuel_homepanel_tsx"
+    ],
+    "26": [
+      "audire_css_styles",
+      "legacy_component_footer",
+      "legacy_component_header",
+      "legacy_component_modal",
+      "legacy_contact_page",
+      "legacy_faq_page",
+      "legacy_homepage",
+      "legacy_mentions_legales_page",
+      "legacy_merci_page",
+      "legacy_notre_accompagnement_page",
+      "legacy_partenaires_pharmaciens_page"
+    ],
+    "27": [
+      "card_images_route_get",
+      "content_manager_featurecardssection_cardimage",
+      "content_manager_featurecardssection_featurecardssection",
+      "lib_card_definitions_cardgroup",
+      "lib_card_definitions_getallpages",
+      "lib_card_definitions_getdefaultcardsforpage",
+      "lib_card_definitions_page_cards",
+      "lib_card_definitions_pagecardsdefinition",
+      "src_app_admin_content_manager_featurecardssection_tsx",
+      "src_app_api_card_images_route_ts",
+      "src_lib_card_definitions_ts"
+    ],
+    "28": [
+      "admin_text_editor",
+      "database_setup",
+      "getpagetexts_function",
+      "guide_migration_textes",
+      "page_definitions_pagedefinition",
+      "page_definitions_pagedefinitions",
+      "page_definitions_ts",
+      "prisma_schema",
+      "scripts_populate_page_texts",
+      "src_lib_page_texts"
+    ],
+    "29": [
+      "app_page_featuredproduct",
+      "app_page_home",
+      "app_page_pagetexts",
+      "components_heroclassic_heroclassic",
+      "components_heroclassic_heroclassicprops",
+      "components_testimonialscarousel_testimonial",
+      "components_testimonialscarousel_testimonialscarousel",
+      "src_app_page_tsx",
+      "src_components_heroclassic_tsx",
+      "src_components_testimonialscarousel_tsx"
+    ],
+    "30": [
+      "components_adminheader_adminheader",
+      "components_adminheader_adminheaderprops",
+      "components_autosendreminders_autosendreminders",
+      "setup_page_texts_page_setuppagetextsadmin",
+      "src_app_admin_setup_page_texts_page_tsx",
+      "src_app_admin_testimonials_page_tsx",
+      "src_components_adminheader_tsx",
+      "src_components_autosendreminders_tsx",
+      "testimonials_page_testimonial",
+      "testimonials_page_testimonialspage"
+    ],
+    "31": [
+      "components_conditionallayout_conditionallayout",
+      "components_footer_daysofweekshort",
+      "components_footer_footer",
+      "components_footer_footertexts",
+      "components_header_header",
+      "components_logo_logo",
+      "src_components_conditionallayout_tsx",
+      "src_components_footer_tsx",
+      "src_components_header_tsx",
+      "src_components_logo_tsx"
+    ],
+    "32": [
+      "components_imageeffectsrenderer_fadeeffect",
+      "components_imageeffectsrenderer_fixedeffect",
+      "components_imageeffectsrenderer_imageeffect",
+      "components_imageeffectsrenderer_imageeffectsrenderer",
+      "components_imageeffectsrenderer_imageeffectsrendererprops",
+      "components_imageeffectsrenderer_parallaxeffect",
+      "components_imageeffectsrenderer_simpleimage",
+      "components_imageeffectsrenderer_slideeffect",
+      "components_imageeffectsrenderer_zoomeffect",
+      "src_components_imageeffectsrenderer_tsx"
+    ],
+    "33": [
+      "admin_usedrafts_usedrafts",
+      "faq_management_faqmanagementclient_category",
+      "faq_management_faqmanagementclient_categorycard",
+      "faq_management_faqmanagementclient_faq",
+      "faq_management_faqmanagementclient_faqmanagementclient",
+      "faq_management_faqmanagementclient_faqrow",
+      "faq_management_page_faqmanagementpage",
+      "src_app_admin_faq_management_faqmanagementclient_tsx",
+      "src_app_admin_faq_management_page_tsx"
+    ],
+    "34": [
+      "appareils_page_appareilspage",
+      "appareils_page_generateslug",
+      "appareils_page_getimageposition",
+      "appareils_page_hearingaid",
+      "appareils_page_setimageposition",
+      "components_imagepositioneditor_imagepositioneditor",
+      "components_imagepositioneditor_imagepositioneditorprops",
+      "src_app_admin_appareils_page_tsx",
+      "src_components_imagepositioneditor_tsx"
+    ],
+    "35": [
+      "components_centreselector_centreselector",
+      "lib_geolocation_calculatedistance",
+      "lib_geolocation_findnearestcentre",
+      "lib_geolocation_getuserlocation",
+      "lib_geolocation_toradians",
+      "nearest_route_get",
+      "src_app_api_centres_nearest_route_ts",
+      "src_components_centreselector_tsx",
+      "src_lib_geolocation_ts"
+    ],
+    "36": [
+      "components_mediapicker_mediapicker",
+      "components_mediapicker_mediapickerprops",
+      "components_mediapicker_uploadedmedia",
+      "lib_upload_client_uploadfile",
+      "mediatheque_page_mediafile",
+      "mediatheque_page_mediathequeadmin",
+      "src_app_admin_mediatheque_page_tsx",
+      "src_components_mediapicker_tsx",
+      "src_lib_upload_client_ts"
+    ],
+    "37": [
+      "feature_cards_management_featurecardsmanagementclient_carddef",
+      "feature_cards_management_featurecardsmanagementclient_cardimage",
+      "feature_cards_management_featurecardsmanagementclient_cardrow",
+      "feature_cards_management_featurecardsmanagementclient_featurecardsmanagementclient",
+      "feature_cards_management_featurecardsmanagementclient_label",
+      "feature_cards_management_featurecardsmanagementclient_mergedcard",
+      "feature_cards_management_page_featurecardsmanagementpage",
+      "src_app_admin_feature_cards_management_featurecardsmanagementclient_tsx",
+      "src_app_admin_feature_cards_management_page_tsx"
+    ],
+    "38": [
+      "hearing_aids_route_delete",
+      "hearing_aids_route_generateslug",
+      "hearing_aids_route_get",
+      "hearing_aids_route_incomingcontentblock",
+      "hearing_aids_route_normalizecontentblock",
+      "hearing_aids_route_post",
+      "hearing_aids_route_put",
+      "src_app_api_admin_hearing_aids_route_ts",
+      "src_app_api_hearing_aids_route_ts"
+    ],
+    "39": [
+      "image_effects_route_delete",
+      "image_effects_route_get",
+      "image_effects_route_guard",
+      "image_effects_route_patch",
+      "image_effects_route_post",
+      "image_effects_route_prisma",
+      "image_effects_route_put",
+      "src_app_api_admin_image_effects_route_ts",
+      "src_app_api_image_effects_route_ts"
+    ],
+    "40": [
+      "js_content_loader_detectcurrentpage",
+      "js_content_loader_getvaluebykey",
+      "js_content_loader_init",
+      "js_content_loader_loadjson",
+      "js_content_loader_replacechips",
+      "js_content_loader_replaceconfig",
+      "js_content_loader_replaceconfigkeys",
+      "js_content_loader_replacepagecontent",
+      "legacy_1_0_js_content_loader_js"
+    ],
+    "41": [
+      "legacy_1_0_generate_solution_pages_dirpath",
+      "legacy_1_0_generate_solution_pages_filepath",
+      "legacy_1_0_generate_solution_pages_fs",
+      "legacy_1_0_generate_solution_pages_generatehtml",
+      "legacy_1_0_generate_solution_pages_html",
+      "legacy_1_0_generate_solution_pages_js",
+      "legacy_1_0_generate_solution_pages_path",
+      "legacy_1_0_generate_solution_pages_solutionsdata",
+      "legacy_1_0_generate_solution_pages_solutionspath"
+    ],
+    "42": [
+      "admin_admintopbar_admintopbar",
+      "admin_admintopbar_admintopbarprops",
+      "admin_admintopbar_device",
+      "admin_admintopbar_iconbtn",
+      "admin_admintopbar_save_labels",
+      "admin_admintopbar_savepill",
+      "admin_admintopbar_savestate",
+      "src_components_admin_admintopbar_tsx"
+    ],
+    "43": [
+      "admin_blockinspector_selectedblock",
+      "admin_useeditorhistory_editop",
+      "admin_useeditorhistory_useeditorhistory",
+      "editor_editorview_device_widths",
+      "editor_editorview_editorview",
+      "editor_editorview_page",
+      "src_app_admin_editor_editorview_tsx",
+      "src_components_admin_useeditorhistory_ts"
+    ],
+    "44": [
+      "admin_focalpointpicker_focalpointpicker",
+      "admin_focalpointpicker_props",
+      "admin_mediapicker_mediapicker",
+      "admin_mediapicker_mediapickerimpl",
+      "admin_mediapicker_props",
+      "lib_deviceblocks_focalpoint",
+      "src_components_admin_focalpointpicker_tsx",
+      "src_components_admin_mediapicker_tsx"
+    ],
+    "45": [
+      "components_cardicon_cardicon",
+      "components_cardicon_cardiconprops",
+      "notre_accompagnement_page_notreaccompagnement",
+      "notre_accompagnement_page_pagetexts",
+      "notre_accompagnement_page_steps",
+      "notre_accompagnement_page_values",
+      "src_app_notre_accompagnement_page_tsx",
+      "src_components_cardicon_tsx"
+    ],
+    "46": [
+      "components_contacticon_cache",
+      "components_contacticon_contacticon",
+      "components_contacticon_inflight",
+      "components_contacticon_isimagevalue",
+      "components_contacticon_loadicon",
+      "components_contacticon_props",
+      "components_contacticon_tolucidename",
+      "src_components_contacticon_tsx"
+    ],
+    "47": [
+      "components_visualsectionselector_page_sections",
+      "components_visualsectionselector_visualsection",
+      "components_visualsectionselector_visualsectionselector",
+      "components_visualsectionselector_visualsectionselectorprops",
+      "image_effects_page_imageeffect",
+      "image_effects_page_imageeffectsadmin",
+      "src_app_admin_image_effects_page_tsx",
+      "src_components_visualsectionselector_tsx"
+    ],
+    "48": [
+      "content_manager_faqssection_faq",
+      "content_manager_faqssection_faqssection",
+      "content_manager_page_contentmanager",
+      "content_manager_page_tab",
+      "content_manager_page_tabkey",
+      "content_manager_page_tabs",
+      "src_app_admin_content_manager_faqssection_tsx",
+      "src_app_admin_content_manager_page_tsx"
+    ],
+    "49": [
+      "solutions_auditives_page_devicelink",
+      "solutions_auditives_page_pagetexts",
+      "solutions_auditives_page_solutioncard",
+      "solutions_auditives_page_solutiondata",
+      "solutions_auditives_page_solutiondetail",
+      "solutions_auditives_page_solutiondetailpanel",
+      "solutions_auditives_page_solutionsauditives",
+      "src_app_solutions_auditives_page_tsx"
+    ],
+    "50": [
+      "admin_imageeffectinspector_effect_options",
+      "admin_imageeffectinspector_hexalphatorgba",
+      "admin_imageeffectinspector_imageeffect",
+      "admin_imageeffectinspector_imageeffectinspector",
+      "admin_imageeffectinspector_props",
+      "admin_imageeffectinspector_rgbatohexalpha",
+      "src_components_admin_imageeffectinspector_tsx"
+    ],
+    "51": [
+      "admin_usedrafts_drafts",
+      "admin_usedrafts_draftsstore",
+      "admin_usedrafts_empty",
+      "admin_usedrafts_read",
+      "admin_usedrafts_update",
+      "admin_usedrafts_write",
+      "src_components_admin_usedrafts_ts"
+    ],
+    "52": [
+      "blocks_route_delete",
+      "blocks_route_get",
+      "blocks_route_patch",
+      "blocks_route_post",
+      "blocks_route_put",
+      "src_app_api_admin_blocks_route_ts",
+      "src_app_api_blocks_route_ts"
+    ],
+    "53": [
+      "categories_route_delete",
+      "categories_route_get",
+      "categories_route_post",
+      "categories_route_prisma",
+      "categories_route_put",
+      "src_app_api_admin_categories_route_ts",
+      "src_app_api_categories_route_ts"
+    ],
+    "54": [
+      "centres_route_delete",
+      "centres_route_get",
+      "centres_route_getdefaultcentre",
+      "centres_route_post",
+      "centres_route_put",
+      "src_app_api_admin_centres_route_ts",
+      "src_app_api_centres_route_ts"
+    ],
+    "55": [
+      "components_imageuploadmodal_imageuploadmodal",
+      "components_imageuploadmodal_imageuploadmodalprops",
+      "content_manager_solutionssection_defaultsolutions",
+      "content_manager_solutionssection_solution",
+      "content_manager_solutionssection_solutionssection",
+      "src_app_admin_content_manager_solutionssection_tsx",
+      "src_components_imageuploadmodal_tsx"
+    ],
+    "56": [
+      "get_calendar_id_getaccesstoken",
+      "get_calendar_id_google",
+      "get_calendar_id_js",
+      "get_calendar_id_listcalendars",
+      "get_calendar_id_oauth2client",
+      "get_calendar_id_readline",
+      "get_calendar_id_scopes"
+    ],
+    "57": [
+      "legacy_contour_oreille_page",
+      "legacy_intra_auriculaire_page",
+      "legacy_oticon_intent_page",
+      "legacy_remboursements_page",
+      "legacy_sitemap_page",
+      "legacy_solutions_auditives_page",
+      "legacy_test_auditif_page"
+    ],
+    "58": [
+      "prendre_rendez_vous_page_appointmenttypes",
+      "prendre_rendez_vous_page_centre",
+      "prendre_rendez_vous_page_formdata",
+      "prendre_rendez_vous_page_normalizephonenumber",
+      "prendre_rendez_vous_page_prendrerendezvous",
+      "prendre_rendez_vous_page_timeslot",
+      "src_app_prendre_rendez_vous_page_tsx"
+    ],
+    "59": [
+      "prisma_patch_sprint5_8_log",
+      "prisma_patch_sprint5_8_m",
+      "prisma_patch_sprint5_8_mjs",
+      "prisma_patch_sprint5_8_original",
+      "prisma_patch_sprint5_8_patch_lines",
+      "prisma_patch_sprint5_8_patched",
+      "prisma_patch_sprint5_8_schema_path"
+    ],
+    "60": [
+      "prisma_seed_function_seeddatabase",
+      "prisma_seed_function_ts",
+      "prisma_seed_main",
+      "prisma_seed_prisma",
+      "prisma_seed_ts",
+      "seed_route_post",
+      "src_app_api_admin_seed_route_ts"
+    ],
+    "61": [
+      "centres_page_centre",
+      "centres_page_centrespage",
+      "centres_page_daysofweek",
+      "centres_page_generateslug",
+      "centres_page_openinghour",
+      "src_app_admin_centres_page_tsx"
+    ],
+    "62": [
+      "content_manager_homesection_homesection",
+      "content_manager_imageeffectssection_imageeffect",
+      "content_manager_imageeffectssection_imageeffectssection",
+      "content_manager_imageeffectssection_pages",
+      "src_app_admin_content_manager_homesection_tsx",
+      "src_app_admin_content_manager_imageeffectssection_tsx"
+    ],
+    "63": [
+      "devices_devicepagerenderer_hearingaiddata",
+      "lib_deviceblocks_defaultvisibility",
+      "lib_deviceblocks_parseblockvisibility",
+      "slug_page_anyproductrow",
+      "slug_page_hearingaidpage",
+      "src_app_appareils_slug_page_tsx"
+    ],
+    "64": [
+      "faqs_route_delete",
+      "faqs_route_get",
+      "faqs_route_post",
+      "faqs_route_put",
+      "src_app_api_admin_faqs_route_ts",
+      "src_app_api_faqs_route_ts"
+    ],
+    "65": [
+      "lib_page_texts_getpagetext",
+      "lib_page_texts_getpagetexts",
+      "lib_page_texts_pagetext",
+      "lib_page_texts_pagetextprops",
+      "lib_page_texts_usepagetexts",
+      "src_lib_page_texts_ts"
+    ],
+    "66": [
+      "mediatheque_route_delete",
+      "mediatheque_route_ensureuploaddir",
+      "mediatheque_route_get",
+      "mediatheque_route_post",
+      "mediatheque_route_upload_dir",
+      "src_app_api_admin_mediatheque_route_ts"
+    ],
+    "67": [
+      "page_texts_route_delete",
+      "page_texts_route_get",
+      "page_texts_route_post",
+      "page_texts_route_put",
+      "src_app_api_admin_page_texts_route_ts",
+      "src_app_api_page_texts_route_ts"
+    ],
+    "68": [
+      "rendez_vous_page_appointment",
+      "rendez_vous_page_appointmenttypelabels",
+      "rendez_vous_page_centre",
+      "rendez_vous_page_rendezvouspage",
+      "rendez_vous_page_timeslot",
+      "src_app_admin_rendez_vous_page_tsx"
+    ],
+    "69": [
+      "solutions_route_get",
+      "solutions_route_post",
+      "solutions_route_prisma",
+      "solutions_route_put",
+      "src_app_api_admin_solutions_route_ts",
+      "src_app_api_solutions_route_ts"
+    ],
+    "70": [
+      "src_app_api_admin_testimonials_route_ts",
+      "src_app_api_testimonials_route_ts",
+      "testimonials_route_delete",
+      "testimonials_route_get",
+      "testimonials_route_post",
+      "testimonials_route_put"
+    ],
+    "71": [
+      "src_app_api_admin_time_slots_route_ts",
+      "time_slots_route_delete",
+      "time_slots_route_get",
+      "time_slots_route_post",
+      "time_slots_route_prisma",
+      "time_slots_route_put"
+    ],
+    "72": [
+      "appareils_v2_page_appareilsv2listpage",
+      "appareils_v2_page_devicecard",
+      "appareils_v2_page_hearingaid",
+      "appareils_v2_page_sortkey",
+      "src_app_admin_appareils_v2_page_tsx"
+    ],
+    "73": [
+      "appointments_page_adminappointments",
+      "appointments_page_appointment",
+      "appointments_page_centre",
+      "appointments_page_timeslot",
+      "src_app_admin_appointments_page_tsx"
+    ],
+    "74": [
+      "components_blocksbuilder_blocksbuilder",
+      "components_blocksbuilder_blocksbuilderprops",
+      "components_blocksbuilder_contentblock",
+      "components_blocksbuilder_sortableblock",
+      "src_components_blocksbuilder_tsx"
+    ],
+    "75": [
+      "components_imageeffecteditormodal_effecttypes",
+      "components_imageeffecteditormodal_imageeffect",
+      "components_imageeffecteditormodal_imageeffecteditormodal",
+      "components_imageeffecteditormodal_imageeffecteditormodalprops",
+      "src_components_imageeffecteditormodal_tsx"
+    ],
+    "76": [
+      "components_wysiwygeditor_contentblock",
+      "components_wysiwygeditor_editableblock",
+      "components_wysiwygeditor_wysiwygeditor",
+      "components_wysiwygeditor_wysiwygeditorprops",
+      "src_components_wysiwygeditor_tsx"
+    ],
+    "77": [
+      "content_manager_textssection_pagedefinition",
+      "content_manager_textssection_pagedefinitions",
+      "content_manager_textssection_pagetext",
+      "content_manager_textssection_textssection",
+      "src_app_admin_content_manager_textssection_tsx"
+    ],
+    "78": [
+      "database_page_databaseadmin",
+      "database_page_dbsetupresult",
+      "database_page_populateresult",
+      "database_page_testdbresult",
+      "src_app_admin_database_page_tsx"
+    ],
+    "79": [
+      "footer_page_footeradmin",
+      "footer_page_footertextdefinition",
+      "footer_page_footertextdefinitions",
+      "footer_page_pagetext",
+      "src_app_admin_footer_page_tsx"
+    ],
+    "80": [
+      "scripts_extract_page_texts_extract_texts_from_page",
+      "scripts_extract_page_texts_generate_page_definitions",
+      "scripts_extract_page_texts_py",
+      "scripts_extract_page_texts_rationale_35",
+      "scripts_extract_page_texts_rationale_95"
+    ],
+    "81": [
+      "scripts_populate_page_texts_main",
+      "scripts_populate_page_texts_pagedef",
+      "scripts_populate_page_texts_pagedefinitions",
+      "scripts_populate_page_texts_prisma",
+      "scripts_populate_page_texts_ts"
+    ],
+    "82": [
+      "slug_page_appareilv2editor",
+      "slug_page_inspector",
+      "slug_page_inspectortitle",
+      "slug_page_iscontentsel",
+      "slug_page_seltocontentid"
+    ],
+    "83": [
+      "sms_templates_route_delete",
+      "sms_templates_route_get",
+      "sms_templates_route_post",
+      "sms_templates_route_put",
+      "src_app_api_admin_sms_templates_route_ts"
+    ],
+    "84": [
+      "src_app_admin_text_editor_page_tsx",
+      "text_editor_page_pagedefinition",
+      "text_editor_page_pagedefinitions",
+      "text_editor_page_pagetext",
+      "text_editor_page_texteditoradmin"
+    ],
+    "85": [
+      "admin_feature_cards_page",
+      "api_admin_card_images",
+      "feature_cards_guide",
+      "image_feature_card"
+    ],
+    "86": [
+      "admin_page_admindashboard",
+      "admin_page_appointment",
+      "admin_page_appointmentstats",
+      "src_app_admin_page_tsx"
+    ],
+    "87": [
+      "admin_security",
+      "src_app_api_auth_nextauth_route",
+      "src_lib_auth",
+      "src_lib_auth_helpers"
+    ],
+    "88": [
+      "components_blockselector_blockselector",
+      "components_blockselector_blockselectorprops",
+      "components_blockselector_contentblock",
+      "src_components_blockselector_tsx"
+    ],
+    "89": [
+      "components_editable_cache",
+      "components_editable_editable",
+      "components_editable_editableprops",
+      "src_components_editable_tsx"
+    ],
+    "90": [
+      "components_imagepicker_imagepicker",
+      "components_imagepicker_imagepickerprops",
+      "components_imagepicker_uploadedimage",
+      "src_components_imagepicker_tsx"
+    ],
+    "91": [
+      "components_productcontentblock_contentblock",
+      "components_productcontentblock_productcontentblock",
+      "components_productcontentblock_productcontentblockprops",
+      "src_components_productcontentblock_tsx"
+    ],
+    "92": [
+      "faqs_page_adminfaqs",
+      "faqs_page_category",
+      "faqs_page_faq",
+      "src_app_admin_faqs_page_tsx"
+    ],
+    "93": [
+      "js_components_getcomponentspath",
+      "js_components_loadallcomponents",
+      "js_components_loadcomponent",
+      "legacy_1_0_js_components_js"
+    ],
+    "94": [
+      "js_design_loader_applybackgrounds",
+      "js_design_loader_defaults",
+      "js_design_loader_link",
+      "legacy_1_0_js_design_loader_js"
+    ],
+    "95": [
+      "legacy_1_0_fix_script_order_fix_script_order",
+      "legacy_1_0_fix_script_order_main",
+      "legacy_1_0_fix_script_order_py",
+      "legacy_1_0_fix_script_order_rationale_10"
+    ],
+    "96": [
+      "legacy_components_js",
+      "legacy_config_js",
+      "legacy_main_js",
+      "legacy_readme"
+    ],
+    "97": [
+      "prisma_import_content_contentblocks",
+      "prisma_import_content_main",
+      "prisma_import_content_prisma",
+      "prisma_import_content_ts"
+    ],
+    "98": [
+      "publish_route_payload",
+      "publish_route_post",
+      "publish_route_slugify",
+      "src_app_api_admin_publish_route_ts"
+    ],
+    "99": [
+      "sms_page_smsadmin",
+      "sms_page_smsconfig",
+      "sms_page_smslog",
+      "src_app_admin_sms_page_tsx"
+    ],
+    "100": [
+      "sms_templates_page_default_templates",
+      "sms_templates_page_smstemplate",
+      "sms_templates_page_smstemplatesadmin",
+      "src_app_admin_sms_templates_page_tsx"
+    ],
+    "101": [
+      "src_types_next_auth_d_ts",
+      "types_next_auth_d_jwt",
+      "types_next_auth_d_session",
+      "types_next_auth_d_user"
+    ],
+    "102": [
+      "20260309_add_multi_centres_system_migration_centre",
+      "20260309_add_multi_centres_system_migration_openinghours",
+      "prisma_migrations_20260309_add_multi_centres_system_migration_sql"
+    ],
+    "103": [
+      "20260402_add_faq_categories_migration_faq",
+      "20260402_add_faq_categories_migration_faqcategory",
+      "prisma_migrations_20260402_add_faq_categories_migration_sql"
+    ],
+    "104": [
+      "admin_mediapickerbutton_mediapickerbutton",
+      "admin_mediapickerbutton_props",
+      "src_components_admin_mediapickerbutton_tsx"
+    ],
+    "105": [
+      "admin_publishbar_publishbar",
+      "admin_publishbar_publishbarprops",
+      "src_components_admin_publishbar_tsx"
+    ],
+    "106": [
+      "api_admin_pending_reminders",
+      "cron_setup",
+      "src_lib_email"
+    ],
+    "107": [
+      "categories_page_admincategories",
+      "categories_page_category",
+      "src_app_admin_categories_page_tsx"
+    ],
+    "108": [
+      "cleanup_prescriptions_route_get",
+      "cleanup_prescriptions_route_prisma",
+      "src_app_api_cron_cleanup_prescriptions_route_ts"
+    ],
+    "109": [
+      "components_featurecard_featurecard",
+      "components_featurecard_featurecardprops",
+      "src_components_featurecard_tsx"
+    ],
+    "110": [
+      "components_parallaxsection_parallaxsection",
+      "components_parallaxsection_parallaxsectionprops",
+      "src_components_parallaxsection_tsx"
+    ],
+    "111": [
+      "confidentialite_layout_layout",
+      "confidentialite_layout_metadata",
+      "src_app_confidentialite_layout_tsx"
+    ],
+    "112": [
+      "editor_page_editable_pages",
+      "editor_page_editorpage",
+      "src_app_admin_editor_page_tsx"
+    ],
+    "113": [
+      "fix_image_effects_page_effectissue",
+      "fix_image_effects_page_fiximageeffects",
+      "src_app_admin_fix_image_effects_page_tsx"
+    ],
+    "114": [
+      "get_calendar_id_get_calendar_list",
+      "get_calendar_id_py",
+      "get_calendar_id_rationale_18"
+    ],
+    "115": [
+      "mentions_legales_layout_layout",
+      "mentions_legales_layout_metadata",
+      "src_app_mentions_legales_layout_tsx"
+    ],
+    "116": [
+      "prisma_migrate_settings_to_centre_main",
+      "prisma_migrate_settings_to_centre_prisma",
+      "prisma_migrate_settings_to_centre_ts"
+    ],
+    "117": [
+      "prisma_seed_hearing_aids_prisma",
+      "prisma_seed_hearing_aids_seedhearingaids",
+      "prisma_seed_hearing_aids_ts"
+    ],
+    "118": [
+      "public_apple_icon_svg",
+      "public_favicon_svg",
+      "public_icon_svg"
+    ],
+    "119": [
+      "scripts_migrate_oticon_couple_main",
+      "scripts_migrate_oticon_couple_prisma",
+      "scripts_migrate_oticon_couple_ts"
+    ],
+    "120": [
+      "20260320122932_add_solution_table_migration_solution",
+      "prisma_migrations_20260320122932_add_solution_table_migration_sql"
+    ],
+    "121": [
+      "20260324_add_faq_table_migration_faq",
+      "prisma_migrations_20260324_add_faq_table_migration_sql"
+    ],
+    "122": [
+      "20260324_add_page_text_table_migration_pagetext",
+      "prisma_migrations_20260324_add_page_text_table_migration_sql"
+    ],
+    "123": [
+      "components_adminauthguard_adminauthguard",
+      "src_components_adminauthguard_tsx"
+    ],
+    "124": [
+      "db_setup_route_post",
+      "src_app_api_admin_db_setup_route_ts"
+    ],
+    "125": [
+      "feature_cards_page_featurecardslegacyredirect",
+      "src_app_admin_feature_cards_page_tsx"
+    ],
+    "126": [
+      "legacy_admin_index",
+      "legacy_admin_simple_readme"
+    ],
+    "127": [
+      "legacy_logo_png",
+      "public_logo_png"
+    ],
+    "128": [
+      "login_page_adminlogin",
+      "src_app_admin_login_page_tsx"
+    ],
+    "129": [
+      "migration_sms_smstemplate",
+      "migration_sms_sql"
+    ],
+    "130": [
+      "migrations_add_image_effects_imageeffect",
+      "prisma_migrations_add_image_effects_sql"
+    ],
+    "131": [
+      "next_config_mjs",
+      "next_config_nextconfig"
+    ],
+    "132": [
+      "postcss_config_config",
+      "postcss_config_mjs"
+    ],
+    "133": [
+      "tailwind_config_config",
+      "tailwind_config_ts"
+    ],
+    "134": [
+      "claude_md"
+    ],
+    "135": [
+      "decap_cms_config"
+    ],
+    "136": [
+      "fix_calendar_404"
+    ],
+    "137": [
+      "fix_oauth_403"
+    ],
+    "138": [
+      "images_required_md"
+    ],
+    "139": [
+      "legacy_1_0_js_config_js"
+    ],
+    "140": [
+      "legacy_1_0_save_php"
+    ],
+    "141": [
+      "legacy_admin_simple_index"
+    ],
+    "142": [
+      "legacy_contour_oreille_png"
+    ],
+    "143": [
+      "legacy_editeur_page"
+    ],
+    "144": [
+      "legacy_images_produits_readme"
+    ],
+    "145": [
+      "legacy_images_readme"
+    ],
+    "146": [
+      "legacy_oticon_intent_png"
+    ],
+    "147": [
+      "legacy_robots_txt"
+    ],
+    "148": [
+      "legacy_solution_1772009311933"
+    ],
+    "149": [
+      "legacy_solution_1772028108569"
+    ],
+    "150": [
+      "legacy_solution_glasses_jpeg"
+    ],
+    "151": [
+      "pages_produits_readme"
+    ],
+    "152": [
+      "prisma_migrations_20260330_add_sms_consent_migration_sql"
+    ],
+    "153": [
+      "prisma_migrations_add_card_image_fields_sql"
+    ],
+    "154": [
+      "prisma_migrations_add_effect_direction_sql"
+    ],
+    "155": [
+      "prisma_migrations_add_imageposition_and_intensity_sql"
+    ],
+    "156": [
+      "prisma_migrations_add_pagekey_to_cardimage_sql"
+    ],
+    "157": [
+      "prisma_migrations_insert_oticon_couple_image_sql"
+    ],
+    "158": [
+      "prisma_patch_md"
+    ],
+    "159": [
+      "public_apple_icon_png"
+    ],
+    "160": [
+      "public_hearing_test_jpg"
+    ],
+    "161": [
+      "public_human_support_jpg"
+    ],
+    "162": [
+      "public_oticon_couple_jpg"
+    ],
+    "163": [
+      "public_personalized_followup_jpg"
+    ],
+    "164": [
+      "readme_nextjs_site"
+    ],
+    "165": [
+      "rendez_vous_readme"
+    ],
+    "166": [
+      "setup_database_md"
+    ],
+    "167": [
+      "solution_resumee_md"
+    ],
+    "168": [
+      "sprint58_md"
+    ],
+    "169": [
+      "tarifs_pdf_document"
+    ],
+    "170": [
+      "textes_editables_readme"
+    ],
+    "171": [
+      "textes_identification_md"
+    ],
+    "172": [
+      "vercel_deployment_guide_md"
+    ],
+    "173": [
+      "vercel_env_setup_md"
+    ]
+  },
+  "cohesion": {
+    "0": 0.06313497822931785,
+    "1": 0.09696969696969697,
+    "2": 0.10227272727272728,
+    "3": 0.07096774193548387,
+    "4": 0.08735632183908046,
+    "5": 0.0960591133004926,
+    "6": 0.08547008547008547,
+    "7": 0.08333333333333333,
+    "8": 0.10526315789473684,
+    "9": 0.11578947368421053,
+    "10": 0.1,
+    "11": 0.10526315789473684,
+    "12": 0.1437908496732026,
+    "13": 0.125,
+    "14": 0.125,
+    "15": 0.13333333333333333,
+    "16": 0.1619047619047619,
+    "17": 0.14285714285714285,
+    "18": 0.13333333333333333,
+    "19": 0.15384615384615385,
+    "20": 0.17582417582417584,
+    "21": 0.17582417582417584,
+    "22": 0.16666666666666666,
+    "23": 0.15384615384615385,
+    "24": 0.16666666666666666,
+    "25": 0.16666666666666666,
+    "26": 0.32727272727272727,
+    "27": 0.21818181818181817,
+    "28": 0.2222222222222222,
+    "29": 0.2,
+    "30": 0.2,
+    "31": 0.2,
+    "32": 0.2,
+    "33": 0.2222222222222222,
+    "34": 0.2777777777777778,
+    "35": 0.3333333333333333,
+    "36": 0.2777777777777778,
+    "37": 0.2222222222222222,
+    "38": 0.2777777777777778,
+    "39": 0.3611111111111111,
+    "40": 0.3888888888888889,
+    "41": 0.2222222222222222,
+    "42": 0.25,
+    "43": 0.32142857142857145,
+    "44": 0.2857142857142857,
+    "45": 0.25,
+    "46": 0.32142857142857145,
+    "47": 0.25,
+    "48": 0.25,
+    "49": 0.25,
+    "50": 0.3333333333333333,
+    "51": 0.38095238095238093,
+    "52": 0.38095238095238093,
+    "53": 0.3333333333333333,
+    "54": 0.2857142857142857,
+    "55": 0.2857142857142857,
+    "56": 0.2857142857142857,
+    "57": 0.2857142857142857,
+    "58": 0.2857142857142857,
+    "59": 0.2857142857142857,
+    "60": 0.38095238095238093,
+    "61": 0.4,
+    "62": 0.3333333333333333,
+    "63": 0.3333333333333333,
+    "64": 0.3333333333333333,
+    "65": 0.4,
+    "66": 0.4666666666666667,
+    "67": 0.4,
+    "68": 0.3333333333333333,
+    "69": 0.4,
+    "70": 0.3333333333333333,
+    "71": 0.3333333333333333,
+    "72": 0.4,
+    "73": 0.4,
+    "74": 0.4,
+    "75": 0.4,
+    "76": 0.4,
+    "77": 0.4,
+    "78": 0.4,
+    "79": 0.4,
+    "80": 0.5,
+    "81": 0.4,
+    "82": 0.6,
+    "83": 0.4,
+    "84": 0.4,
+    "85": 0.5,
+    "86": 0.5,
+    "87": 0.5,
+    "88": 0.5,
+    "89": 0.5,
+    "90": 0.5,
+    "91": 0.5,
+    "92": 0.5,
+    "93": 0.8333333333333334,
+    "94": 0.5,
+    "95": 0.6666666666666666,
+    "96": 0.5,
+    "97": 0.5,
+    "98": 0.6666666666666666,
+    "99": 0.5,
+    "100": 0.5,
+    "101": 0.5,
+    "102": 1,
+    "103": 1,
+    "104": 0.6666666666666666,
+    "105": 0.6666666666666666,
+    "106": 0.6666666666666666,
+    "107": 0.6666666666666666,
+    "108": 0.6666666666666666,
+    "109": 0.6666666666666666,
+    "110": 0.6666666666666666,
+    "111": 0.6666666666666666,
+    "112": 0.6666666666666666,
+    "113": 0.6666666666666666,
+    "114": 0.6666666666666666,
+    "115": 0.6666666666666666,
+    "116": 0.6666666666666666,
+    "117": 0.6666666666666666,
+    "118": 0.6666666666666666,
+    "119": 0.6666666666666666,
+    "120": 1,
+    "121": 1,
+    "122": 1,
+    "123": 1,
+    "124": 1,
+    "125": 1,
+    "126": 1,
+    "127": 1,
+    "128": 1,
+    "129": 1,
+    "130": 1,
+    "131": 1,
+    "132": 1,
+    "133": 1,
+    "134": 1,
+    "135": 1,
+    "136": 1,
+    "137": 1,
+    "138": 1,
+    "139": 1,
+    "140": 1,
+    "141": 1,
+    "142": 1,
+    "143": 1,
+    "144": 1,
+    "145": 1,
+    "146": 1,
+    "147": 1,
+    "148": 1,
+    "149": 1,
+    "150": 1,
+    "151": 1,
+    "152": 1,
+    "153": 1,
+    "154": 1,
+    "155": 1,
+    "156": 1,
+    "157": 1,
+    "158": 1,
+    "159": 1,
+    "160": 1,
+    "161": 1,
+    "162": 1,
+    "163": 1,
+    "164": 1,
+    "165": 1,
+    "166": 1,
+    "167": 1,
+    "168": 1,
+    "169": 1,
+    "170": 1,
+    "171": 1,
+    "172": 1,
+    "173": 1
+  },
+  "gods": [
+    {
+      "id": "lib_auth_authoptions",
+      "label": "authOptions",
+      "edges": 21,
+      "degree": 21
+    },
+    {
+      "id": "admin_simple_app_showstatus",
+      "label": "showStatus()",
+      "edges": 16,
+      "degree": 16
+    },
+    {
+      "id": "lib_auth_helpers_requireauth",
+      "label": "requireAuth()",
+      "edges": 15,
+      "degree": 15
+    },
+    {
+      "id": "lib_email_emailservice",
+      "label": "EmailService",
+      "edges": 14,
+      "degree": 14
+    },
+    {
+      "id": "admin_simple_app_updatefile",
+      "label": "updateFile()",
+      "edges": 11,
+      "degree": 11
+    },
+    {
+      "id": "admin_simple_app_getfile",
+      "label": "getFile()",
+      "edges": 8,
+      "degree": 8
+    },
+    {
+      "id": "admin_simple_app_loadallcontent",
+      "label": "loadAllContent()",
+      "edges": 8,
+      "degree": 8
+    },
+    {
+      "id": "lib_sms_helpers_sendsmsfromtemplate",
+      "label": "sendSMSFromTemplate()",
+      "edges": 8,
+      "degree": 8
+    },
+    {
+      "id": "admin_simple_app_handlelogin",
+      "label": "handleLogin()",
+      "edges": 7,
+      "degree": 7
+    },
+    {
+      "id": "contexts_centrecontext_usecentre",
+      "label": "useCentre()",
+      "edges": 6,
+      "degree": 6
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Centre Audire Legacy Logo (Black/Gold with Ear and Heartbeat)",
+      "target": "Centre Audire Public Logo (Black/Gold with Ear and Heartbeat)",
+      "source_files": [
+        "LEGACY 1.0/images/logo.png",
+        "public/images/logo.png"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "semantically_similar_to",
+      "why": "connects across different repos/directories; semantically similar concepts with no structural link"
+    },
+    {
+      "source": "Homepage (index.html)",
+      "target": "Header Component",
+      "source_files": [
+        "LEGACY 1.0/index.html",
+        "LEGACY 1.0/components/header.html"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source; peripheral node `Homepage (index.html)` unexpectedly reaches hub `Header Component`"
+    },
+    {
+      "source": "Mentions Légales Page",
+      "target": "css/styles.css",
+      "source_files": [
+        "LEGACY 1.0/mentions-legales/index.html",
+        "LEGACY 1.0/index.html"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "peripheral node `Mentions Légales Page` unexpectedly reaches hub `css/styles.css`"
+    },
+    {
+      "source": "Merci (Thank You) Page",
+      "target": "Header Component",
+      "source_files": [
+        "LEGACY 1.0/merci/index.html",
+        "LEGACY 1.0/components/header.html"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "peripheral node `Merci (Thank You) Page` unexpectedly reaches hub `Header Component`"
+    },
+    {
+      "source": "Footer Component",
+      "target": "Mentions Légales Page",
+      "source_files": [
+        "LEGACY 1.0/components/footer.html",
+        "LEGACY 1.0/mentions-legales/index.html"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "peripheral node `Mentions Légales Page` unexpectedly reaches hub `Footer Component`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `authOptions` connect `Community 5` to `Community 0`, `Community 64`, `Community 39`, `Community 66`, `Community 67`, `Community 83`, `Community 69`, `Community 71`, `Community 4`?",
+      "why": "High betweenness centrality (0.019) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `CardData` connect `Community 21` to `Community 29`, `Community 49`, `Community 27`?",
+      "why": "High betweenness centrality (0.018) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `CONFIG`, `Fixe l'ordre des scripts dans un fichier HTML`, `fs` to the rest of the system?",
+      "why": "371 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.06313497822931785 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.09696969696969697 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 2` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.10227272727272728 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 3` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.07096774193548387 - nodes in this community are weakly interconnected."
+    }
+  ]
+}

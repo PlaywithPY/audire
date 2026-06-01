@@ -1,0 +1,1226 @@
+{
+  "/home/user/audire/LEGACY 1.0/admin-simple/app.js": {
+    "mtime": 1780308938922.9438,
+    "hash": "72328f8ee33a1d980b3ceb98b99ace17"
+  },
+  "/home/user/audire/LEGACY 1.0/fix-script-order.py": {
+    "mtime": 1780308938935.434,
+    "hash": "d576c2450db06ba82096c9042d406477"
+  },
+  "/home/user/audire/LEGACY 1.0/generate-solution-pages.js": {
+    "mtime": 1780308938935.434,
+    "hash": "ef9d31e6db7b25fa0cd2b19d4e0325fa"
+  },
+  "/home/user/audire/LEGACY 1.0/js/components.js": {
+    "mtime": 1780308939019.434,
+    "hash": "89d95d352a20b589adf96c2c5af78ac3"
+  },
+  "/home/user/audire/LEGACY 1.0/js/config.js": {
+    "mtime": 1780308939022.1255,
+    "hash": "814a4458f2a27fd4d33d6c240a051603"
+  },
+  "/home/user/audire/LEGACY 1.0/js/content-loader.js": {
+    "mtime": 1780308939022.1255,
+    "hash": "c19b9c815cacd63598e95a0f44e0eb09"
+  },
+  "/home/user/audire/LEGACY 1.0/js/design-loader.js": {
+    "mtime": 1780308939022.1255,
+    "hash": "6d030738972ebed06a34d5ec089e9cd7"
+  },
+  "/home/user/audire/LEGACY 1.0/js/main.js": {
+    "mtime": 1780308939022.1255,
+    "hash": "3d228c0d2966bdaf9fbcdb3a404d3893"
+  },
+  "/home/user/audire/LEGACY 1.0/save.php": {
+    "mtime": 1780308939023.434,
+    "hash": "415be6e2f04091ffb1a1012204e4763c"
+  },
+  "/home/user/audire/PAGE_DEFINITIONS.ts": {
+    "mtime": 1780308939027.434,
+    "hash": "46039fae4507254554b95cfb90cafad1"
+  },
+  "/home/user/audire/get-calendar-id.js": {
+    "mtime": 1780308939027.434,
+    "hash": "d077110f9f4909a87efd2aa8be9ecd0a"
+  },
+  "/home/user/audire/get-calendar-id.py": {
+    "mtime": 1780308939027.434,
+    "hash": "75df023a344c7b1f0526724a055af298"
+  },
+  "/home/user/audire/migration_sms.sql": {
+    "mtime": 1780308939031.434,
+    "hash": "9122c478e08744bed2235a89a868f3e9"
+  },
+  "/home/user/audire/next.config.mjs": {
+    "mtime": 1780308939031.434,
+    "hash": "5fd5801374e52528b7c40606e12a8ce4"
+  },
+  "/home/user/audire/postcss.config.mjs": {
+    "mtime": 1780308939031.434,
+    "hash": "c56b5f3c12f777a86e2513f45daab56a"
+  },
+  "/home/user/audire/prisma/import-content.ts": {
+    "mtime": 1780308939037.6155,
+    "hash": "7dfcafdcd18e084f67be29a8e16c5a04"
+  },
+  "/home/user/audire/prisma/migrate-settings-to-centre.ts": {
+    "mtime": 1780308939037.6155,
+    "hash": "5f80f466fb842707071ece071205bd86"
+  },
+  "/home/user/audire/prisma/migrations/20260309_add_multi_centres_system/migration.sql": {
+    "mtime": 1780308939037.9617,
+    "hash": "d3dd2081098fa9733f27077a7ecb87d3"
+  },
+  "/home/user/audire/prisma/migrations/20260320122932_add_solution_table/migration.sql": {
+    "mtime": 1780308939037.9617,
+    "hash": "4dcc03cb8a02ba7e064075ca33ddb220"
+  },
+  "/home/user/audire/prisma/migrations/20260324_add_faq_table/migration.sql": {
+    "mtime": 1780308939037.9617,
+    "hash": "f77419315ea9c253454d5f57297aa08c"
+  },
+  "/home/user/audire/prisma/migrations/20260324_add_page_text_table/migration.sql": {
+    "mtime": 1780308939037.9617,
+    "hash": "5dd66e9ec637c768320a836d4ed7d9a1"
+  },
+  "/home/user/audire/prisma/migrations/20260330_add_sms_consent/migration.sql": {
+    "mtime": 1780308939037.9617,
+    "hash": "909599d067c05b966ad94f2cd78fef6a"
+  },
+  "/home/user/audire/prisma/migrations/20260402_add_faq_categories/migration.sql": {
+    "mtime": 1780308939037.9617,
+    "hash": "1fbe21bfba0fd1a79ca9b2914b459db6"
+  },
+  "/home/user/audire/prisma/migrations/add_card_image_fields.sql": {
+    "mtime": 1780308939037.9617,
+    "hash": "370a8b8ec946a3e9b4d8fa6462f2c856"
+  },
+  "/home/user/audire/prisma/migrations/add_effect_direction.sql": {
+    "mtime": 1780308939037.9617,
+    "hash": "45784acc9f29dd6ec6259d61b5a255c1"
+  },
+  "/home/user/audire/prisma/migrations/add_image_effects.sql": {
+    "mtime": 1780308939037.9617,
+    "hash": "071a18e93f2c369e2153a6f254093cf9"
+  },
+  "/home/user/audire/prisma/migrations/add_imageposition_and_intensity.sql": {
+    "mtime": 1780308939037.9617,
+    "hash": "39ce4c592a413e06e4b656c68e43cf4e"
+  },
+  "/home/user/audire/prisma/migrations/add_pagekey_to_cardimage.sql": {
+    "mtime": 1780308939039.434,
+    "hash": "6affceb6f5347a3a9b906dd6eed58427"
+  },
+  "/home/user/audire/prisma/migrations/insert_oticon_couple_image.sql": {
+    "mtime": 1780308939039.434,
+    "hash": "ab20b594c5b1dc670dc8b6f75b9f4be8"
+  },
+  "/home/user/audire/prisma/patch-sprint5-8.mjs": {
+    "mtime": 1780308939039.434,
+    "hash": "9003485d5ed8d1729bdc0cc7bc96a5b9"
+  },
+  "/home/user/audire/prisma/seed-function.ts": {
+    "mtime": 1780308939039.434,
+    "hash": "ad63257ea664d2f513af5d4154f778f7"
+  },
+  "/home/user/audire/prisma/seed-hearing-aids.ts": {
+    "mtime": 1780308939039.434,
+    "hash": "eb2d001057992e8d0185d18a665579ed"
+  },
+  "/home/user/audire/prisma/seed.ts": {
+    "mtime": 1780308939039.434,
+    "hash": "f2b93860e7041903aa6399973c08b135"
+  },
+  "/home/user/audire/scripts/extract-page-texts.py": {
+    "mtime": 1780308939055.434,
+    "hash": "2e8c396b813093f287eb14f2ccb828c9"
+  },
+  "/home/user/audire/scripts/migrate-oticon-couple.ts": {
+    "mtime": 1780308939058.4287,
+    "hash": "2cc77e4c717aa1771609a1b59bf0e2a0"
+  },
+  "/home/user/audire/scripts/populate-page-texts.ts": {
+    "mtime": 1780308939058.4287,
+    "hash": "fe026d5d895e204b5ff584320150d9ee"
+  },
+  "/home/user/audire/src/app/[slug]/page.tsx": {
+    "mtime": 1780308939059.0105,
+    "hash": "c23e9ca1b7848fbd19ab86b445964fb6"
+  },
+  "/home/user/audire/src/app/admin/appareils/page.tsx": {
+    "mtime": 1780308939059.4717,
+    "hash": "367112d18738328d823f3425edf2fd53"
+  },
+  "/home/user/audire/src/app/admin/appareils-v2/[slug]/page.tsx": {
+    "mtime": 1780308939059.4717,
+    "hash": "3ab99bbc928ff820781293f43ddc4874"
+  },
+  "/home/user/audire/src/app/admin/appareils-v2/page.tsx": {
+    "mtime": 1780308939059.4717,
+    "hash": "4f54e939cd789f9a4f978a04e126696b"
+  },
+  "/home/user/audire/src/app/admin/appointments/page.tsx": {
+    "mtime": 1780308939059.4717,
+    "hash": "ee0641e8a5d8ef717c33646561b87cee"
+  },
+  "/home/user/audire/src/app/admin/categories/page.tsx": {
+    "mtime": 1780308939059.4717,
+    "hash": "9777e2aa12ca0f0d9f4c59eafe5aa405"
+  },
+  "/home/user/audire/src/app/admin/centres/page.tsx": {
+    "mtime": 1780308939059.4717,
+    "hash": "8510614f73fbeffc2500896242f52fdd"
+  },
+  "/home/user/audire/src/app/admin/constructeur-visuel/page.tsx": {
+    "mtime": 1780308939059.4717,
+    "hash": "3fbe4a20ef2d520badab5e9007987429"
+  },
+  "/home/user/audire/src/app/admin/content-manager/FAQsSection.tsx": {
+    "mtime": 1780308939063.434,
+    "hash": "4ae273ee5a03e1bde68c6c7cb99ba6c3"
+  },
+  "/home/user/audire/src/app/admin/content-manager/FeatureCardsSection.tsx": {
+    "mtime": 1780308939065.8464,
+    "hash": "d0c31e3620436d4555956a1c97c931a2"
+  },
+  "/home/user/audire/src/app/admin/content-manager/HomeSection.tsx": {
+    "mtime": 1780308939065.8464,
+    "hash": "f3895fd5910d6565cf9ce2a35089f1cb"
+  },
+  "/home/user/audire/src/app/admin/content-manager/ImageEffectsSection.tsx": {
+    "mtime": 1780308939065.8464,
+    "hash": "679baffa8c2497522f3b73a8faba1c21"
+  },
+  "/home/user/audire/src/app/admin/content-manager/SolutionsSection.tsx": {
+    "mtime": 1780308939065.8464,
+    "hash": "c010d6a248a6724fd50de7abcaffe864"
+  },
+  "/home/user/audire/src/app/admin/content-manager/TextsSection.tsx": {
+    "mtime": 1780308939065.8464,
+    "hash": "b19aa22c28118ff91804df54db18c8de"
+  },
+  "/home/user/audire/src/app/admin/content-manager/page.tsx": {
+    "mtime": 1780308939065.8464,
+    "hash": "4572d7b97f759bc59f8a637f46413e09"
+  },
+  "/home/user/audire/src/app/admin/database/page.tsx": {
+    "mtime": 1780308939065.8464,
+    "hash": "8716a201eca335860d9d07a2aed3afdf"
+  },
+  "/home/user/audire/src/app/admin/editeur-visuel/HomePanel.tsx": {
+    "mtime": 1780308939065.8464,
+    "hash": "01aaf37f522eea13755a3a50208f36b0"
+  },
+  "/home/user/audire/src/app/admin/editeur-visuel/page.tsx": {
+    "mtime": 1780308939068.5566,
+    "hash": "8a8626a71c191a236bf7f298fd531c7d"
+  },
+  "/home/user/audire/src/app/admin/editor/EditorView.tsx": {
+    "mtime": 1780308939068.5566,
+    "hash": "ed45e4aac3e184d2ed0159c68815aac6"
+  },
+  "/home/user/audire/src/app/admin/editor/page.tsx": {
+    "mtime": 1780308939069.3733,
+    "hash": "d9d4c247d178397ed904241c2bf6fd45"
+  },
+  "/home/user/audire/src/app/admin/faq-management/FaqManagementClient.tsx": {
+    "mtime": 1780308939069.3733,
+    "hash": "66befd928af21381c71b272f52da65eb"
+  },
+  "/home/user/audire/src/app/admin/faq-management/page.tsx": {
+    "mtime": 1780308939070.0386,
+    "hash": "cf92811df2c56633d803f6dc6ebc1685"
+  },
+  "/home/user/audire/src/app/admin/faqs/page.tsx": {
+    "mtime": 1780308939070.0386,
+    "hash": "b83363e2d284bc5a65772a0417051449"
+  },
+  "/home/user/audire/src/app/admin/feature-cards/page.tsx": {
+    "mtime": 1780308939071.0999,
+    "hash": "671f68dfdb78ae8f64b163f0e72d579b"
+  },
+  "/home/user/audire/src/app/admin/feature-cards-management/FeatureCardsManagementClient.tsx": {
+    "mtime": 1780308939070.0386,
+    "hash": "c5f6e764d38958d96bef2aeaec6cd521"
+  },
+  "/home/user/audire/src/app/admin/feature-cards-management/page.tsx": {
+    "mtime": 1780308939071.0999,
+    "hash": "a6973c3e1fd675b4f062ef3dd095042f"
+  },
+  "/home/user/audire/src/app/admin/fix-image-effects/page.tsx": {
+    "mtime": 1780308939071.0999,
+    "hash": "15a3bf1c062e60239866ee4a90881ef9"
+  },
+  "/home/user/audire/src/app/admin/footer/page.tsx": {
+    "mtime": 1780308939071.0999,
+    "hash": "b379e921718a9f199fc9e0e6456110d7"
+  },
+  "/home/user/audire/src/app/admin/image-effects/page.tsx": {
+    "mtime": 1780308939071.0999,
+    "hash": "8309fc61eb99f231ce2204a8348af928"
+  },
+  "/home/user/audire/src/app/admin/layout.tsx": {
+    "mtime": 1780308939071.0999,
+    "hash": "e3d881f97c03d7142bdd17cacafb87cd"
+  },
+  "/home/user/audire/src/app/admin/linear-content-editor/page.tsx": {
+    "mtime": 1780308939071.434,
+    "hash": "4bf24244b12b4a0254c805ab28224e5d"
+  },
+  "/home/user/audire/src/app/admin/login/page.tsx": {
+    "mtime": 1780308939071.434,
+    "hash": "8b77680058231ca70eac7254809598f1"
+  },
+  "/home/user/audire/src/app/admin/mediatheque/page.tsx": {
+    "mtime": 1780308939071.434,
+    "hash": "c888bcc021961c754cc384c043495db7"
+  },
+  "/home/user/audire/src/app/admin/page.tsx": {
+    "mtime": 1780308939071.434,
+    "hash": "02b3f92d1625bcd0ffcbd98d4885efdd"
+  },
+  "/home/user/audire/src/app/admin/rendez-vous/page.tsx": {
+    "mtime": 1780308939071.434,
+    "hash": "06f1a83ecd66a5b87c597718657f803f"
+  },
+  "/home/user/audire/src/app/admin/settings/page.tsx": {
+    "mtime": 1780308939071.434,
+    "hash": "fadda16f75410ea1dcbae241cdcc4f81"
+  },
+  "/home/user/audire/src/app/admin/setup-page-texts/page.tsx": {
+    "mtime": 1780308939071.434,
+    "hash": "921e75ffa5a0674eda633769be59787d"
+  },
+  "/home/user/audire/src/app/admin/sms/page.tsx": {
+    "mtime": 1780308939075.434,
+    "hash": "81dce05cdaaa95f8948d08e9678d4e2d"
+  },
+  "/home/user/audire/src/app/admin/sms-templates/page.tsx": {
+    "mtime": 1780308939075.434,
+    "hash": "4367d13ae0a0c0f2e460b0014e51bc54"
+  },
+  "/home/user/audire/src/app/admin/solutions/page.tsx": {
+    "mtime": 1780308939075.434,
+    "hash": "3250d8844eb4a31d09fa67b6e817ff9f"
+  },
+  "/home/user/audire/src/app/admin/testimonials/page.tsx": {
+    "mtime": 1780308939075.434,
+    "hash": "f2c4e00c25010e50bd082699db1d2223"
+  },
+  "/home/user/audire/src/app/admin/text-editor/page.tsx": {
+    "mtime": 1780308939075.434,
+    "hash": "06e94b194f8100cd3d0b4cae68678149"
+  },
+  "/home/user/audire/src/app/api/admin/accessories/route.ts": {
+    "mtime": 1780308939080.3254,
+    "hash": "b7182d7575191c90b8f46fc0ad838f70"
+  },
+  "/home/user/audire/src/app/api/admin/appointments/route.ts": {
+    "mtime": 1780308939080.3254,
+    "hash": "493d55c81ff40ec6c286fb52c9989530"
+  },
+  "/home/user/audire/src/app/api/admin/block-layout/route.ts": {
+    "mtime": 1780308939080.3254,
+    "hash": "0347824a675ae6646970287c2f026c16"
+  },
+  "/home/user/audire/src/app/api/admin/blocks/route.ts": {
+    "mtime": 1780308939080.3254,
+    "hash": "93538c2088bcba7bd5413e8c032a5ecf"
+  },
+  "/home/user/audire/src/app/api/admin/card-images/route.ts": {
+    "mtime": 1780308939080.3254,
+    "hash": "97d92ce30c3d3836b2cc747a3b45acdd"
+  },
+  "/home/user/audire/src/app/api/admin/categories/route.ts": {
+    "mtime": 1780308939080.3254,
+    "hash": "3606004aafbc2f2f2531d276e1457663"
+  },
+  "/home/user/audire/src/app/api/admin/centre/route.ts": {
+    "mtime": 1780308939080.3254,
+    "hash": "7ed854f5316be776994d86c21c14de1f"
+  },
+  "/home/user/audire/src/app/api/admin/centres/route.ts": {
+    "mtime": 1780308939080.3254,
+    "hash": "ab28f52d53d2c14cb77d26182513030a"
+  },
+  "/home/user/audire/src/app/api/admin/colors/route.ts": {
+    "mtime": 1780308939080.3254,
+    "hash": "65fa0b553fd6c699598f270638654c0d"
+  },
+  "/home/user/audire/src/app/api/admin/db-setup/route.ts": {
+    "mtime": 1780308939080.3254,
+    "hash": "80942783c55e7eac624ef06b7f90bb64"
+  },
+  "/home/user/audire/src/app/api/admin/faqs/route.ts": {
+    "mtime": 1780308939083.434,
+    "hash": "b6c1095b08c1d09e22797b9a3aed3b4c"
+  },
+  "/home/user/audire/src/app/api/admin/hearing-aids/duplicate/route.ts": {
+    "mtime": 1780308939085.7827,
+    "hash": "3a920940e9763c35f8114054ac8ead57"
+  },
+  "/home/user/audire/src/app/api/admin/hearing-aids/route.ts": {
+    "mtime": 1780308939085.7827,
+    "hash": "cd076a4fa43e2e77483d02efe63146cd"
+  },
+  "/home/user/audire/src/app/api/admin/hours/route.ts": {
+    "mtime": 1780308939085.7827,
+    "hash": "aa71930f6562c50128d40903181c2c7e"
+  },
+  "/home/user/audire/src/app/api/admin/image-effects/all-pages/route.ts": {
+    "mtime": 1780308939087.2336,
+    "hash": "8491f1d294a0a05aecd03199fa4ef765"
+  },
+  "/home/user/audire/src/app/api/admin/image-effects/fix-page-keys/route.ts": {
+    "mtime": 1780308939087.2336,
+    "hash": "e8f7a59535e4bdab0bb707cf5035d9b0"
+  },
+  "/home/user/audire/src/app/api/admin/image-effects/route.ts": {
+    "mtime": 1780308939087.2336,
+    "hash": "9447600a0f8c59e5e14f30b8e139ea8e"
+  },
+  "/home/user/audire/src/app/api/admin/import-content/route.ts": {
+    "mtime": 1780308939087.2336,
+    "hash": "a6fb7d3b27a6f16427b1687ed5e700f3"
+  },
+  "/home/user/audire/src/app/api/admin/mediatheque/route.ts": {
+    "mtime": 1780308939087.2336,
+    "hash": "ea849676a29206cd283cbeb782e14b8f"
+  },
+  "/home/user/audire/src/app/api/admin/page-texts/route.ts": {
+    "mtime": 1780308939087.434,
+    "hash": "f5e82053a4d4597aec8799e4768314eb"
+  },
+  "/home/user/audire/src/app/api/admin/pending-reminders/route.ts": {
+    "mtime": 1780308939087.434,
+    "hash": "29f5839076a934d6854b1a726c046770"
+  },
+  "/home/user/audire/src/app/api/admin/populate-texts/route.ts": {
+    "mtime": 1780308939087.434,
+    "hash": "4abdfddd09033570eebfe35c82764c94"
+  },
+  "/home/user/audire/src/app/api/admin/publish/route.ts": {
+    "mtime": 1780308939087.434,
+    "hash": "83bbaa54265cbabac6374a21fe11bdcf"
+  },
+  "/home/user/audire/src/app/api/admin/seed/route.ts": {
+    "mtime": 1780308939087.434,
+    "hash": "c0d000507621be60082b792b51975489"
+  },
+  "/home/user/audire/src/app/api/admin/settings/route.ts": {
+    "mtime": 1780308939087.434,
+    "hash": "b73b597ebb497bd97f4dd917e6b858a2"
+  },
+  "/home/user/audire/src/app/api/admin/setup-page-texts/route.ts": {
+    "mtime": 1780308939087.434,
+    "hash": "41a13149b65d53987da8f4c3e8b05a0b"
+  },
+  "/home/user/audire/src/app/api/admin/sms/config/route.ts": {
+    "mtime": 1780308939092.4263,
+    "hash": "9f6dcb6189e97caad741d3c00fbead2f"
+  },
+  "/home/user/audire/src/app/api/admin/sms/logs/route.ts": {
+    "mtime": 1780308939092.4263,
+    "hash": "7eb667d13daf21d8148a1c0332ea9ccf"
+  },
+  "/home/user/audire/src/app/api/admin/sms/send/route.ts": {
+    "mtime": 1780308939092.4263,
+    "hash": "35cd1000d92f1c39bf28f5c69b1ec31c"
+  },
+  "/home/user/audire/src/app/api/admin/sms/test/route.ts": {
+    "mtime": 1780308939092.4263,
+    "hash": "d17ee740ed154e406033a65f96a14ae3"
+  },
+  "/home/user/audire/src/app/api/admin/sms-reminders/route.ts": {
+    "mtime": 1780308939087.434,
+    "hash": "ccbfaa1b221d9b7f9f83581e989aceab"
+  },
+  "/home/user/audire/src/app/api/admin/sms-templates/route.ts": {
+    "mtime": 1780308939087.434,
+    "hash": "e6cd863de70224d8d1de7ac208049b3e"
+  },
+  "/home/user/audire/src/app/api/admin/solutions/route.ts": {
+    "mtime": 1780308939092.4263,
+    "hash": "44f5b0771a3c54de14f0588e85cc3344"
+  },
+  "/home/user/audire/src/app/api/admin/sync-missing-data/route.ts": {
+    "mtime": 1780308939092.4263,
+    "hash": "6a835462153aa221bf53a96cd3ecdae6"
+  },
+  "/home/user/audire/src/app/api/admin/test-db/route.ts": {
+    "mtime": 1780308939092.4263,
+    "hash": "6c58b8e7466cd47bbbf68b770a2b802d"
+  },
+  "/home/user/audire/src/app/api/admin/testimonials/route.ts": {
+    "mtime": 1780308939092.4263,
+    "hash": "e9e9654358021d0753051f18ada34fc9"
+  },
+  "/home/user/audire/src/app/api/admin/time-slots/route.ts": {
+    "mtime": 1780308939092.4263,
+    "hash": "7687201cbe288601edb1416d0b3c3716"
+  },
+  "/home/user/audire/src/app/api/admin/upload/route.ts": {
+    "mtime": 1780308939092.4263,
+    "hash": "69b1f9c824d87f8d8a3a4bc52444503c"
+  },
+  "/home/user/audire/src/app/api/appointments/prescription/route.ts": {
+    "mtime": 1780308939096.5208,
+    "hash": "e5f97cbcaa73787666290d7c33f20a75"
+  },
+  "/home/user/audire/src/app/api/appointments/route.ts": {
+    "mtime": 1780308939096.5208,
+    "hash": "cd66ebdc017a36c3cb73fa354c151624"
+  },
+  "/home/user/audire/src/app/api/auth/[...nextauth]/route.ts": {
+    "mtime": 1780308939097.2898,
+    "hash": "acbb1d144d75a0dd6326f279567d5a47"
+  },
+  "/home/user/audire/src/app/api/auto-send-reminders/route.ts": {
+    "mtime": 1780308939097.2898,
+    "hash": "ece5578b5b389d5cee5b171f13e920aa"
+  },
+  "/home/user/audire/src/app/api/blocks/route.ts": {
+    "mtime": 1780308939097.2898,
+    "hash": "aa6d672dce5d3696e4713ef8a501a5f5"
+  },
+  "/home/user/audire/src/app/api/card-images/route.ts": {
+    "mtime": 1780308939097.2898,
+    "hash": "4dd6e3ed1a11fcfd838189671d0610d5"
+  },
+  "/home/user/audire/src/app/api/cards/route.ts": {
+    "mtime": 1780308939097.2898,
+    "hash": "b6f0eb7b0611e4251d2d02c772f7e9ea"
+  },
+  "/home/user/audire/src/app/api/categories/route.ts": {
+    "mtime": 1780308939097.2898,
+    "hash": "3da80060aa4eeb651d4888d8d821bd97"
+  },
+  "/home/user/audire/src/app/api/centres/nearest/route.ts": {
+    "mtime": 1780308939100.149,
+    "hash": "0d356c814a2ff0434fd1432a101b96bb"
+  },
+  "/home/user/audire/src/app/api/centres/route.ts": {
+    "mtime": 1780308939100.149,
+    "hash": "664c01c7be4545bfd3af7e3201a76831"
+  },
+  "/home/user/audire/src/app/api/contact-request/route.ts": {
+    "mtime": 1780308939100.149,
+    "hash": "931882bd5675fd45e5171dc247d96b4d"
+  },
+  "/home/user/audire/src/app/api/cron/cleanup-prescriptions/route.ts": {
+    "mtime": 1780308939101.4626,
+    "hash": "95d0cab1d1d034c2990fc49e907c65dd"
+  },
+  "/home/user/audire/src/app/api/faqs/route.ts": {
+    "mtime": 1780308939101.4626,
+    "hash": "cdd99b6ee7086e88662312e079415392"
+  },
+  "/home/user/audire/src/app/api/hearing-aids/[slug]/route.ts": {
+    "mtime": 1780308939102.5486,
+    "hash": "c13dc9930fff7510e97cc1f20dd07513"
+  },
+  "/home/user/audire/src/app/api/hearing-aids/featured/route.ts": {
+    "mtime": 1780308939102.5486,
+    "hash": "2cb06f6bfb516bcf66207721701898a3"
+  },
+  "/home/user/audire/src/app/api/hearing-aids/route.ts": {
+    "mtime": 1780308939102.5486,
+    "hash": "4960ac8b54233c9a00e4395e828b95b5"
+  },
+  "/home/user/audire/src/app/api/image-effects/route.ts": {
+    "mtime": 1780308939102.5486,
+    "hash": "2a06b601dc7495709a8bd7374dd18801"
+  },
+  "/home/user/audire/src/app/api/page-texts/route.ts": {
+    "mtime": 1780308939102.5486,
+    "hash": "1990be9f05a6fa58de681af204573992"
+  },
+  "/home/user/audire/src/app/api/settings/route.ts": {
+    "mtime": 1780308939102.5486,
+    "hash": "d6b01f0738b7ab143a76c16381fe4809"
+  },
+  "/home/user/audire/src/app/api/solutions/route.ts": {
+    "mtime": 1780308939102.5486,
+    "hash": "d49ccda36bcaadd5d88ef95a8b2981b4"
+  },
+  "/home/user/audire/src/app/api/testimonials/route.ts": {
+    "mtime": 1780308939103.434,
+    "hash": "0dd021510d15b993d2ae175b791c6193"
+  },
+  "/home/user/audire/src/app/appareils/[slug]/page.tsx": {
+    "mtime": 1780308939105.7053,
+    "hash": "ece5828696aa4cd4dc47882953492880"
+  },
+  "/home/user/audire/src/app/confidentialite/layout.tsx": {
+    "mtime": 1780308939105.7053,
+    "hash": "55fc811507a39fac3808fd6a3002bb88"
+  },
+  "/home/user/audire/src/app/confidentialite/page.tsx": {
+    "mtime": 1780308939106.5737,
+    "hash": "09fcbff2bdd11239e15754a23de4e948"
+  },
+  "/home/user/audire/src/app/contact/page.tsx": {
+    "mtime": 1780308939106.5737,
+    "hash": "dfabbf4b56bce44f5fc7255b40a89a1c"
+  },
+  "/home/user/audire/src/app/faq/page.tsx": {
+    "mtime": 1780308939106.5737,
+    "hash": "4ee2c3ad15a48b906ba3736747a6d359"
+  },
+  "/home/user/audire/src/app/layout.tsx": {
+    "mtime": 1780308939106.5737,
+    "hash": "3f8974b3cf021e6b1476be9602f33370"
+  },
+  "/home/user/audire/src/app/mentions-legales/layout.tsx": {
+    "mtime": 1780308939106.5737,
+    "hash": "f563ffddc896fddcaa954c3dc716d807"
+  },
+  "/home/user/audire/src/app/mentions-legales/page.tsx": {
+    "mtime": 1780308939108.6907,
+    "hash": "566e88db9ca1d8f97088006098f85c8f"
+  },
+  "/home/user/audire/src/app/notre-accompagnement/page.tsx": {
+    "mtime": 1780308939108.6907,
+    "hash": "1de28212af950093cb66226876e78e4e"
+  },
+  "/home/user/audire/src/app/notre-histoire/page.tsx": {
+    "mtime": 1780308939108.6907,
+    "hash": "7e9b4336b0c20e501b5c8d37a774b1de"
+  },
+  "/home/user/audire/src/app/page.tsx": {
+    "mtime": 1780308939108.6907,
+    "hash": "90e3bfa336c4a43af3451c4f46ae25f9"
+  },
+  "/home/user/audire/src/app/partenaires-pharmaciens/page.tsx": {
+    "mtime": 1780308939108.6907,
+    "hash": "d3356140095f7d63d3f1802f7e4f2fa1"
+  },
+  "/home/user/audire/src/app/prendre-rendez-vous/page.tsx": {
+    "mtime": 1780308939108.6907,
+    "hash": "2e1e55de356710383606f57f1ec5119c"
+  },
+  "/home/user/audire/src/app/remboursements/page.tsx": {
+    "mtime": 1780308939108.6907,
+    "hash": "e761835eb6742c056533270cf0bbd736"
+  },
+  "/home/user/audire/src/app/solutions-auditives/page.tsx": {
+    "mtime": 1780308939108.6907,
+    "hash": "b4ba05a340f2e96cd2413c8ae0f02e69"
+  },
+  "/home/user/audire/src/app/test-auditif-gratuit/page.tsx": {
+    "mtime": 1780308939108.6907,
+    "hash": "677873f2c58238ec8f9473cfa9236ed1"
+  },
+  "/home/user/audire/src/components/AdminAuthGuard.tsx": {
+    "mtime": 1780308939111.434,
+    "hash": "1484b35e25ab85632cbf6b5541844a56"
+  },
+  "/home/user/audire/src/components/AdminHeader.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "6dc4e7c6f037b82d919138eab62d5ab2"
+  },
+  "/home/user/audire/src/components/AllPageImageEffects.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "9049e04961ba55f9cc4538ab51d3a6e4"
+  },
+  "/home/user/audire/src/components/AutoSendReminders.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "74e26c78981005d82e81f7b29afd78f7"
+  },
+  "/home/user/audire/src/components/BlockLayoutWrapper.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "39040ecaccc6fe3abf39a7efd5d4d717"
+  },
+  "/home/user/audire/src/components/BlockSelector.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "7675fb9b98f498ad863af409b61b781d"
+  },
+  "/home/user/audire/src/components/BlocksBuilder.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "0f6ea6c49231f276d5ca0d6532caf35d"
+  },
+  "/home/user/audire/src/components/CardIcon.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "8c4842029165e4e5ebb1ae4b262e63fc"
+  },
+  "/home/user/audire/src/components/CategoryGrid.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "ba4925130766d9b828ed6055b61eef57"
+  },
+  "/home/user/audire/src/components/CentreSelector.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "50e6e17a09bc3900a51ec932c4283eaa"
+  },
+  "/home/user/audire/src/components/ConditionalLayout.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "8de430ee39c33db9dbbd96343f0e1691"
+  },
+  "/home/user/audire/src/components/ContactHours.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "4d25e62ae5f3639df8da9c0973a1ff4a"
+  },
+  "/home/user/audire/src/components/ContactIcon.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "4edd762f93380c49c0634a7904dbbd36"
+  },
+  "/home/user/audire/src/components/ContactInfo.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "fa6c93d64daa982400c4c80c1ed70f9c"
+  },
+  "/home/user/audire/src/components/ContentBlock.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "ccb8e917d907a178b0174841e2e2d52e"
+  },
+  "/home/user/audire/src/components/DynamicBlockRenderer.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "f943e99a281c2989b77ee14c835b6ddc"
+  },
+  "/home/user/audire/src/components/DynamicBlockSlot.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "1f8f740e48521afc685a2be7a1544cb5"
+  },
+  "/home/user/audire/src/components/Editable.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "80ae48dbaeac3c653892f33c9d783200"
+  },
+  "/home/user/audire/src/components/EditorNavSync.tsx": {
+    "mtime": 1780308939113.624,
+    "hash": "a9a8f1e929d52e59d047bcc5f031b615"
+  },
+  "/home/user/audire/src/components/FAQAccordion.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "b1c7cae7f13b6feec802beff05445d03"
+  },
+  "/home/user/audire/src/components/FeatureCard.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "12f04a797f036f8e22f911a0d6546c96"
+  },
+  "/home/user/audire/src/components/Footer.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "8ef11ca8671a1b94e24fe8219f1ef5b9"
+  },
+  "/home/user/audire/src/components/Header.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "ccf071cb62c099d9a8652ec94a9df6b6"
+  },
+  "/home/user/audire/src/components/HeroClassic.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "f2dc8537f571be03adb912c682aaf468"
+  },
+  "/home/user/audire/src/components/HeroModern.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "b8023debf2d357d4d8a989023118ccec"
+  },
+  "/home/user/audire/src/components/ImageEffectEditorModal.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "7344eb6b41bc8954675303ff2f342d57"
+  },
+  "/home/user/audire/src/components/ImageEffectsRenderer.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "467397e7556b6f34862683b10efe2f67"
+  },
+  "/home/user/audire/src/components/ImageFeatureCard.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "875c5535264cba52c3d6ba824456c756"
+  },
+  "/home/user/audire/src/components/ImagePicker.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "0f8d0a2dda59e7a2b2780cf0fd05fa6e"
+  },
+  "/home/user/audire/src/components/ImagePositionEditor.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "bd0d25d2852dcb056994d3c88903271a"
+  },
+  "/home/user/audire/src/components/ImageUploadModal.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "43c4d8b6d42c806e39134de3cf3116ba"
+  },
+  "/home/user/audire/src/components/Logo.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "b5933c7cf652fb81a0243a5b615f98e6"
+  },
+  "/home/user/audire/src/components/MediaPicker.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "37c403fb1b309e232888013e0f42630a"
+  },
+  "/home/user/audire/src/components/ParallaxSection.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "b6da8c7531f777f2b8933ff30f3af43b"
+  },
+  "/home/user/audire/src/components/ProductContentBlock.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "7fcc66eacf7c7d71891636200587ac74"
+  },
+  "/home/user/audire/src/components/Providers.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "23c3b072f328754cad6ff5f3e0b9760a"
+  },
+  "/home/user/audire/src/components/TestimonialsCarousel.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "b4e9f7e48b69f38fde19ca9206f25cf6"
+  },
+  "/home/user/audire/src/components/ThemeProvider.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "83c95913062353fc09b7109b6c18913a"
+  },
+  "/home/user/audire/src/components/TopBanner.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "7dcba14e81d19fd27b8b493bd8ac82c9"
+  },
+  "/home/user/audire/src/components/VisualPageBuilder.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "38eebb4afb66c70b3938d9290e007cd3"
+  },
+  "/home/user/audire/src/components/VisualSectionSelector.tsx": {
+    "mtime": 1780308939115.434,
+    "hash": "9da969c4a33a067f870c9a160016f832"
+  },
+  "/home/user/audire/src/components/WYSIWYGEditor.tsx": {
+    "mtime": 1780308939119.434,
+    "hash": "17deed4966cb9500acc2beac2bc0e5ad"
+  },
+  "/home/user/audire/src/components/admin/AdminSidebar.tsx": {
+    "mtime": 1780308939119.434,
+    "hash": "3250a3597f8576a22428d9c4100e41a9"
+  },
+  "/home/user/audire/src/components/admin/AdminTopbar.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "19f8fd7c97893ba1fda2617a75848365"
+  },
+  "/home/user/audire/src/components/admin/BlockInspector.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "944113e8507b9d648db51757dcf8d162"
+  },
+  "/home/user/audire/src/components/admin/BlockPickerModal.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "c44f155f0fc2c07dcdf7498b530848ed"
+  },
+  "/home/user/audire/src/components/admin/CardInspector.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "675e4a1370300b60e07979122df73a1d"
+  },
+  "/home/user/audire/src/components/admin/CompanyInfoSettings.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "9b8b8f8e4c840da42ade292c9e18be3e"
+  },
+  "/home/user/audire/src/components/admin/ContactIconsSettings.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "ea207766586959271ab083ea51bc8640"
+  },
+  "/home/user/audire/src/components/admin/DynamicBlockInspector.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "8ed719f56c45766bcff3e3c2e0d0ef4b"
+  },
+  "/home/user/audire/src/components/admin/EditorOverlay.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "a5fbd3650993322e461ef4818e562b27"
+  },
+  "/home/user/audire/src/components/admin/FocalPointPicker.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "c1aef2696a95ceddc5f9257f7f59589b"
+  },
+  "/home/user/audire/src/components/admin/ImageEffectInspector.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "61019ad82aae9e13d657784f47441ae6"
+  },
+  "/home/user/audire/src/components/admin/InsertZone.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "f155f807b09b45388fa562ebb43f8a3f"
+  },
+  "/home/user/audire/src/components/admin/LayoutPanel.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "0a5323911bb96e3185fc7232a9e25537"
+  },
+  "/home/user/audire/src/components/admin/MediaPicker.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "f535244c53cfd0903b16fbe1f3ee7ce3"
+  },
+  "/home/user/audire/src/components/admin/MediaPickerButton.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "140e4be85919c750fd99b511514670ef"
+  },
+  "/home/user/audire/src/components/admin/PublishBar.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "0402325493b9c33ac2be801768ee4b92"
+  },
+  "/home/user/audire/src/components/admin/RichTextEditor.tsx": {
+    "mtime": 1780308939122.0408,
+    "hash": "5285b960db3027b8c2e821262a58a5a9"
+  },
+  "/home/user/audire/src/components/admin/useDrafts.ts": {
+    "mtime": 1780308939123.434,
+    "hash": "44c350aae9a7ce65d1f590639e59ac46"
+  },
+  "/home/user/audire/src/components/admin/useEditorHistory.ts": {
+    "mtime": 1780308939123.434,
+    "hash": "75a1e66ad60ce30eca4c282693d37c79"
+  },
+  "/home/user/audire/src/components/devices/DevicePageRenderer.tsx": {
+    "mtime": 1780308939123.434,
+    "hash": "e3aa613f15be6cb006963d6b47397c10"
+  },
+  "/home/user/audire/src/contexts/CentreContext.tsx": {
+    "mtime": 1780308939123.434,
+    "hash": "94b00670d3903282aedc3f84af57bc92"
+  },
+  "/home/user/audire/src/lib/auth-helpers.ts": {
+    "mtime": 1780308939123.434,
+    "hash": "af034b1fd331fe81619a942b2c879f3b"
+  },
+  "/home/user/audire/src/lib/auth.ts": {
+    "mtime": 1780308939127.2617,
+    "hash": "28e09c837294602ba0860b3ff863a9b5"
+  },
+  "/home/user/audire/src/lib/card-definitions.ts": {
+    "mtime": 1780308939127.2617,
+    "hash": "cbfc7538f100a5fb90a62677befa5106"
+  },
+  "/home/user/audire/src/lib/card-helpers.ts": {
+    "mtime": 1780308939127.2617,
+    "hash": "bea237d286f685bf6cfae6a47f4cdba6"
+  },
+  "/home/user/audire/src/lib/company-info.ts": {
+    "mtime": 1780308939127.2617,
+    "hash": "0532cbde8918e238482d701a553c7663"
+  },
+  "/home/user/audire/src/lib/deviceBlocks.ts": {
+    "mtime": 1780308939127.2617,
+    "hash": "6834907acf8820b04fd109ac2998ba6a"
+  },
+  "/home/user/audire/src/lib/email.ts": {
+    "mtime": 1780308939127.2617,
+    "hash": "9092c26790d53e267531d0afbded3ace"
+  },
+  "/home/user/audire/src/lib/geolocation.ts": {
+    "mtime": 1780308939127.2617,
+    "hash": "58d706dba749eac4f651dbdaf92c9ca3"
+  },
+  "/home/user/audire/src/lib/google-calendar.ts": {
+    "mtime": 1780308939127.2617,
+    "hash": "ccf5b7e1a3c3a4701fa1d919622626ad"
+  },
+  "/home/user/audire/src/lib/hooks/useCompanyInfo.ts": {
+    "mtime": 1780308939127.434,
+    "hash": "d5c72597c57b84a4a2ab4b0e8fb5c8b6"
+  },
+  "/home/user/audire/src/lib/linear-content-structure.ts": {
+    "mtime": 1780308939127.434,
+    "hash": "8a8df53b540d52190700ccf7299e91b0"
+  },
+  "/home/user/audire/src/lib/page-texts.ts": {
+    "mtime": 1780308939127.434,
+    "hash": "8dd0bd9ea5b5ab0d772f488abd7b55da"
+  },
+  "/home/user/audire/src/lib/prisma.ts": {
+    "mtime": 1780308939127.434,
+    "hash": "98cadc171263a75f07cabd7d5d1e396b"
+  },
+  "/home/user/audire/src/lib/sms-helpers.ts": {
+    "mtime": 1780308939127.434,
+    "hash": "5835949b3c82db28e14761b7041155aa"
+  },
+  "/home/user/audire/src/lib/upload-client.ts": {
+    "mtime": 1780308939127.434,
+    "hash": "bf278d0f07397fcc39728040c1922a28"
+  },
+  "/home/user/audire/src/types/next-auth.d.ts": {
+    "mtime": 1780308939127.434,
+    "hash": "589dc01ff7b5b7008c53852c734c6988"
+  },
+  "/home/user/audire/tailwind.config.ts": {
+    "mtime": 1780308939127.434,
+    "hash": "fa906e051e6c9603818279a2df91fa10"
+  },
+  "/home/user/audire/ADMIN_SECURITY.md": {
+    "mtime": 1780308938916.972,
+    "hash": "89aaf1ad3b8ea4def87b75b51333ad8c"
+  },
+  "/home/user/audire/CLAUDE.md": {
+    "mtime": 1780309010106.5847,
+    "hash": "43933251c7da7a98da7b57cd858902b1"
+  },
+  "/home/user/audire/CRON_SETUP.md": {
+    "mtime": 1780308938916.972,
+    "hash": "8f395a94b8fd42ad512abe942ceafa82"
+  },
+  "/home/user/audire/DATABASE_SETUP.md": {
+    "mtime": 1780308938916.972,
+    "hash": "77bbe8065e86ad85e545b1f040fc97bd"
+  },
+  "/home/user/audire/FEATURE-CARDS-GUIDE.md": {
+    "mtime": 1780308938916.972,
+    "hash": "25eda85825744c2b055f7a94f58f299b"
+  },
+  "/home/user/audire/FIX-CALENDAR-404-ERROR.md": {
+    "mtime": 1780308938916.972,
+    "hash": "47449460084224c51b97576fae282a0f"
+  },
+  "/home/user/audire/FIX-OAUTH-403-ERROR.md": {
+    "mtime": 1780308938916.972,
+    "hash": "baaaa1b72d228ef954e422cc82c8de5f"
+  },
+  "/home/user/audire/GUIDE_MIGRATION_TEXTES.md": {
+    "mtime": 1780308938916.972,
+    "hash": "c7b6908103abc81ad3e2bcba56ed0a4a"
+  },
+  "/home/user/audire/LEGACY 1.0/404.html": {
+    "mtime": 1780308938916.972,
+    "hash": "7cdee48337b474228a1a5a266d89103e"
+  },
+  "/home/user/audire/LEGACY 1.0/BLOB_STORAGE_SETUP.md": {
+    "mtime": 1780308938920.29,
+    "hash": "4116b44fbf9b4c8ed56ff304c0a67bdb"
+  },
+  "/home/user/audire/LEGACY 1.0/CHECK-VERCEL.md": {
+    "mtime": 1780308938920.29,
+    "hash": "7489ad56f1ccf484c7a714d222fbf1fc"
+  },
+  "/home/user/audire/LEGACY 1.0/DATABASE_SETUP.md": {
+    "mtime": 1780308938920.29,
+    "hash": "5ef23754825e8e0bb46d0437fb767738"
+  },
+  "/home/user/audire/LEGACY 1.0/DEPLOYMENT_CHECKLIST.md": {
+    "mtime": 1780308938920.29,
+    "hash": "eb76a16d3e3a35c5aa5bcec682700d87"
+  },
+  "/home/user/audire/LEGACY 1.0/GUIDE-EDITION.md": {
+    "mtime": 1780308938920.29,
+    "hash": "09a461f9ff56f667f7ff8df036185c8a"
+  },
+  "/home/user/audire/LEGACY 1.0/README.md": {
+    "mtime": 1780308938920.29,
+    "hash": "63611f1a5909efc5c0b9a1791eba9d94"
+  },
+  "/home/user/audire/LEGACY 1.0/VERCEL_SETUP.md": {
+    "mtime": 1780308938920.29,
+    "hash": "7671bf1afbae3f2eea9658b6fb49bc50"
+  },
+  "/home/user/audire/LEGACY 1.0/admin/README.md": {
+    "mtime": 1780308938922.9438,
+    "hash": "93a5f45610c29ba14843b0cc92d58225"
+  },
+  "/home/user/audire/LEGACY 1.0/admin/config.yml": {
+    "mtime": 1780308938925.1082,
+    "hash": "59de19758d1d26aba3d59b1ad72ae343"
+  },
+  "/home/user/audire/LEGACY 1.0/admin/index.html": {
+    "mtime": 1780308938925.1082,
+    "hash": "7ee26f7104e8abc3473b259621d41135"
+  },
+  "/home/user/audire/LEGACY 1.0/admin-simple/README.md": {
+    "mtime": 1780308938920.29,
+    "hash": "41aabad83ddaa2b489c9d20e73fe022c"
+  },
+  "/home/user/audire/LEGACY 1.0/admin-simple/index.html": {
+    "mtime": 1780308938922.9438,
+    "hash": "1ccba07f02e68fd5603cbae7be6314fd"
+  },
+  "/home/user/audire/LEGACY 1.0/components/footer.html": {
+    "mtime": 1780308938925.1082,
+    "hash": "7e8fd842cf9104b5ae1ed4ed54298624"
+  },
+  "/home/user/audire/LEGACY 1.0/components/header.html": {
+    "mtime": 1780308938925.9514,
+    "hash": "0bb7d6ff864cbfc0cd507c92a776b53d"
+  },
+  "/home/user/audire/LEGACY 1.0/components/modal.html": {
+    "mtime": 1780308938925.9514,
+    "hash": "6b6f5af4369d239113b556cf08733a60"
+  },
+  "/home/user/audire/LEGACY 1.0/confidentialite/index.html": {
+    "mtime": 1780308938925.9514,
+    "hash": "17a530752abe1feaf07f5af2f8bb18af"
+  },
+  "/home/user/audire/LEGACY 1.0/confidentialité/index.html": {
+    "mtime": 1780308938925.9514,
+    "hash": "dc16c997ceff62f5c7507e163cb73a87"
+  },
+  "/home/user/audire/LEGACY 1.0/contact/index.html": {
+    "mtime": 1780308938925.9514,
+    "hash": "6c7f02c2d0e9ed0cea6eb650b1570d89"
+  },
+  "/home/user/audire/LEGACY 1.0/editeur.html": {
+    "mtime": 1780308938931.434,
+    "hash": "02a26823749918f4268280fbff0f9060"
+  },
+  "/home/user/audire/LEGACY 1.0/faq/index.html": {
+    "mtime": 1780308938935.434,
+    "hash": "1bf6dbf69898264b3ccd4df3a1401427"
+  },
+  "/home/user/audire/LEGACY 1.0/images/README.md": {
+    "mtime": 1780308938935.434,
+    "hash": "7c5daad830876171d3608433e713c540"
+  },
+  "/home/user/audire/LEGACY 1.0/images/produits/README.md": {
+    "mtime": 1780308938938.4827,
+    "hash": "142d4c7d868c902e8bb75cd83830ea2f"
+  },
+  "/home/user/audire/LEGACY 1.0/index.html": {
+    "mtime": 1780308939019.434,
+    "hash": "06d13e6cf94166be551fe89d887dba2f"
+  },
+  "/home/user/audire/LEGACY 1.0/mentions-legales/index.html": {
+    "mtime": 1780308939022.1255,
+    "hash": "0dcc15cbbcdf6d461e3854c2bc2b9867"
+  },
+  "/home/user/audire/LEGACY 1.0/merci/index.html": {
+    "mtime": 1780308939022.1255,
+    "hash": "73a050cd9b046e3998bd2e5e117c4a05"
+  },
+  "/home/user/audire/LEGACY 1.0/notre-accompagnement/index.html": {
+    "mtime": 1780308939022.1255,
+    "hash": "e8e93865c503400e3600326437fb5e5c"
+  },
+  "/home/user/audire/LEGACY 1.0/partenaires-pharmaciens/index.html": {
+    "mtime": 1780308939022.1255,
+    "hash": "55e2eaf7913885faf8eca29e827d2446"
+  },
+  "/home/user/audire/LEGACY 1.0/remboursements/index.html": {
+    "mtime": 1780308939023.434,
+    "hash": "bc8f32ab838da7d2964c54b309e0cedb"
+  },
+  "/home/user/audire/LEGACY 1.0/robots.txt": {
+    "mtime": 1780308939023.434,
+    "hash": "f82bd8b208562e92c2bedf163778b837"
+  },
+  "/home/user/audire/LEGACY 1.0/sitemap/index.html": {
+    "mtime": 1780308939023.434,
+    "hash": "82dbc0059fd78a736054005014fe65fe"
+  },
+  "/home/user/audire/LEGACY 1.0/solutions-auditives/contour-oreille/index.html": {
+    "mtime": 1780308939026.7246,
+    "hash": "21bf49776da6421c1d97f6e865c08551"
+  },
+  "/home/user/audire/LEGACY 1.0/solutions-auditives/index.html": {
+    "mtime": 1780308939026.7246,
+    "hash": "bff664bdc9d7e88c169ad9f88ac81e92"
+  },
+  "/home/user/audire/LEGACY 1.0/solutions-auditives/intra-auriculaire/index.html": {
+    "mtime": 1780308939026.7246,
+    "hash": "1be58f236bb8d48eedc924104ff33b32"
+  },
+  "/home/user/audire/LEGACY 1.0/solutions-auditives/oticon-intent/index.html": {
+    "mtime": 1780308939026.7246,
+    "hash": "3e1feb87c71bcf3f054bc962ae534e66"
+  },
+  "/home/user/audire/LEGACY 1.0/solutions-auditives/solution-1772009311933/index.html": {
+    "mtime": 1780308939026.7246,
+    "hash": "25715a70572735dc2712ae24a18419ed"
+  },
+  "/home/user/audire/LEGACY 1.0/solutions-auditives/solution-1772028108569/index.html": {
+    "mtime": 1780308939026.7246,
+    "hash": "8acd071911c34922b1008b163449e2a2"
+  },
+  "/home/user/audire/LEGACY 1.0/test-auditif-gratuit/index.html": {
+    "mtime": 1780308939027.434,
+    "hash": "afc866e7072d05e2c41df4409b36b54f"
+  },
+  "/home/user/audire/PAGES-PRODUITS-README.md": {
+    "mtime": 1780308939027.434,
+    "hash": "09da7c0fc42d78c0a9abbd78eddbc072"
+  },
+  "/home/user/audire/README.md": {
+    "mtime": 1780308939027.434,
+    "hash": "662d5e53b7e436526f8dc50a45ffeb84"
+  },
+  "/home/user/audire/RENDEZ-VOUS-README.md": {
+    "mtime": 1780308939027.434,
+    "hash": "d18eb9298b22f459963213b1a5fc66f6"
+  },
+  "/home/user/audire/SETUP-DATABASE.md": {
+    "mtime": 1780308939027.434,
+    "hash": "f958c909d694c67034f2d0e75c521b56"
+  },
+  "/home/user/audire/SOLUTION_RESUMEE.md": {
+    "mtime": 1780308939027.434,
+    "hash": "79520ccf019c4031c1b98dab75a793fb"
+  },
+  "/home/user/audire/SPRINT5-8.md": {
+    "mtime": 1780308939027.434,
+    "hash": "a53a7760d536203c08ef287830b40f5d"
+  },
+  "/home/user/audire/TEXTES_EDITABLES_README.md": {
+    "mtime": 1780308939027.434,
+    "hash": "a8e20841a6657c2dfb4035b067189d00"
+  },
+  "/home/user/audire/TEXTES_IDENTIFICATION.md": {
+    "mtime": 1780308939027.434,
+    "hash": "6cc9a25c4110dd68db39bdb00b53c425"
+  },
+  "/home/user/audire/VERCEL-ENV-SETUP.md": {
+    "mtime": 1780308939027.434,
+    "hash": "3c6acd75ea85841f77d29c939d375e0d"
+  },
+  "/home/user/audire/VERCEL_DEPLOYMENT_GUIDE.md": {
+    "mtime": 1780308939027.434,
+    "hash": "11a5a32c8d94bb0a98f07dfdd049abee"
+  },
+  "/home/user/audire/prisma/PATCH.md": {
+    "mtime": 1780308939035.434,
+    "hash": "1429bfcc411acc2bf72065355c716b72"
+  },
+  "/home/user/audire/public/images/IMAGES-REQUIRED.md": {
+    "mtime": 1780308939043.434,
+    "hash": "7e6d7731e4ec334c7995728369a4d466"
+  },
+  "/home/user/audire/public/images/tarifs.pdf": {
+    "mtime": 1780308939055.434,
+    "hash": "923a3d7fbe613d15559486740aba8257"
+  },
+  "/home/user/audire/LEGACY 1.0/images/logo.png": {
+    "mtime": 1780308938938.4827,
+    "hash": "1a9425fea4a23ec3218e0bffa516599e"
+  },
+  "/home/user/audire/LEGACY 1.0/images/solutions/contour-oreille.png": {
+    "mtime": 1780308938939.434,
+    "hash": "6c0a2261148354dffb7f8969b098f491"
+  },
+  "/home/user/audire/LEGACY 1.0/images/solutions/oticon-intent.png": {
+    "mtime": 1780308938939.434,
+    "hash": "032a66d99191ba60fa6eee36883a19d3"
+  },
+  "/home/user/audire/LEGACY 1.0/images/solutions/solution-1771930877095.jpeg": {
+    "mtime": 1780308939015.434,
+    "hash": "2638993e2bad95f3e3a92041a8d6a67a"
+  },
+  "/home/user/audire/public/apple-icon.png": {
+    "mtime": 1780308939039.434,
+    "hash": "1a9425fea4a23ec3218e0bffa516599e"
+  },
+  "/home/user/audire/public/apple-icon.svg": {
+    "mtime": 1780308939043.2878,
+    "hash": "d8258c052c5e5f443f115478bea7b9cf"
+  },
+  "/home/user/audire/public/favicon.png": {
+    "mtime": 1780308939043.434,
+    "hash": "ad74046249573b9c9d6eb1764ef22820"
+  },
+  "/home/user/audire/public/favicon.svg": {
+    "mtime": 1780308939043.434,
+    "hash": "95d87a022ce356da168ea128af544487"
+  },
+  "/home/user/audire/public/icon.svg": {
+    "mtime": 1780308939043.434,
+    "hash": "95d87a022ce356da168ea128af544487"
+  },
+  "/home/user/audire/public/images/hearing-test.jpg": {
+    "mtime": 1780308939046.73,
+    "hash": "d430d85c0509e7b376cf698ba7c5de39"
+  },
+  "/home/user/audire/public/images/human-support.jpg": {
+    "mtime": 1780308939047.434,
+    "hash": "3c1d06ad2a1d8ad37a9b2658e4a0303c"
+  },
+  "/home/user/audire/public/images/logo.png": {
+    "mtime": 1780308939047.434,
+    "hash": "1a9425fea4a23ec3218e0bffa516599e"
+  },
+  "/home/user/audire/public/images/oticon-couple.jpg": {
+    "mtime": 1780308939051.434,
+    "hash": "4b052fa18f5d736aa05e77e03596df40"
+  },
+  "/home/user/audire/public/images/personalized-follow-up.jpg": {
+    "mtime": 1780308939051.434,
+    "hash": "4f8866d632fedd1cb0a62594d11fcace"
+  }
+}
