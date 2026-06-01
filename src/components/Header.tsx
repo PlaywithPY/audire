@@ -23,8 +23,7 @@ export default function Header() {
     { name: 'Solutions auditives', href: '/solutions-auditives' },
     { name: 'Remboursements', href: '/remboursements' },
     { name: 'Notre accompagnement', href: '/notre-accompagnement' },
-    { name: 'Notre histoire', href: '/notre-histoire' },
-    { name: 'Partenaires', href: '/partenaires-pharmaciens' },
+{ name: 'Partenaires', href: '/partenaires-pharmaciens' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Contact', href: '/contact' },
   ];
@@ -70,14 +69,6 @@ export default function Header() {
               >
                 Test gratuit
               </Link>
-              {/* 🚧 LIEN TEMPORAIRE - À RETIRER */}
-              <Link
-                href="/appareils/oticon-real"
-                className="bg-yellow-400 text-yellow-900 px-4 py-2 rounded-lg hover:bg-yellow-500 transition-all font-semibold whitespace-nowrap border-2 border-yellow-600"
-                title="Lien temporaire de développement"
-              >
-                🚧 Produits
-              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -121,14 +112,6 @@ export default function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Test gratuit
-              </Link>
-              {/* 🚧 LIEN TEMPORAIRE - À RETIRER */}
-              <Link
-                href="/appareils/oticon-real"
-                className="block mt-2 bg-yellow-400 text-yellow-900 px-6 py-2 rounded-lg hover:bg-yellow-500 transition-all font-semibold text-center border-2 border-yellow-600"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                🚧 Produits (dev)
               </Link>
             </div>
           )}
