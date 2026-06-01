@@ -12,6 +12,13 @@ interface ImageFeatureCardProps {
   href?: string;
   imagePosition?: string; // e.g., "center 30%", "center top", etc.
   fallbackEmoji?: string; // Emoji à afficher si pas d'image
+  // ── Feature Cards Editor ───────────────────────────────────────────────
+  // Quand pageKey + cardKey sont fournis ET que la page est ouverte dans
+  // l'éditeur (/admin/editor → iframe avec ?edit=1), la card devient
+  // sélectionnable et éditable inline (image, cadrage, titre, texte, lien).
+  // En production normale, ces props n'ont aucun effet visible.
+  pageKey?: string;
+  cardKey?: string;
 }
 
 export default function ImageFeatureCard({
@@ -21,17 +28,34 @@ export default function ImageFeatureCard({
   imageAlt = 'Feature image',
   href,
   imagePosition = 'center 35%', // Décentré vers le bas par défaut
-  fallbackEmoji = '📷'
+  fallbackEmoji = '📷',
+  pageKey,
+  cardKey,
 }: ImageFeatureCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
+  const [editMode, setEditMode] = useState(false);
 
   // Déterminer si on doit afficher l'emoji
   // On affiche l'emoji si : pas d'imageSrc, imageSrc est vide, ou erreur de chargement
   const shouldShowEmoji = !imageSrc || imageSrc.trim() === '' || imageError;
+
+  // Détecte le mode édition : page rendue dans l'iframe de l'éditeur avec ?edit=1.
+  // On le fait dans un effet (jamais au SSR) pour éviter tout mismatch d'hydratation :
+  // l'attribut data-edit-block n'apparaît qu'après le montage côté client, ce qui
+  // suffit largement car EditorOverlay branche ses listeners après le chargement.
+  useEffect(() => {
+    try {
+      if (window.parent !== window && new URLSearchParams(window.location.search).has('edit')) {
+        setEditMode(true);
+      }
+    } catch {
+      /* contexte cross-origin — on ignore */
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,6 +79,24 @@ export default function ImageFeatureCard({
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isHovered]);
+
+  // L'éditeur ne peut cibler la card que si on connaît son identité.
+  const canEdit = editMode && !!pageKey && !!cardKey;
+
+  // Attributs lus par EditorOverlay : data-edit-block identifie la card,
+  // les data-edit-* sont sérialisés dans `data.*` pour préremplir l'inspecteur.
+  const editAttrs: Record<string, string> = canEdit
+    ? {
+        'data-edit-block': `card:${pageKey}:${cardKey}`,
+        'data-edit-title': title ?? '',
+        'data-edit-description': description ?? '',
+        'data-edit-href': href ?? '',
+        'data-edit-image': imageSrc ?? '',
+        'data-edit-position': imagePosition ?? '',
+        'data-edit-alt': imageAlt ?? '',
+        'data-edit-emoji': fallbackEmoji ?? '',
+      }
+    : {};
 
   const CardContent = () => (
     <div
@@ -116,6 +158,16 @@ export default function ImageFeatureCard({
       </div>
     </div>
   );
+
+  // En mode édition : on désactive la navigation (le lien) pour que le clic
+  // sélectionne la card dans l'éditeur au lieu d'ouvrir la page de destination.
+  if (canEdit) {
+    return (
+      <div {...editAttrs} className="block h-full">
+        <CardContent />
+      </div>
+    );
+  }
 
   if (href) {
     return (

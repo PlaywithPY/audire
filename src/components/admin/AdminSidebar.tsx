@@ -3,34 +3,56 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   LayoutDashboard, CalendarDays, Clock, Building2, Ear, MessageSquare,
   Pencil, FileText, Image as ImageIcon, Settings, Database,
-  ChevronDown, ChevronRight, ExternalLink, Wrench, LogOut,
+  ChevronDown, ChevronRight, ExternalLink, Wrench, LogOut, Boxes,
 } from 'lucide-react';
 
-type Item = {
+type IconType = React.ComponentType<{ className?: string }>;
+
+type Leaf = {
   href: string;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: IconType;
   badge?: string | number;
   badgeTone?: 'gray' | 'new' | 'legacy';
 };
-type Section = { label: string; items: Item[] };
+// Groupe repliable (ex. SMS → Envoi + Modèles).
+type Group = { label: string; icon: IconType; children: Leaf[] };
+type Entry = Leaf | Group;
+type Section = { label: string; items: Entry[] };
+
+function isGroup(e: Entry): e is Group {
+  return (e as Group).children !== undefined;
+}
 
 const SECTIONS: Section[] = [
   {
     label: 'Opérations',
     items: [
       { href: '/admin', label: 'Tableau de bord', icon: LayoutDashboard },
-      { href: '/admin/appointments', label: 'Rendez-vous', icon: CalendarDays },
-      { href: '/admin/rendez-vous', label: 'Créneaux', icon: Clock },
+      // Regroupe Rendez-vous + Créneaux pour gagner de la place.
+      {
+        label: 'Agenda',
+        icon: CalendarDays,
+        children: [
+          { href: '/admin/appointments', label: 'Rendez-vous', icon: CalendarDays },
+          { href: '/admin/rendez-vous', label: 'Créneaux', icon: Clock },
+        ],
+      },
       { href: '/admin/centres', label: 'Centres', icon: Building2 },
-      // Sprint 5.10 — badge "beta" retiré, le nouvel éditeur est la version par défaut.
-      // L'ancien éditeur (formulaire complet) est descendu dans "Anciens outils".
       { href: '/admin/appareils-v2', label: 'Appareils', icon: Ear },
-      { href: '/admin/sms', label: 'SMS', icon: MessageSquare },
+      // Regroupe l'envoi SMS + les modèles.
+      {
+        label: 'SMS',
+        icon: MessageSquare,
+        children: [
+          { href: '/admin/sms', label: 'Envoi', icon: MessageSquare },
+          { href: '/admin/sms-templates', label: 'Modèles', icon: FileText },
+        ],
+      },
     ],
   },
   {
@@ -38,7 +60,8 @@ const SECTIONS: Section[] = [
     items: [
       { href: '/admin/editor', label: 'Éditeur', icon: Pencil },
       { href: '/admin/faq-management', label: 'FAQ — Gestion', icon: FileText },
-      { href: '/admin/feature-cards-management', label: 'Cards visuelles', icon: ImageIcon },
+      { href: '/admin/feature-cards-management', label: 'Feature cards', icon: ImageIcon },
+      { href: '/admin/solutions', label: 'Solutions', icon: Boxes },
       { href: '/admin/testimonials', label: 'Témoignages', icon: FileText },
       { href: '/admin/mediatheque', label: 'Médiathèque', icon: ImageIcon },
       { href: '/admin/image-effects', label: 'Images & effets', icon: ImageIcon },
@@ -53,7 +76,7 @@ const SECTIONS: Section[] = [
   },
 ];
 
-const LEGACY_ITEMS: Item[] = [
+const LEGACY_ITEMS: Leaf[] = [
   // Sprint 5.10 — l'ancien éditeur d'appareils (formulaire complet) est conservé ici
   // tant que le nouvel éditeur ne couvre pas tous les champs (technicalSpecs, etc.)
   { href: '/admin/appareils',             label: 'Appareils (legacy)',     icon: Ear },
@@ -63,15 +86,12 @@ const LEGACY_ITEMS: Item[] = [
   { href: '/admin/content-manager',       label: 'Gestionnaire contenu',   icon: Wrench },
   { href: '/admin/text-editor',           label: 'Éditeur de textes',      icon: Wrench },
   { href: '/admin/setup-page-texts',      label: 'Setup textes',           icon: Wrench },
-  { href: '/admin/feature-cards',         label: 'Feature cards (legacy)', icon: Wrench },
-  { href: '/admin/solutions',             label: 'Solutions',              icon: Wrench },
   { href: '/admin/faqs',                  label: 'FAQs',                   icon: Wrench },
   { href: '/admin/categories',            label: 'Catégories FAQ',         icon: Wrench },
   { href: '/admin/footer',                label: 'Footer',                 icon: Wrench },
-  { href: '/admin/sms-templates',         label: 'Modèles SMS',            icon: Wrench },
 ];
 
-function badgeStyle(tone: Item['badgeTone']) {
+function badgeStyle(tone: Leaf['badgeTone']) {
   switch (tone) {
     case 'new':    return 'bg-emerald-100 text-emerald-700 font-semibold';
     case 'legacy': return 'bg-amber-100 text-amber-800';
@@ -79,18 +99,72 @@ function badgeStyle(tone: Item['badgeTone']) {
   }
 }
 
+type IsActive = (href: string) => boolean;
+
+function NavLeaf({ item, isActive }: { item: Leaf; isActive: IsActive }) {
+  const Icon = item.icon;
+  const active = isActive(item.href);
+  return (
+    <Link href={item.href}
+      className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
+        active ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+      }`}>
+      <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-gray-900' : 'text-gray-400'}`} />
+      <span className="flex-1 truncate">{item.label}</span>
+      {item.badge != null && (
+        <span className={`text-[9px] uppercase tracking-wider font-mono px-1.5 py-0.5 rounded ${badgeStyle(item.badgeTone)}`}>
+          {item.badge}
+        </span>
+      )}
+    </Link>
+  );
+}
+
+function NavGroup({ group, isActive }: { group: Group; isActive: IsActive }) {
+  const Icon = group.icon;
+  const anyActive = group.children.some((c) => isActive(c.href));
+  const [open, setOpen] = useState(anyActive);
+
+  // Ouvre automatiquement le groupe quand on navigue vers une de ses pages.
+  useEffect(() => { if (anyActive) setOpen(true); }, [anyActive]);
+
+  return (
+    <div>
+      <button type="button" onClick={() => setOpen((v) => !v)}
+        className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
+          anyActive ? 'text-gray-900 font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+        }`}>
+        <Icon className={`w-4 h-4 shrink-0 ${anyActive ? 'text-gray-900' : 'text-gray-400'}`} />
+        <span className="flex-1 truncate text-left">{group.label}</span>
+        {open ? <ChevronDown className="w-3.5 h-3.5 text-gray-400" /> : <ChevronRight className="w-3.5 h-3.5 text-gray-400" />}
+      </button>
+      {open && (
+        <div className="mt-0.5 ml-[18px] pl-2 border-l border-gray-100 space-y-0.5">
+          {group.children.map((c) => (
+            <NavLeaf key={c.href} item={c} isActive={isActive} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminSidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [legacyOpen, setLegacyOpen] = useState(false);
 
-  const isActive = (href: string) => {
+  const isActive: IsActive = (href) => {
     if (href === '/admin') return pathname === '/admin';
-    // Cas particulier : /admin/appareils ne doit pas être actif quand on est sur /admin/appareils-v2
+    // /admin/appareils ne doit pas être actif quand on est sur /admin/appareils-v2
     if (href === '/admin/appareils') {
-      return pathname === '/admin/appareils' || (pathname?.startsWith('/admin/appareils/') && !pathname?.startsWith('/admin/appareils-v2'));
+      return pathname === '/admin/appareils' || (pathname?.startsWith('/admin/appareils/') && !pathname?.startsWith('/admin/appareils-v2')) || false;
     }
-    return pathname?.startsWith(href);
+    // /admin/sms ne doit pas s'activer sur /admin/sms-templates
+    if (href === '/admin/sms') {
+      return pathname === '/admin/sms' || pathname?.startsWith('/admin/sms/') || false;
+    }
+    return pathname?.startsWith(href) || false;
   };
 
   return (
@@ -107,24 +181,13 @@ export default function AdminSidebar() {
             <div className="text-[10px] uppercase tracking-wider text-gray-400 font-mono px-2.5 pb-1.5 pt-1">
               {section.label}
             </div>
-            {section.items.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.href);
-              return (
-                <Link key={item.href} href={item.href}
-                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
-                    active ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  }`}>
-                  <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-gray-900' : 'text-gray-400'}`} />
-                  <span className="flex-1 truncate">{item.label}</span>
-                  {item.badge != null && (
-                    <span className={`text-[9px] uppercase tracking-wider font-mono px-1.5 py-0.5 rounded ${badgeStyle(item.badgeTone)}`}>
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
+            <div className="space-y-0.5">
+              {section.items.map((entry) =>
+                isGroup(entry)
+                  ? <NavGroup key={entry.label} group={entry} isActive={isActive} />
+                  : <NavLeaf key={entry.href} item={entry} isActive={isActive} />
+              )}
+            </div>
           </div>
         ))}
 

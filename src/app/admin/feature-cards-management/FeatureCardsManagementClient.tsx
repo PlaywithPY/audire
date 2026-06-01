@@ -169,7 +169,7 @@ export default function FeatureCardsManagementClient() {
 
   return (
     <div className="flex flex-col h-screen">
-      <AdminTopbar crumbs={[{ label: 'Site web' }, { label: 'Cards visuelles' }]} />
+      <AdminTopbar crumbs={[{ label: 'Site web' }, { label: 'Feature cards' }]} />
 
       <div className="flex-1 overflow-auto bg-gray-50">
         <div className="max-w-6xl mx-auto p-8 space-y-6">
