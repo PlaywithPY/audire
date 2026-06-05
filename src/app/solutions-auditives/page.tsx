@@ -34,7 +34,7 @@ function SolutionCard({ solution, cardData, onToggle, isActive }: {
       {cardData?.imageSrc ? (
         <div className="h-48 bg-gray-100 overflow-hidden">
           <img src={cardData.imageSrc} alt={cardData.imageAlt || solution.title}
-            className="w-full h-full object-cover" style={{ objectPosition: cardData.imagePosition }}
+            className="w-full h-full object-contain" style={{ objectPosition: cardData.imagePosition }}
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
         </div>
       ) : (
