@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Pencil, Eye, EyeOff, Trash2, Check, X, Star, ImageIcon } from 'lucide-react';
 import MediaPicker from '@/components/MediaPicker';
+import FocalField from '@/components/admin/FocalField';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -67,6 +68,7 @@ function CardModal({ card, onClose, onSave }: {
     imageSrc: card?.imageSrc ?? '',
     imageAlt: card?.imageAlt ?? '',
     href: card?.href ?? '',
+    imagePosition: card?.imagePosition ?? 'center 35%',
     fallbackEmoji: card?.fallbackEmoji ?? '🎯',
   });
   const [saving, setSaving] = useState(false);
@@ -119,6 +121,15 @@ function CardModal({ card, onClose, onSave }: {
             {form.imageSrc && (
               <img src={form.imageSrc} alt="" className="mt-2 h-20 w-full object-cover rounded-lg border border-gray-200" />
             )}
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1">Cadrage (point focal)</label>
+            <FocalField
+              imageUrl={form.imageSrc}
+              value={form.imagePosition}
+              onChange={(pos) => setForm(f => ({ ...f, imagePosition: pos }))}
+              aspect="video"
+            />
           </div>
           {field('imageAlt', 'Texte alternatif (alt)')}
           {field('href', 'Lien (href)')}

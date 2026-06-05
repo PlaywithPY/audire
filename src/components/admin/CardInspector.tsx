@@ -14,6 +14,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Image as ImageIcon, Check, Loader2, ExternalLink, AlertTriangle } from 'lucide-react';
 import MediaPicker from '@/components/MediaPicker';
+import FocalField from './FocalField';
 
 export type CardInitial = {
   image?: string;
@@ -32,8 +33,6 @@ type Props = {
   /** Appelé après un enregistrement réussi (rafraîchit l'iframe d'aperçu). */
   onSaved?: () => void;
 };
-
-const POSITION_PRESETS = ['center center', 'center 35%', 'center 60%', 'center top', 'center bottom'];
 
 function Label({ children }: { children: React.ReactNode }) {
   return (
@@ -162,32 +161,15 @@ export default function CardInspector({ pageKey, cardKey, initial, onSaved }: Pr
         )}
       </div>
 
-      {/* Cadrage */}
+      {/* Cadrage — point focal glissable */}
       <div>
-        <Label>Cadrage de l'image</Label>
-        <input
-          type="text"
+        <Label>Cadrage de l'image (point focal)</Label>
+        <FocalField
+          imageUrl={image}
           value={position}
-          onChange={(e) => setPosition(e.target.value)}
-          placeholder="center 35%"
-          className="w-full text-[12px] p-2 border border-gray-200 rounded-md focus:outline-none focus:border-gray-400"
+          onChange={setPosition}
+          aspect="video"
         />
-        <div className="flex flex-wrap gap-1 pt-1.5">
-          {POSITION_PRESETS.map((preset) => (
-            <button
-              key={preset}
-              type="button"
-              onClick={() => setPosition(preset)}
-              className={`text-[10px] px-2 py-0.5 rounded border transition-colors ${
-                position === preset
-                  ? 'bg-gray-900 text-white border-gray-900'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              {preset}
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Titre */}
