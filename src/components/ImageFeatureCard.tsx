@@ -129,7 +129,7 @@ export default function ImageFeatureCard({
                 src={imageSrc!}
                 alt={imageAlt}
                 fill
-                className="object-cover"
+                className="object-contain"
                 style={{ objectPosition: imagePosition }}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 onError={() => {
