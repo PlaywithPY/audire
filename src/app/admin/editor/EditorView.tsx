@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import AdminTopbar, { type Device } from '@/components/admin/AdminTopbar';
 import BlockInspector, { type SelectedBlock } from '@/components/admin/BlockInspector';
 import PublishBar from '@/components/admin/PublishBar';
+import SnapshotPanel from '@/components/admin/SnapshotPanel';
 import { useEditorHistory, type EditOp } from '@/components/admin/useEditorHistory';
 import { useDrafts, draftsStore } from '@/components/admin/useDrafts';
 import { ChevronDown, Search, Maximize2, Minimize2 } from 'lucide-react';
@@ -193,6 +194,7 @@ export default function EditorView({ page, pages }: { page: Page; pages: Page[] 
         onRedo={() => { const op = history.redo(); if (op) { applyTextToIframe(op.blockKey, op.after); saveDraft(op.blockKey, op.after); } }}
         rightExtra={
           <div className="flex items-center gap-2">
+            <SnapshotPanel onRestored={() => { d.clear(); history.clear(); refreshIframe(); }} />
             <PublishBar pendingCount={d.count} onPublish={handlePublish} onDiscard={handleDiscard} />
 
             {/* Sprint 4.1 — toggle plein écran */}

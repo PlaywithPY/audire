@@ -447,6 +447,16 @@ model Prescription {
   @@index([expiresAt])
 }
 
+// Snapshots du contenu éditeur (système de backup)
+model ContentSnapshot {
+  id        Int      @id @default(autoincrement())
+  label     String   // Nom donné au snapshot (ex: "Avant refonte FAQ")
+  data      String   // JSON: { pageTexts, faqCategories, faqs }
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 // Logs des SMS envoyés
 model SMSLog {
   id        Int      @id @default(autoincrement())
