@@ -26,6 +26,7 @@ export default function TestimonialsPage() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
   const [showNewTestimonialForm, setShowNewTestimonialForm] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [newTestimonial, setNewTestimonial] = useState({
     name: '',
     text: '',
@@ -105,6 +106,24 @@ export default function TestimonialsPage() {
     }
   }
 
+  async function importFromGoogle() {
+    setImporting(true);
+    try {
+      const res = await fetch('/api/admin/testimonials/import-google', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(`❌ ${data.error}`);
+      } else {
+        alert(`✅ ${data.message}`);
+        fetchTestimonials();
+      }
+    } catch {
+      alert('❌ Erreur lors de la connexion à Google Places.');
+    } finally {
+      setImporting(false);
+    }
+  }
+
   async function deleteTestimonial(id: number) {
     if (!confirm('Êtes-vous sûr de vouloir supprimer cet avis ?')) return;
 
@@ -140,12 +159,22 @@ export default function TestimonialsPage() {
         <section className="bg-white rounded-lg shadow-md p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">⭐ Avis clients</h2>
-            <button
-              onClick={() => setShowNewTestimonialForm(!showNewTestimonialForm)}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
-            >
-              + Nouvel avis
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={importFromGoogle}
+                disabled={importing}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition disabled:opacity-50"
+                title="Importe les avis depuis votre fiche Google Maps (nécessite GOOGLE_PLACES_API_KEY et GOOGLE_PLACE_ID)"
+              >
+                {importing ? '⏳ Import...' : '🔄 Importer depuis Google'}
+              </button>
+              <button
+                onClick={() => setShowNewTestimonialForm(!showNewTestimonialForm)}
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+              >
+                + Nouvel avis
+              </button>
+            </div>
           </div>
 
           {/* Formulaire nouvel avis */}
