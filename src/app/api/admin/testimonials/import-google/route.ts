@@ -8,6 +8,9 @@ interface GoogleReview {
   text: string;
   rating: number;
   time: number;
+  profile_photo_url?: string;
+  author_url?: string;
+  relative_time_description?: string;
 }
 
 interface PlacesApiResponse {
@@ -32,7 +35,7 @@ export async function POST() {
     );
   }
 
-  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=reviews&language=fr&key=${apiKey}`;
+  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=reviews&language=fr&reviews_sort=newest&key=${apiKey}`;
 
   let data: PlacesApiResponse;
   try {
@@ -71,8 +74,12 @@ export async function POST() {
       name: r.author_name,
       text: r.text.trim(),
       rating: r.rating,
-      isVisible: false, // à valider manuellement avant publication
+      isVisible: false,
       isFeatured: false,
+      googlePhotoUrl: r.profile_photo_url ?? null,
+      googleAuthorUrl: r.author_url ?? null,
+      googleRelativeTime: r.relative_time_description ?? null,
+      showAsGoogle: true,
     })),
   });
 

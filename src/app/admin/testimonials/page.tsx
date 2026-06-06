@@ -13,6 +13,10 @@ type Testimonial = {
   location: string | null;
   isVisible: boolean;
   isFeatured: boolean;
+  googlePhotoUrl: string | null;
+  googleAuthorUrl: string | null;
+  googleRelativeTime: string | null;
+  showAsGoogle: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -343,6 +347,19 @@ export default function TestimonialsPage() {
                             <span>En avant</span>
                           </label>
                         </div>
+                        {editingTestimonial.googlePhotoUrl && (
+                          <div className="flex items-center gap-4">
+                            <label className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={editingTestimonial.showAsGoogle}
+                                onChange={(e) => setEditingTestimonial({ ...editingTestimonial, showAsGoogle: e.target.checked })}
+                                className="w-5 h-5"
+                              />
+                              <span>🇬 Style Google</span>
+                            </label>
+                          </div>
+                        )}
                       </div>
                       <div className="flex gap-2">
                         <button
@@ -364,16 +381,33 @@ export default function TestimonialsPage() {
                     // Mode affichage
                     <div>
                       <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h3 className="font-bold text-lg">
-                            {testimonial.name}
-                            {testimonial.location && <span className="text-sm text-gray-500 ml-2">({testimonial.location})</span>}
-                          </h3>
-                          <p className="text-sm text-gray-500">
-                            {'⭐'.repeat(testimonial.rating)} •
-                            {testimonial.isVisible ? ' Visible' : ' Masqué'}
-                            {testimonial.isFeatured && ' • ⭐ En avant'}
-                          </p>
+                        <div className="flex items-center gap-3">
+                          {testimonial.googlePhotoUrl ? (
+                            <img
+                              src={testimonial.googlePhotoUrl}
+                              alt={testimonial.name}
+                              className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 text-primary font-bold">
+                              {testimonial.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <div>
+                            <h3 className="font-bold text-lg flex items-center gap-2">
+                              {testimonial.name}
+                              {testimonial.showAsGoogle && (
+                                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Google</span>
+                              )}
+                              {testimonial.location && <span className="text-sm text-gray-500">({testimonial.location})</span>}
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                              {'⭐'.repeat(testimonial.rating)} •
+                              {testimonial.isVisible ? ' Visible' : ' Masqué'}
+                              {testimonial.isFeatured && ' • ⭐ En avant'}
+                              {testimonial.googleRelativeTime && ` • ${testimonial.googleRelativeTime}`}
+                            </p>
+                          </div>
                         </div>
                         <div className="flex gap-2">
                           <button

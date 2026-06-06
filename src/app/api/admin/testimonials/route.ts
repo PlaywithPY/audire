@@ -57,7 +57,7 @@ export async function PUT(request: Request) {
 
   try {
     const body = await request.json();
-    const { id, name, text, rating, location, isVisible, isFeatured } = body;
+    const { id, name, text, rating, location, isVisible, isFeatured, showAsGoogle } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'Missing id' }, { status: 400 });
@@ -72,6 +72,7 @@ export async function PUT(request: Request) {
         location,
         isVisible,
         isFeatured,
+        showAsGoogle,
       },
     });
 

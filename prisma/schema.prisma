@@ -144,15 +144,20 @@ model Solution {
 
 // Avis clients
 model Testimonial {
-  id         Int      @id @default(autoincrement())
-  name       String // Nom du client (ou initiales)
-  text       String // Texte de l'avis
-  rating     Int      @default(5) // Note sur 5
-  location   String? // Ville (ex: "Liège")
-  isVisible  Boolean  @default(true)
-  isFeatured Boolean  @default(false) // Mettre en avant sur la page d'accueil
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id                   Int      @id @default(autoincrement())
+  name                 String
+  text                 String
+  rating               Int      @default(5)
+  location             String?
+  isVisible            Boolean  @default(true)
+  isFeatured           Boolean  @default(false)
+  // Champs Google (remplis lors de l'import depuis Google Places)
+  googlePhotoUrl       String?
+  googleAuthorUrl      String?
+  googleRelativeTime   String?
+  showAsGoogle         Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 
   @@index([isVisible, isFeatured])
 }
