@@ -20,6 +20,7 @@
 //   />
 
 import FocalPointPicker from './FocalPointPicker';
+import type { FocalPoint } from '@/lib/deviceBlocks';
 
 interface Props {
   /** URL de l'image à recadrer (vide = état placeholder) */
@@ -34,6 +35,9 @@ interface Props {
   label?: string;
   /** Afficher les raccourcis (Centre / Haut / Bas / Gauche / Droite). Défaut: true */
   presets?: boolean;
+  /** Niveau de zoom courant (1 = normal, jusqu'à 2.5). Si fourni avec onZoomChange, affiche un slider de zoom. */
+  zoom?: number;
+  onZoomChange?: (next: number) => void;
 }
 
 const clamp = (n: number) => Math.max(0, Math.min(100, n));
@@ -90,9 +94,13 @@ export default function FocalField({
   aspect = 'video',
   label,
   presets = true,
+  zoom,
+  onZoomChange,
 }: Props) {
   const hasImage = !!imageUrl && imageUrl.trim() !== '';
   const focal = parsePosition(value);
+  const zoomEnabled = zoom !== undefined && !!onZoomChange;
+  const pickerValue: FocalPoint = { ...focal, zoom };
 
   // Un preset est "actif" si la position courante correspond exactement.
   const current = formatPosition(focal);
@@ -108,9 +116,13 @@ export default function FocalField({
       {hasImage ? (
         <FocalPointPicker
           imageUrl={imageUrl as string}
-          value={focal}
-          onChange={(f) => onChange(formatPosition(f))}
+          value={pickerValue}
+          onChange={(f) => {
+            onChange(formatPosition(f));
+            if (zoomEnabled && f.zoom !== undefined && f.zoom !== zoom) onZoomChange!(f.zoom);
+          }}
           aspect={aspect}
+          zoomEnabled={zoomEnabled}
         />
       ) : (
         <div

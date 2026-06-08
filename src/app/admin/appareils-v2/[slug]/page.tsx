@@ -40,6 +40,16 @@ import {
   parseAccessoryIds, Accessory,
 } from '@/lib/deviceBlocks';
 import MediaPicker from '@/components/admin/MediaPicker';
+import { parsePosition, formatPosition } from '@/components/admin/FocalField';
+
+/** Convertit le couple (mediaFocal CSS string, mediaZoom) d'un bloc en FocalPoint pour le MediaPicker. */
+function blockFocal(block: { mediaFocal: string | null; mediaZoom: number }): FocalPoint {
+  return { ...parsePosition(block.mediaFocal), zoom: block.mediaZoom };
+}
+/** Reconvertit un FocalPoint modifié dans le MediaPicker en (mediaFocal, mediaZoom) à patcher sur le bloc. */
+function focalToBlockPatch(f: FocalPoint): { mediaFocal: string; mediaZoom: number } {
+  return { mediaFocal: formatPosition(f), mediaZoom: f.zoom ?? 1 };
+}
 
 // ============================================
 // Types
@@ -990,6 +1000,8 @@ function ContentBlockInspector({
             onChange={(url) => onChange({ mediaUrl: url })}
             mediaType={(block.mediaType as 'image'|'video') || 'image'}
             onTypeChange={(t) => onChange({ mediaType: t })}
+            focal={blockFocal(block)}
+            onFocalChange={(f) => onChange(focalToBlockPatch(f))}
           />
           <SelectField label="Position du média" value={block.mediaPosition || 'right'} onChange={(v) => onChange({ mediaPosition: v })}
             options={[ ['right', 'À droite'], ['left', 'À gauche'] ]} />
@@ -1029,6 +1041,8 @@ function ContentBlockInspector({
               onChange={(url) => onChange({ mediaUrl: url })}
               mediaType="image"
               aspect="square"
+              focal={blockFocal(block)}
+              onFocalChange={(f) => onChange(focalToBlockPatch(f))}
             />
             <SelectField label="Position de l'image" value={block.mediaPosition || 'left'} onChange={(v) => onChange({ mediaPosition: v })}
               options={[ ['left', 'À gauche'], ['right', 'À droite'] ]} />

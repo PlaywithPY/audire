@@ -14,9 +14,12 @@ interface Props {
   value: FocalPoint;
   onChange: (next: FocalPoint) => void;
   aspect?: 'square' | 'video' | 'auto';
+  /** Affiche un slider de zoom (échelle 1.0 — 2.5×), fusionné dans la valeur renvoyée. */
+  zoomEnabled?: boolean;
 }
 
-export default function FocalPointPicker({ imageUrl, value, onChange, aspect = 'video' }: Props) {
+export default function FocalPointPicker({ imageUrl, value, onChange, aspect = 'video', zoomEnabled = false }: Props) {
+  const zoom = Math.max(1, Math.min(2.5, value.zoom ?? 1));
   const ref = useRef<HTMLDivElement | null>(null);
   const dragging = useRef(false);
 
@@ -31,8 +34,8 @@ export default function FocalPointPicker({ imageUrl, value, onChange, aspect = '
     const rect = el.getBoundingClientRect();
     const x = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
     const y = Math.max(0, Math.min(100, ((clientY - rect.top) / rect.height) * 100));
-    onChange({ x: Math.round(x), y: Math.round(y) });
-  }, [onChange]);
+    onChange({ x: Math.round(x), y: Math.round(y), zoom: value.zoom });
+  }, [onChange, value.zoom]);
 
   const onMouseDown = (e: React.MouseEvent) => {
     dragging.current = true;
@@ -84,6 +87,20 @@ export default function FocalPointPicker({ imageUrl, value, onChange, aspect = '
         <span>Cliquez ou glissez sur la zone d'intérêt</span>
         <span>x:{value.x}% y:{value.y}%</span>
       </div>
+
+      {zoomEnabled && (
+        <div>
+          <label className="flex items-center justify-between text-[10px] uppercase tracking-wider text-gray-400 mb-1">
+            <span>Zoom (image trop petite)</span>
+            <span className="text-gray-700 font-semibold font-mono">{zoom.toFixed(2)}×</span>
+          </label>
+          <input
+            type="range" min={1} max={2.5} step={0.05} value={zoom}
+            onChange={(e) => onChange({ ...value, zoom: parseFloat(e.target.value) })}
+            className="w-full accent-blue-600"
+          />
+        </div>
+      )}
     </div>
   );
 }

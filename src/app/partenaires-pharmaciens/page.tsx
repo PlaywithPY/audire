@@ -61,7 +61,7 @@ export default function PartenairesPharmaciens() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {featureCards.map((card) => (
               <ImageFeatureCard key={card.cardKey} imageSrc={card.imageSrc} title={card.title} description={card.description}
-                imageAlt={card.imageAlt} href={card.href} imagePosition={card.imagePosition} fallbackEmoji={card.fallbackEmoji} />
+                imageAlt={card.imageAlt} href={card.href} imagePosition={card.imagePosition} imageZoom={card.imageZoom} fallbackEmoji={card.fallbackEmoji} />
             ))}
           </div>
         </div>

@@ -20,6 +20,8 @@ interface IncomingContentBlock {
   mediaUrl?: string | null;
   mediaType?: string;
   mediaAlt?: string | null;
+  mediaFocal?: string | null;
+  mediaZoom?: number;
   mediaPosition?: string;
   backgroundColor?: string | null;
 }
@@ -189,6 +191,8 @@ function normalizeContentBlock(b: IncomingContentBlock, hearingAidId: number, id
     mediaUrl:        (b.mediaUrl as string | null) ?? null,
     mediaType:       (b.mediaType as string) || 'image',
     mediaAlt:        (b.mediaAlt as string | null) ?? null,
+    mediaFocal:      (b.mediaFocal as string | null) ?? 'center center',
+    mediaZoom:       typeof b.mediaZoom === 'number' ? b.mediaZoom : 1,
     mediaPosition:   (b.mediaPosition as string) || 'right',
     backgroundColor: (b.backgroundColor as string | null) ?? null,
   };

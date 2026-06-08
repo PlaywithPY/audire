@@ -22,6 +22,7 @@ export type CardInitial = {
   description?: string;
   href?: string;
   position?: string;
+  zoom?: number;
   alt?: string;
   emoji?: string;
 };
@@ -33,6 +34,12 @@ type Props = {
   /** Appelé après un enregistrement réussi (rafraîchit l'iframe d'aperçu). */
   onSaved?: () => void;
 };
+
+/** `initial.zoom` provient parfois du dataset DOM (string) — on normalise en nombre. */
+function toZoom(v: unknown): number {
+  const n = typeof v === 'string' ? parseFloat(v) : typeof v === 'number' ? v : NaN;
+  return Number.isFinite(n) && n > 0 ? n : 1;
+}
 
 function Label({ children }: { children: React.ReactNode }) {
   return (
@@ -46,6 +53,7 @@ export default function CardInspector({ pageKey, cardKey, initial, onSaved }: Pr
   const [description, setDescription] = useState(initial.description ?? '');
   const [href, setHref] = useState(initial.href ?? '');
   const [position, setPosition] = useState(initial.position || 'center 35%');
+  const [zoom, setZoom] = useState(toZoom(initial.zoom));
   const [alt, setAlt] = useState(initial.alt ?? '');
   const [emoji, setEmoji] = useState(initial.emoji || '📷');
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -60,6 +68,7 @@ export default function CardInspector({ pageKey, cardKey, initial, onSaved }: Pr
     setDescription(initial.description ?? '');
     setHref(initial.href ?? '');
     setPosition(initial.position || 'center 35%');
+    setZoom(toZoom(initial.zoom));
     setAlt(initial.alt ?? '');
     setEmoji(initial.emoji || '📷');
     setStatus('idle');
@@ -74,6 +83,7 @@ export default function CardInspector({ pageKey, cardKey, initial, onSaved }: Pr
     description !== (initial.description ?? '') ||
     href !== (initial.href ?? '') ||
     position !== (initial.position || 'center 35%') ||
+    zoom !== toZoom(initial.zoom) ||
     alt !== (initial.alt ?? '') ||
     emoji !== (initial.emoji || '📷');
 
@@ -92,6 +102,7 @@ export default function CardInspector({ pageKey, cardKey, initial, onSaved }: Pr
           imageUrl: image,
           fallbackEmoji: emoji || '📷',
           imagePosition: position || 'center center',
+          imageZoom: zoom,
           href: href || null,
           title: title || null,
           description: description || null,
@@ -120,7 +131,7 @@ export default function CardInspector({ pageKey, cardKey, initial, onSaved }: Pr
               src={image}
               alt={alt || title}
               className="w-full h-full object-cover"
-              style={{ objectPosition: position }}
+              style={{ objectPosition: position, transform: zoom !== 1 ? `scale(${zoom})` : undefined, transformOrigin: position }}
             />
           ) : (
             <div className="absolute inset-0 grid place-items-center">
@@ -163,12 +174,14 @@ export default function CardInspector({ pageKey, cardKey, initial, onSaved }: Pr
 
       {/* Cadrage — point focal glissable */}
       <div>
-        <Label>Cadrage de l'image (point focal)</Label>
+        <Label>Cadrage de l'image (point focal + zoom)</Label>
         <FocalField
           imageUrl={image}
           value={position}
           onChange={setPosition}
           aspect="video"
+          zoom={zoom}
+          onZoomChange={setZoom}
         />
       </div>
 

@@ -138,6 +138,8 @@ export interface ProductContentBlockData {
   mediaUrl: string | null;
   mediaType: string;           // "image" ou "video"
   mediaAlt: string | null;
+  mediaFocal: string | null;   // object-position CSS (ex: "50% 30%"), recadrage du média
+  mediaZoom: number;           // échelle du zoom (1 = pas de zoom, jusqu'à 2.5)
   mediaPosition: string;       // "left" ou "right"
   backgroundColor: string | null;
 }
@@ -164,6 +166,8 @@ export function defaultContentBlock(type: ContentBlockType, afterBlockId: BlockI
     mediaUrl: null,
     mediaType: 'image',
     mediaAlt: null,
+    mediaFocal: 'center center',
+    mediaZoom: 1,
     mediaPosition: 'right',
     backgroundColor: null,
     metadata: null as string | null,
@@ -187,7 +191,7 @@ export function defaultContentBlock(type: ContentBlockType, afterBlockId: BlockI
 // Stocké dans HearingAid.imagePositions (JSON string).
 // Forme : { [fieldName]: { x: 0-100, y: 0-100 } }
 
-export interface FocalPoint { x: number; y: number; }
+export interface FocalPoint { x: number; y: number; zoom?: number; }
 export type ImagePositions = Record<string, FocalPoint>;
 
 export function parseImagePositions(raw: string | null | undefined): ImagePositions {
@@ -200,12 +204,51 @@ export function parseImagePositions(raw: string | null | undefined): ImagePositi
 
 export function getFocal(positions: ImagePositions, key: string): FocalPoint {
   const p = positions[key];
-  return p && typeof p.x === 'number' && typeof p.y === 'number' ? p : { x: 50, y: 50 };
+  return p && typeof p.x === 'number' && typeof p.y === 'number'
+    ? { x: p.x, y: p.y, zoom: clampZoom(p.zoom) }
+    : { x: 50, y: 50, zoom: 1 };
+}
+
+/** Borne le zoom dans une plage utilisable (1 = taille normale, 2.5 = zoom max). */
+export function clampZoom(zoom: number | null | undefined): number {
+  if (typeof zoom !== 'number' || Number.isNaN(zoom)) return 1;
+  return Math.max(1, Math.min(2.5, zoom));
+}
+
+export function getZoom(positions: ImagePositions, key: string): number {
+  return clampZoom(positions[key]?.zoom);
 }
 
 /** Convertit un focal point en `object-position` CSS. */
 export function focalToObjectPosition(p: FocalPoint): string {
   return `${p.x}% ${p.y}%`;
+}
+
+const OBJECT_POSITION_KEYWORDS: Record<string, number> = { left: 0, top: 0, center: 50, right: 100, bottom: 100 };
+
+/** Parse une string `object-position` CSS ("50% 30%", "center top"…) en FocalPoint, en y associant un zoom. */
+export function parseObjectPosition(css: string | null | undefined, zoom?: number | null): FocalPoint {
+  const fallback = { x: 50, y: 50, zoom: clampZoom(zoom) };
+  if (!css || !css.trim()) return fallback;
+  const [rawX, rawY] = css.trim().split(/\s+/);
+  const toPercent = (token: string | undefined) => {
+    if (!token) return 50;
+    if (token.endsWith('%')) { const n = parseFloat(token); return Number.isNaN(n) ? 50 : n; }
+    return OBJECT_POSITION_KEYWORDS[token.toLowerCase()] ?? 50;
+  };
+  return { x: toPercent(rawX), y: toPercent(rawY), zoom: clampZoom(zoom) };
+}
+
+/**
+ * Style à appliquer à une image en `object-fit: cover` pour à la fois
+ * recadrer (object-position) et zoomer (transform: scale, centré sur le point focal).
+ */
+export function focalToImageStyle(p: FocalPoint | null | undefined): { objectPosition?: string; transform?: string; transformOrigin?: string } {
+  if (!p) return {};
+  const pos = focalToObjectPosition(p);
+  const zoom = clampZoom(p.zoom);
+  if (zoom === 1) return { objectPosition: pos };
+  return { objectPosition: pos, transform: `scale(${zoom})`, transformOrigin: pos };
 }
 
 // ============================================

@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { pageKey, cardKey, imageUrl, fallbackEmoji, imagePosition, href, title, description, imageAlt } = body;
+    const { pageKey, cardKey, imageUrl, fallbackEmoji, imagePosition, imageZoom, href, title, description, imageAlt } = body;
 
     if (!pageKey || !cardKey || !imageUrl) {
       return NextResponse.json(
@@ -52,6 +52,7 @@ export async function POST(request: NextRequest) {
           imageUrl,
           fallbackEmoji: fallbackEmoji || '📷',
           imagePosition: imagePosition || 'center center',
+          imageZoom: typeof imageZoom === 'number' ? imageZoom : 1,
           href,
           title,
           description,
@@ -67,6 +68,7 @@ export async function POST(request: NextRequest) {
           imageUrl,
           fallbackEmoji: fallbackEmoji || '📷',
           imagePosition: imagePosition || 'center center',
+          imageZoom: typeof imageZoom === 'number' ? imageZoom : 1,
           href,
           title,
           description,
@@ -90,7 +92,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, pageKey, imageUrl, fallbackEmoji, imagePosition, href, title, description, imageAlt } = body;
+    const { id, pageKey, imageUrl, fallbackEmoji, imagePosition, imageZoom, href, title, description, imageAlt } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'id requis' }, { status: 400 });
@@ -103,6 +105,7 @@ export async function PUT(request: NextRequest) {
         ...(imageUrl !== undefined && { imageUrl }),
         ...(fallbackEmoji !== undefined && { fallbackEmoji }),
         ...(imagePosition !== undefined && { imagePosition }),
+        ...(typeof imageZoom === 'number' && { imageZoom }),
         ...(href !== undefined && { href }),
         ...(title !== undefined && { title }),
         ...(description !== undefined && { description }),

@@ -100,7 +100,7 @@ export default function Home() {
             {featureCards.map((card, index) => (
               <div key={card.cardKey} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.15}s` }}>
                 <ImageFeatureCard pageKey="home" cardKey={card.cardKey} imageSrc={card.imageSrc} title={card.title} description={card.description}
-                  imageAlt={card.imageAlt} href={card.href} imagePosition={card.imagePosition} fallbackEmoji={card.fallbackEmoji} />
+                  imageAlt={card.imageAlt} href={card.href} imagePosition={card.imagePosition} imageZoom={card.imageZoom} fallbackEmoji={card.fallbackEmoji} />
               </div>
             ))}
           </div>

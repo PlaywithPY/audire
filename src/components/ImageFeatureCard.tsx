@@ -11,6 +11,7 @@ interface ImageFeatureCardProps {
   imageAlt?: string;
   href?: string;
   imagePosition?: string; // e.g., "center 30%", "center top", etc.
+  imageZoom?: number; // Zoom appliqué à l'image (1 = normal, jusqu'à 2.5×) — utile pour les images un peu petites
   fallbackEmoji?: string; // Emoji à afficher si pas d'image
   // ── Feature Cards Editor ───────────────────────────────────────────────
   // Quand pageKey + cardKey sont fournis ET que la page est ouverte dans
@@ -28,6 +29,7 @@ export default function ImageFeatureCard({
   imageAlt = 'Feature image',
   href,
   imagePosition = 'center 35%', // Décentré vers le bas par défaut
+  imageZoom = 1,
   fallbackEmoji = '📷',
   pageKey,
   cardKey,
@@ -93,6 +95,7 @@ export default function ImageFeatureCard({
         'data-edit-href': href ?? '',
         'data-edit-image': imageSrc ?? '',
         'data-edit-position': imagePosition ?? '',
+        'data-edit-zoom': String(imageZoom ?? 1),
         'data-edit-alt': imageAlt ?? '',
         'data-edit-emoji': fallbackEmoji ?? '',
       }
@@ -130,7 +133,11 @@ export default function ImageFeatureCard({
                 alt={imageAlt}
                 fill
                 className="object-contain"
-                style={{ objectPosition: imagePosition }}
+                style={{
+                  objectPosition: imagePosition,
+                  transform: imageZoom && imageZoom !== 1 ? `scale(${imageZoom})` : undefined,
+                  transformOrigin: imagePosition,
+                }}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 onError={() => {
                   setImageError(true);

@@ -94,7 +94,7 @@ export default function TestAuditifGratuit() {
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {whyTestCards.map((card) => (
               <ImageFeatureCard key={card.cardKey} imageSrc={card.imageSrc} title={card.title} description={card.description}
-                imageAlt={card.imageAlt} href={card.href} imagePosition={card.imagePosition} fallbackEmoji={card.fallbackEmoji} />
+                imageAlt={card.imageAlt} href={card.href} imagePosition={card.imagePosition} imageZoom={card.imageZoom} fallbackEmoji={card.fallbackEmoji} />
             ))}
           </div>
         </div>

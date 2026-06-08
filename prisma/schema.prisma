@@ -88,6 +88,7 @@ model CardImage {
   imageUrl      String // URL de l'image
   fallbackEmoji String   @default("📷") // Emoji de fallback
   imagePosition String   @default("center center") // Position de l'image (object-position CSS)
+  imageZoom     Float    @default(1) // Zoom appliqué à l'image (1 = normal, jusqu'à 2.5×)
   href          String? // Lien vers une page
   title         String? // Titre de la card
   description   String? // Description de la card
@@ -353,6 +354,8 @@ model ProductContentBlock {
   mediaUrl  String? // URL de l'image ou vidéo
   mediaType String  @default("image") // "image" ou "video"
   mediaAlt  String? // Texte alternatif pour l'image
+  mediaFocal String? @default("center center") // Point focal du média (object-position CSS)
+  mediaZoom  Float   @default(1) // Zoom appliqué au média (1 = normal, jusqu'à 2.5×)
 
   // Layout
   mediaPosition   String  @default("right") // "left" ou "right" - Position du média par rapport au texte

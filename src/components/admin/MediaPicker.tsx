@@ -132,7 +132,7 @@ function MediaPickerImpl({
                 sizes="300px"
                 quality={70}
                 className="object-cover"
-                style={focal ? { objectPosition: `${focal.x}% ${focal.y}%` } : undefined}
+                style={focal ? { objectPosition: `${focal.x}% ${focal.y}%`, transform: focal.zoom && focal.zoom !== 1 ? `scale(${focal.zoom})` : undefined, transformOrigin: `${focal.x}% ${focal.y}%` } : undefined}
                 // unoptimized en fallback si l'URL est une data: ou un format non géré
                 unoptimized={value.startsWith('data:')}
               />
@@ -213,6 +213,7 @@ function MediaPickerImpl({
             value={focal}
             onChange={onFocalChange}
             aspect={aspect}
+            zoomEnabled
           />
         </div>
       )}
@@ -229,7 +230,8 @@ const MediaPicker = memo(MediaPickerImpl, (prev, next) => {
       && prev.label === next.label
       && prev.aspect === next.aspect
       && prev.focal?.x === next.focal?.x
-      && prev.focal?.y === next.focal?.y;
+      && prev.focal?.y === next.focal?.y
+      && prev.focal?.zoom === next.focal?.zoom;
 });
 
 export default MediaPicker;

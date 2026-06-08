@@ -9,6 +9,7 @@ export interface CardData {
   imageAlt: string;
   href: string;
   imagePosition: string;
+  imageZoom?: number;
   fallbackEmoji: string;
 }
 
@@ -51,6 +52,7 @@ export async function getFeatureCards(pageKey: string = 'home'): Promise<CardDat
         imageAlt: dbCard.imageAlt || defaultCard.imageAlt,
         href: dbCard.href || defaultCard.href,
         imagePosition: dbCard.imagePosition || defaultCard.imagePosition,
+        imageZoom: dbCard.imageZoom ?? 1,
         fallbackEmoji: dbCard.fallbackEmoji || defaultCard.fallbackEmoji,
       };
     });

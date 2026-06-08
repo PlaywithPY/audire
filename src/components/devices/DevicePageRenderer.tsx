@@ -26,7 +26,9 @@ import {
   HighlightMetadata,
   parseImagePositions,
   getFocal,
-  focalToObjectPosition,
+  focalToImageStyle,
+  parseObjectPosition,
+  type FocalPoint,
   parseKickers,
   parseHeroBadges,
   parseSectionExtras,
@@ -324,7 +326,7 @@ export default function DevicePageRenderer({
                 sizes="50vw"
                 quality={75}
                 className="object-cover"
-                style={{ objectPosition: focalToObjectPosition(getFocal(imagePositions, 'heroImage')) }}
+                style={focalToImageStyle(getFocal(imagePositions, 'heroImage'))}
                 unoptimized={product.heroImage.startsWith('data:')}
               />
             </div>
@@ -768,7 +770,7 @@ function ContentBlockRenderer({ block }: { block: ProductContentBlockData }) {
                     {block.mediaType === 'video' ? (
                       <video src={block.mediaUrl} controls className="w-full h-full object-cover" preload="metadata" />
                     ) : (
-                      <Image src={block.mediaUrl} alt={block.mediaAlt || block.title || ''} fill sizes="(max-width: 768px) 100vw, 600px" className="object-cover" unoptimized={(block.mediaUrl || '').startsWith('data:')} />
+                      <Image src={block.mediaUrl} alt={block.mediaAlt || block.title || ''} fill sizes="(max-width: 768px) 100vw, 600px" className="object-cover" style={focalToImageStyle(parseObjectPosition(block.mediaFocal, block.mediaZoom))} unoptimized={(block.mediaUrl || '').startsWith('data:')} />
                     )}
                   </div>
                 ) : (
@@ -816,7 +818,7 @@ function ContentBlockRenderer({ block }: { block: ProductContentBlockData }) {
                 )}
               </div>
               <div className={isLeft ? 'md:order-1' : ''}>
-                <MediaSlot url={block.mediaUrl} type={block.mediaType} alt={block.mediaAlt || block.title || ''} />
+                <MediaSlot url={block.mediaUrl} type={block.mediaType} alt={block.mediaAlt || block.title || ''} focal={parseObjectPosition(block.mediaFocal, block.mediaZoom)} />
               </div>
             </div>
           </div>
@@ -829,7 +831,7 @@ function ContentBlockRenderer({ block }: { block: ProductContentBlockData }) {
 // ============================================
 // Sub-components
 // ============================================
-function MediaSlot({ url, type, alt, focal }: { url: string | null; type: string | null; alt: string; focal?: { x: number; y: number } }) {
+function MediaSlot({ url, type, alt, focal }: { url: string | null; type: string | null; alt: string; focal?: FocalPoint }) {
   if (!url) {
     return (
       <div className="aspect-video rounded-2xl bg-gradient-to-br from-[#EEF6FF] to-[#E1EEFC] grid place-items-center">
@@ -846,12 +848,12 @@ function MediaSlot({ url, type, alt, focal }: { url: string | null; type: string
   }
   return (
     <div className="relative aspect-video rounded-2xl bg-gray-100 overflow-hidden shadow-xl">
-      <Image src={url} alt={alt} fill sizes="(max-width: 768px) 100vw, 600px" className="object-cover" style={focal ? { objectPosition: `${focal.x}% ${focal.y}%` } : undefined} unoptimized={url.startsWith('data:')} />
+      <Image src={url} alt={alt} fill sizes="(max-width: 768px) 100vw, 600px" className="object-cover" style={focalToImageStyle(focal)} unoptimized={url.startsWith('data:')} />
     </div>
   );
 }
 
-function ImageSlot({ url, alt, aspect = 'square', focal }: { url: string | null; alt: string; aspect?: 'square' | 'video'; focal?: { x: number; y: number } }) {
+function ImageSlot({ url, alt, aspect = 'square', focal }: { url: string | null; alt: string; aspect?: 'square' | 'video'; focal?: FocalPoint }) {
   const aspectClass = aspect === 'video' ? 'aspect-video' : 'aspect-square';
   if (!url) {
     return (
@@ -862,7 +864,7 @@ function ImageSlot({ url, alt, aspect = 'square', focal }: { url: string | null;
   }
   return (
     <div className={`relative ${aspectClass} rounded-2xl bg-gray-100 overflow-hidden shadow-xl`}>
-      <Image src={url} alt={alt} fill sizes="(max-width: 768px) 100vw, 500px" className="object-cover" style={focal ? { objectPosition: `${focal.x}% ${focal.y}%` } : undefined} unoptimized={url.startsWith('data:')} />
+      <Image src={url} alt={alt} fill sizes="(max-width: 768px) 100vw, 500px" className="object-cover" style={focalToImageStyle(focal)} unoptimized={url.startsWith('data:')} />
     </div>
   );
 }
