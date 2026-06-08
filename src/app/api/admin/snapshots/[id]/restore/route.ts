@@ -16,8 +16,9 @@ type SnapshotData = {
   }[];
 };
 
-export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id);
+export async function POST(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id: idParam } = await params;
+  const id = parseInt(idParam);
   if (isNaN(id)) return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
 
   const snapshot = await prisma.contentSnapshot.findUnique({ where: { id } });
